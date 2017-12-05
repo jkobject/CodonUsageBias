@@ -113,7 +113,7 @@ def sortspecies(dict):
 
     return species
 
-def bokeplot(tsneval,species):
+def bokeplot(tsneval,species, getimage=True):
     source = ColumnDataSource(
         data=dict(
             x=tsneval[:,0],
@@ -127,4 +127,7 @@ def bokeplot(tsneval,species):
     p = figure(title="T-sne of homologous gene X for each species",
                tools=[hover,BoxZoomTool(),WheelZoomTool(),SaveTool(),ResetTool()])
     p.circle('x', 'y', size= 10, source=source, color="#2222aa")
+    if(getimage):
+        output_file("bokeplotlast.html")
     show(p)
+    return p
