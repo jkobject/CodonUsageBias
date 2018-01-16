@@ -12,7 +12,7 @@ Icon
 kalfonDTA
 kazusaDB
 first500
-old500
+old_first500
 
 # Thumbnails
 ._*
@@ -66,6 +66,7 @@ cmake-build-debug/
 
 #python
 *.pyc 
+pipeline1.pyc
 
 ## Plugin-specific files:
 
