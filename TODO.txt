@@ -1,0 +1,27 @@
+##### DONE #####
+
+working functions 
+ - readcods
+ - prepro
+ - bokeplot
+
+ to test
+ - sortrank 
+ - clustgenes
+ - sortspecies
+
+ ##### TODO ######
+ 
+ - show the clusterisation
+ - function to process each simple function on all the data
+ - function to have the same genes for each species
+ - store my matrix as a savez
+ - set the right number of cluster. 
+
+ ######## IDEAS #######
+
+- see if there is a similarity in the cluster position of each of their genes. 
+- compare the similarities between the species for each types of related genes between the species
+- find a relationship between 
+
+ ###### Problems ########
