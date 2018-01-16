@@ -1,0 +1,1 @@
+EntropyMean(6,650);
