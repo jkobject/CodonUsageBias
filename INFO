@@ -1,0 +1,28 @@
+We are currently developping what will be a full python package for the codon usage bias problem
+
+
+
+
+
+
+Method of work : 
+---------------
+
+As a solo project and my method of work consist in writing some information about the code being develloped in 
+the TODO.txt file. 
+
+I will have a research report going on on this link : https://docs.google.com/document/d/1FjMTWjNO9CuLlf8HVdw1smfPYXc69yjsxggIIQv9o9c/edit?usp=sharing
+
+Moreover the code is for now developped on pipeline and tested on notebooks, it will be further implemented with different
+classes and genes still being a master class with which the user will interact directly. 
+
+I will get inspiration from the scikit-learn and CaImAn packages. 
+
+
+Future work : should involve a refactoring of the entire project to create a package for general genomic inference in python 
+-----------
+
+contact me at : jkobject@gmail.com or on jkobject.com
+-------------
+
+All rights reserved to Jérémie KALFON, University of Kent, jhjk2@kent.ac.uk

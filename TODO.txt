@@ -1,27 +1,63 @@
 ##### DONE #####
 
-working functions 
- - readcods
- - prepro
- - bokeplot
+@@@working functions 
+ -1 readcods
+ -2 prepro
+ -3 bokeplot-genes
+ -4 sortspecies
 
- to test
- - sortrank 
- - clustgenes
- - sortspecies
+ @@@to test
+ -5 sortrank 
+ -6 download the data files
+ -7 show the clusterisation in bokeh. 
+
+@@@coding
+-preprocess
+-checknans
 
  ##### TODO ######
- 
- - show the clusterisation
- - function to process each simple function on all the data
- - function to have the same genes for each species
- - store my matrix as a savez
- - set the right number of cluster. 
+
+ -8 put back the pandas dataframe
+ -9 function to process each simple function on all the data
+
+ -10 function to have the same genes for each species : 
+ we are getting the comparer (the species against which, all the homologies have been  found)
+instead of just similarity to one specie, do a graph search on them (nodes are species, links are homologies ->find the biggest fully connected graph) --> problem, it is on the data previous to what I receive... (the algo of YUN)
+
+ -11 store my matrix as a savez
+ -12 set the right number of cluster. 
+ -13 add a verification that the function are not called in a wrong order
+
 
  ######## IDEAS #######
 
-- see if there is a similarity in the cluster position of each of their genes. 
-- compare the similarities between the species for each types of related genes between the species
-- find a relationship between 
+-14 see if there is a similarity in the cluster position of each of their genes, compare it and find relationships
+-15 compare the similarities between the species for each types of related genes between the species
+-16 find a relationship between 
+-17 plot entropy location values similarity between genes of one particular individual
+-18 look for philogenetic similarity using ncbi taxonomy information/website or the information for Tobias
 
- ###### Problems ########
+-19 find to which species we are comparing our homologies to, according to the way we are comparing things, the genes containing little amount of homologies should be the one only possessed by more similar species (more related to the comparer) thus it should be a quite new gene, meaning it is not well established and still evolving thus the information (how much the entropy values are influenced by direct exterior factors) should be more/less important 
+
+ ###### INFO ########
+
+- the species are ordered according to philogenetic/taxonomic similarities
+- the species present here are all the same ones. 
+
+###### QUESTIONS ########
+
+- what is the name of your database that you use to get your data (why don't you use kasuza #35000) ?
+- what do the Nan values mean?(sometimes is that you don"t have the data but sometimes it is only for 1 amino acid does it mean 0?)  
+- do you have the same species for each genes ? no. Are the species that gets removed the same ? no.
+
+
+ ###### require #########
+
+ phylogenetic tree
+temperature
+replication speed
+frequency of use of the gene
+nocive species
+gene size
+type of species
+more ...
