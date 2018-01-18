@@ -4,43 +4,81 @@ from sklearn import preprocessing as prep
 from sklearn import manifold as man
 from sklearn import cluster
 import pandas as pd
-
+import networkx as netx 
 import glob
 import os
+import cpickle as pickle # usefull to save our object
 
 import matplotlib.pyplot as plt
 from bokeh.plotting import *
 from bokeh.models import *
 
-  
+CodonsDict = {
+    'TTT': 0, 'TTC': 0, 'TTA': 0, 'TTG': 0, 'CTT': 0,
+    'CTC': 0, 'CTA': 0, 'CTG': 0, 'ATT': 0, 'ATC': 0,
+    'ATA': 0, 'ATG': 0, 'GTT': 0, 'GTC': 0, 'GTA': 0,
+    'GTG': 0, 'TAT': 0, 'TAC': 0, 'TAA': 0, 'TAG': 0,
+    'CAT': 0, 'CAC': 0, 'CAA': 0, 'CAG': 0, 'AAT': 0,
+    'AAC': 0, 'AAA': 0, 'AAG': 0, 'GAT': 0, 'GAC': 0,
+    'GAA': 0, 'GAG': 0, 'TCT': 0, 'TCC': 0, 'TCA': 0,
+    'TCG': 0, 'CCT': 0, 'CCC': 0, 'CCA': 0, 'CCG': 0,
+    'ACT': 0, 'ACC': 0, 'ACA': 0, 'ACG': 0, 'GCT': 0,
+    'GCC': 0, 'GCA': 0, 'GCG': 0, 'TGT': 0, 'TGC': 0,
+    'TGA': 0, 'TGG': 0, 'CGT': 0, 'CGC': 0, 'CGA': 0,
+    'CGG': 0, 'AGT': 0, 'AGC': 0, 'AGA': 0, 'AGG': 0,
+    'GGT': 0, 'GGC': 0, 'GGA': 0, 'GGG': 0}
 
+
+# this dictionary shows which codons encode the same AA
+SynonymousCodons = {
+    'CYS': ['TGT', 'TGC'],
+    'ASP': ['GAT', 'GAC'],
+    'SER': ['TCT', 'TCG', 'TCA', 'TCC', 'AGC', 'AGT'],
+    'GLN': ['CAA', 'CAG'],
+    'MET': ['ATG'],
+    'ASN': ['AAC', 'AAT'],
+    'PRO': ['CCT', 'CCG', 'CCA', 'CCC'],
+    'LYS': ['AAG', 'AAA'],
+    'STOP': ['TAG', 'TGA', 'TAA'],
+    'THR': ['ACC', 'ACA', 'ACG', 'ACT'],
+    'PHE': ['TTT', 'TTC'],
+    'ALA': ['GCA', 'GCC', 'GCG', 'GCT'],
+    'GLY': ['GGT', 'GGG', 'GGA', 'GGC'],
+    'ILE': ['ATC', 'ATA', 'ATT'],
+    'LEU': ['TTA', 'TTG', 'CTC', 'CTT', 'CTG', 'CTA'],
+    'HIS': ['CAT', 'CAC'],
+    'ARG': ['CGA', 'CGC', 'CGG', 'CGT', 'AGG', 'AGA'],
+    'TRP': ['TGG'],
+    'VAL': ['GTA', 'GTC', 'GTG', 'GTT'],
+    'GLU': ['GAG', 'GAA'],
+    'TYR': ['TAT', 'TAC']}
+
+
+  
 class Genes(object):
     """docstring for Genes
 
-        the only restriction on the file we want is any thing readable by pandas (txt, csv, xls, ...)
+        the only restriction on the file we want is any thing readable by pandas (txt, csv, xls,...)
         with the row 'species' and 'entropylocation'. the file should look like : 
             GENE-AMINOACID.*
             the - can be anything else...
 
 
     """
-    def download_data(name='first500'):
+    def download_data(self, name='first500'):
     """download a file from the file list with the url of its location
- 
  
     using urllib, you can add you own name and location in this global parameter
  
-        Parameters:
-        -----------
+    Parameters:
+    -----------
  
-        name: str
-            the path of the file correspondong to a file in the filelist (''Sue_2x_3000_40_-46.tif' or 'demoMovieJ.tif')
- 
+    name: str
+        the path of the file correspondong to a file in the filelist 
+        (''Sue_2x_3000_40_-46.tif' or 'demoMovieJ.tif')
     Raise:
     ---------
         WrongFolder Exception
- 
-
     """
    
     
@@ -58,10 +96,25 @@ class Genes(object):
                     code.write(data)
          else print("File already downloaded")
 
+
     
-    def __init__(self, folder = 'first500', doAll = False, genelist=["YAL019W"], aminonb = 18, minspecies = 1, separation="homology"):
+    def __init__(self, folder = 'first500', doAll = False, genelist=["YAL019W"], aminonb = 18,
+     minspecies = 1, separation="homology"):
         """
         initialize ou codonClass with 
+
+        
+        Returns:
+        ---------
+        genevect : dict{genename : gene}
+
+        specieslist : list[list[speciesname]]
+
+        folder : string
+
+        genelist = list[genename]
+
+        score = dict{}
         """
         super(Genes, self).__init__()
         nameA = "empty"
@@ -71,9 +124,14 @@ class Genes(object):
         self.specieslist = []
         self.folder = folder
         self.genelist = []
+        self.doAll = doAll;
         self.score = {}
-        if not(os.path.isdir(folder)):
+        self.isminspecified = minspecies >1 # we are going to keep that for 
+                                            #further usage when dev 19.
+        self.saved = False
 
+        if not os.path.isdir(folder):
+            download_data()
 
         if doAll:
             # we verbose a bit in this class
@@ -87,15 +145,16 @@ class Genes(object):
             self.genelist = genelist
         for gene in self.genelist:
             try:
-                gentab, species = self.readcods_gene(folder, separation, gene, aminonb, separation)
+                genDF, species = self.readcods_gene(folder, separation, gene, aminonb, separation)
                 if len(species) >  minspecies: 
-                    self.genevect.update({gene:gentab})
+                    self.genevect.update({gene:genDF})
                     self.specieslist.append(species) 
                 else print gene + "contains less species than minspecies"
             except OSError:
                 print "you do not have the files here"
             except ValueError:
                 print gene + " has non matching components for a same gene.."
+
                            
 
 
@@ -112,9 +171,7 @@ class Genes(object):
                                     18 components values for each species
                 a list of species
 
-        AxM matrix 
-        A = species
-        M = codon usage vector 
+
 
         """
         gendict = {} 
@@ -123,17 +180,18 @@ class Genes(object):
         print gene
         meta = pd.read_csv(first_file).dropna()
         rows = meta.shape[0]
-        #we list all the species
-        species = meta['species'].values.tolist()
         gentab = np.zeros((aminonb, rows))
+        amino = []
         i = 0
         for file in glob.glob(folder + "/" + gene + "*.*"):
-            amino = file[-7:-4]
-            if amino != 'ror': #TODO: write if it belongs to a list of amino acid (given by the user)
+            if file[-7:-4] != 'ror': #TODO: write if it belongs to a list of amino 
+                                        #acid (given by the user)
+                amino.append(file[-7:-4])
                 struct = pd.read_csv(file).dropna().reset_index()
                 gentab, species = check_nans(struct, species, gentab,i)
                 i+=1
-        return gentab, species
+        genDF = pd.DataFrame(data= gentab, index = species, column = amino)
+        return genDF, species
 
 
     def check_nans(struct, species, gentab,i):
@@ -170,18 +228,29 @@ class Genes(object):
         same = []
         notsame = []
 
+        if min_gene > len(self.genelist):
+            print "your minspecie is higher than your genelist size... setting minspecies to 1"
+            min_gene = 1
+
         if min_gene > 1: 
-            for species in self.specieslist: #we go throught the list of lists
-                same = species & totspecies # we compare them
-                notsame = species - same
-                for spe in same:  
-                    score[spe]+=1
-                for spe in notsame: # for all the differents we update the score list
-                    score.update({spe : 1})
-                totspecies = totspecies | species
+            if not bool(self.score): #if it exists
+                print "we are now computin the score of each species...."
+                print "saccharomyces_cerevisiae should be the top one"
+                i = 0
+
+                for species in self.specieslist: #we go throught the list of lists
+                    i+=1
+                    print i if i%30 == 0 #just verbosing
+                    same = species & totspecies # we compare them
+                    notsame = species - same
+                    for spe in same:  
+                        score[spe]+=1
+                    for spe in notsame: # for all the differents we update the score list
+                        score.update({spe : 1})
+                    totspecies = totspecies | species
             for key, value in score.iteritems(): 
                 if value < min_gene:
-                    
+                    for gene in  
 
         scaler = prep.StandardScaler()
         for gene in self.genevect.values():
@@ -191,7 +260,7 @@ class Genes(object):
 
     def preprocess_gene(self, gene):
         """
-        preprocess your gene dataset by getting
+        preprocess one gene by getting
         normalized and centerized it
 
         :param gene:  a matrix of gene codon usage per species
@@ -199,6 +268,13 @@ class Genes(object):
         stdscal = prep.StandardScaler().fit(gene)
         self.scaled = stdscal.transform(gene)
         
+
+    def restoretofile(filename):
+        """
+        sometimes in the course of the pipeline, modification are made to our dataframes of 
+        genevect or genetab.
+        we should be able to save them and restore our Gene object to any moment we want
+        """
 
     def reduce_dim(self, gene, n=2, perplexity=40):
         """
@@ -235,15 +311,19 @@ class Genes(object):
     def plot_gene(self, tsnedgene,species, getimage=False, 
         labels = False, centroids = False):
         """
-        use bokeh to create nice interactive plots (either on jupyter notebook or as html-javascripts pages)
-        in these plots of your gene dataset you can have a look at your previously dimensionality reduced
-        gene dataset and hover over points to have a look at the species or display colors and centroids according
+        use bokeh to create nice interactive plots (either on jupyter notebook or as
+         html-javascripts pages)
+        in these plots of your gene dataset you can have a look at your previously 
+        dimensionality reduced
+        gene dataset and hover over points to have a look at the species or display 
+        colors and centroids according
         to the clusterize function's output
 
         :param gene:  a matrix of gene codon usage per species reduced into 2 dimensions
                species : a list of all the species in your gene dataset (usually one per row)
                getimage: (optional) flag to true if you want it to ouput an html file 
-               labels, centroids : (optional) the labels and centroids returned by the clusterize function
+               labels, centroids : (optional) the labels and centroids returned
+                by the clusterize function
 
         :return p: your figure as a bokeh object.
 
@@ -251,7 +331,8 @@ class Genes(object):
         
         if centroids.any() and labels.any():
             #colormap = [[rand(256), rand(256), rand(256)] for _ in range(100)] 
-            colormap = ["#1abc9c","#3498db","#2ecc71","#9b59b6",'#34495e','#f1c40f','#e67e22','#e74c3c','#7f8c8d','#f39c12']
+            colormap = ["#1abc9c","#3498db","#2ecc71","#9b59b6",'#34495e','#f1c40f',
+            '#e67e22','#e74c3c','#7f8c8d','#f39c12']
             colors= [colormap[x] for x in labels]
         else:
             colors= '#1abc9c'
