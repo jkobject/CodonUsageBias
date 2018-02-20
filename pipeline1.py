@@ -4,10 +4,10 @@ from sklearn import preprocessing as prep
 from sklearn import manifold as man
 from sklearn import cluster
 import pandas as pd
-import networkx as netx 
+import networkx as netx
 import glob
 import os
-import cpickle as pickle # usefull to save our object
+import cpickle as pickle  # usefull to save our object
 
 import matplotlib.pyplot as plt
 from bokeh.plotting import *
@@ -35,7 +35,7 @@ SynonymousCodons = {
     'ASP': ['GAT', 'GAC'],
     'SER': ['TCT', 'TCG', 'TCA', 'TCC', 'AGC', 'AGT'],
     'GLN': ['CAA', 'CAG'],
-    'MET': ['ATG'],
+    #'MET': ['ATG'],
     'ASN': ['AAC', 'AAT'],
     'PRO': ['CCT', 'CCG', 'CCA', 'CCC'],
     'LYS': ['AAG', 'AAA'],
@@ -48,13 +48,12 @@ SynonymousCodons = {
     'LEU': ['TTA', 'TTG', 'CTC', 'CTT', 'CTG', 'CTA'],
     'HIS': ['CAT', 'CAC'],
     'ARG': ['CGA', 'CGC', 'CGG', 'CGT', 'AGG', 'AGA'],
-    'TRP': ['TGG'],
+    #'TRP': ['TGG'],
     'VAL': ['GTA', 'GTC', 'GTG', 'GTT'],
     'GLU': ['GAG', 'GAA'],
     'TYR': ['TAT', 'TAC']}
 
 
-  
 class Genes(object):
     """docstring for Genes
 
@@ -65,6 +64,7 @@ class Genes(object):
 
 
     """
+
     def download_data(self, name='first500'):
     """download a file from the file list with the url of its location
  
@@ -80,41 +80,40 @@ class Genes(object):
     ---------
         WrongFolder Exception
     """
-   
-    
-    #\bug       
-    #\warning  
-    
-    file_dict = {'first500':'https://www.dropbox.com/s/9j48pg1eixpnub4/homology601t1000.zip?dl=1'}
-    path_data = './'+name
-         if not os.path.exists(path_movie):        
-                url = file_dict[name]
-                print( "downloading "+ name +"with urllib" )
-                f = urlopen(url)
-                data = f.read()
-                with open(path_movie, "wb") as code:
-                    code.write(data)
-         else print("File already downloaded")
 
+    #\bug
+    #\warning
 
-    
-    def __init__(self, folder = 'first500', doAll = False, genelist=["YAL019W"], aminonb = 18,
-     minspecies = 1, separation="homology"):
+    file_dict = {'first500': 'https://www.dropbox.com/s/9j48pg1eixpnub4/homology601t1000.zip?dl=1'}
+    path_data = './' + name
+        if not os.path.exists(path_movie):
+            url = file_dict[name]
+            print("downloading " + name + "with urllib")
+            f = urlopen(url)
+            data = f.read()
+            with open(path_movie, "wb") as code:
+                code.write(data)
+        else print("File already downloaded")
+
+    def __init__(self, folder='first500', doAll=False, genelist=["YAL019W"], aminonb=18,
+                 minspecies=1, separation="homology"):
         """
         initialize ou codonClass with 
 
-        
+
         Returns:
         ---------
         genevect : dict{genename : gene}
 
         specieslist : list[list[speciesname]]
 
-        folder : string
+        folder : nameofthefolder
 
         genelist = list[genename]
 
-        score = dict{}
+        score = dict{species : #gene}
+
+        gene = pandas.dataframe(row = speciesname, column = aminoname, data = entropyvalue)
         """
         super(Genes, self).__init__()
         nameA = "empty"
@@ -123,11 +122,9 @@ class Genes(object):
         self.genevect = {}
         self.specieslist = []
         self.folder = folder
-        self.genelist = []
-        self.doAll = doAll;
+        self.doAll = doAll
         self.score = {}
-        self.isminspecified = minspecies >1 # we are going to keep that for 
-                                            #further usage when dev 19.
+        self.isminspecified = minspecies > 1  # we are going to keep that for further usage when dev19.
         self.saved = False
 
         if not os.path.isdir(folder):
@@ -135,32 +132,27 @@ class Genes(object):
 
         if doAll:
             # we verbose a bit in this class
-            print "we are doing all the "+ len(os.listdir(self.folder)) +" files" 
+            print "we are doing all the " + len(os.listdir(self.folder)) + " files"
             for f in os.listdir(self.folder):
                 nameA = f.split(separation)[0]
                 if(nameA != nameB):
-                    nameB=nameA
+                    nameB = nameA
                     self.genelist.append(nameB)
         else:
             self.genelist = genelist
         for gene in self.genelist:
             try:
                 genDF, species = self.readcods_gene(folder, separation, gene, aminonb, separation)
-                if len(species) >  minspecies: 
-                    self.genevect.update({gene:genDF})
-                    self.specieslist.append(species) 
+                if len(species) > minspecies:
+                    self.genevect.update({gene: genDF})
+                    self.specieslist.append(species)
                 else print gene + "contains less species than minspecies"
             except OSError:
                 print "you do not have the files here"
             except ValueError:
                 print gene + " has non matching components for a same gene.."
 
-                           
-
-
-
-
-    def readcods_gene(self, separation, folder= "kalfonDTA", gene ="YAL019W", aminonb= 18):
+    def readcods_gene(self, separation, folder="kalfonDTA", gene="YAL019W", aminonb=18):
         """
         read the things and gives you back a nice dict
 
@@ -174,9 +166,9 @@ class Genes(object):
 
 
         """
-        gendict = {} 
-        ## We want to get the basic information from the files 
-        first_file = glob.glob(folder + "/" + gene + separation+"His.*")[0]
+        gendict = {}
+        # We want to get the basic information from the files
+        first_file = glob.glob(folder + "/" + gene + separation + "His.*")[0]
         print gene
         meta = pd.read_csv(first_file).dropna()
         rows = meta.shape[0]
@@ -184,17 +176,16 @@ class Genes(object):
         amino = []
         i = 0
         for file in glob.glob(folder + "/" + gene + "*.*"):
-            if file[-7:-4] != 'ror': #TODO: write if it belongs to a list of amino 
-                                        #acid (given by the user)
+            if file[-7:-4] != 'ror':  # TODO: write if it belongs to a list of amino
+                                        # acid (given by the user)
                 amino.append(file[-7:-4])
                 struct = pd.read_csv(file).dropna().reset_index()
-                gentab, species = check_nans(struct, species, gentab,i)
-                i+=1
-        genDF = pd.DataFrame(data= gentab, index = species, column = amino)
+                gentab, species = check_nans(struct, species, gentab, i)
+                i += 1
+        genDF = pd.DataFrame(data=gentab, index=species, column=amino)
         return genDF, species
 
-
-    def check_nans(struct, species, gentab,i):
+    def check_nans(struct, species, gentab, i):
         """
         we check if there is any nans in the structure given by reading a csv object 
         of the format we want
@@ -202,20 +193,19 @@ class Genes(object):
 
         newspecies = struct['species'].values.tolist()
         nans = struct['entropylocation'].values.tolist()
-        if newspecies != species: #we might have to remove some species
-                common = newspecies & species
-                #those two are now just a mask of what we need to remove
-                species -= common 
-                newspecies -= common
-                # we remove the species 
-                nans.remove(nans[newspecies.index()])
-                for gene in gentab:
-                    gene.remove(gene[species.index()])
-        gentab[:,i]= nans
+        if newspecies != species:  # we might have to remove some species
+            common = newspecies & species
+            # those two are now just a mask of what we need to remove
+            species -= common
+            newspecies -= common
+            # we remove the species
+            nans.remove(nans[newspecies.index()])
+            for gene in gentab:
+                gene.remove(gene[species.index()])
+        gentab[:, i] = nans
         return gentab, common
 
-
-    def preprocess(self, min_gene = 4):
+    def preprocess(self, min_gene=4):
         """
         preprocess all the data by getting it
         normalized and centerized and 
@@ -232,25 +222,25 @@ class Genes(object):
             print "your minspecie is higher than your genelist size... setting minspecies to 1"
             min_gene = 1
 
-        if min_gene > 1: 
-            if not bool(self.score): #if it exists
+        if min_gene > 1:
+            if not bool(self.score):  # if it exists
                 print "we are now computin the score of each species...."
                 print "saccharomyces_cerevisiae should be the top one"
                 i = 0
 
-                for species in self.specieslist: #we go throught the list of lists
-                    i+=1
-                    print i if i%30 == 0 #just verbosing
-                    same = species & totspecies # we compare them
+                for species in self.specieslist:  # we go throught the list of lists
+                    i += 1
+                    print i if i % 30 == 0  # just verbosing
+                    same = species & totspecies  # we compare them
                     notsame = species - same
-                    for spe in same:  
-                        score[spe]+=1
-                    for spe in notsame: # for all the differents we update the score list
-                        score.update({spe : 1})
+                    for spe in same:
+                        score[spe] += 1
+                    for spe in notsame:  # for all the differents we update the score list
+                        score.update({spe: 1})
                     totspecies = totspecies | species
-            for key, value in score.iteritems(): 
+            for key, value in score.iteritems():
                 if value < min_gene:
-                    for gene in  
+                    for gene in
 
         scaler = prep.StandardScaler()
         for gene in self.genevect.values():
@@ -267,7 +257,6 @@ class Genes(object):
         """
         stdscal = prep.StandardScaler().fit(gene)
         self.scaled = stdscal.transform(gene)
-        
 
     def restoretofile(filename):
         """
@@ -287,8 +276,8 @@ class Genes(object):
 
         :return tsned: the reduced dataset
         """
-        tsned = man.TSNE(n_components = n, perplexity = perplexity).fit_transform(self.scaled)
-        return tsned;
+        tsned = man.TSNE(n_components=n, perplexity=perplexity).fit_transform(self.scaled)
+        return tsned
 
     def clusterize(self, gene, n_clusters=4):
         """
@@ -305,11 +294,10 @@ class Genes(object):
         kmean.fit(gene)
         labels = kmean.labels_
         centroids = kmean.cluster_centers_
-        return centroids, labels 
+        return centroids, labels
 
-
-    def plot_gene(self, tsnedgene,species, getimage=False, 
-        labels = False, centroids = False):
+    def plot_gene(self, tsnedgene, species, getimage=False,
+                  labels=False, centroids=False):
         """
         use bokeh to create nice interactive plots (either on jupyter notebook or as
          html-javascripts pages)
@@ -328,36 +316,34 @@ class Genes(object):
         :return p: your figure as a bokeh object.
 
         """
-        
-        if centroids.any() and labels.any():
-            #colormap = [[rand(256), rand(256), rand(256)] for _ in range(100)] 
-            colormap = ["#1abc9c","#3498db","#2ecc71","#9b59b6",'#34495e','#f1c40f',
-            '#e67e22','#e74c3c','#7f8c8d','#f39c12']
-            colors= [colormap[x] for x in labels]
-        else:
-            colors= '#1abc9c'
 
+        if centroids.any() and labels.any():
+            #colormap = [[rand(256), rand(256), rand(256)] for _ in range(100)]
+            colormap = ["#1abc9c", "#3498db", "#2ecc71", "#9b59b6", '#34495e', '#f1c40f',
+                        '#e67e22', '#e74c3c', '#7f8c8d', '#f39c12']
+            colors = [colormap[x] for x in labels]
+        else:
+            colors = '#1abc9c'
 
         source = ColumnDataSource(
             data=dict(
-                x=tsnedgene[:,0],
-                y=tsnedgene[:,1],
-                color = colors,
+                x=tsnedgene[:, 0],
+                y=tsnedgene[:, 1],
+                color=colors,
                 label=["species : %s" % (x_) for x_ in species]
-                
+
             )
         )
         hover = HoverTool(tooltips=[
             ("label", "@label"),
         ])
         p = figure(title="T-sne of homologous gene X for each species",
-                   tools=[hover,BoxZoomTool(),WheelZoomTool(),SaveTool(),ResetTool()])
-        p.circle('x', 'y', size= 10, source=source)
+                   tools=[hover, BoxZoomTool(), WheelZoomTool(), SaveTool(), ResetTool()])
+        p.circle('x', 'y', size=10, source=source)
         show(p)
         return p
 
-    
-    def getAllWithMoreThan(self, num = 4, type = "Genes"):
+    def getAllWithMoreThan(self, num=4, type="Genes"):
         """Get all the Genes/Species containing more than X Species/Genes
            /!\ it will remove the surplux of species/Genes in list containing more 
            than the specified amount ( for comparison purposes you don't want to have 
@@ -391,5 +377,3 @@ class Genes(object):
         """
 
     def batchPlot
-
-
