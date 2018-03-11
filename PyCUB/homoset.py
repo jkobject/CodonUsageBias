@@ -8,6 +8,7 @@ jkobject.com
 
 
 import pandas as pd
+import json
 
 
 class HomoSet(object):
@@ -21,6 +22,7 @@ class HomoSet(object):
                 reduced = PD.DF of genes *species  containing 2D vectors ( dimensionality reduction using T-SNE)
                 clusters =  matrix of genes * species containing  cluster index ( note the same between genes)
                 full = PD.DF of genes *species  containing the entire 18D vectors of their entropy location
+                homodict = dictionnary of dataframes of codon usage per species from homology names
     """
 
     reduced = None
@@ -28,10 +30,15 @@ class HomoSet(object):
     full = None
     homodict = {}
 
-    def __init__(self):
+    def __init__(self, data=False):
         """
         will..
         """
+        if data:
+            reduced = pd.from_dict(data["reduced"])
+            clusters = np.array(data["clusters"])
+            full = pd.from_dict(data["full"])
+            homodict.update({key: pd.from_dict(val)}) for key, val in data["homodict"].iteritems()
 
     def plot_all():
         """
@@ -44,9 +51,9 @@ class HomoSet(object):
         """
         pass
 
-    def save(filename,):
+    def save(filename):
         """
-        will..
+        will save the object as a json string 
         """
 
     def clusterize_kmeans():
@@ -75,8 +82,13 @@ class HomoSet(object):
         will..
         """
 
-    def function():
+    def dictify():
         """
         will..
         """
-        pass
+        dictihomo = {}
+        dictihomo.update({key: val.to_dict()}) for key, val in self.homodict.iteritems()
+        return {"reduced": reduced.to_dict(),
+                "clusters": clusters.tolist(),
+                "full": full.to_dict(),
+                "homodict": dictihomo}
