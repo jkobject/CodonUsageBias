@@ -1,5 +1,5 @@
 """"
-Created by Jérémie KALFON 
+Created by Jeremie KALFON 
 Date : 21 FEV 2018
 University of Kent, ECE paris
 jkobject.com
@@ -24,21 +24,59 @@ class HomoSet(object):
     """
 
     reduced = None
-    clusters = [][]
+    clusters = None
     full = None
     homodict = {}
 
     def __init__(self):
+        """
+        will..
+        """
 
     def plot_all():
+        """
+        will..
+        """
 
     def gene_plot(species):
+        """
+        will..
+        """
         pass
 
     def save(filename,):
+        """
+        will..
+        """
 
-    def clusterize():
+    def clusterize_kmeans():
+        """
+        will..
+        """
         pass
 
+    def clusterize_gaussmixture():
+        """
+        will..
+        """
+
+    def clusterize_affinityprop():
+        """
+        will..
+        """
+
+    def clusterize_DB_scan():
+        """
+        will..
+        """
+
+    def assess_clust():
+        """
+        will..
+        """
+
     def function():
+        """
+        will..
+        """
         pass

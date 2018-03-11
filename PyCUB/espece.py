@@ -1,10 +1,11 @@
 """"
-Created by Jérémie KALFON 
+Created by Jeremie KALFON 
 Date : 21 FEV 2018
 University of Kent, ECE paris
 jkobject.com
 
 """
+import pandas as pd
 
 
 class Espece(object):
@@ -23,13 +24,26 @@ class Espece(object):
 
     def __init__(self, name):
         self.name = name
+        self.genes = pd.DataFrame()
 
     def plot():
+        """
+        will...
+        """
 
     def compute_entropy_loc():
+        """
+        will..
+        """
         pass
 
     def compute_all_genome_entropy():
+        """
+        will..
+        """
         pass
 
     def save():
+        """
+        will..
+        """

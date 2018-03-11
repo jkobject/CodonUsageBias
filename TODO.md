@@ -24,7 +24,7 @@
 
  - 10 function to have the same genes for each species : 
  ... we are getting the comparer (the species against which, all the homologies have been  found)
-... instead of just similarity to one specie, do a graph search on them (nodes are species, links are homologies ->find the biggest fully connected graph) --> problem, it is on the data previous to what I receive... (the algo of YUN)
+ ... instead of just similarity to one specie, do a graph search on them (nodes are species, links are homologies ->find the biggest fully connected graph) --> problem, it is on the data previous to what I receive... (the algo of YUN)
 
  - 11 store my matrix as a savez
  - 12 set the right number of cluster. 
@@ -48,8 +48,10 @@
 
 * To find Metadata 
 	* look at the text from ensembl and do a feature extraction using NLP
-
 	* look for websites 
+
+- 34 Why not re-create a dict object for our pyCUD object
+
 
 
 ## INFO ########
@@ -64,6 +66,28 @@ the species present here are all the same ones.
 
 - look at the equations on the thesis. 
 
+- WE can look for classification methods such as :
+CLUSTER
+ * K-means 
+ * Gaussian Mixture (clustering) http://scikit-learn.org/stable/modules/mixture.html#gaussian-mixture
+
+ * Affinity propagation (cl)
+> don't forget performance testing of clustering algo http://scikit-learn.org/stable/modules/clustering.html#clustering-performance-evaluation
+ * DB-scan 
+CLUSTERER-CLASSIFIER
+ * self organizing maps > 1000 neurons
+NOVELTY/OUTLIER DETECTOR http://scikit-learn.org/stable/modules/outlier_detection.html
+
+FEATURE EXTRACTOR
+ * Var autoencoder
+ * graphical models http://scikit-learn.org/stable/modules/neural_networks_unsupervised.html#graphical-model-and-parametrization
+ 
+DIM REDUCTION
+ * PCA - ICA
+ * tsn-e
+OTHER
+ * NMF (given this gene values,  to which species it belongs| given this gene cluster, to which species it belongs | given this species what could be the value if it had this homology) http://scikit-learn.org/stable/modules/decomposition.html#non-negative-matrix-factorization-nmf-or-nnmf
+ 
 
 
 - Pipeline of the matlab code
@@ -83,8 +107,19 @@ then you look at preinstalled genotype of 461 species and get this particular ge
 KL method : for the comparison of the whole genome per species (only exons !) we sum up all the distributions and normalize them ( by the length of the gene) and we compute the KL divergence to the distribution made by the measured distribution made by the plotting of all the exons
 Expected entropy: (see notebook)
 
+
 - focus first on the classification 
 - be really carefull about what you are goin to present on your thesis. 
+
+
+
+__Dominique Chu__
+
+>Really do the same plot with the 5000 species to look for structure
+>Do it with entropyValue and Entropy\*Length as well
+
+
+
 
 __Alex Freitas__
 
@@ -93,7 +128,6 @@ __Alex Freitas__
 - regularize by the amount of clusters (pareto)
 
 > the gene clustering (of i-one gene ) can be seen as a mini phylogenetic tree
-
 > once I have the meta data how much can each features or groups of features can explain the clustering that I found. 
 
 ## QUESTIONS ########
