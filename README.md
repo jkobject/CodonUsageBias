@@ -2,24 +2,19 @@
 
 >To install pyCUD for now you need to process to a raw install
 
-Make sure to have anaconda installed https://anaconda.org/anaconda/python
-
+Make sure to have anaconda installed https://anaconda.org/anaconda/python  
 Then follow the step to create an environment.
 
-Once this is done you will have to get this project:
-
+Once this is done you will have to get this project:   
 `git clone https://github.com/jkobject/CodonUsageBias.git`
 
-Then enter the project:
-
+Then enter the project:   
 `cd CodonUsageBias`
 
-Then you have to run the requirements to download the required packages:
-
+Then you have to run the requirements to download the required packages:  
 `pip install -r requirements.txt`
 
-Once this is done you can:
-
+Once this is done you can:   
 `jupyter notebook pipeline.ipynb`
 
 And run it to test it yourself !
@@ -33,9 +28,9 @@ The goals of this project is to try to infer relations in the codon usage of dif
 
 
 ### In more long terms I wish to :
-Pursue on the ideas defined here and on the TODO file. 
-I am also preparing a presentation available on slideshare soon.
-And at the end of the summer, a Research Document. 
+Pursue on the ideas defined here and on the TODO file.   
+I am also preparing a presentation available on slideshare soon.  
+And at the end of the summer, a Research Document.   
 
 
 
@@ -43,11 +38,11 @@ __Find more information in my INFO and TODO files.__
 
 ## Pipeline
 
-For now the Pipeline is able to : 
-let me load and save the data in the right format,  
-get the precomputed data from Kent University  
-Visualize and cluster homologies   
-Compute and visualize a k-mean clustering from a homology   
+For now the Pipeline is able to :  
+- let me load and save the data in the right format,  
+- get the precomputed data from Kent University  
+- Visualize and cluster homologies   
+- Compute and visualize a k-mean clustering from a homology   
 
 ### Here is How the data-structure looks like :
  
@@ -68,8 +63,7 @@ http://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html
 4/ Using the statistical information on the process and data exploration on the outputted clusters, the next steps shall be defined. 
 
 ### Further Ideas revolve around :
-Trying to find explanatory statistics of the features that I have as an input using :
-
+Trying to find explanatory statistics of the features that I have as an input using :    
  * Autoencoders
  * Linear factor models
  * From the clusters using non linear classifiers that would explain some metadatas that Tobias is gathering.
@@ -81,18 +75,14 @@ Trying to find explanatory statistics of the features that I have as an input us
 ## Usage
 *to come*
 
-_This work is in partnership of Yun Deng - Dominique Chu - Tobias Van der Harr._ 
-
+_This work is in partnership of Yun Deng - Dominique Chu - Tobias Van der Harr._    
 _Yun Deng is the sole producer of the statistical technique and files that I am getting for now - the entropy computation function is an implementation of Yun’s._
 
- Thanks to the University of Kent.
- 
+ Thanks to the University of Kent.    
  Thanks to scikit-learn. 
 
 __not for use as of right now__
 
-This work is under MIT licence 
-
-Follow me on twitter: @jkobject 
-
+This work is under MIT licence   
+Follow me on twitter: @jkobject   
 jkobject.com
