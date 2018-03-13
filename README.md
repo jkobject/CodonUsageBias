@@ -3,18 +3,23 @@
 >To install pyCUD for now you need to process to a raw install
 
 Make sure to have anaconda installed https://anaconda.org/anaconda/python
+
 Then follow the step to create an environment.
 
 Once this is done you will have to get this project:
+
 `git clone https://github.com/jkobject/CodonUsageBias.git`
 
 Then enter the project:
+
 `cd CodonUsageBias`
 
 Then you have to run the requirements to download the required packages:
+
 `pip install -r requirements.txt`
 
 Once this is done you can:
+
 `jupyter notebook pipeline.ipynb`
 
 And run it to test it yourself !
@@ -76,14 +81,18 @@ Trying to find explanatory statistics of the features that I have as an input us
 ## Usage
 *to come*
 
-_This work is in partnership of Yun Deng - Dominique Chu - Tobias Van der Harr._
+_This work is in partnership of Yun Deng - Dominique Chu - Tobias Van der Harr._ 
+
 _Yun Deng is the sole producer of the statistical technique and files that I am getting for now - the entropy computation function is an implementation of Yun’s._
 
- Thanks to the University of Kent. 
+ Thanks to the University of Kent.
+ 
  Thanks to scikit-learn. 
 
 __not for use as of right now__
 
 This work is under MIT licence 
+
 Follow me on twitter: @jkobject 
+
 jkobject.com
