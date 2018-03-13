@@ -14,8 +14,7 @@
 
 ### coding ####
 
-- preprocess
-- change checknans
+
 
 ### TODO ######
 
@@ -49,8 +48,6 @@
 * To find Metadata 
 	* look at the text from ensembl and do a feature extraction using NLP
 	* look for websites 
-
-- 34 Why not re-create a dict object for our pyCUD object
 
 
 
