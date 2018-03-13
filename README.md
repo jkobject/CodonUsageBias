@@ -1,3 +1,8 @@
+# PyCUB
+
+<img src="other/Sum1.jpg" width="800"/>
+
+
 ## How to install
 
 >To install pyCUD for now you need to process to a raw install
