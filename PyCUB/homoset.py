@@ -38,7 +38,8 @@ class HomoSet(object):
             reduced = pd.from_dict(data["reduced"])
             clusters = np.array(data["clusters"])
             full = pd.from_dict(data["full"])
-            homodict.update({key: pd.from_dict(val)}) for key, val in data["homodict"].iteritems()
+            for key, val in data["homodict"].iteritems():
+                homodict.update({key: pd.from_dict(val)})
 
     def plot_all():
         """
@@ -87,7 +88,8 @@ class HomoSet(object):
         will..
         """
         dictihomo = {}
-        dictihomo.update({key: val.to_dict()}) for key, val in self.homodict.iteritems()
+        for key, val in self.homodict.iteritems():
+            dictihomo.update({key: val.to_dict()})
         return {"reduced": reduced.to_dict(),
                 "clusters": clusters.tolist(),
                 "full": full.to_dict(),
