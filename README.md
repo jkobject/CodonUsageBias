@@ -45,9 +45,9 @@ __Find more information in my INFO and TODO files.__
 
 For now the Pipeline is able to : 
 let me load and save the data in the right format,  
-get the precomputed data from Kent University 
-Visualize and cluster homologies
-Compute and visualize a k-mean clustering from a homology
+get the precomputed data from Kent University  
+Visualize and cluster homologies   
+Compute and visualize a k-mean clustering from a homology   
 
 ### Here is How the data-structure looks like :
  
