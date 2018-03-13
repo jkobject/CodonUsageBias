@@ -1,57 +1,54 @@
-### done #####
+# CODE
+
+## done 
 
 * working functions 
- - 1 readcods
- - 2 prepro
- - 3 bokeplot-genes
- - 4 sortspecies
+ - readcods
+ - retrieve_list
+ - preprocess yun
 
 * to test
- - 5 sortrank 
+  - load and save
+  - put back the pandas dataframe
+  - homologize from matrix
+
+
+## coding 
+
  - 6 download the data files
  - 7 show the clusterisation in bokeh. 
- - 8 put back the pandas dataframe
 
-### coding ####
+## todo 
 
-
-
-### TODO ######
-
- 
- - 9 function to process each simple function on all the data
-
- - 10 function to have the same genes for each species : 
- ... we are getting the comparer (the species against which, all the homologies have been  found)
- ... instead of just similarity to one specie, do a graph search on them (nodes are species, links are homologies ->find the biggest fully connected graph) --> problem, it is on the data previous to what I receive... (the algo of YUN)
-
- - 11 store my matrix as a savez
- - 12 set the right number of cluster. 
- - 13 add a verification that the function are not called in a wrong order
- - 21 change the pipeline according to the biopython package
- - 30 create a CDC for the pipeline
-
- - 31 I should look at species that are not represented in the dataset.
- - 32 I can try to retrieve the raw sequences which names are given in the second row of the dataset and match them to the database (online sql queries OR download it and do direct sql queries ensembl.org)
-
- - 33 plot the number of species found per genes. 
+ -  find tests and visualisations to perform on the clustering of the homology matrix
+ -  add a verification that the function are not called in a wrong order
 
 
-## IDEAS #######
+## later
+ -  change the pipeline according to the biopython package
+ -  create a CDC for the pipeline
+ -  I should look at species that are not represented in the dataset.
+ -  I can try to retrieve the raw sequences which names are given in the second row of the dataset and match them to the database (online sql queries OR download it and do direct sql queries ensembl.org)
 
-- 14 see if there is a similarity in the cluster position of each of their genes, compare it and find relationships
-- 15 compare the similarities between the species for each types of related genes between the species
-- 16 find a relationship between 
-- 17 plot entropy location values similarity between genes of one particular individual
-- 18 look for philogenetic similarity using ncbi taxonomy information/website or the information for Tobias
+ - plot the number of species found per genes. 
+
+
+
+# INFO 
+
+## ideas 
+
+- see if there is a similarity in the cluster position of each of their genes, compare it and find relationships
+- compare the similarities between the species for each types of related genes between the species
+- find a relationship between 
+- plot entropy location values similarity between genes of one particular individual
+- look for philogenetic similarity using ncbi taxonomy information/website or the information for Tobias
 
 * To find Metadata 
 	* look at the text from ensembl and do a feature extraction using NLP
 	* look for websites 
 
-
-
-## INFO ########
+##  other things to do 
 
 - the species are ordered according to philogenetic/taxonomic similarities
 send an email to tobias for the name of the comparer species.
@@ -64,30 +61,39 @@ the species present here are all the same ones.
 - look at the equations on the thesis. 
 
 - WE can look for classification methods such as :
+
 CLUSTER
+
  * K-means 
  * Gaussian Mixture (clustering) http://scikit-learn.org/stable/modules/mixture.html#gaussian-mixture
 
  * Affinity propagation (cl)
-> don't forget performance testing of clustering algo http://scikit-learn.org/stable/modules/clustering.html#clustering-performance-evaluation
+>don't forget performance testing of clustering algo http://scikit-learn.org/stable/modules/clustering.html#clustering-performance-evaluation
+
  * DB-scan 
+
 CLUSTERER-CLASSIFIER
+
  * self organizing maps > 1000 neurons
 NOVELTY/OUTLIER DETECTOR http://scikit-learn.org/stable/modules/outlier_detection.html
 
 FEATURE EXTRACTOR
+
  * Var autoencoder
  * graphical models http://scikit-learn.org/stable/modules/neural_networks_unsupervised.html#graphical-model-and-parametrization
  
 DIM REDUCTION
+
  * PCA - ICA
  * tsn-e
+
 OTHER
+
  * NMF (given this gene values,  to which species it belongs| given this gene cluster, to which species it belongs | given this species what could be the value if it had this homology) http://scikit-learn.org/stable/modules/decomposition.html#non-negative-matrix-factorization-nmf-or-nnmf
  
 
 
-- Pipeline of the matlab code
+## Pipeline of the matlab code
 so you have one species and you look for homologies to a subset of 5818 genes of this species. 
 th
 main = homologyvalue()
@@ -109,11 +115,12 @@ Expected entropy: (see notebook)
 - be really carefull about what you are goin to present on your thesis. 
 
 
+## communication management
 
 __Dominique Chu__
 
 >Really do the same plot with the 5000 species to look for structure
->Do it with entropyValue and Entropy\*Length as well
+Do it with entropyValue and Entropy\*Length as well
 
 
 
@@ -127,7 +134,8 @@ __Alex Freitas__
 > the gene clustering (of i-one gene ) can be seen as a mini phylogenetic tree
 > once I have the meta data how much can each features or groups of features can explain the clustering that I found. 
 
-## QUESTIONS ########
+
+### question
 
 - how are you finding your homologies I feel as though they are not the same for every species. How can I compare them in this way ? 
 
@@ -146,22 +154,18 @@ BUT for Yun's it is according to the names (family) taxonomical data + similarit
 
 >to recreate it from the CSV file you need to send it to the itol.embl.de website
 
+- unicel or not ?
 
-## PIPELINE #####
+>not
 
+ - pathogene or not (plant/animal) ?
 
-
-## ask to :
-
-####tobias :
-unicel or not
-pathogene or not (plant/animal)
-gene expression 
+> some yes 
 
 
 
 
-### To say ####
+### To say
 
 
 problem on what I am going to write and do as a master thesis
@@ -171,19 +175,19 @@ problem on what I am going to write and do as a master thesis
 homologues not related to theur functions but their common ancestors
 the way 
 
-### require #########
+### require from Tobias
 
-phylogenetic tree
-temperature
-replication speed
-frequency of use of the gene
-nocive species
-gene size
-type of species
-more ...
+ - phylogenetic tree
+ - temperature
+ - replication speed
+ - frequency of use of the gene
+ - nocive species
+ - gene size
+ - type of species
+ - more ...
 
 
-### work pipeline ######
+## work pipeline 
 
 Phase (1) – Business understanding
 Understanding the business objectives and requirements, and converting them into a data mining problem
