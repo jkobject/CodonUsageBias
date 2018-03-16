@@ -1,5 +1,5 @@
 """"
-Created by Jeremie KALFON 
+Created by Jeremie KALFON
 Date : 21 FEV 2018
 University of Kent, ECE paris
 jkobject.com
@@ -7,44 +7,74 @@ jkobject.com
 """
 
 
-import pandas as pd
 import json
+import os
+import glob
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+import espece as spe
+import utils
+import homology as h
+
+from sklearn.cluster import SpectralClustering
+from sklearn.cluster import KMeans
+from sklearn.metrics.pairwise import cosine_similarity
+from scipy import sparse
 
 
 class HomoSet(object):
     """docstring for HomoSet
 
-                Object where we store an homology group basically where we do our entire 
-                Computation from. 
+                Object where we store an homology group basically where we do our entire
+                Computation from.
 
-                params: 
+                params:
                 ------
-                reduced = PD.DF of genes *species  containing 2D vectors ( dimensionality reduction using T-SNE)
-                clusters =  matrix of genes * species containing  cluster index ( note the same between genes)
-                full = PD.DF of genes *species  containing the entire 18D vectors of their entropy location
+                has_homo_matrix : a numpy boolean array that store the matrix of gene presence in species
+                full_homo_matrix : a numpy array similar to has_homo_matrix
+                                    but containing the codon entropy vectors instead
                 homodict = dictionnary of dataframes of codon usage per species from homology names
+                homo_namelist : list of all the homology names
     """
 
-    reduced = None
-    clusters = None
-    full = None
+    has_homo_matrix = False
+    full_homo_matrix = False
     homodict = {}
+    homo_namelist = []
+    clusters = []
+    homogroupnb = 2
 
     def __init__(self, data=False):
         """
         will..
         """
         if data:
-            reduced = pd.from_dict(data["reduced"])
-            clusters = np.array(data["clusters"])
-            full = pd.from_dict(data["full"])
+            self.full_homo_matrix = np.asarray(data["full_homo_matrix"]) if data["full_homo_matrix"] else False
+            self.homo_namelist = data["homo_namelist"]
+            self.homogroupnb = data["homogroupnb"]
+            self.clusters = data["clusters"]
+            self.has_homo_matrix = pd.from_dict(data["has_homo_matrix"])
             for key, val in data["homodict"].iteritems():
-                homodict.update({key: pd.from_dict(val)})
+                self.homodict.update({key: h.homology(data=val)})
 
     def plot_all():
         """
         will..
         """
+
+    def plot_homo_per_species(self):
+        """
+        will plot the number of homology per spcies 
+        """
+
+        sumed = np.sum(self.has_homo_matrix, axis=1)
+        plt.figure(figsize=(40, 10))
+        plt.title('number of homologies per species')
+        plt.bar(range(len(sumed)), sumed)
+        print "you can always look at a particular range of species with 'homo_namelist' "
 
     def gene_plot(species):
         """
@@ -52,45 +82,147 @@ class HomoSet(object):
         """
         pass
 
-    def save(filename):
+    def order_from_matrix(self, clustering='kmeans', plot=True, homogroupnb=2):
         """
-        will save the object as a json string 
+        Compute an homology group :
+        from matrix computation using the full_homo_matrix
+        (or from network computation in homologize_from_network)
+
+        Can be computed many times and will updata homoset with the most recent homoset found
+        if homoset exists, it will save it.
+
+        Params:
+        -------
+        clustering: flags to 'kmeans', 'spectral', ... to use different sk-learn algorithms
+
+        plot: flags to true for the function to output ploting of the affinity matrix with and without the
+        clusters
+
+        homogroupnb: nb of groups you want to extract
+
         """
 
-    def clusterize_kmeans():
+        def compute(homo_namelist, mat, homogroupnb, clust, names):
+            orderedmat = np.zeros(mat.shape)
+            ltemp = [0] * len(names)
+            begin = 0
+            for i in range(homogroupnb):
+                a = np.argwhere(clust == i)[:, 0]
+                orderedmat[begin:begin + len(a)] = mat[a]
+                c = [names[i] for i in a]
+                ltemp[begin:begin + len(a)] = c
+                begin += len(a)
+            names = ltemp
+            if plot:
+                # the regular matrix
+                plt.figure(figsize=(40, 40))
+                plt.title('the regular matrix')
+                plt.imshow(mat)
+                plt.show()
+
+                # the affinity matrix
+                mat_sparse = sparse.csr_matrix(mat)
+                similarities = cosine_similarity(mat_sparse)
+                plt.figure(figsize=(40, 40))
+                plt.title('the affinity matrix')
+                plt.imshow(similarities)
+                plt.show()
+
+                # the ordered matrix
+                plt.figure(figsize=(40, 40))
+                plt.title('the ordered matrix')
+                plt.imshow(orderedmat)
+                plt.show()
+
+                # affinity of the ordered matrix
+                mat_sparse = sparse.csr_matrix(orderedmat)
+                similarities = cosine_similarity(mat_sparse)
+                plt.figure(figsize=(40, 40))
+                plt.title('the affinity of the ordered matrix')
+                plt.imshow(similarities)
+                plt.show()
+            return pd.DataFrame(orderedmat, names, homo_namelist)
+
+        mat = self.has_homo_matrix.as_matrix()
+        names = self.has_homo_matrix.index.tolist()
+        if clustering == "spectral":
+            spect = SpectralClustering(n_clusters=homogroupnb, n_jobs=-1)
+            spect.fit(mat)
+            clust = spect.labels_
+
+        elif clustering == "kmeans":
+            kmn = KMeans(n_clusters=homogroupnb, n_jobs=-1)
+            kmn.fit(mat)
+            clust = kmn.labels_
+
+        else:
+            print "you entered a wrong clustering algorithm"
+            return False
+
+        self.has_homo_matrix = compute(self.homo_namelist, mat, homogroupnb, clust, names)
+        self.homogroupnb = homogroupnb
+        self.clusters = clust
+        return True
+
+    def get_homoset(self, size, clustering=True, clusternb=2, max_clique=False, per_specie=True,
+                    per_gene=True, name=[]):
+        """
+        To use once you have clustered homology groups, else takes everything. 
+
+
+        Params:
+        ------
+        number: set the number of the group you want to get need to be between 1 and homogroupnb
+
+        size :  a value which will determine the size (max size of the retrived homology)
+        50 means the first 50 in the sim
+        if similarity alignment
+
+        simi_align: flag for computing the matrix on similarity alignement
+
+        max_clique: flag for computing on the max clique 
+
+        Return:
+        ------
+        a HomoSet object (see homoset.py)
+        """
+
+    def _clusterize_kmeans():
         """
         will..
         """
         pass
 
-    def clusterize_gaussmixture():
+    def _clusterize_gaussmixture():
         """
         will..
         """
 
-    def clusterize_affinityprop():
+    def _clusterize_affinityprop():
         """
         will..
         """
 
-    def clusterize_DB_scan():
+    def _clusterize_DB_scan():
         """
         will..
         """
 
-    def assess_clust():
+    def _assess_clust():
         """
         will..
         """
 
-    def dictify():
+    def _dictify(self):
         """
         will..
         """
         dictihomo = {}
         for key, val in self.homodict.iteritems():
-            dictihomo.update({key: val.to_dict()})
-        return {"reduced": reduced.to_dict(),
-                "clusters": clusters.tolist(),
-                "full": full.to_dict(),
-                "homodict": dictihomo}
+            dictihomo.update({key: val._dictify()})
+        return {"has_homo_matrix": self.has_homo_matrix.to_dict() if self.has_homo_matrix else False,
+                "full_homo_matrix": self.full_homo_matrix.tolist() if self.full_homo_matrix else False,
+                "clusters": self.clusters,
+                "homo_namelist": self.homo_namelist,
+                "homodict": dictihomo,
+                "homogroupnb": self.homogroupnb}

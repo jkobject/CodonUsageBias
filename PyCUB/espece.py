@@ -23,12 +23,16 @@ class Espece(object):
     code = {}
     metadata = []
 
-    def __init__(self, name, genes=False):
-        self.name = name
-        if genes:
+    def __init__(self, name=False, genes=False, data=False):
+
+        if not (type(data) is bool):
+            self.name = data["name"]
+            self.gene = pd.from_dict(data["genes"])
+        elif not (type(genes) is bool):
             self.genes = pd.from_dict(genes)
         else:
             self.genes = pd.DataFrame()
+            self.name = name
 
     def plot():
         """
@@ -52,8 +56,8 @@ class Espece(object):
         will..
         """
 
-    def dictify():
-        return {"name": name,
-                "genes": genes.to_dict(),
-                "code": code,
-                "metadata": metadata}
+    def dictify(self):
+        return {"name": self.name,
+                "genes": self.genes.to_dict(),
+                "code": self.code,
+                "metadata": self.metadata}
