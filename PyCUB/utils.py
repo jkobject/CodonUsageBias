@@ -41,7 +41,7 @@ def readcods_homology(separation, folder="first500", homo_name="YAL019W", aminon
             amino.append(file[-7:-4])
             # we change the nan values as .5 as it is the mean of our distribution
             # and we don't want to bias it
-            struct = pd.read_csv(file).reset_index().fillna(0.5)
+            struct = pd.read_csv(file).reset_index()
             gentab[:, i] = struct['entropyLocation'].values.tolist()
             species = struct['species'].values.tolist()
             i += 1
@@ -50,4 +50,4 @@ def readcods_homology(separation, folder="first500", homo_name="YAL019W", aminon
 
 
 def retrievelist():
-    return pd.read_csv("data/first500/order_name461.csv", header=None, names=['a', 'b'])
+    return pd.read_csv("utils/data/first500/order_name461.csv", header=None, names=['a', 'b'])

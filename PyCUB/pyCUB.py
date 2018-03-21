@@ -18,6 +18,8 @@ import homoset as hset
 import utils
 import homology as h
 
+import pdb
+
 
 class PyCUB(object):
     """docstring for PyCUB
@@ -65,6 +67,8 @@ class PyCUB(object):
     def get_data(self):
         """
                 Download the data from somewhere on the web
+
+                http://rest.ensemblgenomes.org/
         """
 
     def load(self, filename='first500', fromYun=True, separation="homology"):
@@ -87,7 +91,7 @@ class PyCUB(object):
             nameB = ""
             self.all_homoset = hset.HomoSet()
             self.working_homoset = hset.HomoSet()
-            filename = "data/" + filename
+            filename = "utils/data/" + filename
             print "Reviewing all the " + str(len(os.listdir(filename))) + " files"
             for f in sorted(os.listdir(filename)):
                 if f.endswith(".txt"):
@@ -99,28 +103,31 @@ class PyCUB(object):
             self.working_homoset.homo_namelist = homo_namelist
             self.all_homoset.homo_namelist = homo_namelist
             for homology in homo_namelist:
-                # try:
-                genDF, specieslist = utils.readcods_homology(separation, filename, homology)
-                speciesdict.update({homology: specieslist})
-                homodict.update({homology: h.homology(full=genDF)})
-                # except OSError:
-                #    print "you do not have the files here"
-               # except:
-               #     print "problem with homology " + homology
+                try:
+                    genDF, specieslist = utils.readcods_homology(separation, filename, homology)
+                    speciesdict.update({homology: specieslist})
+                    homodict.update({homology: h.homology(full=genDF)})
+                except OSError:
+                    print "you do not have the files here"
+                except:
+                    print "UNKNOWN problem with homology " + homology
 
             self.working_homoset.homodict = homodict
             self.all_homoset.homodict = homodict
-            self._have_homo = True
             self._is_loaded = True
             self._preprocess_yun(speciesdict)
             self._is_preprocessed = True
         else:
-            filename = "/utils/save/" + filename + ".json"
+            filename = "utils/save/" + filename + ".json"
+            zip_ref = ZipFile(filename + '.zip', 'r')
+            zip_ref.extractall(filename)
+            zip_ref.close()
             with open(filename, "r") as f:
                 jsoni = f.read()
-                print "loading from " + name
+                print "loading from " + filename
                 self._undictify(json.loads(jsoni))
                 print "it worked !"
+            os.remove(filename)
 
     def preprocess(self):
         """
@@ -139,13 +146,20 @@ class PyCUB(object):
 
         """
         if self._is_preprocessed:
-            filename = "/utils/save/" + name + ".json"
+            filename = "utils/save/" + name + ".json"
             print "writing in " + name
             dictify = self._dictify()
-            data = json.dump(dictify, indent=4, separators=(',', ': '))
-            with open(filename, "w") as f:
+            data = json.dumps(dictify, indent=4, separators=(',', ': '))
+            dirname = os.path.dirname(filename)
+            if not os.path.exists(dirname):
+                os.makedirs(dirname)
+            with open(filename, 'w') as f:
                 f.write(data)
                 print "it worked !"
+            # now we zip to save 90% memory space
+            with ZipFile(filename + '.zip', 'w') as myzip:
+                myzip.write(filename)
+            os.remove(filename)
 
     def _preprocess_yun(self, speciesdict):
         """
@@ -162,30 +176,31 @@ class PyCUB(object):
         matrix = np.zeros((len(specieslist), len(speciesdict)), dtype=np.bool)
         i = 0
         dou = 0
-        nameb = ''
         specieslist.sort()
-
+        # COMPLEXITY
         for key, species in speciesdict.iteritems():  # we go throught the list of lists
             j = 0
             print "at " + key + " we have " + str(len(species)) + " homologies"
             species.sort()
+            nameb = ''
             for name in species:  # TODO :can be parallelized
                 # the assumption here is that they are ordered the same so we should only test for the
                 # next ones
                 if name == nameb:
                     dou += 1
+
                    # print name + " has multiple occurences of the gene in " + key + "cannot work with that now"
                 else:
                     while name != specieslist[j]:  # we go until the occurence of the name in specieslist
                         j += 1
                     matrix[j, i] = True
                     # part where we update the Espece object
-                    Serie = self.all_homoset.homodict[key].full.loc[name, :]
-                    df2 = pd.DataFrame(Serie).transpose()
-                    print df2
-                    df2 = df2.rename(index={1: ' '})  # need that weird stuff because of the transpose...
-                    print df2
-                    self.species[name].genes.append(df2)
+                    # pdb.set_trace()
+                    d = self.all_homoset.homodict[key].full.loc[[name], :]
+                    d = d.fillna(0.5)   # we make sure to keep only one value. (nameA nameB problem)
+                    d = d.iloc[[0]]
+                    d = d.rename(index={name: key})  # need that weird stuff because of the transpose...
+                    self.species[name].genes = self.species[name].genes.append(d)
                     j += 1
                     nameb = name
 

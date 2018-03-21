@@ -31,9 +31,9 @@ class homology(object):
         will..
         """
         if not (type(data) is bool):
-            self.reduced = pd.from_dict(data["reduced"]) if data["reduced"] else False,
+            self.reduced = pd.DataFrame.from_dict(data["reduced"]) if not (type(data["reduced"]) is bool) else False
             self.clusters = data["clusters"]
-            self.full = pd.from_dict(data["full"] if data["full"] else False)
+            self.full = pd.DataFrame.from_dict(data["full"]) if not (type(data["full"]) is bool) else False
 
         elif not (type(full) is bool):
             self.full = full
@@ -52,6 +52,6 @@ class homology(object):
         """
         will..
         """
-        return {"reduced": self.reduced.to_dict() if self.reduced else False,
+        return {"reduced": self.reduced.to_dict() if not (type(self.reduced) is bool) else False,
                 "clusters": self.clusters,
-                "full": self.full.to_dict() if self.full else False}
+                "full": self.full.to_dict() if not (type(self.full) is bool) else False}

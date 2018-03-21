@@ -21,6 +21,7 @@ import homology as h
 
 from sklearn.cluster import SpectralClustering
 from sklearn.cluster import KMeans
+from sklearn.cluster import MiniBatchKMeans
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy import sparse
 
@@ -52,11 +53,11 @@ class HomoSet(object):
         will..
         """
         if data:
-            self.full_homo_matrix = np.asarray(data["full_homo_matrix"]) if data["full_homo_matrix"] else False
+            self.full_homo_matrix = np.asarray(data["full_homo_matrix"]) if not (type(data["full_homo_matrix"]) is bool) else False
             self.homo_namelist = data["homo_namelist"]
             self.homogroupnb = data["homogroupnb"]
             self.clusters = data["clusters"]
-            self.has_homo_matrix = pd.from_dict(data["has_homo_matrix"])
+            self.has_homo_matrix = pd.DataFrame.from_dict(data["has_homo_matrix"])
             for key, val in data["homodict"].iteritems():
                 self.homodict.update({key: h.homology(data=val)})
 
@@ -146,22 +147,23 @@ class HomoSet(object):
         mat = self.has_homo_matrix.as_matrix()
         names = self.has_homo_matrix.index.tolist()
         if clustering == "spectral":
-            spect = SpectralClustering(n_clusters=homogroupnb, n_jobs=-1)
-            spect.fit(mat)
-            clust = spect.labels_
+            alg = SpectralClustering(n_clusters=homogroupnb, n_jobs=-1)
 
         elif clustering == "kmeans":
-            kmn = KMeans(n_clusters=homogroupnb, n_jobs=-1)
-            kmn.fit(mat)
-            clust = kmn.labels_
+            alg = KMeans(n_clusters=homogroupnb, n_jobs=-1)
+
+        elif clustering == "fast":
+            alg = MiniBatchKMeans(n_clusters=homogroupnb)
 
         else:
             print "you entered a wrong clustering algorithm"
             return False
 
+        alg.fit(mat)
+        clust = alg.labels_
         self.has_homo_matrix = compute(self.homo_namelist, mat, homogroupnb, clust, names)
         self.homogroupnb = homogroupnb
-        self.clusters = clust
+        self.clusters = clust.tolist()
         return True
 
     def get_homoset(self, size, clustering=True, clusternb=2, max_clique=False, per_specie=True,
@@ -220,8 +222,8 @@ class HomoSet(object):
         dictihomo = {}
         for key, val in self.homodict.iteritems():
             dictihomo.update({key: val._dictify()})
-        return {"has_homo_matrix": self.has_homo_matrix.to_dict() if self.has_homo_matrix else False,
-                "full_homo_matrix": self.full_homo_matrix.tolist() if self.full_homo_matrix else False,
+        return {"has_homo_matrix": self.has_homo_matrix.to_dict() if not (type(self.has_homo_matrix) is bool) else False,
+                "full_homo_matrix": self.full_homo_matrix.tolist() if not (type(self.full_homo_matrix) is bool) else False,
                 "clusters": self.clusters,
                 "homo_namelist": self.homo_namelist,
                 "homodict": dictihomo,
