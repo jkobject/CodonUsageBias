@@ -45,8 +45,10 @@
 - look for philogenetic similarity using ncbi taxonomy information/website or the information for Tobias
 
 * To find Metadata 
-	* look at the text from ensembl and do a feature extraction using NLP
-	* look for websites 
+	* from ensembl :  http://ensemblgenomes.org/info/data/protein_features and http://ensemblgenomes.org/info/data/repeat_features ( protein features and repeat features)
+	* look for other websites 
+
+
 
 ##  other things to do 
 

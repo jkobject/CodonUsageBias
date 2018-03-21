@@ -2,6 +2,20 @@ We are currently developping what will be a full python package for the codon us
  
 
 
+Folder map:
+----------
+data : dump folder for the data that is downloaded by pyCUB
+INFO : information on the project
+LICENCE : the licence of the project
+matlab preprocessing : yun's preprocessing pipeline for computing entropy values.
+matlab pipeline : an explanation of the flow in this pipeline
+other : other miscelaneous information about the project
+notebooks : a folder of the notebooks
+PyCUB : the main folder for the python file of the project
+README :  a readme is always usefull
+TODO : for the developper to know what is left to do
+
+
 
 
 
