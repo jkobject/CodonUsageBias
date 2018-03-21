@@ -27,9 +27,9 @@ class Espece(object):
 
         if not (type(data) is bool):
             self.name = data["name"]
-            self.gene = pd.from_dict(data["genes"])
+            self.genes = pd.DataFrame.from_dict(data["genes"])
         elif not (type(genes) is bool):
-            self.genes = pd.from_dict(genes)
+            self.genes = pd.DataFrame.from_dict(genes)
         else:
             self.genes = pd.DataFrame()
             self.name = name
@@ -56,8 +56,8 @@ class Espece(object):
         will..
         """
 
-    def dictify(self):
+    def _dictify(self):
         return {"name": self.name,
-                "genes": self.genes.to_dict(),
+                "genes": self.genes.to_dict() if not (type(self.genes) is bool) else False,
                 "code": self.code,
                 "metadata": self.metadata}
