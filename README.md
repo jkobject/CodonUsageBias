@@ -5,7 +5,7 @@
 
 ## How to install
 
->To install pyCUD for now you need to process to a raw install
+>To install pyCUB for now you need to process to a raw install
 
 Make sure to have anaconda installed https://anaconda.org/anaconda/python  
 Then follow the step to create an environment.
