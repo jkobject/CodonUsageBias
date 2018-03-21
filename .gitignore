@@ -9,11 +9,11 @@
 Icon
 
 # folders
-kalfonDTA
-kazusaDB
-first500
-old_first500
-sum.pdf
+.idea
+.ipynb_checkpoints
+utils/data
+utils/save
+sum2.pdf
 
 # Thumbnails
 ._*
