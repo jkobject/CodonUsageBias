@@ -7,16 +7,23 @@
  - retrieve_list
  - preprocess yun
 
-* to test
-  - load and save
-  - put back the pandas dataframe
-  - homologize from matrix
 
+* to test
+  - new load and save (zip unzip session)
+  - None usage
+  - new loadmore
+  - homodict
+  - speciesdict
+  - new clusterings
+  - getworkinghomoset
+  - implement the same thing in pycub and homoset
 
 ## coding 
 
- - 6 download the data files
- - 7 show the clusterisation in bokeh. 
+ - be able to load at the same time, all Yun's data files 
+ - save them all in a better format
+ - have the silouette score for the matrix homology selection
+ - show the clusterisation in bokeh. 
 
 ## todo 
 
@@ -49,6 +56,11 @@
 	* look for other websites 
 
 
+- look for the trna genomic content using the metadata and then use it as a discriminatory factor (following paper by Mario dos Reis et. al.)
+
+- evaluate the distance between clusters. 
+- find the cluster number with algorithm X-means (gaussian distribution and extract the inter-cluster distance)
+- prepare a pipeline for intra species homologies
 
 ##  other things to do 
 
@@ -125,6 +137,14 @@ __Dominique Chu__
 Do it with entropyValue and Entropy\*Length as well
 
 
+__Yun__
+
+- what to do with similar homologies in first 500 and 600-1000?
+
+
+__Tobias__
+
+- what to do with double homologies ( homology in the same species)
 
 
 __Alex Freitas__
@@ -164,6 +184,7 @@ BUT for Yun's it is according to the names (family) taxonomical data + similarit
 
 > some yes 
 
+- what is the difference between Nc value and entropy location ? 
 
 
 
