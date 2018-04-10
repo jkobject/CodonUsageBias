@@ -50,4 +50,5 @@ def readcods_homology(separation, folder="first500", homo_name="YAL019W", aminon
 
 
 def retrievelist():
-    return pd.read_csv("utils/data/first500/order_name461.csv", header=None, names=['a', 'b'])
+    return pd.read_csv("utils/data/meta/order_name461.csv", header=None, names=['a', 'b']),
+        pd.read_csv("utils/data/meta/names_with_links.csv", header=None, names=['a', 'b'])
