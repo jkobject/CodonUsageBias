@@ -9,6 +9,11 @@ import os
 import glob
 import json
 import zipfile
+import shutil
+try:
+    from urllib2 import urlopen as urlopen
+except:
+    from urllib.request import urlopen as urlopen
 
 import pandas as pd
 import numpy as np
@@ -36,10 +41,48 @@ class PyCUB(object):
             all_homoset : homoset object that store the all the homology
 
     """
+    # this dictionary shows which codons encode the same AA
+    codons = {
+        'CYS': ['TGT', 'TGC'],
+        'ASP': ['GAT', 'GAC'],
+        'SER': ['TCT', 'TCG', 'TCA', 'TCC', 'AGC', 'AGT'],
+        'GLN': ['CAA', 'CAG'],
+        #'MET': ['ATG'],
+        'ASN': ['AAC', 'AAT'],
+        'PRO': ['CCT', 'CCG', 'CCA', 'CCC'],
+        'LYS': ['AAG', 'AAA'],
+        #'STOP': ['TAG', 'TGA', 'TAA'],
+        'THR': ['ACC', 'ACA', 'ACG', 'ACT'],
+        'PHE': ['TTT', 'TTC'],
+        'ALA': ['GCA', 'GCC', 'GCG', 'GCT'],
+        'GLY': ['GGT', 'GGG', 'GGA', 'GGC'],
+        'ILE': ['ATC', 'ATA', 'ATT'],
+        'LEU': ['TTA', 'TTG', 'CTC', 'CTT', 'CTG', 'CTA'],
+        'HIS': ['CAT', 'CAC'],
+        'ARG': ['CGA', 'CGC', 'CGG', 'CGT', 'AGG', 'AGA'],
+        #'TRP': ['TGG'],
+        'VAL': ['GTA', 'GTC', 'GTG', 'GTT'],
+        'GLU': ['GAG', 'GAA'],
+        'TYR': ['TAT', 'TAC']}
+
+    amino = ['Ala', 'Arg', 'Asn', 'Asp', 'Cys', 'Gln', 'Glu', 'Gly', 'His',
+             'Ile', 'Leu', 'Lys', 'Phe', 'Pro', 'Ser', 'Thr', 'Tyr', 'Val']
+
+    links = {'yun': {
+        'homology1t500.zip': 'https://www.dropbox.com/s/mqi5jdgvst21a0c/homology1t500.zip?dl=1',
+        'homology601t1000.zip': 'https://www.dropbox.com/s/mqi5jdgvst21a0c/homology601t1000.zip?dl=1',
+        'homology1001t1500.zip': 'https://www.dropbox.com/s/mqi5jdgvst21a0c/homology1001t1500.zip?dl=1',
+        'homology1501t2000.zip': 'https://www.dropbox.com/s/mqi5jdgvst21a0c/homology1501t2000.zip?dl=1',
+        'homology2001t2500.zip': 'https://www.dropbox.com/s/mqi5jdgvst21a0c/homology2001t2500.zip?dl=1',
+        'homology2501t3000.zip': 'https://www.dropbox.com/s/mqi5jdgvst21a0c/homology2501t3000.zip?dl=1',
+        'homology3001t3500.zip': 'https://www.dropbox.com/s/mqi5jdgvst21a0c/homology3001t3500.zip?dl=1',
+        'homology3501t4000.tgz': 'https://www.dropbox.com/s/mqi5jdgvst21a0c/homology3501t4000.tgz?dl=1',
+        'homology4001t4500.tgz': 'https://www.dropbox.com/s/mqi5jdgvst21a0c/homology4001t4500.tgz?dl=1',
+        'homology4501t5000.tgz': 'https://www.dropbox.com/s/mqi5jdgvst21a0c/homology4501t5000.tgz?dl=1'},
+        'ensembl': {}}
 
     def __init__(self, species={}, _is_preprocessed=False, _is_saved=False,
-                 _is_loaded=False, _have_homo=False,
-                 working_homoset=False, all_homoset=False, session='session1'):
+                 _is_loaded=False, working_homoset=None, all_homoset=None, session='session1'):
         """
         will..
 
@@ -60,35 +103,50 @@ class PyCUB(object):
         self._is_saved = _is_saved
         self._is_loaded = _is_loaded
         self.session = session
+        print "working on session: " + self.session
         if os.path.isdir('utils/save/' + session):
             print 'you already have a session here (just a warning)'
         else:
             os.mkdir('utils/save/' + session)
 
-    def get_data(self, all=False, names=None, families=None, kingdom=None):
+    def get_data(self, From='yun', all=False, names=None, families=None, kingdom=None):
         """
                 Download the data from somewhere on the web
 
                 http://rest.ensemblgenomes.org/
         """
 
+        if From == 'yun':
+            for key, val in self.links['yun'].iteritems():
+                url = val
+                print "downloading " + key + " with urllib"
+                if not os.path.exists('utils/data/' + key):
+                    f = urlopen(url)
+                    data = f.read()
+                    with open('utils/data/' + key, "wb") as code:
+                        code.write(data)
+
+        # elif From == 'ensembl':
+
     def get_metadata(self, kingdoms):
         """
         download it and put it where it belongs in the Espece object
         parse the server https://fungi.ensembl.org/info/website/ftp/index.html
-        will also get the metadata from the kingdoms that you are analysing 
+        will also get the metadata from the kingdoms that you are analysing
 
         """
 
     def get_mymetadata(self):
         """
         for Yun's data to get some more, go ahead and design your own metadata retrieval here.
-        obviously you woud need to change some other functions. 
+        obviously you woud need to change some other functions.
 
-        for me it is mean protein abundances in cerevisiae cells. 
+        for me it is mean protein abundances in cerevisiae cells.
         """
 
-    def load(self, session=None, filename='first500', fromYun=True, separation="homology"):
+# LOADINGS AND SAVINGS
+
+    def load(self, session=None, filename='first500', From=None, separation="homology"):
         """
                 Get the data that is already present on a filename
 
@@ -99,21 +157,23 @@ class PyCUB(object):
                 of the PyCUB object.
 
         """
-        print "working on session: " + self.session
-        folder = "utils/data/" if session is None else "utils/save"
-        if not _is_loaded:
-
-            if fromYun:
+        folder = "utils/data/" if session is None else "utils/save/" + session + '/'
+        if not self._is_loaded:
+            if From == 'yun' and session is None:
                 # then we process it according to how Yun Displays its data, trying to fill in
                 # as much as we can
                 homo_namelist = []
-                homodict = self.all_homoset.homodict
+                homodict = {}
                 speciesdict = {}
                 nameB = ""
                 self.all_homoset = hset.HomoSet()
-                zip_ref = zipfile.ZipFile(folder + filename + '.zip', 'r')
-                zip_ref.extractall(folder)
-                zip_ref.close()
+                if not os.path.exists(folder + filename):
+                    zip_ref = zipfile.ZipFile(folder + filename + '.zip', 'r')
+                    zip_ref.extractall(folder)
+                    zip_ref.close()
+                    note = False
+                else:
+                    note = True
                 filename = folder + filename
                 print "Reviewing all the " + str(len(os.listdir(filename))) + " files"
                 for f in sorted(os.listdir(filename)):
@@ -124,42 +184,87 @@ class PyCUB(object):
                             homo_namelist.append(nameB)
 
                 self.all_homoset.homo_namelist = homo_namelist
+                df, dflink = utils.retrievelist()
+                i = 0
+                df = df.sort_values(by='name')
+                for _, row in df.iterrows():
+                    self.species.update({
+                        row['name']: spe.Espece(name=row['b'],
+                                                link=dflink.loc[dflink['name'] == row['name'],
+                                                                'b'].tolist()[0])})
+                    utils.speciestable.update({i: row['name']})
+                    i += 1
+                self.all_homoset.species_namelist = df['name'].tolist()  # we create an ordered full list of species
+                matrix = np.zeros((len(self.all_homoset.species_namelist),
+                                   len(self.all_homoset.homo_namelist)), dtype=np.bool)
+                i = 0
+                dou = 0
                 for homology in homo_namelist:
                     try:
                         # Here we call a function looking for the 18 files and creating
                         # a list of names of species presents and a matrix with the
                         # 18 values from the 18 files
-                        genDF, specieslist = utils.readcods_homology(separation, filename, homology)
-                        speciesdict.update({homology: specieslist})
-                        homodict.update({homology: h.homology(full=genDF)})
+                        gentab, specieslist = utils.readcods_homology(separation, filename, homology)
                     except OSError:
                         print "you do not have the files here"
                     except:
                         print "UNKNOWN problem with homology " + homology
+                    espe = ''
+                    j = 0
+                    names = []
+                    mask = np.ones(gentab.shape[0], dtype=bool)
+                    print "at homology " + homology + " we have " + str(len(specieslist)) + \
+                        " species possessing it"
+                    for n, species in enumerate(specieslist):  # we can go faster as it is sorted
+                        # creating a list of number linked to our speciestable
+
+                        # removing doublon
+                        if species == espe:
+                            dou += 1
+                            mask[n] = False
+                        else:
+                            while species != self.all_homoset.species_namelist[j]:
+                                j += 1
+                            names.append(j)
+                            matrix[j, i] = True
+                            espe = species
+                            j += 1
+                    homodict.update({homology: h.homology(full=gentab[mask, :], names=names)})
+                    i += 1
+                self.all_homoset.hashomo_matrix = matrix
+                print "you had " + str(dou) + " same species homologies (it can't be processed! for now)"
+                print "reviewed " + str(len(homo_namelist)) + " homologies "
                 # if we haven't change the working with processing
                 self.all_homoset.homodict = homodict
-                self._is_loaded = True
-                self._preprocess_yun(speciesdict)
                 self._is_saved = False
-                os.remove(filename)  # we are saving space
-            else:
-                zip_ref = zipfile.ZipFile(folder + filename + 'json.zip', 'r')
-                zip_ref.extractall(folder)
-                zip_ref.close()
+                if not note:
+                    shutil.rmtree(filename)
+            elif From is None:
+                if not os.path.isfile(folder + filename):
+                    zip_ref = zipfile.ZipFile(folder + filename + '.json.zip', 'r')
+                    zip_ref.extractall(folder)
+                    zip_ref.close()
+                    note = False
+                else:
+                    note = True
+
                 with open(folder + filename + ".json", "r") as f:
                     jsoni = f.read()
                     print "loading from " + filename
                     self._undictify(json.loads(jsoni))
                     print "it worked !"
-                os.remove(folder + filename + ".json")  # we are saving space
-                self._is_loaded = True
+                if not note:
+                    os.remove(folder + filename + ".json")
+
+            self._is_loaded = True
+            print "you now have " + str(np.count_nonzero(self.all_homoset.hashomo_matrix)) + " genes in total"
 
         else:
             print "hey, it looks like this object has already loaded some things"
             print "please use loadmore or use another object"
             print "you can delete this one with 'del' "
 
-    def loadmore(self, filename='first500', fromYun=True, separation="homology"):
+    def loadmore(self, filename='first500', From='yun', separation="homology"):
         """
                 Get the data that is already present on a filename
 
@@ -171,17 +276,20 @@ class PyCUB(object):
 
         """
         folder = "utils/data/"
-        if _is_loaded:
-            if fromYun:
+        if self._is_loaded:
+            if From == 'yun':
                 # then we process it according to how Yun Displays its data, trying to fill in
                 # as much as we can
                 homo_namelist = []
-                homodict = self.all_homoset.homodict
                 speciesdict = {}
                 nameB = ""
-                zip_ref = zipfile.ZipFile(folder + filename + '.zip', 'r')
-                zip_ref.extractall(folder)
-                zip_ref.close()
+                if not os.path.exists(folder + filename):
+                    zip_ref = zipfile.ZipFile(folder + filename + '.zip', 'r')
+                    zip_ref.extractall(folder)
+                    zip_ref.close()
+                    note = False
+                else:
+                    note = True
                 filename = folder + filename
                 print "Reviewing all the " + str(len(os.listdir(filename))) + " files"
                 for f in sorted(os.listdir(filename)):
@@ -190,62 +298,113 @@ class PyCUB(object):
                         if(nameA != nameB):
                             nameB = nameA
                             homo_namelist.append(nameB)
+
                 # comparing two lists
-                dup = set(homo_namelist).intersection(self.all_homoset.homo_namelist)
-                size = len(dup)
+                dup = [item for item in homo_namelist if not (item in self.all_homoset.homo_namelist)]
+                size = len(homo_namelist) - len(dup)
                 if size != 0:
-                    print "there is " + size + " duplicate from previous loads"
-                    return 0
+                    print "there is " + str(size) + " duplicate from previous loads.. not cool"
+                    homo_namelist = dup
                 # update homonamelist
-                self.all_homoset.homo_namelist.append(homo_namelist)
+                self.all_homoset.homo_namelist.extend(homo_namelist)
+                matrix = np.zeros(((len(self.all_homoset.species_namelist), len(homo_namelist))), dtype=np.bool)
+                matrix = np.hstack((self.all_homoset.hashomo_matrix, matrix))
+                i = self.all_homoset.hashomo_matrix.shape[1]
+                print "start the iteration process, I hope you haven't clusterized your data yet..else it won't work (for now)"
+                # we have a dict with num,name
+                # we have a list of all species
+                # we have a list of the species in our homologies
+                # we want to tag the matrix for them and to
+                # update the species object and to create
+                # the name list in our homology object
+                dou = 0
                 for homology in homo_namelist:
                     try:
-                        genDF, specieslist = utils.readcods_homology(separation, filename, homology)
-                        speciesdict.update({homology: specieslist})
-                        homodict.update({homology: h.homology(full=genDF)})
+                        gentab, specieslist = utils.readcods_homology(separation, filename, homology)
+                        # replace preprocess yun
                     except OSError:
                         print "you do not have the files here"
                     except:
                         print "UNKNOWN problem with homology " + homology
+                    espe = ''
+                    j = 0
+                    names = []
+                    print "at homology " + homology + " we have " + str(len(specieslist)) + \
+                        " species possessing it"
+                    for species in specieslist:  # we can go faster as it is sorted
+                        # creating a list of number linked to our speciestable
 
-                self.all_homoset.homodict = homodict
-                self._is_loaded = True
-                self._preprocess_yun(speciesdict)
+                        # removing doublon
+                        if species == espe:
+                            dou += 1
+                        else:
+                            while species != self.all_homoset.species_namelist[j]:
+                                j += 1
+                            names.append(j)
+                            # pdb.set_trace()
+                            matrix[j, i] = True
+                            espe = species
+                            j += 1
+                    self.all_homoset.update({homology: h.homology(full=gentab, names=names)})
+                    i += 1
+                self.all_homoset.hashomo_matrix = matrix
+                print "you had " + str(dou) + " same species homologies (it can't be processed! for now)"
+                print "reviewed " + str(len(homo_namelist)) + " homologies "
                 self._is_saved = False
-                os.remove(filename)  # we are saving space
-            else:
-                print "make sure to provide the session name as well"
-                zip_ref = zipfile.ZipFile(folder + filename + 'json.zip', 'r')
-                zip_ref.extractall(folder)
-                zip_ref.close()
-                with open(folder + filename + ".json", "r") as f:
-                    jsoni = f.read()
-                    print "loading from " + filename
-                    self._undictify(json.loads(jsoni))
-                    print "it worked !"
+                if not note:
+                    shutil.rmtree(filename)
+                self._is_loaded = True
+                print "you now have " + str(np.count_nonzero(self.all_homoset.hashomo_matrix)) + " genes in total"
         else:
             print "You should try load first, this object is empty"
+
+    def save(self, name, save_workspace=True, save_homo=True, cmdlinetozip="ditto -c -k --sequesterRsrc "):
+        """
+        call to save your work. you should call save on specific data structure if this is what you
+        want to save.
+        Will call other object's save, will transform all the variable into dict and save the dicts
+        as json files. will save the df also as json files. PyCUB and homoset have
+        their own json file.
+        adding some params because else the object may be too big
+
+        Params:
+        ------
+        save_workspace: don't save working
+        save_homo: don't save all
+
+        """
+        filename = "utils/save/" + self.session + '/' + name + ".json"
+        print "writing in " + name
+        dictify = self._dictify(save_workspace, save_homo)
+        data = json.dumps(dictify, indent=4, separators=(',', ': '))
+        dirname = os.path.dirname(filename)
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
+        with open(filename, 'w') as f:
+            f.write(data)
+            print "it worked !"
+        # now we zip to save 90% memory space
+        print "only work on mac for now, please write the cmd line to zip a file HERE"
+        os.system(cmdlinetozip + filename + ' ' + filename + '.zip')
+        # with zipfile.ZipFile(filename + '.zip', 'w') as myzip:
+        #    myzip.write(name + json)
+        os.remove(filename)
+        self._is_saved = True
+
+
+# PREPROCESSINGS
 
     def preprocess(self):
         """
         apply a preprocessing to the loaded DNA string files to have them resemble YUN's data
         (use another special file with all the computations detailed there.)
 
-        Code inspired from YUN's PhD. 
+        Code inspired from YUN's PhD.
         """
 
-    def find_clusters(self):
+    def get_working_homoset(self, per_cluster=True, clusternb=1, species=None, homologies=None):
         """
-        Finds, for each homologies in the working homoset, groups that are part of compact clusters
-        it will be using gaussian mixture clustering or DBSCAN and order them according 
-        to the density of each cluster (we are interested in the densest ones) and assess 
-        the quality using 3 criterion:BIC, , . 
-        """
-
-    def get_working_homoset(self, per_cluster=True, clusternb=1, per_species=False,
-                            per_homologies=False, species=[], homologies):
-        """
-        To use once you have clustered homology groups, else takes everything. 
+        To use once you have clustered homology groups, else takes everything.
 
 
         Params:
@@ -260,149 +419,54 @@ class PyCUB(object):
         ------
         a HomoSet object (see homoset.py)
         """
-        if per_cluster and self.clusters:
-            dicta =
-            self.all_homoset.homodict[self.all_homoset.species_namelist[self.all_homoset.clusters]]
-        else:
-            dicta = self.all_homoset.homodict
-        if per_homologies:
-            dicta[]
-            ----- do we select a homology or a species ?? - --
-        if per_species:
-
-        else:
-            print "you have not clusterized you 'all_homoset' if you want to just use 'order_from\
-            _matrix on it. else if you want to take everything just do working = all ;)"
-            return False
-
-    def save(self, name, save_workspace=True, save_homo=True):
-        """
-        call to save your work. you should call save on specific data structure if this is what you
-        want to save.
-        Will call other object's save, will transform all the variable into dict and save the dicts 
-        as json files. will save the df also as json files. PyCUB and homoset have
-        their own json file.
-        adding some params because else the object may be too big
-
-        Params:
-        ------
-        save_workspace: don't save working
-        save_homo: don't save all
-
-        """
-        if self._is_preprocessed:
-            filename = "utils/save/" + self.session + '/' + name + ".json"
-            print "writing in " + name
-            dictify = self._dictify(save_workspace, save_homo)
-            data = json.dumps(dictify, indent=4, separators=(',', ': '))
-            dirname = os.path.dirname(filename)
-            if not os.path.exists(dirname):
-                os.makedirs(dirname)
-            with open(filename, 'w') as f:
-                f.write(data)
-                print "it worked !"
-            # now we zip to save 90% memory space
-            with zipfile.ZipFile(filename + '.zip', 'w') as myzip:
-                myzip.write(filename)
-            os.remove(filename)
-
-    def _preprocess_yun(self, speciesdict):
-        """
-        a private function to preprocess specifically Yun's data
-
-        Params:
-        -------
-        speciesdict: dict of homologies and their relevant dataframe.
-        """
-
-        df, dflink = utils.retrievelist()
-        for i, row in df.iterrows():
-            self.species.update({row['a']: spe.Espece(name=row['b'],
-                                                      link=dflink.full.loc[[row['a']], ['b']])})
-        specieslist = dflink['a'].tolist()  # we create an ordered full list of species
-        matrix = np.zeros((len(specieslist), len(speciesdict)), dtype=np.bool)
-        i = 0
-        dou = 0
-        # COMPLEXITY
-        for key, species in speciesdict.iteritems():  # we go throught the list of lists
-            j = 0
-            print "at " + key + " we have " + str(len(species)) + " homologies"
-            species.sort()
-            nameb = ''
-            for name in species:  # TODO :can be parallelized
-                # the assumption here is that they are ordered the same so we should only test for
-                # the next ones
-                if name == nameb:
-                    dou += 1
-                else:
-                    # we go until the occurence of the name in specieslist
-                    while name != specieslist[j]:
-                        j += 1
-                    matrix[j, i] = True
-                    # part where we update the Espece object
+        isbyhomo = False
+        if per_cluster:
+            # if clustering has been done
+            leng = len(self.all_homoset.clusters)
+            if leng > 0:
+                if leng == len(self.all_homoset.species_namelist):
+                    # version by species
+                    homo = hset.HomoSet()
                     # pdb.set_trace()
-                    d = self.all_homoset.homodict[key].full.loc[[name], :]
-                    d = d.fillna(0.5)   # we make sure to keep only one value. (nameA nameB problem)
-                    d = d.iloc[[0]]
-                    d = d.rename(index={name: key})  # need that weird stuff because of the transpose
-                    self.species[name].genes = self.species[name].genes.append(d)
-                    j += 1
-                    nameb = name
+                    ind = np.argwhere(np.asarray(self.all_homoset.clusters) == clusternb - 1)[:, 0]
+                    species_name = [self.all_homoset.species_namelist[i] for i in ind]
+                    homo.homodict = self.all_homoset
+                    homo.homodict.remove(species_name)
+                    homo.homo_namelist = self.all_homoset.homo_namelist
+                    homo.species_namelist = species_name
 
-            i += 1
-        # create DF here with specieslist and hset.homo_namelist - ---
-        self.all_homoset.species_namelist = specieslist
-        self.all_homoset.hashomo_matrix = matrix
-        print "you had " + str(dou) + " same species homologies (it can't be processed! for now)"
-        print "reviewed " + str(i) + " homologies and " + str(j) + "species"
+                elif leng == len(self.all_homoset.homodict):
+                    # version by homologies
+                    isbyhomo = True
+                    homo = hset.HomoSet()
+                    ind = np.argwhere(np.asarray(self.all_homoset.clusters) == clusternb - 1)[:, 0]
+                    homo_name = [self.all_homoset.homo_namelist[i] for i in ind]
+                    homo.homodict = dict((x, self.all_homoset[x]) for x in homo_name)
+                    homo.homo_namelist = homo_name
+                    homo.species_namelist = self.all_homoset.species_namelist
 
-    def _preprocess_yun_more(self, speciesdict):
-        """
-        a private function to preprocess specifically Yun's data
+            else:
+                print "you have not clusterized you 'all_homoset' if you want to just use" +\
+                    "'order_from_matrix on it. else if you want to take everything just do working = all ;)"
+                return False
+        else:
+            homo = self.all_homoset
+        if homologies is not None:
+            homo.homodict = {k: homo.homodict[k] for k in homologies}
+        if species is not None:
+            other = [item for item in homo.species_namelist if not (item in species)]
+            homo.remove(sepcies=other)
+        homo.loadhashomo(isbyhomo)
+        homo.loadfullhomo()
+        self.working_homoset = homo
+        return homo
 
-        Params:
-        -------
-        speciesdict: dict of homologies and their relevant dataframe.
-        """
-        matrix = np.zeros((len(self.all_homoset.species_namelist), len(speciesdict)), dtype=np.bool)
-        matrix = np.hstack((matrix, self.all_homoset.hashomo_matrix))
-        i = self.all_homoset.hashomo_matrix.shape()[0]
-        dou = 0
-        # COMPLEXITY
-        print "start the iteration process, I hope you haven't clusterized your data yet..\
-        else it won't work (for now)"
-        for key, species in speciesdict.iteritems():  # we go throught the list of lists
-            j = 0
-            print "at homology " + key + " we have " + str(len(species)) + " species possessing it"
-            species.sort()
-            nameb = ''
-            for name in species:  # TODO :can be parallelized
-                # the assumption here is that they are ordered the same so we should only test for
-                # next ones
-                if name == nameb:
-                    dou += 1
-                else:
-                    # we go until the occurence of the name in self.all_homoset.species_namelist
-                    while name != self.all_homoset.species_namelist[j]:
-                        j += 1
-                    matrix[j, i] = True
-                    # part where we update the Espece object
-                    d = self.all_homoset.homodict[key].full.loc[[name], :]
-                    d = d.fillna(0.5)   # we make sure to keep only one value. (nameA nameB problem)
-                    d = d.iloc[[0]]
-                    d = d.rename(index={name: key})  # need that weird stuff because of the transpose
-                    self.species[name].genes = self.species[name].genes.append(d)
-                    j += 1
-                    nameb = name
 
-            i += 1
-        self.all_homoset.hashomo_matrix = matrix
-        print "you had " + str(dou) + " same species homologies (it can't be processed! for now)"
-        print "reviewed " + str(i) + " homologies and " + str(j) + "species"
+# SPECIAL FUNCTION
 
     def _dictify(self, save_workspace, save_homo):
         """
-        Used by the saving function. transform the object into a dictionary that can be 
+        Used by the saving function. transform the object into a dictionary that can be
         json serializable
         adding some params because else the object may be too big
 
@@ -415,15 +479,17 @@ class PyCUB(object):
         for key, val in self.species.iteritems():
             dictispecies.update({key: val._dictify()})
         return {"species": dictispecies,
-                "all_homoset": self.all_homoset._dictify() if save_homo else False,
-                "working_homoset": self.working_homoset._dictify() if save_workspace else False
+                "all_homoset": self.all_homoset._dictify() if save_homo and
+                (self.all_homoset is not None) else None,
+                "working_homoset": self.working_homoset._dictify() if save_workspace and
+                (self.working_homoset is not None) else None
                 }
 
     def _undictify(self, data):
         """
-        same function but to retransform everything 
-        Here we don't use other classes undictify functions but we just recreate them by passing it 
-        to their init methods which is clearer. 
+        same function but to retransform everything
+        Here we don't use other classes undictify functions but we just recreate them by passing it
+        to their init methods which is clearer.
         """
         species = {}
         for key, val in data["species"].iteritems():
@@ -431,15 +497,15 @@ class PyCUB(object):
         self.species = species
         self._is_saved = False
         self._is_loaded = True
-        self.all_homoset = hset.HomoSet(data=data["all_homoset"])
-        self.working_homoset = hset.HomoSet(data=data["working_homoset"])
+        self.all_homoset = hset.HomoSet(data=data["all_homoset"]) if data["all_homoset"] is not None else None
+        self.working_homoset = hset.HomoSet(data=data["working_homoset"]) if data["all_homoset"] is not None else None
 
 
 """
     def offload(self, var='species'):
         ""
         offload when your file is too big (easier than using HDF or something).. for now
-        save and 
+        save and
 
         ""
         print "offload when your file is too big (easier than using HDF or something).. for now"

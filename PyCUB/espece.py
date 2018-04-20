@@ -16,7 +16,6 @@ class Espece(object):
             ------
             code: a dict from gene_name to dna_seq string
             metadata: a dict containing different metadata information
-            genes:  a dataframe of genename * codons containing the entropy_location for each of them
             name : 
             is_stored
     """
@@ -24,18 +23,17 @@ class Espece(object):
     code = {}
     metadata = {}
     is_stored = False
+    name = None
 
     def __init__(self, name=None, genes=None, data=None, link=None):
 
-        if not (data is None):
+        if data is not None:
             self.name = data["name"]
-            self.genes = pd.DataFrame.from_dict(data["genes"])
-        elif not (genes is None):
-            self.genes = pd.DataFrame.from_dict(genes)
+            self.metadata = data["metadata"]
+            self.code = data.get(["code"], {})
         else:
-            self.genes = pd.DataFrame()
             self.name = name
-            self.metadata.append({'link': link})
+            self.metadata.update({'link': link})
 
     def plot():
         """
@@ -50,9 +48,9 @@ class Espece(object):
 
         """
 
-    def get_meta_data():
+    def get_data():
         """
-        get its metadata from ENSEMBL
+        get its dna from ENSEMBL
         """
 
     def get_gff_info():
@@ -78,6 +76,5 @@ class Espece(object):
         json serializable
         """
         return {"name": self.name,
-                "genes": self.genes.to_dict() if not (self.genes is None) else None,
                 "code": self.code,
                 "metadata": self.metadata}
