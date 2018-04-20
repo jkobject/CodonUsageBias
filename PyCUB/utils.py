@@ -9,6 +9,8 @@ import pandas as pd
 import glob
 import numpy as np
 
+speciestable = {}
+
 
 def readcods_homology(separation, folder="first500", homo_name="YAL019W", aminonb=18):
     """
@@ -25,7 +27,6 @@ def readcods_homology(separation, folder="first500", homo_name="YAL019W", aminon
 
 
     """
-    gendict = {}
     # We want to get the basic information from the files
     # so we read one and extract them
     first_file = glob.glob(folder + "/" + homo_name + separation + "His.*")[0]
@@ -33,22 +34,20 @@ def readcods_homology(separation, folder="first500", homo_name="YAL019W", aminon
     meta = pd.read_csv(first_file)
     rows = meta.shape[0]
     gentab = np.zeros((rows, aminonb))
-    amino = []
     i = 0
     for file in glob.glob(folder + "/" + homo_name + separation + "*.*"):
         if file[-7:-4] != 'ror':  # TODO: write if it belongs to a list of amino
                                     # acid (given by the user)
-            amino.append(file[-7:-4])
             # we change the nan values as .5 as it is the mean of our distribution
             # and we don't want to bias it
-            struct = pd.read_csv(file).reset_index()
+            struct = pd.read_csv(file).reset_index().sort_values(by='species').fillna(0.5)
+            # TODO: retrieve where the Nans are ( might be interesting metadata)
             gentab[:, i] = struct['entropyLocation'].values.tolist()
             species = struct['species'].values.tolist()
             i += 1
-    genDF = pd.DataFrame(data=gentab, index=species, columns=amino)
-    return genDF, species
+    return gentab, species
 
 
 def retrievelist():
-    return pd.read_csv("utils/data/meta/order_name461.csv", header=None, names=['a', 'b']),
-        pd.read_csv("utils/data/meta/names_with_links.csv", header=None, names=['a', 'b'])
+    return pd.read_csv("utils/data/meta/order_name461.csv", header=None, names=['name', 'b']),\
+        pd.read_csv("utils/data/meta/names_with_links.csv", header=None, names=['name', 'b'])

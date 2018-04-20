@@ -5,123 +5,185 @@ University of Kent, ECE paris
 jkobject.com
 
 """
-import pandas as pd
-import glob
+
 import numpy as np
+
+from sklearn import manifold as man
+from sklearn import cluster, mixture
+from sklearn import metrics
+
+import utils
+
+from bokeh.plotting import *
+from bokeh.models import *
+import matplotlib.pyplot as plt
 
 
 class homology(object):
-    """in homology we store an homology with its dataframe, 
+    """in homology we store an homology with its dataframe,
     it reduced reduced df with dim reduction and its clusters
-    it is supposed to be store in a homoogy dictionary 
+    it is supposed to be store in a homoogy dictionary
 
     Params:
     ------
-    full : df of one homology with entropy value vector per species
-    reduced :  df of one homology dimensionality reduced
-    clusters : list of cluster labels
+    names : list of int corresponding to names
+    full : np array of one homology with entropy value vector per species
+    reduced :  np array of one homology dimensionality reduced
+    clusters : list of cluster clusters
     """
+    names = None
+    reduced = None
+    clusters = None
+    full = None
+    centroids = None
+    metrics = {}
 
-    reduced = False
-    clusters = False
-    full = False
-
-    def __init__(self, data=False, full=False):
+    def __init__(self, data=None, full=None, names=None):
         """
         will intialize an instance of the object and be used for the loading mechanism
         """
-        if not (type(data) is bool):
-            self.reduced = pd.DataFrame.from_dict(data["reduced"]) if not (type(data["reduced"]) is bool) else False
+        if not (data is None):
+            self.reduced = np.asarray(data["reduced"]) if not (data["reduced"] is None) else None
             self.clusters = data["clusters"]
-            self.full = pd.DataFrame.from_dict(data["full"]) if not (type(data["full"]) is bool) else False
+            self.full = np.asarray(data["full"]) if not (data["full"] is None) else None
+            self.names = data.get(["names"], None)
+            self.centroids = data.get(["centroids"], None)
+            self.metrics = data.get(["metrics"], {})
 
-        elif not (type(full) is bool):
+        elif not (full is None):
             self.full = full
+            self.names = names
+            self.clusters = None
 
-    def clusterize_(self, clustering='gaussian', plot=False, homogroupnb=4):
+    def remove(self, species):
         """
-        will clusterize the homology using gaussian mixture clustering or DBSCAN and order them according 
-        to the density of each cluster (we are interested in the dense ones) and assess the quality using 3 criterion:
-        BIC, , . 
+        removes the list of species from this homology if it exists there
         """
-        if clustering == 'gaussian':
-
-        elif clustering == 'dbscan':
-
-        return clusters
-
-    def assess_clust():
-        """
-        Assesses the clusterization quality with different metrics (BIC, )
-        """
+        names = [utils.speciestable[na] for na in self.names]
+        mask = np.ones(len(self.names), dtype=bool)
+        for spe in species:
+            for y, (name, i) in enumerate(zip(names, na)):
+                self.names.remove(i)
+                mask[y] = False
+                y += 1
+                if self.cluster is not None:
+                    self.clusters.remove(i)
+        self.reduced = self.reduced[mask, :]
+        self.full = self.full[mask, :]
 
     def reduce_dim(self, alg='tsne', n=2, perplexity=40):
         """
-        reduce the dimensionality of your gene dataset to a defined dimension 
+        reduce the dimensionality of your gene dataset to a defined dimension
         using the t-SNE algorithm
 
         :param gene:  a matrix of gene codon usage per species
                   n:  the desired dimension
-        perplexity :  an optional value when you know about tsne 
+        perplexity :  an optional value when you know about tsne
 
         :return tsned: the reduced dataset
         """
         if alg == 'tsne':
-            red = man.TSNE(n_components=n, perplexity=perplexity).fit_transform(self.scaled)
-        elif alg == 'pca':
-            break
+            red = man.TSNE(n_components=n, perplexity=perplexity).fit_transform(self.full)
+        # elif alg == 'pca':
+
         self.reduced = red
         return red
 
-    def plot():
-        """
-        will plot the object's data using bokeh to create nice interactive plots (either on jupyter notebook or as
-         html-javascripts pages)
-        in these plots of your gene dataset you can have a look at your previously 
-        dimensionality reduced gene dataset and hover over points to have a look at the species or display 
-        colors and centroids according to the clusterize function's output
+    def plot(self, per=40, interactive=False):
 
-        contains an option for simple plots.
-
-        :param gene:  a matrix of gene codon usage per species reduced into 2 dimensions
-               species : a list of all the species in your gene dataset (usually one per row)
-               getimage: (optional) flag to true if you want it to ouput an html file 
-               labels, centroids : (optional) the labels and centroids returned
-                by the clusterize function
-
-        :return p: your figure as a bokeh object.
-        """
-        if centroids.any() and labels.any():
-            #colormap = [[rand(256), rand(256), rand(256)] for _ in range(100)]
+        if self.clusters is not None:
+            # colormap = [[rand(256), rand(256), rand(256)] for _ in range(100)]
             colormap = ["#1abc9c", "#3498db", "#2ecc71", "#9b59b6", '#34495e', '#f1c40f',
                         '#e67e22', '#e74c3c', '#7f8c8d', '#f39c12']
-            colors = [colormap[x] for x in labels]
+            colors = [colormap[x] for x in self.clusters]
         else:
             colors = '#1abc9c'
+        if self.reduced is None:
+            self.reduce_dim(perplexity=per)
 
-        source = ColumnDataSource(
-            data=dict(
-                x=tsnedgene[:, 0],
-                y=tsnedgene[:, 1],
-                color=colors,
-                label=["species : %s" % (x_) for x_ in species]
-
+        if interactive:
+            # TODO: debug this part
+            # TODO: show the clusterisation in bokeh with centroids
+            print " if you are on a notebook you should write 'from bokeh.io import output_notebook'"
+            source = ColumnDataSource(
+                data=dict(
+                    x=self.reduced[:, 0],
+                    y=self.reduced[:, 1],
+                    color=colors,
+                    label=["species : %s" % (x_) for x_ in [utils.speciestable[x__] for x__ in self.names]]
+                )
             )
-        )
-        hover = HoverTool(tooltips=[
-            ("label", "@label"),
-        ])
-        p = figure(title="T-sne of homologous gene X for each species",
-                   tools=[hover, BoxZoomTool(), WheelZoomTool(), SaveTool(), ResetTool()])
-        p.circle('x', 'y', size=10, source=source)
-        show(p)
-        return p
+            hover = HoverTool(tooltips=[
+                ("label", "@label"),
+            ])
+            p = figure(title="T-sne of homologous gene X for each species",
+                       tools=[hover, BoxZoomTool(), WheelZoomTool(), SaveTool(), ResetTool()])
+            p.circle('x', 'y', size=10, source=source)
+            show(p)
+            return p
+        else:
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
+            ax.scatter(self.reduced[:, 0], self.reduced[:, 1], c=colors)
+            plt.show()
+
+    def clusterize_(self, clustering='gaussian', homogroupnb=None, assess=True):
+        """
+        will clusterize the homology using gaussian mixture clustering or DBSCAN and order them according
+        to the density of each cluster (we are interested in the dense ones) and assess the quality using 3 criterion:
+        BIC, , .
+        """
+        # TODO: find more tests and visualisations to perform
+        if clustering == 'gaussian':
+            # http://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html
+            alg = mixture.GaussianMixture(n_components=homogroupnb, n_init=2, init_params='random')
+            alg.fit(self.full)
+            if assess:
+                aic = alg.aic(self.full)
+                bic = alg.bic(self.full)
+                self.metrics.update({'aic': aic, 'bic': bic})
+                print "the BIC scores for the GMM is"
+                print aic
+                print "the AIC scores for the GMM is"
+                print bic
+            self.clusters = alg.predict(self.full)
+
+        elif clustering == 'dbscan' and homogroupnb is not None:
+            # http://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html
+            val = np.around(len(self.names) / (2 * (homogroupnb + 1)))
+            print val
+            alg = cluster.DBSCAN(eps=0.8, min_samples=7,
+                                 algorithm='auto', n_jobs=-1)
+            self.clusters = alg.fit_predict(self.full)
+            n_clusters_ = len(set(self.clusters)) - (1 if -1 in self.clusters else 0)
+            print "Estimated number of clusters using DBscan: " + str(n_clusters_)
+        elif clustering == 'jkmeans':
+            # TODO:  create your own clustering algorithm with gaussian kernels that explains as much as possible the data and get a threshold and set all others as outliers
+            """
+                here we want to find the smallest group of gaussian that explains
+                the highest number of data point with the smallest variance possible
+                as
+            """
+            print "tocode"
+        if assess:
+            try:
+                silhouette = metrics.silhouette_score(self.full, self.clusters)
+                cal_hara = metrics.calinski_harabaz_score(self.full, self.clusters)
+            except ValueError:
+                silhouette = 0
+                cal_hara = 0
+            self.metrics.update({'silhouette': silhouette,
+                                 'cal_hara': cal_hara})
+        return self.clusters
 
     def _dictify(self):
         """
-        Used by the saving function. transform the object into a dictionary that can be 
+        Used by the saving function. transform the object into a dictionary that can be
         json serializable
         """
-        return {"reduced": self.reduced.to_dict() if not (type(self.reduced) is bool) else False,
+        return {"reduced": self.reduced.tolist() if not (self.reduced is None) else None,
                 "clusters": self.clusters,
-                "full": self.full.to_dict() if not (type(self.full) is bool) else False}
+                "full": self.full.tolist() if not (self.full is None) else None,
+                "names": self.names,
+                "centroids": self.centroids,
+                "metrics": self.metrics}
