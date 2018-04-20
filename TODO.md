@@ -9,35 +9,24 @@
 
 
 * to test
-  - new load and save (zip unzip session)
-  - None usage
-  - new loadmore
-  - homodict
   - speciesdict
   - new clusterings
   - getworkinghomoset
-  - implement the same thing in pycub and homoset
 
-## coding 
-
- - be able to load at the same time, all Yun's data files 
- - save them all in a better format
- - have the silouette score for the matrix homology selection
- - show the clusterisation in bokeh. 
 
 ## todo 
 
- -  find tests and visualisations to perform on the clustering of the homology matrix
- -  add a verification that the function are not called in a wrong order
+ - download datasets
+ - add better visualization and plottings
+ - set everything in order and working
+ - create a nice explaining notebook
+ - download meta datasets
+
+ - change the pipeline according to the biopython package
+ - create a CDC for the pipeline
 
 
-## later
- -  change the pipeline according to the biopython package
- -  create a CDC for the pipeline
- -  I should look at species that are not represented in the dataset.
- -  I can try to retrieve the raw sequences which names are given in the second row of the dataset and match them to the database (online sql queries OR download it and do direct sql queries ensembl.org)
 
- - plot the number of species found per genes. 
 
 
 
@@ -61,6 +50,10 @@
 - evaluate the distance between clusters. 
 - find the cluster number with algorithm X-means (gaussian distribution and extract the inter-cluster distance)
 - prepare a pipeline for intra species homologies
+
+- create a classification NN P(species | genename )
+
+ -  I should look at species that are not represented in the dataset.
 
 ##  other things to do 
 
