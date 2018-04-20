@@ -9,11 +9,12 @@
 Icon
 
 # folders
-.idea
-.ipynb_checkpoints
-utils/data
-utils/save
-sum2.pdf
+.idea/
+*.ipynb_checkpoints/
+utils/data/*
+utils/save/*
+utils/meta/*
+other/*
 
 # Thumbnails
 ._*
