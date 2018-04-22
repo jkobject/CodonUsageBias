@@ -30,7 +30,7 @@ class Espece(object):
         if data is not None:
             self.name = data["name"]
             self.metadata = data["metadata"]
-            self.code = data.get(["code"], {})
+            self.code = data["code"]
         else:
             self.name = name
             self.metadata.update({'link': link})
