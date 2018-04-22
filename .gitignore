@@ -8,6 +8,10 @@
 # Icon must end with two \r
 Icon
 
+
+# except
+!utils/save/jerem/allyun.json.zip
+
 # folders
 .idea/
 *.ipynb_checkpoints/
