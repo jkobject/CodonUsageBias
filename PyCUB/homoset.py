@@ -19,7 +19,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from kmodes.kmodes import KModes
 from sklearn import manifold as man
 from sklearn import metrics
-
+import tsne
 
 from scipy import sparse
 
@@ -52,7 +52,7 @@ class HomoSet(collections.MutableMapping):
 
     hashomo_matrix = None
     homo_matrix = None
-    homodict = None
+    homodict = {}
     homo_namelist = []
     species_namelist = []
     clusters = []
@@ -63,6 +63,7 @@ class HomoSet(collections.MutableMapping):
         """
         will..
         """
+        # pdb.set_trace()
         if data is not None:
             self.homo_matrix = np.asarray(data["homo_matrix"]) if not (
                 data["homo_matrix"] is None) else None
@@ -70,7 +71,8 @@ class HomoSet(collections.MutableMapping):
             self.species_namelist = data["species_namelist"]
             self.homogroupnb = data["homogroupnb"]
             self.clusters = data["clusters"]
-            self.red_homomatrix = data.get("red_homomatrix", None)
+            self.red_homomatrix = np.asarray(data["red_homomatrix"]) if not (
+                data["red_homomatrix"] is None) else None
             utils.speciestable = data["speciestable"]
             self.hashomo_matrix = np.asarray(data["hashomo_matrix"]) if not (
                 data["hashomo_matrix"] is None) else None
@@ -113,7 +115,8 @@ class HomoSet(collections.MutableMapping):
             self.loadfullhomo()
 
         if self.red_homomatrix is None:
-            red = man.TSNE(n_components=2, perplexity=perplexity, n_iter=iteration, verbose=3).fit_transform(self.homo_matrix)
+            #red = man.TSNE(n_components=2, perplexity=perplexity, n_iter=iteration, verbose=3).fit_transform(self.homo_matrix)
+            red = tsne(self.homo_matrix, no_dims=2, initial_dims=18, perplexity=30.0)
             self.red_homomatrix = red
         if not interactive:
             fig = plt.figure(figsize=(40, 40))
@@ -139,10 +142,12 @@ class HomoSet(collections.MutableMapping):
         inde = {}
         for i, n in enumerate(self.species_namelist):
             inde.update({n: i})
+        pdb.set_trace()
         for homo in self.homo_namelist:
-            ind = [inde[utils.speciestable[na]] for na in self.homodict[homo].names]
+            ind = [inde[utils.speciestable[str(na)]] for na in self.homodict[homo].names]
             # try to get the indeces from each species name
             hashomo[ind] = True
+        self.hashomo_matrix = hashomo
 
     def find_clusters(self, clustering='dbscan', homogroupnb=None, assess=True):
         """
@@ -188,8 +193,8 @@ class HomoSet(collections.MutableMapping):
         plt.bar(range(len(sumed)), sumed)
         print "you can always look at a particular range of species with 'homo_namelist' "
 
-    def order_from_matrix(self, clustering='kmeans', plot_ordering=True, homogroupnb=2, findnb=False,
-                          reducedim=False, orderspecie=False):
+    def order_from_matrix(self, clustering='kmeans', order=True, plot_ordering=True, homogroupnb=2, findnb=False,
+                          reducedim=False, byspecie=False):
         """
         Compute an homology group :
         from matrix computation using the homo_matrix
@@ -235,10 +240,10 @@ class HomoSet(collections.MutableMapping):
                 print "you entered a wrong clustering algorithm"
                 return False
 
-            if not orderspecie:
-                # special case where one would like to keep all homologies and
-                # remove species instead. we would advise the opposite though
+            if byspecie:
                 self.hashomo_matrix = self.hashomo_matrix.T
+            # BYSPECIES is a special case where one would like to keep all homologies and
+            # remove species instead. we would advise the opposite though
 
             alg.fit(self.hashomo_matrix)
             clust = alg.labels_
@@ -258,16 +263,16 @@ class HomoSet(collections.MutableMapping):
         print "the quality of the clustering is: "
         print metricA
         print metricB
-        if plot_ordering:
-            print "plotting the ordering... might take time"
-            self.orderfromclust(homogroupnb, clust, fromspecies=orderspecie)
+        if order:
+            orderedhas = self.orderfromclust(homogroupnb, clust, fromspecies=byspecie)
+            if plot_ordering:
+                self._plot_clust(self.hashomo_matrix, orderedhas)
+            self.hashomo_matrix = orderedhas
         self.homogroupnb = homogroupnb
         return True
 
     def orderfromclust(self, homogroupnb, clust, fromspecies):
         orderedhas = np.zeros(self.hashomo_matrix.shape)
-        orderedfull = np.zeros(self.hashomo_matrix.shape) if not (
-            self.homo_matrix is None) else None
         ltemp = [0] * len(self.homo_namelist) if not fromspecies else [0] * len(self.species_namelist)
         self.clusters = [0] * len(clust)
         begin = 0
@@ -275,21 +280,17 @@ class HomoSet(collections.MutableMapping):
         for i in range(homogroupnb):
             ind = np.argwhere(clust == i)[:, 0]
             orderedhas[begin:begin + len(ind)] = self.hashomo_matrix[ind]
-            if self.homo_matrix is not None:
-                orderedfull[begin:begin + len(ind)] = self.homo_matrix[ind]
             # the list as well
             sublist = [self.homo_namelist[e] for e in ind] if not fromspecies else [self.species_namelist[e] for e in ind]
             ltemp[begin:begin + len(ind)] = sublist
             self.clusters[begin:begin + len(ind)] = clust[ind]
             begin += len(ind)
 
-        self._plot_clust(self.hashomo_matrix, orderedhas)
         if fromspecies:
             self.species_namelist = ltemp
         else:
             self.homo_namelist = ltemp
-        self.hashomo_matrix = orderedhas
-        self.homo_matrix = orderedfull
+        return orderedhas
 
 
 ###################################################################
@@ -302,7 +303,8 @@ class HomoSet(collections.MutableMapping):
 
         """
         dictihomo = {}
-        for key, val in self.homodict.iteritems():
+        homodict = self.homodict.iteritems()
+        for key, val in homodict:
             dictihomo.update({key: val._dictify()})
         return {"hashomo_matrix": self.hashomo_matrix.tolist() if self.hashomo_matrix is not None else None,
                 "homo_matrix": self.homo_matrix.tolist() if self.homo_matrix is not None else None,
@@ -311,13 +313,20 @@ class HomoSet(collections.MutableMapping):
                 "homodict": dictihomo,
                 "species_namelist": self.species_namelist,
                 "speciestable": utils.speciestable,
-                "homogroupnb": self.homogroupnb}
+                "homogroupnb": self.homogroupnb,
+                "red_homomatrix": self.red_homomatrix.tolist() if self.red_homomatrix is not None else None}
+
+    def plot(self):
+        plt.figure(figsize=(40, 40))
+        plt.title('the regular matrix')
+        plt.imshow(self.hashomo_matrix)
+        plt.show()
 
     def _plot_clust(self, mat, orderedmat):
         # the regular matrix
         plt.figure(figsize=(40, 40))
         plt.title('the regular matrix')
-        plt.imshow(mat)
+        plt.imshow(mat.T)
         plt.show()
 
         # the affinity matrix
@@ -331,13 +340,13 @@ class HomoSet(collections.MutableMapping):
         # the ordered matrix
         plt.figure(figsize=(40, 40))
         plt.title('the ordered matrix')
-        plt.imshow(orderedmat)
+        plt.imshow(orderedmat.T)
         plt.show()
 
         # affinity of the ordered matrix
-        mat_sparse = sparse.csr_matrix(orderedmat)
-        similarities = cosine_similarity(mat_sparse)
+        mat_sparseo = sparse.csr_matrix(orderedmat)
+        similaritieso = cosine_similarity(mat_sparseo)
         plt.figure(figsize=(40, 40))
         plt.title('the affinity of the ordered matrix')
-        plt.imshow(similarities)
+        plt.imshow(similaritieso)
         plt.show()

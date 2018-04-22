@@ -12,6 +12,7 @@ from sklearn import manifold as man
 from sklearn import cluster, mixture
 from sklearn import metrics
 
+import pdb
 import utils
 
 from bokeh.plotting import *
@@ -27,9 +28,9 @@ class homology(object):
     Params:
     ------
     names : list of int corresponding to names
-    full : np array of one homology with entropy value vector per species
-    reduced :  np array of one homology dimensionality reduced
-    clusters : list of cluster clusters
+    full : np array (species, amino) of one homology with entropy value vector per species
+    reduced :  np array (species, x*y) of one homology dimensionality reduced
+    clusters : list of cluster val for each species
     """
     names = None
     reduced = None
@@ -37,8 +38,10 @@ class homology(object):
     full = None
     centroids = None
     metrics = {}
+    nans = None
+    lenmat = None
 
-    def __init__(self, data=None, full=None, names=None):
+    def __init__(self, data=None, full=None, names=None, nans=None, lenmat=None):
         """
         will intialize an instance of the object and be used for the loading mechanism
         """
@@ -46,28 +49,31 @@ class homology(object):
             self.reduced = np.asarray(data["reduced"]) if not (data["reduced"] is None) else None
             self.clusters = data["clusters"]
             self.full = np.asarray(data["full"]) if not (data["full"] is None) else None
-            self.names = data.get(["names"], None)
-            self.centroids = data.get(["centroids"], None)
-            self.metrics = data.get(["metrics"], {})
-
+            self.names = data["names"]
+            self.centroids = data["centroids"]
+            self.metrics = data["metrics"]
+            self.nans = np.asarray(data["nans"]) if not (data["nans"] is None) else None
+            self.lenmat = np.asarray(data["lenmat"]) if not (data["lenmat"] is None) else None
         elif not (full is None):
             self.full = full
             self.names = names
             self.clusters = None
+            self.nans = nans
+            self.lenmat = lenmat
 
     def remove(self, species):
         """
         removes the list of species from this homology if it exists there
         """
-        names = [utils.speciestable[na] for na in self.names]
-        mask = np.ones(len(self.names), dtype=bool)
+        names = [utils.speciestable[str(na)] for na in self.names]
+        mask = np.ones(len(self.reduced.shape[0]), dtype=bool)
         for spe in species:
-            for y, (name, i) in enumerate(zip(names, na)):
-                self.names.remove(i)
-                mask[y] = False
-                y += 1
-                if self.cluster is not None:
-                    self.clusters.remove(i)
+            for i, na in enumerates(names):
+                if na == spe:
+                    self.names.pop(i)
+                    mask[i] = False
+                    if self.cluster is not None:
+                        self.clusters.pop(i)
         self.reduced = self.reduced[mask, :]
         self.full = self.full[mask, :]
 
@@ -90,7 +96,6 @@ class homology(object):
         return red
 
     def plot(self, per=40, interactive=False):
-
         if self.clusters is not None:
             # colormap = [[rand(256), rand(256), rand(256)] for _ in range(100)]
             colormap = ["#1abc9c", "#3498db", "#2ecc71", "#9b59b6", '#34495e', '#f1c40f',
@@ -105,20 +110,18 @@ class homology(object):
             # TODO: debug this part
             # TODO: show the clusterisation in bokeh with centroids
             print " if you are on a notebook you should write 'from bokeh.io import output_notebook'"
-            source = ColumnDataSource(
-                data=dict(
-                    x=self.reduced[:, 0],
-                    y=self.reduced[:, 1],
-                    color=colors,
-                    label=["species : %s" % (x_) for x_ in [utils.speciestable[x__] for x__ in self.names]]
-                )
-            )
+            if self.clusters is None:
+                colors = [colors] * len(self.names)
+            source = ColumnDataSource(data=dict(x=self.reduced[:, 0], y=self.reduced[:, 1],
+                                                label=["species : %s" % utils.speciestable[str(x__)] for x__ in self.names], color=colors))
+            output_notebook()
             hover = HoverTool(tooltips=[
                 ("label", "@label"),
             ])
             p = figure(title="T-sne of homologous gene X for each species",
                        tools=[hover, BoxZoomTool(), WheelZoomTool(), SaveTool(), ResetTool()])
-            p.circle('x', 'y', size=10, source=source)
+            p.circle(x='x', y='y', source=source, color='color')
+
             show(p)
             return p
         else:
@@ -186,4 +189,6 @@ class homology(object):
                 "full": self.full.tolist() if not (self.full is None) else None,
                 "names": self.names,
                 "centroids": self.centroids,
-                "metrics": self.metrics}
+                "metrics": self.metrics,
+                "nans": self.nans.tolist() if self.nans is not None else None,
+                "lenmat": self.lenmat.tolist() if self.lenmat is not None else None}
