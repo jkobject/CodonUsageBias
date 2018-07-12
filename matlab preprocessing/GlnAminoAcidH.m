@@ -3,11 +3,13 @@ function [NNq,Xq,Y] = GlnAminoAcidH(codonSequence)
 global cfQ ctQ;
 
 codonFrequency=zeros(1,length(codonSequence));
+% a matrix of same size as the codon sequence
 
 % disp('codon subsequence coding Gln number calculation begins');
-Qia=find(ismember(codonSequence,'CAG'));
+Qia=find(ismember(codonSequence,'CAG')); % a matrix of position of CAG in the codon sequence
 if (Qia~=0)
-    codonFrequency(Qia)=cfQ(1,1);
+    codonFrequency(Qia)=cfQ(1,1); % at the position where there is 
+                                % CAG we set the values CfQ which are average frequencies
     NumberCodonQia=length(Qia);
 else NumberCodonQia=0;
 end
@@ -23,7 +25,7 @@ Qip=[(Qia)',(Qib)'];
 Qi=find(Qip);
 
 if (Qi~=0)
-    Qig=Qip(Qi);
+    Qig=Qip(Qi); 
     codonSequenceR=(codonSequence)';
     subsequenceQ=codonSequenceR((Qig)');
     Qf=codonFrequency(Qig);
