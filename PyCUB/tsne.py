@@ -55,7 +55,7 @@ def x2p(X=np.array([]), tol=1e-5, perplexity=30.0):
         # Compute the Gaussian kernel and entropy for the current precision
         betamin = -np.inf
         betamax = np.inf
-        Di = D[i, np.concatenate((np.r_[0:i], np.r_[i+1:n]))]
+        Di = D[i, np.concatenate((np.r_[0:i], np.r_[i + 1:n]))]
         (H, thisP) = Hbeta(Di, beta[i])
 
         # Evaluate whether the perplexity is within tolerance
@@ -83,7 +83,7 @@ def x2p(X=np.array([]), tol=1e-5, perplexity=30.0):
             tries += 1
 
         # Set the final row of P
-        P[i, np.concatenate((np.r_[0:i], np.r_[i+1:n]))] = thisP
+        P[i, np.concatenate((np.r_[0:i], np.r_[i + 1:n]))] = thisP
 
     # Return final P-matrix
     print("Mean value of sigma: %f" % np.mean(np.sqrt(1 / beta)))
@@ -122,7 +122,7 @@ def tsne(X=np.array([]), no_dims=2, initial_dims=50, perplexity=30.0):
     # Initialize variables
     X = pca(X, initial_dims).real
     (n, d) = X.shape
-    max_iter = 1000
+    max_iter = 400
     initial_momentum = 0.5
     final_momentum = 0.8
     eta = 500
@@ -136,13 +136,14 @@ def tsne(X=np.array([]), no_dims=2, initial_dims=50, perplexity=30.0):
     P = x2p(X, 1e-5, perplexity)
     P = P + np.transpose(P)
     P = P / np.sum(P)
-    P = P * 4.									# early exaggeration
+    P = P * 4.                                  # early exaggeration
     P = np.maximum(P, 1e-12)
 
     # Run iterations
     for iter in range(max_iter):
 
         # Compute pairwise affinities
+        print '{0}%\r'.format((iter * 100) / max_iter),
         sum_Y = np.sum(np.square(Y), 1)
         num = -2. * np.dot(Y, Y.T)
         num = 1. / (1. + np.add(np.add(num, sum_Y).T, sum_Y))
