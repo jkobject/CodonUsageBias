@@ -1,0 +1,10 @@
+pandas==0.22.0
+holoviews==1.9.1
+scipy==0.19.1
+kmodes==0.8
+bokeh==0.12.10
+joblib==0.11
+matplotlib==2.0.2
+requests==2.10.0
+numpy==1.13.3
+scikit_learn==0.19.1
