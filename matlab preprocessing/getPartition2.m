@@ -8,7 +8,6 @@ P(1,:)=1/Syno;
 filename2=['partition2o',num2str(Sublength),'.txt'];
     for i=0:Sublength        
         j=Sublength-i;
-        if j>=0
         mnvect=[i,j];    %% mnvect: all the possible partitions (order matters here) 
         p=mnpdf(mnvect,P); %% for each combination, calculate multinomial distribution density
         fileID = fopen(filename2,'a');
@@ -19,3 +18,4 @@ filename2=['partition2o',num2str(Sublength),'.txt'];
 disp([num2str(Sublength),'done']);
 end
 end
+ 
