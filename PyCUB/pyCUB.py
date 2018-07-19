@@ -22,8 +22,10 @@ except:
 
 from joblib import Parallel, delayed
 import multiprocessing
+
 from rpy2.robjects.packages import importr
 from ete2 import NCBITaxa
+from rpy2 import robjects
 import rpy2.robjects.packages as rpackages
 from rpy2.robjects.vectors import StrVector
 
@@ -35,6 +37,13 @@ import espece as spe
 import homoset as hset
 import utils
 import homology as h
+
+from bokeh.plotting import *
+from bokeh.models import *
+import matplotlib.pyplot as plt
+from sklearn import manifold as man
+from sklearn.decomposition import PCA
+
 
 import pdb
 
@@ -72,18 +81,22 @@ class PyCUB(object):
         'homology3501t4000.zip': 'https://www.dropbox.com/s/hfrbvagk9drtgf4/homology3501t4000.zip?dl=1',
         'homology4001t4500.zip': 'https://www.dropbox.com/s/4sz8n7nuyvkg4yf/homology4001t4500.zip?dl=1',
         'homology4501t5000.zip': 'https://www.dropbox.com/s/jppt4z8pua2jxdn/homology4501t5000.zip?dl=1'},
-        'ensembl': {},
         'mymeta': {
-        'Amino Acid Properties README.txt': 'https://www.dropbox.com/s/gdsq1meraqjec6y/\
+        # TODO update the metadata infos and push them to the github
+        'Amino Acid Properties README.txt': 'https://www.dropbox.com/s/3tb2j69l0acirt0/\
         Amino%20Acid%20Properties%20README.txt?dl=1',
         'Amino Acid Properties.csv':
-            'https://www.dropbox.com/s/upx9rocti4n19sa/Amino%20Acid%20Properties.csv?dl=1',
+            'https://www.dropbox.com/s/g157emzyid2qi83/Amino%20Acid%20Properties.csv?dl=1',
         'cerevisae_prot_abundance.csv':
-            'https://www.dropbox.com/s/ejs1eifwevdyj4q/cerevisae_prot_abundance.csv?dl=1',
+            'https://www.dropbox.com/s/t77016m5fqzb2fc/cerevisae_prot_abundance.csv?dl=1',
         'names_with_links.csv':
-            'https://www.dropbox.com/s/fred87b2lcavocu/names_with_links.csv?dl=1',
+            'https://www.dropbox.com/s/voj26r0onvvqvx2/names_with_links.csv?dl=1',
         'order_name461.csv':
-            'https://www.dropbox.com/s/adq4ywxa42fz9qz/order_name461.csv?dl=1'
+            'https://www.dropbox.com/s/0708046ld1pcju4/order_name461.csv?dl=1',
+        'Yun_Species_Context':
+            'https://www.dropbox.com/s/rdse1rco04hmuwf/Yun_Species_Context.csv?dl=1',
+        'homolist.json':
+            'https://www.dropbox.com/s/5a3h8hps9eozd8g/homolist.json?dl=1'
     },
         'meta': {
         'fungi':
@@ -187,6 +200,7 @@ class PyCUB(object):
                                                                    normalized, setnans, i, by, using)})
             # TODO: test full pipeline with frequency/entropy/entropylocation
             taxons, species = self.all_homoset.preprocessing(withtaxons=True)
+            print "computing tRNA copy numbers"
             for i, spece in enumerate(species):
                 espece_val = spe.Espece(name=spece, taxonid=taxons[i])
                 espece_val.get_tRNAcopy()
@@ -204,7 +218,6 @@ class PyCUB(object):
         Params:
         ------
         kingdoms: flag the type of kingdoms you wanna have 'fungi' 'bacteria' 'plants'
-
         """
         if not os.path.exists('utils/meta'):
             os.mkdir('utils/meta')
@@ -235,6 +248,22 @@ class PyCUB(object):
             num_cores = -1 if inpar else 1
             Parallel(n_jobs=num_cores)(delayed(utils.mymeta)(key, val) for key, val in
                                        self.links['mymeta'].iteritems())
+
+    def import_metadataTobias(self):
+        """
+        will import the metadata obtained from tobias for the fungi species affiliated to
+        cerevisiae to each species for further diagnostics.
+        """
+        data = pd.read_csv("Yun_Species_Context.csv")
+        for i, species in enumerate(data["Genome"]):
+            if species in self.species:
+                self.species[species].metadata["num_genes"] = data["No_Genes"][i]
+                self.species[species].metadata["plant_pathogen"] = data["plant_pathogen"][i]
+                self.species[species].metadata["animal_pathogen"] = data["animal_pathogen"][i]
+                self.species[species].metadata["genome_size"] = data["Genome_Size"][i]
+                self.species[species].metadata["plant_symbiotic"] = data["mycorrhizal"][i] or data["endophyte"][i]
+                self.species[species].metadata["brown_rot"] = data["brown_rot"][i]
+                self.species[species].metadata["white_rot"] = data["white_rot"][i]
 
 # LOADINGS AND SAVINGS
 
@@ -539,7 +568,7 @@ class PyCUB(object):
 
     def get_subset(self, homoset, clusternb=None, species=None, homologies=None):
         """
-        To use once if you want to further refine a set of homologies 
+        To use once if you want to further refine a set of homologies
 
 
         Params:
@@ -564,7 +593,7 @@ class PyCUB(object):
         homoset.loadfullhomo()
         return homoset
 
-    def get_evolutionary_distance(self, display_tree=False):
+    def get_evolutionary_distance(self, display_tree=False, size=40):
         """
         uses metadata of the ancestry tree and computes a theoretical evolutionary
         distance matrix between each species
@@ -578,11 +607,14 @@ class PyCUB(object):
         """
         # TODO: totest
         ncbi = NCBITaxa()
-        tree = ncbi.get_topology([9606, 9598, 10090, 7707, 8782])  # taxons
+        taxons = []
+        for key, val in self.species.iteritems():
+            taxons.append(val.taxonid)
+        tree = ncbi.get_topology(taxons)  # taxons
         # finding what this tree looks like
         if display_tree:
             print tree.get_ascii(attributes=["sci_name", "rank"])
-        with open('temp_tree.phy', 'w') as f:  # maybe will be newick format...
+        with open('metaphylo/temp_tree.phy', 'w') as f:  # maybe will be newick format...
             f.write(tree.write())
         try:
             # https://stackoverflow.com/questions/19894365/running-r-script-from-python
@@ -596,16 +628,170 @@ class PyCUB(object):
         if len(names_to_install) > 0:
             utiles.install_packages(StrVector(names_to_install))
         robjects.r('''
-            treeText <- readLines(tree.phy)
-                treeText <- paste0(treeText, collapse="")
-                library(treeio)
-                tree <- read.tree(text = treeText) ## load tree
+            treeText <- readLines(metaphylo/temp_tree.phy)
+            treeText <- paste0(treeText, collapse="")
+            library(treeio)
+            tree <- read.tree(text = treeText) ## load tree
             distMat <- cophenetic(tree)
-            write.table(distMat,"phylodistMat_temp.csv")
+            write.table(distMat,"metaphylo/phylodistMat_temp.csv")
         ''')
-        df = pd.read_csv("phylodistMat_temp.csv")
-        self.all_homoset.phylo_distance = df
+        df = pd.read_csv("metaphylo/phylodistMat_temp.csv")
+        utils.phylo_distances = df
+        utils.meandist = df.sum().sum() / (len(data)**2 - len(data))
 
+        plt.figure(figsize=(size, 200))
+        plt.title('evolutionary distances')
+        plt.imshow(np.array(df))
+        plt.savefig("utils/evolutionarydistances.pdf")
+        plt.show()
+
+    def compute_averages(self, homoset):
+        """
+        compute the average entropy
+        """
+        # TODO: totest
+        if homoset.homo_matrix is None:
+            homoset.loadfullhomo()
+        if homoset.hashomo_matrix is None:
+            homoset.loadhashomo()
+        numspecies = homoset.hashomo_matrix.sum(axis=1)
+        ind = homoset.homo_matrixnames.argsort()
+        pos = 0
+        for i in range(len(numspecies)):
+            a = homoset.homo_matrix[ind[pos:pos + numspecies[i]]]
+            b = homoset.fulleng[ind[pos:pos + numspecies[i]]]
+            self.species[homoset.species_namelist].average_entropy = a.mean(axis=0)
+            self.species[homoset.species_namelist].average_size = b.mean(axis=0)
+            self.species[homoset.species_namelist].var_entropy = a.var(axis=0)
+            self.species[homoset.species_namelist].var_size = b.var(axis=0)
+            pos += numspecies[i]
+            self.species[homoset.species_namelist].tot_homologies = numspecies[i]
+        print "average all species : " + homoset.homo_matrix.sum(axis=0)
+
+    def compare_species(self, tophylo=False, totRNA=False):
+        """
+        compare the species according to their mean CUB, plot the mean CUB
+        to their full CUB, to their tRNA copy numbers, to the euclidean distance of their CUB
+        to the one of their phylogenetic matrix.
+
+        in this plot, the mean entropy value is plotted as a regular homology plot but each dot is a species
+        thus we can compare them together, moreover, the size of the dots informs oneself of the variance
+        in entropy per species. the color intensity informs on how much this is close to what is given by the
+        tRNA values. (additional information such as name of the species, number of tRNA values,metadata and the point
+        from its tRNA value is plotted when hovering the dot)
+
+        then we can also compare the mean of homologies or else, the full entropy of the cdna sequence per species
+        is also computed the euclidean distance amongst the species for the full entropy to see if a difference can be linked
+        to some evolutionary for one codon
+        """
+        # TODO: totest
+        e_subspecies = []
+        s_subspecies = []
+        vare_subspecies = []
+        vars_subspecies = []
+        suff = 0
+        for specie in self.species.iteritems():
+            if specie.average_entropy is not None:
+                e_subspecies.append[specie.average_entropy]
+                s_subspecies.append[specie.average_size]
+            # compare it to the phylogenetic distance matrix and the sizes
+            if specie.copynumbers is not None and totRNA and specie.copynumbers["num"] > 200:
+                vare_subspecies.append[specie.var_entropy]
+                vars_subspecies.append[specie.var_size]
+                suff += 1
+        print "we have " + str(suff) + " species with sufficient statistics in their tRNA values"
+        # compare it to the tRNA CN entropy values
+        if alg == 'tsne':
+            red = man.TSNE(n_components=n, perplexity=perplexity).fit_transform(self.all_homoset.averagehomo_matrix)
+        elif alg == 'pca':
+            red = PCA(n_components=n).fit_transform(self.all_homoset.averagehomo_matrix)
+        colors = [rgb() for homo in self.all_homoset]
+        source = ColumnDataSource(
+            data=dict(x=red[:, 0], y=red[:, 1],
+                      label=["species : %s" % utils.speciestable[x__] for x__ in self.names,
+                             "has trna : %s" % str(homo.isrecent) for homo in self.all_homoset],
+                      color=colors))
+        output_notebook()
+        hover = HoverTool(tooltips=[("label", "@label")])
+        p = figure(title="T-sne of homologous gene X for each species",
+                   tools=[hover, BoxZoomTool(), WheelZoomTool(), SaveTool(), ResetTool()])
+        p.circle(x='x', y='y', source=source, color='color', size=[])
+        show(p)
+
+    def compare_homologies(self, homosapiens=False, mindistance=10, preserved=True, size=10,
+                           minpreserv=400, minsimi=0.9, nans=True):
+        """
+        finds for species with a common ancester separated by a pseudo phylogenetic distance X,
+        genes/functions that are novel to only a subset.
+        plot the two with their differences the differences between the two
+
+        also considers an homology as highly preserved if it is shared amongst most of the species
+        and if the average similarity score is high amongst this homology.
+
+        also shows if there is a relationship between the number of amino acids the sequence does not
+        encode for and the codon usage bias
+
+        We could have used the sequence dating of ensembl but it only works for homo sapiens for now
+        maybe use it for homosapiens later
+
+        Params:
+        ------
+
+        """
+        # TODO: to test
+        if not homosapiens:
+            for _, homo in self.all_homoset.homodict.iteritems():
+                # if the homology is one of species that are closely related solely (meaning it is a recent one)
+                newhomology = True
+                mean = []
+                if preserved:
+                    if len(homo.full) > minpreserv and homo.similarity_scores.mean() > minsimi:
+                        homo.ishighpreserved = True
+                        continue
+                    else:
+                        homo.ishighpreserved = False
+                for species in self.all_homoset.homology.names:
+                    mean.append(self.all_homoset.phylo_distance[species].mean())
+                    if mean > mindistance:
+                        newhomology = False
+                if newhomology:
+                    mean = np.array(mean).mean()
+                    print "found a homology with mean " + str(mean)
+                    homology.isrecent = mean
+                else:
+                    homology.isrecent = False
+        else:
+            pass
+        # display the differences between recent homologies and older ones
+        # TODO: code this complex plotting
+        if self.all_homoset.averagehomo_matrix is None:
+            self.all_homoset.averagehomo_matrix = np.array([homo.mean for _, homo in self.all_homoset.homodict.iteritems()])
+        if alg == 'tsne':
+            red = man.TSNE(n_components=n, perplexity=perplexity).fit_transform(self.all_homoset.averagehomo_matrix)
+        elif alg == 'pca':
+            red = PCA(n_components=n).fit_transform(self.all_homoset.averagehomo_matrix)
+        colormap = ["#1abc9c", "#3498db", "#2ecc71", "#9b59b6", '#34495e', '#f1c40f',
+                    '#e67e22', '#e74c3c', '#7f8c8d', '#f39c12']
+        colors = [colormap[int(bool(homo.isrecent)) + 2 * int(bool(homo.ishighpreserved))] for homo in self.all_homoset]
+        labels = []
+        for key, homo in self.all_homoset.homodict.iteritems():
+            labels.append("homology : " + key + "\n distance : " + str(homo.isrecent) + "\n nansNumber : " + str(homo.nans.mean()))
+        source = ColumnDataSource(data=dict(x=red[:, 0], y=red[:, 1], label=labels, color=colors))
+        output_notebook()
+        hover = HoverTool(tooltips=[("label", "@label")])
+        p = figure(title="T-sne of homologous gene X for each species",
+                   tools=[hover, BoxZoomTool(), WheelZoomTool(), SaveTool(), ResetTool()])
+        p.circle(x='x', y='y', source=source, color='color', size=[size * homo.var.mean() for _, homo in self.all_homoset.homodict.iteritems()])
+        show(p)
+
+    def plot_distances(self):
+        """
+        plot the phylogenetic distance matrix
+        """
+        if utils.phylo_distances is not None:
+            plt.imshow(np.array(utils.phylo_distances))
+        else:
+            print "compute the phylo distance matrix first (look at the doc)"
 # SPECIAL FUNCTION
 
     def _dictify(self, save_workspace, save_homo):

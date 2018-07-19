@@ -8,9 +8,8 @@ jkobject.com
 import pandas as pd
 from scipy.stats import multinomial
 from scipy.stats import multivariate_normal
-from numpy.random import multinomial as npmulti
 from numpy.random import randint
-from math import log, factorial
+from math import log
 import glob
 import numpy as np
 import requests
@@ -48,6 +47,7 @@ import homology as h
 
 """
 speciestable = {}
+phylo_distances = None  # pandas dataframe
 codons = {
     'ALA': ['GCA', 'GCC', 'GCG', 'GCT'],
     'ARG': ['CGA', 'CGC', 'CGG', 'CGT', 'AGG', 'AGA'],
@@ -122,6 +122,8 @@ LMAX = 2500
 MAXITR = 1000000
 smax = [0, 0, LMAX, 1414, 180, 0, 40]
 smax2 = [0, 0, LMAX, LMAX, 520, 0, 145]
+MAX = 20  # max value of leng after which we encounter
+# weird results in compute jerem's computation nbcod**leng
 
 
 def homoyun(separation, folder="first500", homo_name="YAL019W",
@@ -200,120 +202,6 @@ def mymeta(key, val):
         print key + " already present"
 
 
-def get_tRNAcopy(species):
-    """
-    Retrieves tRNA copy numbers from ensembl DB
-    will print the number of tRNAs and the number of tRNAs with
-    a knwon codons ( the usefull ones)
-
-    will stop and set a trace for the user to inspect the data
-    to do so: please write "dat" in the console. if you see something that
-    should be corrected please do so from the console directly or from the code
-    if there seems to be an error in the code
-
-    if it is an error in the db that you can't do anything, like a mismatched codon
-    and amino acid, you can't do much. resume the process by typing "c" in the console.
-
-    Params:
-    -------
-    species: string, the species from which you want the Trna copy number
-    Returns:
-    ---------
-    dict[dict] : the tRNA copy number for the species given.
-    """
-    server = "http://rest.ensemblgenomes.org"
-    print 'species: ' + species
-    ext = "/lookup/genome/" + species + '?'
-    add = "biotypes=tRNA;level=transcript"
-    r = requests.get(server + ext + add, headers={"Content-Type": "application/json"})
-    if not r.ok:
-        r.raise_for_status()
-    data = r.json()
-    copynumber = {}
-    for key, val in anticodons.iteritems():
-        copynumber.update({key: {}})
-        for v in val:
-            v.replace('T', 'U')
-            copynumber[key].update({v.replace('T', 'U'): 0})
-    num = 0
-    j = 0
-    for j, dat in enumerate(data):
-        if dat["name"] is not None and len(dat["name"]) != 0:
-            if dat["name"][0:4] == 'tRNA':
-                try:
-                    if dat["description"] is None:
-                        if dat["name"][10:13] != '':
-                            if len(dat["name"]) == 14:
-                                codn = dat["name"][10:13]
-                            if len(dat["name"]) == 13:
-                                codn = dat["name"][9:12]
-                            if 'T' in codn:
-                                codn = codn.replace('T', 'U')
-                        else:
-                            continue
-                    else:
-                        codn = dat["description"][23:26]
-                    ami = dat["name"][5:8].upper()
-                    if ami == 'SEC':
-                        ami = 'SER'
-                        copynumber[ami][codn] += 1
-                        num += 1
-                    elif ami == 'TRP' or ami == 'MET' or ami == 'UND' or ami == 'SUP' or ami == 'UNK':
-                        continue
-                    elif ami == 'PSE':
-                        codn = dat["name"][12:15].upper()
-                        for key, val in copynumber.iteritems():
-                            if type(val) is dict:
-                                for k, v in val.iteritems():
-                                    if k == codn:
-                                        copynumber[key][k] += 1
-                    else:
-                        copynumber[ami][codn[::-1]] += 1
-                        num += 1
-                except KeyError:
-                    print "KeyError"
-                    pdb.set_trace()
-            elif dat["name"][0:3] == 'trn':
-                try:
-                    codn = dat["name"][5:8].upper()
-                    if 'T' in codn:
-                        codn = codn.replace('T', 'U')
-                    ami = amino2reduce[dat["name"][3]]
-                    if ami == 'TRP' or ami == 'MET' or ami == 'UND':
-                        continue
-                    else:
-                        copynumber[ami][codn[::-1]] += 1
-                        num += 1
-                except KeyError:
-                    print "KeyError"
-                    pdb.set_trace()
-        elif dat["description"] is not None and len(dat["description"]) > 10:
-            if dat["description"][0:4] == 'tRNA':
-                try:
-                    codn = dat["description"][23:26]
-                    ami = dat["description"][5:8].upper()
-                    if ami == 'SEC':
-                        ami = 'SER'
-                        copynumber[ami][codn] += 1
-                        num += 1
-                    elif ami == 'TRP' or ami == 'MET' or ami == 'UND':
-                        continue
-                    else:
-                        copynumber[ami][codn[::-1]] += 1
-                        num += 1
-                except KeyError:
-                    print "KeyError"
-                    pdb.set_trace()
-    if num == 0:
-        print "empty data"
-    else:
-        print num
-    print j
-    copynumber.update({'num': num})
-    copynumber.update({'tot_trna': j})
-    return copynumber
-
-
 def retrievenames():
     """
     returns the dfs for yun's data (names of the species alphabetically ordered and their links)
@@ -339,28 +227,31 @@ def loadfromensembl(homology, kingdom='compara=fungi', sequence='cdna',
         ext += ';' + kingdom
     if additional is not None:
         ext += ';' + additional
-    r = requests.get(server + ext, headers={"Content-Type": "application/json"})
+    try:
+        r = requests.get(server + ext, headers={"Content-Type": "application/json"})
+    except ConnectionError:
+        print "problem at " + homology
+        return loadfromensembl(homology, kingdom=kingdom, sequence=sequence,
+                               additional=additional, saveonfiles=saveonfiles, normalized=normalized,
+                               setnans=setnans, number=number, by=by, using=using)
     if not r.ok:
         r.raise_for_status()
     data = r.json()['data'][0]['homologies']
     if saveonfiles:
         with open('utils/data/' + homology + '.json', "wb") as code:
             code.write(json.dump(data))
-    species, lenmat, H, nans, similarities, KaKs_Scores, taxons, proteinids = process(
+    species, GCcount, lenmat, H, nans, similarities, KaKs_Scores, taxons, proteinids = process(
         data, normalized=normalized, setnans=setnans, by=by)
     if by == 'entropyLocation':
         H = getloc(H, np.array(lenmat), using=using)
     # here we add two things into names but only as a temporary saving measures removed by the
     # application fo preprocessing in homoset.
     homo = h.homology(names=[species, taxons], full=H, lenmat=lenmat,
-                      nans=nans, KaKs_Scores=KaKs_Scores, similarity_scores=similarities, proteinids=proteinids)
+                      nans=nans, KaKs_Scores=KaKs_Scores, similarity_scores=similarities,
+                      proteinids=proteinids, GCcount=GCcount)
     homo.order(withtaxons=True)  # a first ordering of the data, usefull afterward in the preprocessing
     return homo
-    # TODO: find what should be interesting to get on the ensembl websiste here
-    # http://rest.ensemblgenomes.org/
-    # TODO: find where the GFF3 (gene annotation) files are
-    # TODO: have the similarity value between each gene of a homology
-    # TODO: have a function to compute the half life of the genes with their similarity and the gamma function
+
 
 # ################# YUN Processing Pipeline  ####################################
 
@@ -377,6 +268,7 @@ def process(data, normalized=False, setnans=False, by='entropy'):
     similarities = []
     taxons = []
     proteinids = []
+    GCcounts = []
     for dat in data:  # each species
         # https://en.wikipedia.org/wiki/Ka/Ks_ratio
         if dat["dn_ds"] is not None:
@@ -389,14 +281,17 @@ def process(data, normalized=False, setnans=False, by='entropy'):
         if dat["protein_id"] is not None:
             proteinids.append(dat["protein_id"])
         species.append(dat['species'])
-        valH, len_i, nan = computeyun(dat['align_seq'].encode('ascii', 'ignore').replace("-", ""),
-                                      normalized=normalized, setnans=setnans, by=by)
+        valH, len_i, nan, GCcount = computeyun(dat['align_seq'].encode('ascii', 'ignore').replace("-", ""),
+                                               normalized=normalized, setnans=setnans, by=by)
         H.append(valH)
         nans.append(nan)
         lenmat.append(len_i)
-    return species, np.array(lenmat, dtype=int), np.array(H), np.array(nans), KaKs_Scores if \
-        len(KaKs_Scores) != 0 else None, similarities if len(similarities) != 0 else None,\
-        taxons if len(taxons) != 0 else None, proteinids if len(proteinids) != 0 else None
+        GCcounts.append(GCcount)
+    return species, np.array(GCcounts, dtype=int), np.array(lenmat, dtype=int), np.array(H),\
+        np.array(nans), KaKs_Scores if len(KaKs_Scores) != 0 else None,\
+        similarities if len(similarities) != 0 else None,\
+        taxons if len(taxons) != 0 else None,\
+        proteinids if len(proteinids) != 0 else None
 
 
 def computeyun(data, setnans=False, normalized=False, by='entropy'):
@@ -406,8 +301,9 @@ def computeyun(data, setnans=False, normalized=False, by='entropy'):
     c = [data[i:i + 3] for i in range(0, len(data), 3)]
     valH = np.zeros(len(amino)) if by != 'frequency' else np.zeros(59)  # the number of codons usefull
     len_i = []
-    nans = False
+    nans = 0
     pos = 0
+    GCcount = (data.count('G') + data.count('C')) / len(data)
     for k, amin in enumerate(amino):
         nbcod = len(codons[amin])  # replace Cleng
         count = np.zeros(nbcod)
@@ -422,7 +318,7 @@ def computeyun(data, setnans=False, normalized=False, by='entropy'):
         if by == 'frequency':
             if lengsubseq == 0:
                 valH[pos:pos + nbcod] = np.NaN if setnans else 1. / nbcod
-                nans = True
+                nans += 1
             else:
                 E = count / lengsubseq
                 valH[pos:pos + nbcod] = E
@@ -430,7 +326,7 @@ def computeyun(data, setnans=False, normalized=False, by='entropy'):
         else:
             if lengsubseq == 0:
                 valH[k] = np.NaN if setnans else 0.5
-                nans = True
+                nans += 1
             else:
                 Yg = multinomial.pmf(x=count, n=lengsubseq, p=mn)
                 # efor part
@@ -442,7 +338,7 @@ def computeyun(data, setnans=False, normalized=False, by='entropy'):
                 # end here
                 valH[k] = -np.log(Yg / Eg) / lengsubseq if normalized else -np.log(Yg / Eg)
         len_i.append(lengsubseq)
-    return valH, len_i, nans
+    return valH, len_i, nans, GCcount
 
 
 def getloc(valH, geneleng, using='normal'):
@@ -455,7 +351,7 @@ def getloc(valH, geneleng, using='normal'):
 
     valH
     """
-    # TODO: to test , if you concatenate more data together, it should be more efficient
+    # TODO: if you concatenate more data together, it should be more efficient
     # then you do for x in valH and you get the size of each and concatenate, order, do the computation
     # then you retrieve the list back with the known ordering and sizes
     numberindiv = len(valH)  # works like a shape[0]
@@ -496,12 +392,15 @@ def getloc(valH, geneleng, using='normal'):
                 if Eg == 0:
                     valHloc[y] = 0
                     continue
-                if using == "normal" and leng < 200 and nbcod < 5:
-                    ref = computepartition(nbcod, leng, 1000000, using="permutation")
-                else:
-                    ref = computepartition(nbcod, leng, 1000000, using=using)
-                ref = np.divide(np.log(np.divide(Eg, ref)), leng)
-                hist, edges = np.histogram(ref, int((ref.max() - ref.min()) * 10000))
+                ref = computepartition(nbcod, leng, 1000000, using=using)
+                try:
+                    ref = np.divide(np.log(np.divide(Eg, ref)), leng)
+                    hist, edges = np.histogram(ref, int((ref.max() - ref.min()) * 10000))
+                except:
+                    pdb.set_trace()
+                    valHloc[y] = 0
+                    continue
+
                 lhist = len(edges)
                 if edges[0] < 0:
                     nhist = np.zeros(lhist - 2)
@@ -547,7 +446,6 @@ def computepartition(nbcod, leng, MAXITR, using='normal'):
     done by computing the pdf from a multinomial according to those values
 
     """
-
     if using == 'computejerem':
         return computejerem(nbcod, leng)
     elif using == 'permutation':
@@ -570,41 +468,20 @@ def randomdraw(nbcod, leng):
     for a defined amino acid (and it number of repetitions)
     done by computing the pdf from a multinomial according to those values
     """
-    # TODO: totest
-    pdb.set_trace()
-    prevect = np.zeros(nbcod)
-    prevect[-1] = leng
     ind = 0
     listvect = []
-
-    def vect(prevect, nbcods):
-        # we use this method using prevect to find a vector with the right total sum
-        for i in range(1, nbcods):
-            prevect[i] = prevect[i] - prevect[i - 1]
-        return prevect
     # we iterate this way to have only a max value or everything thanks to a
     # sampling without replacement
-    if nbcod == 2:
-        while ind != MAXITR:
-            prevect[0] = randint(leng + 1)
-            listvect.append(vect(prevect, nbcod))
-            ind += 1
-    if nbcod == 3:
-        while ind != MAXITR:
-            prevect[0:2] = np.sort(randint(leng + 1, 2))
-            listvect.append(vect(prevect, nbcod))
-            ind += 1
-    if nbcod == 4:
-        while ind != MAXITR:
-            prevect[0:3] = np.sort(randint(leng + 1, 3))
-            listvect.append(vect(prevect, nbcod))
-            ind += 1
-    if nbcod == 6:
-        while ind != MAXITR:
-            prevect[0:5] = np.sort(randint(leng + 1, 5))
-            listvect.append(vect(prevect, nbcod))
-            ind += 1
-    return multinomial(leng, np.ones(nbcod) / nbcod).pmf(listvect.sort())
+    while ind != MAXITR:
+        prevect = [0] * nbcod
+        prevect[1:] = list(np.sort(randint(0, leng + 1, nbcod - 1)))
+        for i in range(nbcod - 1):
+            prevect[i] = prevect[i + 1] - prevect[i]
+        prevect[-1] = leng - prevect[-1]
+        listvect.append(list(prevect))
+        ind += 1
+    listvect.sort()
+    return multinomial(leng, np.ones(nbcod) / nbcod).pmf(listvect)
 
 
 def computepartition_sorted_full(nbcod, leng):
@@ -646,7 +523,7 @@ def computepartition_sorted_full(nbcod, leng):
                 val.append([i, a])
         return multinomial(leng, mn).pmf(val)
     else:
-        return randomdraw(mn, leng)
+        return randomdraw(nbcod, leng)
 
 
 def computepartition_without_permutation(nbcod, leng):
@@ -659,13 +536,12 @@ def computepartition_without_permutation(nbcod, leng):
     repetitions)
     done by computing the pdf from a multinomial according to those values
     """
-    # TODO: totest
     mn = np.ones(nbcod) / nbcod
     if mlen(leng, nbcod) == 'full':
         # if we are ok to do full method
         a = 0
         val = []
-        for i in range(leng + 1):
+        for i in range((leng / 2) + 1):
             a = leng - i
             if nbcod > 2:
                 for j in range(i, a / 2 + 1):
@@ -682,24 +558,28 @@ def computepartition_without_permutation(nbcod, leng):
                                         # unknwon complexity
                             else:
                                 val.append([i, j, k, c])
-
                     else:
                         val.append([i, j, b])
             else:
                 val.append([i, a])
         densities = multinomial(leng, mn).pmf(val)
-        dens = densities.copy()
+        values = list(val)
         for i, v in enumerate(val):
-            positions = getpermut(v)
-            pos = 0
-            for i in positions[0:-1]:
-                pos = pos * i
-            pos = pos * (leng - positions[-1]) - 1
-            dens.insert(pos, densities(i))
-        return dens
+            positions = list(permute(v, 0, len(v) - 1))
+            temp = []
+            for position in positions:
+                pos = list(position)
+                if pos != v:
+                    temp.append(pos)
+            values.extend(temp)
+            densities = np.append(densities, np.repeat(densities[i], len(temp)))
+        ind = sorted(range(len(values)), key=values.__getitem__)
+        densities[:] = densities[ind]
+
+        return densities
     else:
         # we draw from a multinomial function
-        return randomdraw(mn, leng)
+        return randomdraw(nbcod, leng)
 
 
 def computejerem(nbcod, leng):
@@ -714,108 +594,139 @@ def computejerem(nbcod, leng):
     repetitions)
     done by computing the pdf from a multinomial according to those values
     """
-    # TODO: totest
-    mn = np.ones(nbcod) / nbcod
     if mlen(leng, nbcod) == 'full':
         # if we are ok to do full method
-        a = 0
-        comp = 1
+
         # TODO: check if it is faster to replace by log computations
-        val = []
-        densities = []
         # Here we have a problem if we compute directly with a range starting with zero as we will
         # end up dividing by zero, the best idea is to reuse computationas for 2/3/4 codons to compute
         # the first part at where one the the values [A,B,nC,D,E,.] is at zero
-        if nbcod > 1:
+        def comp2(densities, comp, initialval, leng, val):
             densities.append(comp)
-            initialval = [0] * (nbcod)
-            initialval[-1] = leng
-            val.append(initialval)
+            val.append(list(initialval))
             for i in range(1, leng + 1):
                 # Here a is the last value in [A,B,C,D,E,.] which can be computed as the total length
                 # minus the other values. it is propagated into the other for loops as one can see for the
                 # computations where nbcod > 2
                 a = leng - i
-                comp = (comp / i) * a
+                comp = (comp / i) * (a + 1.)
                 densities.append(comp)
                 initialval[-1] = a
                 initialval[-2] = i
-                val.append(initialval)
-        if nbcod > 2:
+                val.append(list(initialval))
+
+            return densities, val
+
+        def comp3(densities, comp, initialval, leng, val):
             for i in range(1, leng + 1):
                 a = leng - i
-                comp = comp / i
+                comp = (comp / i) * (a + 1.)
                 # here comp is the memory of what part of the multinomial equation is at that point
                 # To go from the multinomial of [A,B,C,D,E,.] to the one of [A,B,C,D,E+1,.-1] it is
                 # just a division and a multiplication so we iteratively divide and multiply
+                initialval[-1] = a
+                initialval[-2] = 0
+                initialval[-3] = i
+                dens, va = comp2([], comp, initialval, a, [])
+                val.extend(va)
+                densities.extend(dens)
+            return densities, val
+
+        def comp4(densities, comp, initialval, leng, val):
+            for i in range(1, leng + 1):
+                a = leng - i
+                comp = (comp / i) * (a + 1.)
+                initialval[-1] = a
+                initialval[-2] = 0
+                initialval[-3] = 0
+                initialval[-4] = i
+                dens, va = comp2([], comp, initialval, a, [])
+                val.extend(va)
+                densities.extend(dens)
+                dens, va = comp3([], comp, initialval, a, [])
+                val.extend(va)
+                densities.extend(dens)
+            return densities, val
+
+        def comp6(densities, comp, initialval, leng, val):
+            for j in range(1, leng + 1):
+                a = leng - j
+                comp = (comp / j) * (a + 1.)
+                dens, va = comp2([], comp, [0, j, 0, 0, 0, a], a, [])
+                densities.extend(dens)
+                val.extend(va)
+                dens, va = comp3([], comp, [0, j, 0, 0, 0, a], a, [])
+                densities.extend(dens)
+                val.extend(va)
+                dens, va = comp4([], comp, [0, j, 0, 0, 0, a], a, [])
+                densities.extend(dens)
+                val.extend(va)
+            for i in range(1, leng + 1):
+                a = leng - i
+                comp = (comp / i) * (a + 1.)
+                dens, va = comp2([], comp, [i, 0, 0, 0, 0, a], a, [])
+                densities.extend(dens)
+                val.extend(va)
+                dens, va = comp3([], comp, [i, 0, 0, 0, 0, a], a, [])
+                densities.extend(dens)
+                val.extend(va)
+                dens, va = comp4([], comp, [i, 0, 0, 0, 0, a], a, [])
+                densities.extend(dens)
+                val.extend(va)
                 comp_i = comp
-                for j in range(i, a / 2 + 1):
+                for j in range(1, a + 1):
                     b = a - j
-                    comp_i = (comp_i / j) * b
-                    densities.append(comp_i)
-                    initialval[-1] = b
-                    initialval[-2] = i
-                    initialval[-3] = j
-                    val.append(initialval)
+                    comp_i = (comp_i / j) * (b + 1.)
+                    dens, va = comp2([], comp_i, [i, j, 0, 0, 0, b], b, [])
+                    densities.extend(dens)
+                    val.extend(va)
+                    dens, va = comp3([], comp_i, [i, j, 0, 0, 0, b], b, [])
+                    densities.extend(dens)
+                    val.extend(va)
+                    dens, va = comp4([], comp_i, [i, j, 0, 0, 0, b], b, [])
+                    densities.extend(dens)
+                    val.extend(va)
+            return densities, val
+
+        if nbcod > 1:
+            val = []
+            densities = []
+            initialval = [0] * (nbcod)
+            initialval[-1] = leng
+            dens, va = comp2([], 1., initialval, leng, [])
+            val.extend(va)
+            densities.extend(dens)
+        if nbcod > 2:
+            dens, va = comp3([], 1., [0] * (nbcod), leng, [])
+            val.extend(va)
+            densities.extend(dens)
+
         if nbcod > 3:
-            for i in range(1, leng + 1):
-                a = leng - i
-                comp = comp / i
-                comp_i = comp
-                for j in range(i, a / 2 + 1):
-                    b = a - j
-                    comp_i = comp_i / j
-                    comp_j = comp_i
-                    for k in range(j, b / 2 + 1):
-                        c = b - k
-                        comp_j = (comp_j / k) * c
-                        densities.append(comp_j)
-                        initialval[-1] = c
-                        initialval[-2] = i
-                        initialval[-3] = j
-                        initialval[-4] = k
-                        val.append(initialval)
+            dens, va = comp4([], 1., [0] * (nbcod), leng, [])
+            val.extend(va)
+            densities.extend(dens)
+
         if nbcod == 6:
-            for i in range(1, leng + 1):
-                a = leng - i
-                comp = comp / i
-                comp_i = comp
-                for j in range(i, a / 2 + 1):
-                    b = a - j
-                    comp_i = comp_i / j
-                    comp_j = comp_i
-                    for k in range(j, b / 2 + 1):
-                        c = b - k
-                        comp_j = comp_j / k
-                        comp_k = comp_j
-                        for l in range(k, c / 2 + 1):
-                            d = c - l
-                            comp_k = comp_k / l
-                            comp_l = comp_k
-                            for m in range(l, d / 2 + 1):
-                                e = d - m
-                                comp_l = (comp_l / m) * e
-                                densities.append(comp_l)
-                                val.append([e, i, j, k, l, m])
+            dens, va = comp6([], 1., [0] * (nbcod), leng, [])
+            val.extend(va)
+            densities.extend(dens)
+
         # in order not to have zeros that would block the iterations (keeping all values to zero)
         # we keep it high enough by not dividing it with the inverse probability which is very high
         # around 10^20
-        pdb.set_trace()
-        dens = list(densities)
-        for i, v in enumerate(val):
-            # use the function to find all possible permutations from each possible values
-            # using the output values and the corresponding probability, we copy and paste this
-            # probability to each corresponding positions using (position i*j*k*l*1-.)
-            positions = getpermut(v)
-            pos = 0
-            for i in positions[0:-1]:
-                pos = pos * i
-            pos = pos * (leng - positions[-1]) - 1
-            dens.insert(pos, densities(i))
-        return np.divide(np.array(dens, dtype=np.float), nbcod**leng)
+        densities = np.array(densities, dtype=np.float)
+        if leng > MAX:
+            val = leng % MAX
+            for i in range(leng / MAX):
+                densities = np.divide(densities, nbcod**MAX)
+            if val != 0:
+                densities = np.divide(densities, nbcod**val)
+        else:
+            densities = np.divide(densities, nbcod**leng)
+        return densities
     else:
         # we draw from a multinomial function
-        return randomdraw(mn, leng)
+        return randomdraw(nbcod, leng)
 
 
 def computepartition_normal_approximation(nbcod, leng, probavector=None):
@@ -879,22 +790,28 @@ def mlen(leng, nb):
     elif nb == 2:
         return 'samp' if leng > smax[nb] else 'full'
 
+# This function takes three parameters:
+# 1. String
+# 2. Starting index of the string
+# 3. Ending index of the string.
 
-def getpermut(L):
+
+def permute(vect, start, end):
     """
-    compute all possible permutations of the set L
+    compute all possible permutations of the set vect
     """
-    tagged = []
-    permuts = []
-    for posval, val in enumerate(L):
-        for posv, v in enumerate(L):
-            if v != val and [posv, posval] not in tagged:
-                tagged.append[posv, posval]
-                perm = L
-                perm[posv] = L[posval]
-                perm[posval] = L[posv]
-                permuts.append(perm)
-    return permuts
+    if start == end:
+        return [tuple(vect)]
+    else:
+        perm = set([])
+        val = []
+        for i in range(start, end + 1):
+            vect[start], vect[i] = vect[i], vect[start]
+            val = permute(list(vect), start + 1, end)
+            for j in val:
+                perm.add(j)
+            vect[start], vect[i] = vect[i], vect[start]  # backtrack
+        return perm
 
 
 def last_match_index(a, value):

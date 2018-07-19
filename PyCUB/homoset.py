@@ -61,6 +61,8 @@ class HomoSet(collections.MutableMapping):
 
     hashomo_matrix = None
     homo_matrix = None
+    homo_matrixnames = None
+    fulleng = None
     homodict = {}
     homo_namelist = []
     species_namelist = set([])
@@ -70,40 +72,62 @@ class HomoSet(collections.MutableMapping):
     wasclusterized = False
     homo_clusters = None
     datatype = ''
-    phylo_distance = None
-    # TODO: plot the phylo distance
+    averagehomo_matrix = None
 
-    def __init__(self, homo_namelist=None, data=None, datatype=None, phylo_distance=None):
+    def __init__(self, **kwargs):
         """
         will initialize the object with the different values you might have from another project
         use the data dictionnary to add any type of data
         """
+        data = kwargs.get("data", None)
         if data is not None:
-            self.homo_matrix = np.asarray(data["homo_matrix"]) if not (
-                data["homo_matrix"] is None) else None
-            self.homo_namelist = data["homo_namelist"]
-            self.species_namelist = data["species_namelist"]
-            self.homogroupnb = data["homogroupnb"]
-            self.clusters = data["clusters"]
-            self.datatype = data["datatype"]
-            self.phylo_distance = pd.read_json(data["phylo_distance"], orient='split') \
-                if data["phylo_distance"] is not None else None
-            self.red_homomatrix = np.asarray(data["red_homomatrix"]) if not (
-                data["red_homomatrix"] is None) else None
-            utils.speciestable = data["speciestable"]
-            self.hashomo_matrix = np.asarray(data["hashomo_matrix"]) if not (
-                data["hashomo_matrix"] is None) else None
+            self.homo_matrix = np.asarray(data["homo_matrix"]) if data.get(
+                "homo_matrix", None) is not None else None
+            self.homo_namelist = data.get("homo_namelist", [])
+            self.species_namelist = set(data.get("species_namelist", []))
+            self.homogroupnb = data.get("homogroupnb", 2)
+            self.clusters = data.get("clusters", [])
+            self.datatype = data.get("datatype", '')
+            self.phylo_distance = pd.read_json(data["phylo_distance"], orient='split') if data.get(
+                "phylo_distance", None) is not None else None
+            self.red_homomatrix = np.asarray(data["red_homomatrix"]) if data.get(
+                "red_homomatrix", None) is not None else None
+            utils.speciestable = data.get("speciestable", {})
+            utils.phylo_distances = data.get("phylo_distances", None)
+            utils.meandist = utils.phylo_distances.sum().sum() / (len(
+                utils.phylo_distances)**2 - len(utils.phylo_distances)) if utils.phylo_distances is not None else None
+            self.hashomo_matrix = np.asarray(data["hashomo_matrix"]) if data.get(
+                "hashomo_matrix", None) is not None else None
+            self.fulleng = np.asarray(data["fulleng"]) if data.get(
+                "fulleng", None) is not None else None
+            self.wasclusterized = data.get('wasclusterized', False)
+            self.homo_clusters = np.asarray(data["homo_clusters"]) if data.get(
+                "homo_clusters", None) is not None else None
+            self.averagehomo_matrix = np.asarray(data["averagehomo_matrix"]) if data.get(
+                "averagehomo_matrix", None) is not None else None
             tp = {}
             for key, val in data["homodict"].iteritems():
                 tp.update({key: h.homology(data=val)})
             self.homodict = tp
-        elif homo_namelist is not None:
-            self.homo_namelist = homo_namelist
-        elif datatype is not None:
-            self.datatype = datatype
-        elif phylo_distance is not None:
-            self.phylo_distance = pd.read_json(data["phylo_distance"], orient='split')
-       # -- add loads and save
+        else:
+            self.homo_matrix = kwargs.get("homo_matrix", None)
+            self.homo_namelist = kwargs.get("homo_namelist", [])
+            self.species_namelist = kwargs.get("species_namelist", set([]))
+            self.homogroupnb = kwargs.get("homogroupnb", 2)
+            self.clusters = kwargs.get("clusters", [])
+            self.datatype = kwargs.get("datatype", '')
+            self.phylo_distance = kwargs.get("phylo_distance", None)
+            self.red_homomatrix = kwargs.get("red_homomatrix", None)
+            utils.speciestable = kwargs.get("speciestable", {})
+            utils.phylo_distances = kwargs.get("phylo_distances", None)
+            utils.meandist = utils.phylo_distances.sum().sum() / (len(
+                utils.phylo_distances)**2 - len(utils.phylo_distances)) if utils.phylo_distances is not None else None
+            self.hashomo_matrix = kwargs.get("hashomo_matrix", None)
+            self.fulleng = kwargs.get("fulleng", None)
+            self.wasclusterized = kwargs.get('wasclusterized', False)
+            self.homo_clusters = kwargs.get("homo_clusters", None)
+            self.averagehomo_matrix = kwargs.get("averagehomo_matrix", None)
+        # TODO: -- add loads and save everywhere
     # magic methods https://rszalski.github.io/magicmethods/
 
     def __getitem__(self, key):
@@ -200,12 +224,18 @@ class HomoSet(collections.MutableMapping):
         function to concatenate all the homologies in one big array(practicle for certain computations)
         """
         self.homo_matrix = self.homodict[self.homo_namelist[0]].full
+        self.homo_matrixnames = self.homodict[self.homo_namelist[0]].names
+        self.fulleng = self.homodict[self.homo_namelist[0]].lenmat
         for x, homo in enumerate(self.homo_namelist[1:]):
             try:
                 self.homo_matrix = np.vstack((self.homo_matrix, self.homodict[homo].full))
+                self.homo_matrixnames.extend(self.homodict[homo].names)
+                self.fulleng = np.vstack((self.fulleng, self.homodict[homo].lenmat))
             except ValueError:
                 print x, self.homodict[homo].full.shape
+                pdb.set_trace()
             print '{0}%\r'.format((x * 100) / len(self.homo_namelist)),
+        self.homo_matrixnames = np.asarray(self.homo_matrixnames)
 
     def loadhashomo(self):
         """
@@ -228,6 +258,7 @@ class HomoSet(collections.MutableMapping):
         """
         a function to populate a homology with random values
         """
+        # TODO: to test
         full = np.random.rand(len(self.species_namelist), 18)
         nans = np.zeros(len(self.species_namelist))
         names = []
@@ -307,81 +338,43 @@ class HomoSet(collections.MutableMapping):
             if withtaxons:
                 return taxons, species
 
-    def compute_entropyloc(self, using='normal', inpar=True):
+    def compute_entropyloc(self, using='normal'):
         """
         called if need entropy location and used ensembl data. you can always compute entropy location
         from entropy data.
+
+        Will be much faster than doing it directly when calling
+        ensembl's data as it computes the partition function
+        only one for each lengths
         """
         # TODO: totest
-        if type(inpar) is int:
-            num_cores = inpar
-        else:
-            num_cores = -1 if inpar else 1
         if self.datatype is 'entropy':
-            values = Parallel(n_jobs=num_cores)(delayed(utils.getloc)(self.homodict[name].full,
-                                                                      self.homodict[name].lenmat) for name in self.homo_namelist)
-            for i, name in enumerate(self.homo_namelist):
-                self.homodict[name].full = values[i]
-
-    def find_clusters(self, clustering='dbscan', homogroupnb=None, assess=True, eps=0.8, best_eps=True, trainingset=30):
-        """
-        Finds, for each homologies in the working homoset, groups that are part of compact clusters
-        it will be using gaussian mixture clustering or DBSCAN and order them according
-        to the density of each cluster (we are interested in the densest ones) and assess
-        the quality using 3 criterion:BIC, number of outliers,
-
-        also: - find if we are close to ancestry tree,
-        here we need to represent a comparison of the closeness
-        in a phylogenetic tree to a cluster of species
-        --> given a grouping of phylogenetic tree, what cluster is the most similar to it
-
-
-        Params:
-        -----
-        clustering: method (DBSCAN, gaussian mixture)
-        homogroupnb: the number of groups can be a number or else will look for the better number of
-        cluster according to assessments.
-        assess: plot or not the assessments
-        """
-        # TODO: --> compute the F1 score (amount of species that should be in the cluster and are not
-        # that should not be but are in the cluster ...) regularized with respect to
-        # the size of each cluster, for each homologies.
-        # TODO: compute the quality of the eps value on the full homology according to the scores(etc..)
-        # TODO: set the eps values by finding clusters that best relate to ancestry tree
-        # --> find for 20 random homologies, what is the eps value that increase the F1 score
-        # (regularized by some value) the most
-        if best_eps:
-            eps = self.findbest_eps(trainingset)
-        for val in self.homo_namelist:
-            print val
-            totscore = self.homodict[val].clusterize_(clustering=clustering, eps=eps, homogroupnb=homogroupnb, assess=assess)
-            print "-----------------------------"
-        self.wasclusterized = True
-        if best_eps:
-            print "-----------------TOT------------------"
-            # print totscore ...
-
-    def computeF1score(self):
-        """
-        """
-        if self.wasclusterized and self.phylo_distance is not None:
-            for val in self.homo_namelist:
-                if self.homodict[val].clusters is not None:
-                    print val
-                    self.homodict[val].computeF1score()
-
-    def findbest_eps(self, trainingset=30):
-        """
-        """
-        for i, val in enumerate(self.homo_namelist):
-            if i > trainingset:
-                break
-            print val
-            #  de, ded = self.homodict[val].clusterize_(clustering=clustering, eps=eps, homogroupnb=homogroupnb, assess=assess)
-            # F1, de, dE = self.homodict[val].computeF1score()
-            # compute similarity to ancestry or other
-        # get the best eps of all
-        # compute its similarity on the full set of homologies
+            if self.homo_matrix is None:
+                self.homomatrix = self.homodict[self.homo_namelist[0]].full
+                self.fulleng = self.homodict[self.homo_namelist[0]].lenmat
+                for x, homo in enumerate(self.homo_namelist[1:]):
+                    try:
+                        self.homo_matrix = np.vstack((self.homo_matrix, self.homodict[homo].full))
+                        self.fulleng = np.vstack((self.fulleng, self.homodict[homo].lenmat))
+                    except ValueError:
+                        print x, self.homodict[homo].full.shape
+                        pdb.set_trace()
+                    print '{0}%\r'.format((x * 50) / len(self.homo_namelist)),
+            else:
+                self.fulleng = self.homodict[self.homo_namelist[0]].lenmat
+                for x, homo in enumerate(self.homo_namelist[1:]):
+                    try:
+                        self.fulleng = np.vstack((self.fulleng, self.homodict[homo].lenmat))
+                    except ValueError:
+                        print x, self.homodict[homo].full.shape
+                    print '{0}%\r'.format((x * 50) / len(self.homo_namelist)),
+            self.homomatrix = utils.getloc(self.homo_matrix, self.fulleng, using=using)
+            pos = 0
+            for x, homo in enumerate(self.homo_namelist):
+                posi = pos + len(self.homodict[homo].full) + 1
+                self.homodict[homo].full = self.homo_matrix[pos:posi]
+                pos = posi
+                print '{0}%\r'.format(50 + ((x * 50) / len(self.homo_namelist))),
 
     def remove(self, species):
         """
@@ -411,7 +404,8 @@ class HomoSet(collections.MutableMapping):
         plt.bar(range(len(sumed)), sumed)
         print "you can always look at a particular range of species with 'homo_namelist' "
 
-    def order_from_matrix(self, clustering='kmeans', byspecie=False, order=True, plot_ordering=True, homogroupnb=2, findnb=False,
+    def order_from_matrix(self, clustering='kmeans', byspecie=False, order=True,
+                          plot_ordering=True, homogroupnb=2, findnb=False,
                           reducedim=False):
         """
         Compute an homology group :
@@ -425,7 +419,8 @@ class HomoSet(collections.MutableMapping):
         -------
         clustering: flags to 'kmeans', 'spectral', 'xmeans' to use different sk-learn algorithms
 
-        plot: flags to true for the function to output ploting of the affinity matrix with and without the
+        plot: flags to true for the function to output ploting
+        of the affinity matrix with and without the
         clusters
 
         homogroupnb: nb of groups you want to extract
@@ -440,7 +435,8 @@ class HomoSet(collections.MutableMapping):
         clusts = []
         while True:
             if clustering == "kmeans":
-                # The parallel version of K-Means is broken on OS X when numpy uses the Accelerate Framework.
+                # The parallel version of K-Means is broken on OS X
+                # when numpy uses the Accelerate Framework.
                 # This is expected behavior: Accelerate can be called after a fork
                 # but you need to execv the subprocess with the Python binary
                 # (which multiprocessing does not do under posix)
@@ -471,7 +467,8 @@ class HomoSet(collections.MutableMapping):
                     homogroupnb += 1
                     print "for " + homogroupnb + " cluster, the metric is " + metricA, metricB
                 else:
-                    print "you just select the clust by doing PyCUB.homo.clusters = output['groupnbyouwant']"
+                    print "you just select the clust by doing PyCUB.homo.clusters =\
+                    output['groupnbyouwant']"
                     print "you an run the 'orderfromclust' also to have the plottings and orderings"
                     return clusts
             else:
@@ -480,7 +477,8 @@ class HomoSet(collections.MutableMapping):
         print metricA
         print metricB
         if order:
-            self.hashomo_matrix = self.orderfromclust(homogroupnb, clust, byspecie=byspecie, plot_ordering=plot_ordering)
+            self.hashomo_matrix = self.orderfromclust(homogroupnb, clust, byspecie=byspecie,
+                                                      plot_ordering=plot_ordering)
         self.hashomo_matrix = self.hashomo_matrix.T if byspecie else self.hashomo_matrix
         self.homogroupnb = homogroupnb
 
@@ -513,7 +511,7 @@ class HomoSet(collections.MutableMapping):
             self._plot_clust(self.hashomo_matrix, orderedhas)
         return orderedhas
 
-    def get_clusterstats(self, by_proportion=True, sort=None):
+    def get_clusterstats(self, by_proportion=True, sort=True):
         """
         will find the number of cluster i per homologies and per species
 
@@ -547,7 +545,7 @@ class HomoSet(collections.MutableMapping):
                             x += 1
                     homoclusters[j] = np.divide(hprop, i) if by_proportion else hprop
                 self.stats = {'homologies': homoclusters, 'species': specluster}
-                if sort is 'homologies':
+                if sort:
                     ind = self.stats['homologies'].argsort(axis=0)
                     self.stats['homologies'][:] = self.stats['homologies'][ind]
                     if self.hashomo_matrix is not None:
@@ -558,16 +556,17 @@ class HomoSet(collections.MutableMapping):
                         self.homo_matrix[:] = self.homo_matrix[ind]
                     if self.red_homomatrix is not None:
                         self.red_homomatrix[:] = self.red_homomatrix[ind]
+                    if self.homo_matrixnames is not None:
+                        self.homo_matrixnames[:] = self.homo_matrixnames[ind]
                     if self.clusters is not None:
                         self.clusters[:] = self.clusters[ind]
-            # TODO: code the version by species
-            # elif sort is 'species':
-            #     ind =
+                    self.stats["species"] = self.stats["species"].tolist()
+                    self.stats["species"].sort()
             self._barplot()
         else:
             print "you need to find clusters first"
 
-    def compare_clusters(self):
+    def compare_clusters(self, cubdistance_matrix=True, plot=True, size=40):
         """
         for each clusters in homologies, will compare them with a similarity matrix
         and a distance matrix
@@ -575,53 +574,189 @@ class HomoSet(collections.MutableMapping):
         compare amongst the working homoset homologies, the clusters together,
         by what species they contains by creating a new vector of species presence
         in each cluster and plotting the similarity matrix of each of those vectors.
-        --> create a compare function in homoset of homologies clusters similarity matrix and ordering.
+        --> create a compare function in homoset of
+        homologies clusters similarity matrix and ordering.
 
         basically the distance should be nan if it has not the species,
         -1 if outlier to other and 1 if one cluster to another and zeros if the same to the same
         """
-        pass
-        # TODO: to code this function
-        # TODO: code the function to find the 3D matrix of boolean for species pertaining same cluster
-        # (cluster matrix species A === cluster Matrix of species B for all B and A)
-        # then sum of the bools and divide by total number of homologies
-        # or by total number of common genes (or just cosine similarity of their has homo matrix.)
-        # TODO: compute also the same matrix with but the distance of their CUB values.
-        # TODO: for both have plot function in espece (one row of the matrix) and in homoset
-        # (the 2D resulting matrix when compputing the sum/TOT and sum/TOThomologies shared
+        # TODO: to test
+        se = np.zeros(len(self.species_namelist), dtype=int)
+        j = 0
+        simimatrix = np.zeros((len(self.homodict), len(self.homodict)))
+        for _, homo in self.homodict.iteritems():
+            a = set(homo.names)
+            se[homo.names] = homo.clusters[:]
+            comp = np.zeros(len(self.species_namelist), dtype=int)
+            i = 0
+            for _, homocmp in self.homodict.iteritems():
+                similar = len(a.intersection(homocmp.names))
+                comp[homo.names] = homocmp.clusters[:]
+                simimatrix[j, i] = ((se == comp).sum() - (len(self.species_namelist) - similar)) / similar
+                i += 1
+            j += 1
+        if plot:
+            plt.figure(figsize=(size, 200))
+            plt.title('similarity amongst clusters per homologies')
+            plt.imshow(simimatrix)
+            plt.savefig("utils/clustersimilarity.pdf")
+            plt.show()
+        self.cluster_similarity = simimatrix.copy()
+        if cubdistance_matrix:
+            se = np.zeros((len(self.species_namelist), 18))
+            j = 0
+            simimatrix = np.zeros((len(self.homodict), len(self.homodict)))
+            for _, homo in self.homodict.iteritems():
+                a = set(homo.names)
+                se[homo.names] = homo.full[:]
+                comp = np.zeros((len(self.species_namelist), 18))
+                i = 0
+                for _, homocmp in self.homodict.iteritems():
+                    similar = len(a.intersection(homocmp.names))
+                    comp[homo.names] = homocmp.full[:]
+                    simimatrix[j, i] = np.NaN if similar == 0 else np.sqrt(np.einsum('ij,ij->i',
+                                                                                     se, comp)).sum() / similar
+                    i += 1
+                j += 1
+            if plot:
+                plt.figure(figsize=(size, 200))
+                plt.title('similarity amongst clusters per homologies')
+                plt.imshow(simimatrix)
+                plt.savefig("utils/CUBsimilarity.pdf")
+                plt.show()
+        self.cub_similarity = simimatrix
 
-    def compute_statistics():
+    def find_clusters(self, clustering='dbscan', homogroupnb=None,
+                      assess=True, eps=0.8, best_eps=True, trainingset=30):
         """
-        compute the mean, variances, for the CUB values per species and per homologies
-        """
-    # TODO: create a function to compute a small set of value per species (like mean, variance, etc..)
-    # variance in data (for full species) can be explained by a value in tRNA copy number
+        Finds, for each homologies in the working homoset, groups that are part of compact clusters
+        it will be using gaussian mixture clustering or DBSCAN and order them according
+        to the density of each cluster (we are interested in the densest ones) and assess
+        the quality using 3 criterion:BIC, number of outliers,
 
-    def relation_to(data='gff3'):
-        """
-        """
-    # TODO: compare the relation between the tRNA copy number and the variance of the full species data per
-    # amino acids
-    # TODO: do the same for the homologies and entropy values
+        also: - find if we are close to ancestry tree,
+        here we need to represent a comparison of the closeness
+        in a phylogenetic tree to a cluster of species
+        --> given a grouping of phylogenetic tree, what cluster is the most similar to it
 
-    def similarity_perspecies():
+
+        Params:
+        -----
+        clustering: method (DBSCAN, gaussian mixture)
+        homogroupnb: the number of groups can be a number or else will look for the better number of
+        cluster according to assessments.
+        assess: plot or not the assessments
+        """
+        # TODO: totest
+        if best_eps:
+            eps = self.findbest_eps(trainingset)
+        for val in self.homo_namelist:
+            print val
+            self.homodict[val].clusterize_(clustering=clustering, eps=eps,
+                                           homogroupnb=homogroupnb, assess=assess)
+            print "-----------------------------"
+        self.wasclusterized = True
+        if best_eps:
+            score = 0
+            for _, homo in self.homodict.iteritems():
+                score += homo.metrics["avg_phylodistance"][2:].mean() - (homo.metrics["avg_phylodistance"][0] - 1)
+            print "-----------------TOT------------------"
+            print score
+
+    def findbest_eps(self, trainingset=400, clustering="dbscan", homogroupnb=None,
+                     epoch=20, ranges=[0.2, 0.9], size=40):
+        """
+        will find the best eps hyperparameter (the one that minimizes the evolutionary distance
+        within its clusters)
+
+        Params:
+        ------
+        """
+        score = 0
+        scores = []
+        best_score = 10000000
+        best_eps = 0
+        val = ranges[0]
+        if utils.phylo_distances is None:
+            raise LookupError("you need to compute the phylogenetic distances first to have some form of labels")
+        for _ in range(epoch):
+            i = 0
+            for _, homo in self.homodict.iteritems():
+                if i > trainingset:
+                    break
+                homo.clusterize_(clustering=clustering,
+                                 eps=val, homogroupnb=homogroupnb, assess=True)
+                score += homo.metrics["avg_phylodistance"][2:].mean() - (homo.metrics["avg_phylodistance"][0] - 1)
+                i += 1
+            # get the best eps of all
+            # compute its similarity on the full set of homologies
+            val += (ranges[1] - ranges[0]) / epoch
+            scores.append(score)
+            if score < best_score:
+                best_score = score
+                best_eps = val
+        plt.figure(figsize=(size, 200))
+        plt.title('scores for best clustering hyperparameter')
+        plt.plot(scores)
+        plt.savefig("utils/scores_" + clustering + "_" + str(epoch) + "epochs.pdf")
+        plt.show()
+        return best_eps
+
+    def similarity_perspecies(self):
         """
         """
     # TODO have a function to compute similarity matrix for each genes of a species. and put it in
     # espece.py
-    #
+
+    def get_effectonvalues(self, values=['doublons,nans']):
+        """
+        find if having doublons affects the values by comparing
+        the mean position of doublons (if higher than average) and plotting them
+
+        Here 0.5 means 0 effect, 1 and 0 are positive and negative effects
+        """
+        # TODO: totest
+        doubpositions = []
+        nanpositions = []
+        keys = []
+        for key, val in self.homodict.iteritems():
+            posdict = val.getdoubpos()
+            # we might encounter a triplon which is counted as two doublons here. should not impact
+            # the answer to the fundamental question here.
+            if posdict:
+                keys.append(key)
+                for subkey, subval in posdict.iteritems():
+                    doubpositions.append(subval)
+            posdict = val.getnanpos()
+            # we might encounter a triplon which is counted as two doublons here. should not impact
+            # the answer to the fundamental question here.
+            if posdict:
+                keys.append(key)
+                for subkey, subval in posdict.iteritems():
+                    nanpositions.append(subval)
+        # TODO: have a plot with a cursor to choose one of the dimensions
+        print '----------------------------------'
+        print "the effect of doublons of the entropy is of: "
+        print np.array(doubpositions).mean(0)
+        print "the effect of nans of the entropy is of: "
+        print np.array(nanpositions).mean(0)
+
+
 # ###################################################################
 
     def _barplor(self):
         """
-        called by statistics function to plot a barplot of the proportion of different cluster per homologies
+        called by statistics function to plot a barplot of
+        the proportion of different cluster per homologies
         and per species
         """
+        # TODO: totest
         dims = dict(kdims='prop', vdims='homologies')
         primary = hv.Area(self.stats[0], label='primary', **dims)
         outlier = hv.Area(self.stats[1], label='outlier', **dims)
         secondary = hv.Area(self.stats[2], label='secondary', **dims)
-        overlay = (primary * outlier * secondary).options('Area', fill_alpha=0.5, name='testdata')  # could add xaxis = self.homoname_list
+        # could add xaxis = self.homoname_list
+        overlay = (primary * outlier * secondary).options('Area', fill_alpha=0.5, name='testdata')
         hv.Area.stack(overlay).relabel("cluster info: primary_clust +outlier +secondary_clust")
 
     def _dictify(self):
@@ -638,12 +773,16 @@ class HomoSet(collections.MutableMapping):
                 "clusters": self.clusters,
                 "homo_namelist": self.homo_namelist,
                 "homodict": dictihomo,
-                "species_namelist": self.species_namelist,
+                "species_namelist": list(self.species_namelist),
                 "speciestable": utils.speciestable,
                 "homogroupnb": self.homogroupnb,
                 "datatype": self.datatype,
-                "phylo_distance": self.phylo_distance.to_json(orient='split') if self.phylo_distance is not None else None,
-                "red_homomatrix": self.red_homomatrix.tolist() if self.red_homomatrix is not None else None}
+                "phylo_distance": self.phylo_distance.to_json(orient='split') if utils.phylo_distance is not None else None,
+                "red_homomatrix": self.red_homomatrix.tolist() if self.red_homomatrix is not None else None,
+                "fulleng": self.fulleng.tolist() if self.fulleng is not None else None,
+                "wasclusterized": self.wasclusterized,
+                "homo_clusters": self.homo_clusters.tolist() if self.homo_clusters is not None else None,
+                "averagehomo_matrix": self.averagehomo_matrix.tolist() if self.averagehomo_matrix is not None else None}
 
     def plot(self, invert=False, size=40, interactive=False):
         """
@@ -660,7 +799,7 @@ class HomoSet(collections.MutableMapping):
         plt.figure(figsize=(size, 200))
         plt.title('the regular matrix')
         plt.imshow(self.hashomo_matrix.T if invert else self.hashomo_matrix)
-        plt.savefig("utils/lastplot.pdf")
+        plt.savefig("utils/hashomomatrix.pdf")
         plt.show()
 
     def _plot_clust(self, mat, orderedmat):
