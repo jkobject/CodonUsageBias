@@ -7,7 +7,9 @@ jkobject.com
 """
 import requests
 import pdb
+import numpy as np
 import utils
+from scipy.stats import multinomial
 try:
     from urllib2 import urlopen as urlopen
 except:
@@ -26,45 +28,73 @@ class Espece(object):
             is_stored
     """
 
-    code = {}
-    metadata = {}
+    code = None
+    metadata = {
+        "link": None,
+        "num_genes": 0,
+        "plant_pathogen": None,
+        "animal_pathogen": None,
+        "genome_size": 0,
+        "plant_symbiotic": None,  # endophyte or mycorrhizal
+        "brown_rot": None,
+        "white_rot": None
+    }
     is_stored = False
     name = ''
     taxonid = ''
     copynumbers = None
+    average_entropy = None
+    average_size = None
+    var_entropy = None
+    var_size = None
+    fullentropy = None
+    fullGCcount = None
+    tRNAentropy = None
 
-    def __init__(self, name=None, code=None, data=None, link=None, taxonid='', copynumbers=None):
+    def __init__(self, **kwargs):
         """
         """
+        data = kwargs.get('data', None)
         if data is not None:
-            self.name = data["name"]
-            self.metadata = data["metadata"]
-            self.code = data["code"]
-            self.taxonid = data["taxonid"]
-            self.copynumbers = data["copynumbers"]
-        if taxonid is not '':
-            self.taxonid = taxonid
-        if name is not None:
-            self.name = name
-        if link is not None:
-            self.metadata.update({'link': link})
-        if copynumbers is not None:
-            self.copynumbers = copynumbers
+            self.name = data.get(["name"], None)
+            self.metadata = data.get(["name"], None)["metadata"]
+            self.code = data.get(["code"], None)
+            self.taxonid = data.get(["taxonid"], None)
+            self.copynumbers = data.get(["copynumbers"], None)
+            self.code = data.get('code', None)
+            self.is_stored = data.get('is_stored', None)
+            self.average_entropy = data.get("average_entropy", None)
+            self.average_size = data.get("average_size", None)
+            self.var_entropy = data.get("var_entropy", None)
+            self.var_size = data.get("var_size", None)
+            self.fullentropy = data.get("fullentropy", None)
+            self.fullGCcount = data.get("fullGCcount", None)
+            self.tRNAentropy = data.get("tRNAentropy", None)
+        else:
+            self.code = kwargs.get('code', None)
+            self.is_stored = kwargs.get('is_stored', None)
+            self.taxonid = kwargs.get('taxonid', '')
+            self.name = kwargs.get('name', '')
+            self.copynumbers = kwargs.get('copynumbers', None)
+            self.average_entropy = kwargs.get("average_entropy", None)
+            self.average_size = kwargs.get("average_size", None)
+            self.var_entropy = kwargs.get("var_entropy", None)
+            self.var_size = kwargs.get("var_size", None)
+            self.fullentropy = kwargs.get("fullentropy", None)
+            self.fullGCcount = kwargs.get("fullGCcount", None)
+            self.tRNAentropy = kwargs.get("tRNAentropy", None)
 
     def plot():
         """
-        will...
+        will present some interesting info about this species.
         """
 
     def get_metadata():
         """
-        get additional information on the species such as :
-        its metadata from ENSEMBL
-        its gff dict
-
+        will call all functions to retrieve all possible metadatas for this species.
         """
 
-    def get_tRNAcopy(self):
+    def get_tRNAcopy(self, getentropy=True, setnans=False):
         """
         Retrieves tRNA copy numbers from ensembl DB
         will print the number of tRNAs and the number of tRNAs with
@@ -170,23 +200,67 @@ class Espece(object):
                         pdb.set_trace()
         if num == 0:
             print "empty data"
-        else:
-            print num
-        print j
-        copynumber.update({'num': num})
-        copynumber.update({'tot_trna': j})
+        print "we got " + str(j) + " datapoints and managed to extract " + str(num)
+        # we find probabilities of tRNA
+        for _, v in copynumber.iteritems():
+            n = v.values().sum()
+            if n > 0:
+                for _, val in v.iteritems():
+                    val = val / n
+            if getentropy:
+                tRNAentropy = np.zeros(18)
+                nbcod = len(v)  # replace Cleng
+                count = v.values()
+                X = np.zeros(nbcod)
+                mn = np.ones(nbcod) / nbcod
+                if n == 0:
+                    tRNAentropy[k] = np.NaN if setnans else 0.5
+                else:
+                    Yg = multinomial.pmf(x=count, n=n, p=mn)
+                    # efor part
+                    i = int(n % nbcod)
+                    div = n / nbcod
+                    X[:i] = np.ceil(div)
+                    X[i:] = np.floor(div)
+                    Eg = multinomial.pmf(x=X, n=n, p=mn)
+                    # end here
+                    tRNAentropy[k] = -np.log(Yg / Eg)
+                self.tRNAentropy = tRNAentropy
+        # Here we can compute as well the entropy of the tRNA CNs when there is suficient number of val
+        # else we can set it to zero (to NaN) this allows us to directly compare two values
+        copynumber.update({'num': num})  # total number
+        copynumber.update({'datapoints': j})  # possible number of datapoints
         self.copynumbers = copynumber
 
-    def compute_all_genome_entropy():
+    def getfullgenome(self):
         """
-        use all the entropy locations and use Yun's way to find the full genome entropy
+        get the full genome from ensembl.
+        """
+        # preprocess the data from ensembl
+        # TODO: find how to get full genome from ensembl
+        self.fullentropy, _, _, self.fullGCcount = utils.computeyun(data=fullcdna, normalized=False, setnans=False, by='entropy')
+        pass
+
+    def get_epigenomes(self):
+        """
+        get from ensembl all the data about the epigenome that could help asking interesting questions
+        about the CUB
+
+        Params:
+        ------
         """
         pass
 
-    def getfullgenome():
+    def relationtomymeta(self):
         """
+        you can add you own metadata and then think about ways to look at wether or not they
+        influence the codon usage bias values.
         """
         pass
+        # compute the influence of their relationship to plants (symbiotic or rot)
+        # compute the influence of their nocivity
+        # compute the influence of the size of their prot cod genes, the genome size, the number of genes
+        # compute the influence of the GC count
 
     def _dictify(self):
         """
@@ -197,4 +271,12 @@ class Espece(object):
                 "code": self.code,
                 "taxonid": self.taxonid,
                 "copynumbers": self.copynumbers,
-                "metadata": self.metadata}
+                "metadata": self.metadata,
+                "is_stored": self.is_stored,
+                "average_entropy": self.average_entropy,
+                "average_size": self.average_size,
+                "var_entropy": self.var_entropy,
+                "var_size": self.var_size,
+                "fullentropy": self.fullentropy,
+                "fullGCcount": self.fullGCcount,
+                "tRNAentropy": self.tRNAentropy}
