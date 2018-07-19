@@ -30,71 +30,97 @@ class homology(object):
     Params:
     ------
     names : list of int corresponding to names in utils.speciestable
-    full : np array of float (species, amino) of one homology with entropy value vector per species
+    full : np array of float (species, amino) of one homology
+    with entropy value vector per species
     reduced :  np array float (species, x*y) of one homology dimensionality reduced
     clusters : list[int] of cluster val for each species
-    centroids: the position in aminoacid# Dimension of each centroids (number of centroid == number of cluster)
+    centroids: the position in aminoacid# Dimension of each centroids
+    (number of centroid == number of cluster)
     metrics: a dict of metrics names and values for the cluster of this homology
     nans: numpy array of bool wether or not this position is a nan
     lenmat: a numpy array species amino of int of length of each amino acids (number)
-    doub: nupy array of [bool] of wether or not this position is a doublon ( a copy number of the gene for the species)
+    doub: nupy array of [bool] of wether or not this position is a doublon
+    ( a copy number of the gene for the species)
     reduced_algo: dimensionality reduction algorithm used on this homology
     """
-    names = None
-    reduced = None
-    clusters = None
+
     full = None
+    var = None
+    mean = None
+
+    clusters = None
     centroids = None
     metrics = {}
+
     nans = None
+    nanspos = None
     lenmat = None
+    names = None
     doub = None
+    doublonpos = None
+    GCcount = None
+
+    reduced = None
     reduced_algo = None
+
     KaKs_Scores = None
     similarity_scores = None
     proteinids = []
-    # TODO: compute the mean variance in CUB value and mean range for each homology (add this when plotting)
-    # TODO: compute a distance matrix between the species
-    # Replace long params by **kwargs (dict for the data)
+    isrecent = None
+    ishighpreserved = None
 
-    def __init__(self, data=None, full=None, names=None, nans=None, lenmat=None, doub=None,
-                 similarity_scores=None, KaKs_Scores=None, proteinids=None, clusters=None):
+    # TODO: compute the mean variance in CUB value and mean range
+    # for each homology (add this when plotting)
+    # TODO: compute a distance matrix between the species
+
+    def __init__(self, **kwargs):
         """
         will intialize an instance of the object and be used for the loading mechanism
         """
+        # TODO: Replace long params by **kwargs (dict for the data)
+        data = kwargs.get("data", None)
         if data is not None:
-            self.reduced = np.asarray(data["reduced"]) if not (data["reduced"] is None) else None
-            self.clusters = data["clusters"]
-            self.full = np.asarray(data["full"]) if not (data["full"] is None) else None
-            self.names = data["names"]
-            self.centroids = data["centroids"]
-            self.metrics = data["metrics"]
-            self.nans = np.asarray(data["nans"]) if not (data["nans"] is None) else None
-            self.lenmat = np.asarray(data["lenmat"]) if not (data["lenmat"] is None) else None
-            self.doub = np.asarray(data["doub"]) if not (data["doub"] is None) else None
-            self.KaKs_Scores = np.asarray(data(["KaKs_Scores"])) if (data["KaKs_Scores"])\
-                is not None else None
-            self.similarity_scores = np.asarray(data(["similarity_scores"])) if\
-                (data["similarity_scores"]) is not None else None
-            self.proteinids = data(["proteinids"])
-        if full is not None:
-            self.full = full
-        if names is not None:
-            self.names = names
-        if clusters is not None:
-            self.clusters = None
-        if nans is not None:
-            self.nans = nans
-        if lenmat is not None:
-            self.lenmat = lenmat
-        if doub is not None:
-            self.doub = doub
-        if KaKs_Scores is not None:
-            self.KaKs_Scores = KaKs_Scores
-        if proteinids is not None:
-            self.proteinids = proteinids
-        if similarity_scores is not None:
-            self.similarity_scores = similarity_scores
+            self.full = np.asarray(data.get("full")) if data.get("full", None) is not None else None
+            self.var = np.asarray(data.get("var")) if data.get("var", None) is not None else None
+            self.mean = np.asarray(data.get("mean")) if data.get("mean", None) is not None else None
+            self.clusters = np.asarray(data.get("clusters")) if data.get("clusters", None) is not None else None
+            self.centroids = np.asarray(data.get("centroids")) if data.get("centroids", None) is not None else None
+            self.metrics = data.get("metrics", {})
+            self.nans = np.asarray(data.get("nans")) if data.get("nans", None) is not None else None
+            self.nanspos = np.asarray(data.get("nanspos")) if data.get("nanspos", None) is not None else None
+            self.lenmat = np.asarray(data.get("lenmat")) if data.get("lenmat", None) is not None else None
+            self.names = data.get("names", None)
+            self.doub = np.asarray(data.get("doub")) if data.get("doub", None) is not None else None
+            self.doublonpos = np.asarray(data.get("doublonpos")) if data.get("doublonpos", None) is not None else None
+            self.GCcount = data.get("GCcount", None)
+            self.reduced = np.asarray(data.get("reduced")) if data.get("reduced", None) is not None else None
+            self.reduced_algo = data.get("reduced_algo", None)
+            self.KaKs_Scores = np.asarray(data.get("KaKs_Scores")) if data.get("KaKs_Scores", None) is not None else None
+            self.similarity_scores = np.asarray(data.get("similarity_scores")) if data.get("similarity_scores", None) is not None else None
+            self.proteinids = data.get("proteinids", [])
+            self.isrecent = data.get("isrecent", None)
+            self.ishighpreserved = data.get("ishighpreserved", None)
+        else:
+            self.full = kwargs.get("full", None)
+            self.var = kwargs.get("var", None)
+            self.mean = kwargs.get("mean", None)
+            self.clusters = kwargs.get("clusters", None)
+            self.centroids = kwargs.get("centroids", None)
+            self.metrics = kwargs.get("metrics", {})
+            self.nans = kwargs.get("nans", None)
+            self.nanspos = kwargs.get("nanspos", None)
+            self.lenmat = kwargs.get("lenmat", None)
+            self.names = kwargs.get("names", None)
+            self.doub = kwargs.get("doub", None)
+            self.doublonpos = kwargs.get("doublonpos", None)
+            self.GCcount = kwargs.get("GCcount", None)
+            self.reduced = kwargs.get("reduced", None)
+            self.reduced_algo = kwargs.get("reduced_algo", None)
+            self.KaKs_Scores = kwargs.get("KaKs_Scores", None)
+            self.similarity_scores = kwargs.get("similarity_scores", None)
+            self.proteinids = kwargs.get("proteinids", [])
+            self.isrecent = kwargs.get("isrecent", None)
+            self.ishighpreserved = kwargs.get("ishighpreserved", None)
 
     def remove(self, species):
         """
@@ -118,6 +144,61 @@ class homology(object):
         (basically count the number of doub)
         """
         return self.doub.shape[0] - np.count_nonzero(self.doub)
+
+    def getdoubpos(self):
+        pos = {}
+        if self.doub is not None:
+            for i, val in enumerate(self.doub):
+                if val:
+                    mean = full[i - 1:i + 1].mean(0)
+                    pos.update({utils.speciestable[self.names[i]]:
+                                np.divide(np.count_nonzero(mean > self.full, 0), self.nb_unique_species())})
+        return pos
+
+    def getnanpos(self):
+        pos = {}
+        if self.nans is not None:
+            for i, val in enumerate(self.nans):
+                if val:
+                    pos.update({utils.speciestable[self.names[i]]:
+                                np.divide(np.count_nonzero(val > self.full, 0), self.nb_unique_species())})
+        return pos
+
+    def order(self, withtaxons=False):
+        """
+        order the names by numerical increasing order
+        and sorts every representations as well according to this ordering
+        """
+        names = self.names[0] if withtaxons else self.names
+        indices = sorted(range(len(names)), key=lambda k: names[k])
+        names.sort()
+        if self.full is not None:
+            self.full[:] = self.full[indices]
+        if self.reduced is not None:
+            self.reduced[:] = self.reduced[indices]
+        if self.clusters is not None:
+            self.clusters = [self.clusters[i] for i in indices]
+        if self.lenmat is not None:
+            self.lenmat[:] = self.lenmat[indices]
+        if withtaxons:
+            self.names[0] = names
+            for j, i in enumerate(indices):
+                self.names[1][j] = self.names[1][i]
+        else:
+            self.names = names
+
+    def compute_halflife(self):
+        """
+        compute the half life of the genes with their similarity and the gamma function
+        """
+        # TODO to code
+        pass
+
+    def compute_averages(self):
+        """
+        """
+        self.mean = self.full.mean(0)
+        self.var = self.full.var(0)
 
     def reduce_dim(self, alg='tsne', n=2, perplexity=40):
         """
@@ -179,18 +260,21 @@ class homology(object):
             print " if you are on a notebook you should write 'from bokeh.io import output_notebook'"
             if self.clusters is None:
                 colors = [colors] * len(self.names)
-            source = ColumnDataSource(data=dict(x=self.reduced[:, 0], y=self.reduced[:, 1],
-                                                label=["species : %s" % utils.speciestable[x__] for x__ in self.names],
-                                                doub=self.doub if self.doub is not None else False,
-                                                clusters=self.clusters if self.clusters is not None else False,
-                                                similarity_scores=self.similarity_scores if self.similarity_scores is not None else False,
-                                                KaKs_Scores=self.KaKs_Scores if self.KaKs_Scores is not None else False,
-                                                nans=self.nans if self.nans is not None else False,
-                                                color=colors))
+            source = ColumnDataSource(
+                data=dict(x=self.reduced[:, 0], y=self.reduced[:, 1],
+                          label=["species : %s" % utils.speciestable[x__] for x__ in self.names],
+                          doub=self.doub if self.doub is not None else False,
+                          clusters=self.clusters if self.clusters is not None else False,
+                          similarity_scores=self.similarity_scores if
+                          self.similarity_scores is not None else False,
+                          KaKs_Scores=self.KaKs_Scores if self.KaKs_Scores is not None else False,
+                          nans=self.nans if self.nans is not None else False,
+                          color=colors))
             output_notebook()
 
             radio_button_group = widgets.RadioButtonGroup(
-                labels=["show Cluster", "show Doublon", "show KaKs_Scores", "show similarity_scores", "Show PhyloDistance"], active=0)
+                labels=["show Cluster", "show Doublon", "show KaKs_Scores",
+                        "show similarity_scores", "Show PhyloDistance"], active=0)
             callback = CustomJS(args=dict(source=source, colors=colormap), code="""
             // JavaScript code goes here
 
@@ -250,6 +334,11 @@ class homology(object):
             print "------------------------------------"
             for key, val in self.metrics.iteritems():
                 print key + ': ' + str(val)
+            print "------------------------------------"
+            print self.full.mean(axis=0)
+            print self.full.var(axis=0)
+            print self.KaKs_Scores.mean()
+            print self.similarity_scores.mean()
             return p
         else:
             fig = plt.figure(figsize=(40, size))
@@ -262,43 +351,29 @@ class homology(object):
             if D == 4:
                 # TODO: totest
                 ax = fig.add_subplot(111, projection='3d')
-                ax.scatter(self.reduced[:, 0], self.reduced[:, 1], self.reduced[:, 2], s=self.reduced[:, 3] * 60, c=colors)
+                ax.scatter(self.reduced[:, 0], self.reduced[:, 1],
+                           self.reduced[:, 2], s=self.reduced[:, 3] * 60, c=colors)
             else:
                 print "please choose a D between 2 and 4"
                 return
             plt.show()
+
             print "------------------------------------"
             for key, val in self.metrics.iteritems():
                 print key + ': ' + str(val)
-
-    def order(self, withtaxons=False):
-        """
-        order the names by numerical increasing order
-        and sorts every representations as well according to this ordering
-        """
-        names = self.names[0] if withtaxons else self.names
-        indices = sorted(range(len(names)), key=lambda k: names[k])
-        names.sort()
-        if self.full is not None:
-            self.full[:] = self.full[indices]
-        if self.reduced is not None:
-            self.reduced[:] = self.reduced[indices]
-        if self.clusters is not None:
-            self.clusters = [self.clusters[i] for i in indices]
-        if self.lenmat is not None:
-            self.lenmat[:] = self.lenmat[indices]
-        if withtaxons:
-            self.names[0] = names
-            for j, i in enumerate(indices):
-                self.names[1][j] = self.names[1][i]
-        else:
-            self.names = names
+            print "------------------------------------"
+            print self.full.mean(axis=0)
+            print self.full.var(axis=0)
+            print self.KaKs_Scores.mean()
+            print self.similarity_scores.mean()
 
     def clusterize_(self, clustering='gaussian', eps=0.8, homogroupnb=None, assess=True):
         """
-        will clusterize the homology using gaussian mixture clustering or DBSCAN and order them according
-        to the density of each cluster (we are interested in the dense ones) and assess the quality using 3 criterion:
-        BIC, AIC ,silhouette, cal_hara .
+        will clusterize the homology using gaussian mixture clustering or DBSCAN and order
+        them according
+        to the density of each cluster (we are interested in the dense ones)
+        and assess the quality using 3 criterion:
+        BIC, AIC ,silhouette, cal_hara, phylodistance.
         """
         if clustering == 'gaussian':
             # http://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html
@@ -325,21 +400,22 @@ class homology(object):
             # TODO: use gaussian clustering and look at the variance of the kernels
             # (requested by dominique to maybe have some ideas of variance
             # as it is not well displayed by eps) add this as another information
-            # when plotting and make gaussian clustering work well, then work using the values found by eps.
+            # when plotting and make gaussian clustering work well,
+            # then work using the values found by eps.
 
             print "Estimated number of clusters using DBscan: " + str(n_clusters_)
-        elif clustering == 'jkmeans':
-            # TODO:  create your own clustering algorithm with gaussian kernels
-            # that explains as much as possible the data and get a threshold and set all others as outliers
-            """
-                here we want to find the smallest group of gaussian that explains
-                the highest number of data point with the smallest variance possible
-                as
-            """
-            print "tocode"
         if assess:
-            # TODO: add F1 score if possible
-
+            if utils.phylo_distances is not None:
+                avg_phylodistance = []
+                spe = [utils.speciestable[j] for j in self.names]
+                div = utils.phylo_distances[spe].loc[spe].sum().sum() / (len(spe)**2 - len(spe))
+                for i in range(-1, n_clusters_ - 1):
+                    # Here the first value is for the outliers and the second for the unclusterized
+                    # data points
+                    species = [utils.speciestable[j] for j in self.names[np.argwhere(self.clusters == i)]]
+                    avg_phylodistance.append((utils.phylo_distances[species].
+                                              loc[species].sum().sum() / (len(species)**2 - len(species))) / div)
+                # print 'average phylo distance of the clusters: '+ str(avg_phylodistance)
             try:
                 silhouette = metrics.silhouette_score(self.full, self.clusters).item()
                 cal_hara = metrics.calinski_harabaz_score(self.full, self.clusters).item()
@@ -350,7 +426,8 @@ class homology(object):
             print 'silhouette_score ' + str(silhouette)
             print 'cal_hara ' + str(cal_hara)
             self.metrics.update({'silhouette': silhouette,
-                                 'cal_hara': cal_hara})
+                                 'cal_hara': cal_hara,
+                                 'avg_phylodistance': np.array(avg_phylodistance)})
         return self.clusters
 
     def _dictify(self):
@@ -368,5 +445,13 @@ class homology(object):
                 "similarity_scores": self.similarity_scores.tolist() if self.similarity_scores is not None else None,
                 "proteinids": self.proteinids,
                 "nans": self.nans.tolist() if self.nans is not None else None,
+                "doub": self.doub.tolist() if self.doub is not None else None,
+                "var": self.var.tolist() if self.var is not None else None,
+                "mean": self.mean.tolist() if self.mean is not None else None,
+                "nanspos": self.nanspos.tolist() if self.nanspos is not None else None,
                 "lenmat": self.lenmat.tolist() if self.lenmat is not None else None,
-                "doub": self.doub.tolist() if self.doub is not None else None}
+                "doublonpos": self.doublonpos.tolist() if self.doublonpos is not None else None,
+                "GCcount": self.GCcount,
+                "reduced_algo": self.reduced_algo,
+                "isrecent": self.isrecent,
+                "ishighpreserved": self.ishighpreserved}
