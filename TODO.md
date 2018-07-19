@@ -224,6 +224,8 @@ problem on what I am going to write and do as a master thesis
 homologues not related to their functions but their common ancestors
 the way 
 
+- How do i find the full exome of eahc species I have ?
+
 ### require from Tobias
 
  - phylogenetic tree
