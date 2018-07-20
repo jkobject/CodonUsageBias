@@ -6,6 +6,11 @@
 
 ## todo 
 
+
+------> see if possible to just go throught the ftp site and get whatever is available until reaching to the right 
+species else finish looking at ensemblgenomes
+-------> for tRNA also get the value when tRNA as a name is tRNAX X being one of the letters describing th epossible aminoacid values
+
 --> set documentation for each functions and objects __done__
 --> ask Yun for the phylogenetic distance if she has it and the function to compute the phylogenetic distance matrix from a pseudo half life of genes with the gamma function. __done__
 >I have thought to create a pseudo evolution distance matrix based on phylogenetic tree classification by way of calculating ‘half-life’ (using gamma distribution) of real amino acid or gene which I read on book 'molecular evolution'

@@ -202,13 +202,14 @@ class Espece(object):
             print "empty data"
         print "we got " + str(j) + " datapoints and managed to extract " + str(num)
         # we find probabilities of tRNA
+        k = 0
+        tRNAentropy = np.zeros(18) if getentropy else None
         for _, v in copynumber.iteritems():
-            n = v.values().sum()
+            n = np.array(v.values()).sum()
             if n > 0:
                 for _, val in v.iteritems():
                     val = val / n
             if getentropy:
-                tRNAentropy = np.zeros(18)
                 nbcod = len(v)  # replace Cleng
                 count = v.values()
                 X = np.zeros(nbcod)
@@ -218,19 +219,24 @@ class Espece(object):
                 else:
                     Yg = multinomial.pmf(x=count, n=n, p=mn)
                     # efor part
-                    i = int(n % nbcod)
-                    div = n / nbcod
-                    X[:i] = np.ceil(div)
+                    div, i = divmod(n, nbcod)
+                    X[:i] = np.ceil(div) + 1
                     X[i:] = np.floor(div)
                     Eg = multinomial.pmf(x=X, n=n, p=mn)
                     # end here
                     tRNAentropy[k] = -np.log(Yg / Eg)
-                self.tRNAentropy = tRNAentropy
+                k += 1
         # Here we can compute as well the entropy of the tRNA CNs when there is suficient number of val
         # else we can set it to zero (to NaN) this allows us to directly compare two values
         copynumber.update({'num': num})  # total number
         copynumber.update({'datapoints': j})  # possible number of datapoints
         self.copynumbers = copynumber
+        self.tRNAentropy = tRNAentropy if getentropy else None
+
+    def gettaxons(self):
+        """
+        """
+        http: // rest.ensemblgenomes.org / info / genomes / arabidopsis_thaliana?
 
     def getfullgenome(self):
         """

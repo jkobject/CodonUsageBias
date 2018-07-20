@@ -23,11 +23,11 @@ except:
 from joblib import Parallel, delayed
 import multiprocessing
 
-from rpy2.robjects.packages import importr
-from ete2 import NCBITaxa
-from rpy2 import robjects
-import rpy2.robjects.packages as rpackages
-from rpy2.robjects.vectors import StrVector
+#from rpy2.robjects.packages import importr
+#from ete2 import NCBITaxa
+#from rpy2 import robjects
+#import rpy2.robjects.packages as rpackages
+#from rpy2.robjects.vectors import StrVector
 
 
 import pandas as pd
@@ -616,6 +616,7 @@ class PyCUB(object):
             print tree.get_ascii(attributes=["sci_name", "rank"])
         with open('metaphylo/temp_tree.phy', 'w') as f:  # maybe will be newick format...
             f.write(tree.write())
+        """
         try:
             # https://stackoverflow.com/questions/19894365/running-r-script-from-python
             base = importr('base')
@@ -635,6 +636,7 @@ class PyCUB(object):
             distMat <- cophenetic(tree)
             write.table(distMat,"metaphylo/phylodistMat_temp.csv")
         ''')
+        """
         df = pd.read_csv("metaphylo/phylodistMat_temp.csv")
         utils.phylo_distances = df
         utils.meandist = df.sum().sum() / (len(data)**2 - len(data))
@@ -683,6 +685,8 @@ class PyCUB(object):
         then we can also compare the mean of homologies or else, the full entropy of the cdna sequence per species
         is also computed the euclidean distance amongst the species for the full entropy to see if a difference can be linked
         to some evolutionary for one codon
+
+        #TODO: add the pressure from the amount of tRNA the species has (j value)
         """
         # TODO: totest
         e_subspecies = []
