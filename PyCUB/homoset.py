@@ -88,8 +88,8 @@ class HomoSet(collections.MutableMapping):
             self.homogroupnb = data.get("homogroupnb", 2)
             self.clusters = data.get("clusters", [])
             self.datatype = data.get("datatype", '')
-            self.phylo_distance = pd.read_json(data["phylo_distance"], orient='split') if data.get(
-                "phylo_distance", None) is not None else None
+            self.phylo_distances = pd.read_json(data["phylo_distances"], orient='split') if data.get(
+                "phylo_distances", None) is not None else None
             self.red_homomatrix = np.asarray(data["red_homomatrix"]) if data.get(
                 "red_homomatrix", None) is not None else None
             utils.speciestable = data.get("speciestable", {})
@@ -116,7 +116,7 @@ class HomoSet(collections.MutableMapping):
             self.homogroupnb = kwargs.get("homogroupnb", 2)
             self.clusters = kwargs.get("clusters", [])
             self.datatype = kwargs.get("datatype", '')
-            self.phylo_distance = kwargs.get("phylo_distance", None)
+            self.phylo_distances = kwargs.get("phylo_distances", None)
             self.red_homomatrix = kwargs.get("red_homomatrix", None)
             utils.speciestable = kwargs.get("speciestable", {})
             utils.phylo_distances = kwargs.get("phylo_distances", None)
@@ -767,8 +767,7 @@ class HomoSet(collections.MutableMapping):
         json serializable
         """
         dictihomo = {}
-        homodict = self.homodict.iteritems()
-        for key, val in homodict:
+        for key, val in self.homodict.iteritems():
             dictihomo.update({key: val._dictify()})
         return {"hashomo_matrix": self.hashomo_matrix.tolist() if self.hashomo_matrix is not None else None,
                 "homo_matrix": self.homo_matrix.tolist() if self.homo_matrix is not None else None,
@@ -779,7 +778,7 @@ class HomoSet(collections.MutableMapping):
                 "speciestable": utils.speciestable,
                 "homogroupnb": self.homogroupnb,
                 "datatype": self.datatype,
-                "phylo_distance": self.phylo_distance.to_json(orient='split') if utils.phylo_distance is not None else None,
+                "phylo_distances": self.phylo_distances.to_json(orient='split') if utils.phylo_distances is not None else None,
                 "red_homomatrix": self.red_homomatrix.tolist() if self.red_homomatrix is not None else None,
                 "fulleng": self.fulleng.tolist() if self.fulleng is not None else None,
                 "wasclusterized": self.wasclusterized,
