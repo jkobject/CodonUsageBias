@@ -275,3 +275,10 @@ Interpret and validate the models from a business perspective
 Phase (6) – Deployment of the model
 Deploy the data mining results in the form of a plan, monitoring and maintaining the plan deployment
 
+
+### different hyperparams:
+
+{fungi,humans,somebacterias,plants}
+{'entropy', 'normalizedentropy','frequency', 'Avalue'}
+{gaussian clustering, dbscan} 
+analysis of 4 different datasets under 4 different measures 

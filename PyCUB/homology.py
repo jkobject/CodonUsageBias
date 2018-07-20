@@ -189,7 +189,8 @@ class homology(object):
 
     def compute_halflife(self):
         """
-        compute the half life of the genes with their similarity and the gamma function
+        retrieve the half life of the mRNAs according to a db
+
         """
         # TODO to code
         pass
