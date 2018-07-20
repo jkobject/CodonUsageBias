@@ -331,8 +331,8 @@ def computeyun(data, setnans=False, normalized=False, by='entropy'):
                 Yg = multinomial.pmf(x=count, n=lengsubseq, p=mn)
                 # efor part
                 div, i = divmod(lengsubseq, nbcod)
-                X[:i] = np.ceil(div) + 1
-                X[i:] = np.floor(div)
+                X[:int(i)] = np.ceil(div) + 1
+                X[int(i):] = np.floor(div)
                 Eg = multinomial.pmf(x=X, n=lengsubseq, p=mn)
                 # end here
                 valH[k] = -np.log(Yg / Eg) / lengsubseq if normalized else -np.log(Yg / Eg)
