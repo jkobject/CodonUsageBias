@@ -237,15 +237,14 @@ class Espece(object):
         """
         """
         # http: // rest.ensemblgenomes.org / info / genomes / arabidopsis_thaliana?
-
-    def getfullgenome(self):
-        """
-        get the full genome from ensembl.
-        """
-        # preprocess the data from ensembl
-        # TODO: find how to get full genome from ensembl
-        self.fullentropy, _, _, self.fullGCcount = utils.computeyun(data=fullcdna, normalized=False, setnans=False, by='entropy')
-        pass
+        server = "http://rest.ensemblgenomes.org"
+        print 'species: ' + self.name
+        ext = "/info/genomes/" + self.name + '?'
+        r = requests.get(server + ext, headers={"Content-Type": "application/json"})
+        if not r.ok:
+            r.raise_for_status()
+        data = r.json()
+        self.taxonid = data["species_taxonomy_id"]
 
     def get_epigenomes(self):
         """
@@ -268,6 +267,7 @@ class Espece(object):
         # compute the influence of the size of their prot cod genes, the genome size, the number of genes
         # compute the influence of the GC count
 
+        #
     def _dictify(self):
         """
         Used by the saving function. transform the object into a dictionary that can be

@@ -472,7 +472,7 @@ class PyCUB(object):
         else:
             print "You should try load first, this object is empty"
 
-    def save(self, name, save_workspace=True, save_homo=True, cmdlinetozip="ditto -c -k --sequesterRsrc "):
+    def save(self, name, save_workspace=True, save_homo=True, cmdlinetozip="mac"):
         """
         call to save your work. you should call save on specific data structure if this is what you
         want to save.
@@ -501,7 +501,10 @@ class PyCUB(object):
             print "it worked !"
         # now we zip to save 90% memory space
         print "only work on mac for now, please write the cmd line to zip a file HERE"
-        os.system(cmdlinetozip + filename + ' ' + filename + '.zip')
+        if cmdlinetozip == 'mac':
+            os.system("ditto -c -k --sequesterRsrc " + filename + ' ' + filename + '.zip')
+        if cmdlinetozip == 'gzip':
+            os.system("gzip " + filename)
         # with zipfile.ZipFile(filename + '.zip', 'w') as myzip:
         #    myzip.write(name + json)
         os.remove(filename)
@@ -533,6 +536,7 @@ class PyCUB(object):
             # if clustering has been done
             leng = len(self.all_homoset.clusters)
             if leng > 0:
+                # TODO: retrieve all other datas in case we do this function later in the pipeline
                 if leng == len(self.all_homoset.species_namelist):
                     # version by species
                     homo = hset.HomoSet()
@@ -816,6 +820,9 @@ class PyCUB(object):
                    tools=[hover, BoxZoomTool(), WheelZoomTool(), SaveTool(), ResetTool()])
         p.circle(x='x', y='y', source=source, color='color', size=[])
         show(p)
+
+        # TODO: compute the variation between mean and full entropies
+        # TODO:
 
     def compare_homologies(self, homosapiens=False, mindistance=10, preserved=True, size=10,
                            minpreserv=400, minsimi=0.9, nans=True):
