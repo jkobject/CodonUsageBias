@@ -4,11 +4,17 @@
 sudo wget -O /usr/local/bin/rsub https://raw.github.com/aurora/rmate/master/rmate
 sudo chmod +x /usr/local/bin/rsub
 sudo yum install R
+unset pip pip3
 wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
 bash Miniconda2-latest-Linux-x86_64.sh
 ## some prompts will appear
-# do your pip install -r requirements.txt
-# do more pip install jupyter 
+conda install pip
+conda install jupyter notebook
+git clone https://github.com/jkobject/PyCUB.git
+cd PyCUB
+pip install -r requirements.txt
+#if you find any problem with rpy2, either you don't have R installed, either you have but it is not the latest version
+cd ../..
 mkdir ssl
 cd ssl
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout "cert.key" -out "cert.pem" -batch

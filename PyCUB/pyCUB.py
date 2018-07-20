@@ -15,6 +15,8 @@ import os
 import json
 import zipfile
 import shutil
+from ftplib import FTP
+import gzip
 try:
     from urllib2 import urlopen as urlopen
 except:
@@ -24,7 +26,7 @@ from joblib import Parallel, delayed
 import multiprocessing
 
 #from rpy2.robjects.packages import importr
-#from ete2 import NCBITaxa
+from ete2 import NCBITaxa
 #from rpy2 import robjects
 #import rpy2.robjects.packages as rpackages
 #from rpy2.robjects.vectors import StrVector
@@ -470,7 +472,7 @@ class PyCUB(object):
         else:
             print "You should try load first, this object is empty"
 
-    def save(self, name, save_workspace=True, save_homo=True, cmdlinetozip="ditto -c -k --sequesterRsrc "):
+    def save(self, name, save_workspace=True, save_homo=True, cmdlinetozip="mac"):
         """
         call to save your work. you should call save on specific data structure if this is what you
         want to save.
@@ -499,7 +501,10 @@ class PyCUB(object):
             print "it worked !"
         # now we zip to save 90% memory space
         print "only work on mac for now, please write the cmd line to zip a file HERE"
-        os.system(cmdlinetozip + filename + ' ' + filename + '.zip')
+        if cmdlinetozip == 'mac':
+            os.system("ditto -c -k --sequesterRsrc " + filename + ' ' + filename + '.zip')
+        if cmdlinetozip == 'gzip':
+            os.system("gzip " + filename)
         # with zipfile.ZipFile(filename + '.zip', 'w') as myzip:
         #    myzip.write(name + json)
         os.remove(filename)
@@ -531,6 +536,7 @@ class PyCUB(object):
             # if clustering has been done
             leng = len(self.all_homoset.clusters)
             if leng > 0:
+                # TODO: retrieve all other datas in case we do this function later in the pipeline
                 if leng == len(self.all_homoset.species_namelist):
                     # version by species
                     homo = hset.HomoSet()
@@ -592,6 +598,99 @@ class PyCUB(object):
         homoset.loadhashomo()
         homoset.loadfullhomo()
         return homoset
+
+    def get_full_genomes(self, kingdom='fungi', seq='cds'):
+        ftp = FTP('ftp.ensemblgenomes.org')
+        ftp.login()
+        ftp.cwd('pub/release-40/' + kingdom + '/fasta/')
+        data = []
+        ftp.retrlines('NLST', data.append)
+        for d in data:
+            if d[-10:] == 'collection':
+                ftp.cwd(d)
+                subdata = []
+                ftp.retrlines('NLST', subdata.append)
+                for sub in subdata:
+                    if sub in self.species_namelist:
+                        link = []
+                        ftp.cwd(sub + '/' + seq)
+                        ftp.retrlines('NLST', link.append)
+                        with open("data/temp.fa.gz", "wb") as file:
+                            if sub[0] > 'r':
+                                da = link[2]
+                            elif sub[0] > 'c':
+                                da = link[1]
+                            else:
+                                da = link[2]
+                            ftp.retrbinary("RETR " + da, file.write)
+                        with gzip.open("data/temp.fa.gz", "rt") as handle:
+                            val, gccount = selfcomputefullloc(handle)
+                            self.species[sub].fullentropy = val.mean()
+                            self.species[sub].var_entropy = val.var()
+                            self.species[sub].fullGCcount = gccount
+                        ftp.cwd('../..')
+                        os.remove("data/temp.fa.gz")
+                ftp.cwd('..')
+            else:
+                if sub in self.species_namelist:
+                    link = []
+                    ftp.cwd(sub + '/' + seq)
+                    ftp.retrlines('NLST', link.append)
+                    with open("data/temp.fa.gz", "wb") as file:
+                        if sub[0] > 'r':
+                            da = link[2]
+                        elif sub[0] > 'c':
+                            da = link[1]
+                        else:
+                            da = link[2]
+                        ftp.retrbinary("RETR " + da, file.write)
+                    with gzip.open("data/temp.fa.gz", "rt") as handle:
+                        val, gccount = selfcomputefullloc(handle)
+                        self.species[sub].fullentropy = val.mean()
+                        self.species[sub].var_entropy = val.var()
+                        self.species[sub].fullGCcount = gccount
+                    ftp.cwd('../..')
+                    os.remove("data/temp.fa.gz")
+
+    def compute_full_entropy(self, handle):
+        """
+        """
+        GCcount = 0
+        val = []
+        for x, record in enumerate(SeqIO.parse(handle, "fasta")):
+            GCcount += (record.seq.count('G') + record.seq.count('C')) / len(record)
+            pos = 0
+            valH = np.zeros(len(amino)) if by != 'frequency' else np.zeros(59)
+            for k, amin in enumerate(amino):
+                nbcod = len(utils.codons[amin])  # replace Cleng
+                count = np.zeros(nbcod)
+                X = np.zeros(nbcod)
+                mn = np.ones(nbcod) / nbcod
+                for i, cod in enumerate(utils.codons[amin]):
+                    count[i] = record.seq.count(cod)
+                lengsubseq = count.sum()  # replace subSlength
+                if by == 'frequency':
+                    if lengsubseq == 0:
+                        valH[pos:pos + nbcod] = np.NaN if setnans else 1. / nbcod
+                    else:
+                        E = count / lengsubseq
+                        valH[pos:pos + nbcod] = E
+                    pos += nbcod
+                else:
+                    if lengsubseq == 0:
+                        valH[k] = np.NaN if setnans else 0.5
+                    else:
+                        Yg = multinomial.pmf(x=count, n=lengsubseq, p=mn)
+                        # efor part
+                        div, i = divmod(lengsubseq, nbcod)
+                        X[:int(i)] = np.ceil(div) + 1
+                        X[int(i):] = np.floor(div)
+                        Eg = multinomial.pmf(x=X, n=lengsubseq, p=mn)
+                        # end here
+                        valH[k] = -np.log(Yg / Eg) / lengsubseq if normalized else -np.log(Yg / Eg)
+            val.append(valH)
+        val = np.array(val)
+        return val, GCcount / x
 
     def get_evolutionary_distance(self, display_tree=False, size=40):
         """
@@ -721,6 +820,9 @@ class PyCUB(object):
                    tools=[hover, BoxZoomTool(), WheelZoomTool(), SaveTool(), ResetTool()])
         p.circle(x='x', y='y', source=source, color='color', size=[])
         show(p)
+
+        # TODO: compute the variation between mean and full entropies
+        # TODO:
 
     def compare_homologies(self, homosapiens=False, mindistance=10, preserved=True, size=10,
                            minpreserv=400, minsimi=0.9, nans=True):
