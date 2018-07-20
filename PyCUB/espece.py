@@ -67,9 +67,9 @@ class Espece(object):
             self.average_size = data.get("average_size", None)
             self.var_entropy = data.get("var_entropy", None)
             self.var_size = data.get("var_size", None)
-            self.fullentropy = data.get("fullentropy", None)
-            self.fullGCcount = data.get("fullGCcount", None)
-            self.tRNAentropy = data.get("tRNAentropy", None)
+            self.fullentropy = data["fullentropy"] if data.get("fullentropy", None) is not None else None
+            self.fullGCcount = data["fullGCcount"] if data.get("fullGCcount", None) is not None else None
+            self.tRNAentropy = data["tRNAentropy"] if data.get("tRNAentropy", None) is not None else None
         else:
             self.code = kwargs.get('code', None)
             self.is_stored = kwargs.get('is_stored', None)
@@ -236,7 +236,7 @@ class Espece(object):
     def gettaxons(self):
         """
         """
-        http: // rest.ensemblgenomes.org / info / genomes / arabidopsis_thaliana?
+        # http: // rest.ensemblgenomes.org / info / genomes / arabidopsis_thaliana?
 
     def getfullgenome(self):
         """
@@ -283,6 +283,6 @@ class Espece(object):
                 "average_size": self.average_size,
                 "var_entropy": self.var_entropy,
                 "var_size": self.var_size,
-                "fullentropy": self.fullentropy,
-                "fullGCcount": self.fullGCcount,
-                "tRNAentropy": self.tRNAentropy}
+                "fullentropy": self.fullentropy.tolist() if self.fullentropy is not None else None,
+                "fullGCcount": self.fullGCcount.tolist() if self.fullGCcount is not None else None,
+                "tRNAentropy": self.tRNAentropy.tolist() if self.tRNAentropy is not None else None}

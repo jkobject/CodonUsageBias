@@ -92,11 +92,11 @@ class homology(object):
             self.names = data.get("names", None)
             self.doub = np.asarray(data.get("doub")) if data.get("doub", None) is not None else None
             self.doublonpos = np.asarray(data.get("doublonpos")) if data.get("doublonpos", None) is not None else None
-            self.GCcount = data.get("GCcount", None)
+            self.GCcount = np.asarray(data.get("GCcount")) if data.get("GCcount", None) is not None else None
             self.reduced = np.asarray(data.get("reduced")) if data.get("reduced", None) is not None else None
             self.reduced_algo = data.get("reduced_algo", None)
-            self.KaKs_Scores = np.asarray(data.get("KaKs_Scores")) if data.get("KaKs_Scores", None) is not None else None
-            self.similarity_scores = np.asarray(data.get("similarity_scores")) if data.get("similarity_scores", None) is not None else None
+            self.KaKs_Scores = data.get("KaKs_Scores", None)
+            self.similarity_scores = data.get("similarity_scores", None)
             self.proteinids = data.get("proteinids", [])
             self.isrecent = data.get("isrecent", None)
             self.ishighpreserved = data.get("ishighpreserved", None)
@@ -441,8 +441,8 @@ class homology(object):
                 "names": self.names,
                 "centroids": self.centroids,
                 "metrics": self.metrics,
-                "KaKs_Scores": self.KaKs_Scores.tolist() if self.KaKs_Scores is not None else None,
-                "similarity_scores": self.similarity_scores.tolist() if self.similarity_scores is not None else None,
+                "KaKs_Scores": self.KaKs_Scores,
+                "similarity_scores": self.similarity_scores,
                 "proteinids": self.proteinids,
                 "nans": self.nans.tolist() if self.nans is not None else None,
                 "doub": self.doub.tolist() if self.doub is not None else None,
@@ -451,7 +451,7 @@ class homology(object):
                 "nanspos": self.nanspos.tolist() if self.nanspos is not None else None,
                 "lenmat": self.lenmat.tolist() if self.lenmat is not None else None,
                 "doublonpos": self.doublonpos.tolist() if self.doublonpos is not None else None,
-                "GCcount": self.GCcount,
+                "GCcount": self.GCcount.tolist() if self.GCcount is not None else None,
                 "reduced_algo": self.reduced_algo,
                 "isrecent": self.isrecent,
                 "ishighpreserved": self.ishighpreserved}
