@@ -236,19 +236,7 @@ class Espece(object):
     def gettaxons(self):
         """
         """
-        species_namelist = set([])
-        taxons = []
-        species = []  # we need to have another species list for the ordering
-        # to be kept as it should (a set is ordered to be accessed in log time)
-        utils.speciestable = {}
-        if self.homodict is not None:
-            i = 0
-            helper = {}
-            for key, val in self.homodict.iteritems():
-                for j, name in enumerate(val.names):
-                    species_namelist.add(utils.speciestable[name])
-            self.species_namelist = species_namelist
-            return taxons, species
+        http: // rest.ensemblgenomes.org / info / genomes / arabidopsis_thaliana?
 
     def getfullgenome(self):
         """
