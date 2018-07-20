@@ -10,8 +10,8 @@ jkobject.com
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import holoviews as hv
-from holoviews.operation.datashader import datashade, dynspread, shade
+#import holoviews as hv
+#from holoviews.operation.datashader import datashade, dynspread, shade
 from joblib import Parallel, delayed
 
 import utils
@@ -20,7 +20,7 @@ import homology as h
 from sklearn.cluster import KMeans
 from sklearn.cluster import MiniBatchKMeans
 from sklearn.metrics.pairwise import cosine_similarity
-from kmodes.kmodes import KModes
+#from kmodes.kmodes import KModes
 from sklearn import manifold as man
 from sklearn import metrics
 from sklearn.decomposition import PCA
@@ -196,19 +196,20 @@ class HomoSet(collections.MutableMapping):
             ax.scatter(self.red_homomatrix[:, 0], self.red_homomatrix[:, 1])
             plt.show()
         else:
-            hv.notebook_extension('bokeh')
+            """
+            #hv.notebook_extension('bokeh')
             dynspread.max_px = 200
             dynspread.threshold = 0.5
             shade.cmap = "#30a2da"  # to match HV Bokeh default
             points = hv.Points(self.red_homomatrix, label="all " + str(self.red_homomatrix.shape[0]) + " homologies")
 
             def heatmap(coords, bins=10, offset=20.0, transform=lambda d, m: d, label=None):
-                """
+                ""
                 Given a set of coordinates, bins them into a 2d histogram grid
                 of the specified size, and optionally transforms the counts
                 and/or compresses them into a visible range starting at a
                 specified offset between 0 and 1.0.
-                """
+                ""
                 hist, xs, ys = np.histogram2d(coords.T[0], coords.T[1], bins=bins)
                 counts = hist[:, ::-1].T
                 transformed = transform(counts, counts != 0)
@@ -218,6 +219,7 @@ class HomoSet(collections.MutableMapping):
                 return hv.Image(compressed, bounds=(xs[-1], ys[-1], xs[1], ys[1]), **args)
             print 'please write %output size=200" before calling this function'
             return heatmap(self.red_homomatrix, 100)(style=dict(cmap="fire")) + datashade(points)
+            """
 
     def loadfullhomo(self):
         """
@@ -445,10 +447,10 @@ class HomoSet(collections.MutableMapping):
                 # TODO: totest
                 alg = MiniBatchKMeans(n_clusters=homogroupnb)
 
-            elif clustering == "kmodes":
+            # elif clustering == "kmodes":
                 # https://github.com/nicodv/kmodes/blob/master/kmodes/kmodes.py
-                alg = KModes(n_clusters=homogroupnb,
-                             init='Huang', n_init=2, verbose=1)
+                # alg = KModes(n_clusters=homogroupnb,
+                #            init='Huang', n_init=2, verbose=1)
 
             else:
                 print "you entered a wrong clustering algorithm"
