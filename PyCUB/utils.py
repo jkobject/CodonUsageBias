@@ -14,7 +14,7 @@ import glob
 import numpy as np
 import requests
 import os
-import pdb
+
 import json
 try:
     from urllib2 import urlopen as urlopen
@@ -22,7 +22,7 @@ except:
     from urllib.request import urlopen as urlopen
 
 import homology as h
-
+import pdb
 """
     the utils is where utilitary functions are stored (in particular preprocessing functions here)
 
