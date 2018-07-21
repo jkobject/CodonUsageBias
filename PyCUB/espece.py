@@ -54,8 +54,9 @@ class Espece(object):
     def __init__(self, **kwargs):
         """
         """
-        data = kwargs.get('data', None)
+        data = kwargs.get("data", None)
         if data is not None:
+            pdb.set_trace()
             self.name = data.get(["name"], None)
             self.metadata = data.get(["name"], None)["metadata"]
             self.code = data.get(["code"], None)

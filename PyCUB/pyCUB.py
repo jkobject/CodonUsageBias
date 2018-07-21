@@ -74,15 +74,13 @@ class PyCUB(object):
     """
 
     links = {'yun': {
-        'homology1t500.zip': 'https://www.dropbox.com/s/mqi5jdgvst21a0c/homology1t500.zip?dl=1',
-        'homology601t1000.zip': 'https://www.dropbox.com/s/7g9yyenje8zvawc/homology601t1000.zip?dl=1',
-        'homology1001t2000.zip': 'https://www.dropbox.com/s/uvumcequrzy38u1/homology1001t2000.zip?dl=1',
-        'homology2001t2500.zip': 'https://www.dropbox.com/s/f7m9ckd79l6tnlj/homology2001t2500.zip?dl=1',
-        'homology2501t3000.zip': 'https://www.dropbox.com/s/gx5mxqfu6iphuhw/homology2501t3000.zip?dl=1',
-        'homology3001t3500.zip': 'https://www.dropbox.com/s/mf1gwyde4i2qezr/homology3001t3500.zip?dl=1',
-        'homology3501t4000.zip': 'https://www.dropbox.com/s/hfrbvagk9drtgf4/homology3501t4000.zip?dl=1',
-        'homology4001t4500.zip': 'https://www.dropbox.com/s/4sz8n7nuyvkg4yf/homology4001t4500.zip?dl=1',
-        'homology4501t5000.zip': 'https://www.dropbox.com/s/jppt4z8pua2jxdn/homology4501t5000.zip?dl=1'},
+        'homology1t500.zip': 'https://www.dropbox.com/s/fmh0ljf02twn4vw/homology1t500.zip?dl=1',
+        'homology501t1000.zip': 'https://www.dropbox.com/s/ld4ar5pnh0f1w1w/homology501t1000.zip?dl=1',
+        'homology1001t2000.zip': 'https://www.dropbox.com/s/he39xu9c0n2jw8n/homology1001t2000.zip?dl=1',
+        'homology2001t2500.zip': 'https://www.dropbox.com/s/8w73jbs3r0ugqb8/homology2001t2500.zip?dl=1',
+        'homology2501t3000.zip': 'https://www.dropbox.com/s/86d23iaetw3hmzy/homology2501t3000.zip?dl=1',
+        'homology3001t3500.zip': 'https://www.dropbox.com/s/mr1tefylq11l3ee/homology3001t3500.zip?dl=1',
+        'first50.zip': 'https://www.dropbox.com/s/m3vob12ztfqs8gh/first50.zip?dl=1'},
         'mymeta': {
         # TODO update the metadata infos and push them to the github
         'Amino Acid Properties README.txt': 'https://www.dropbox.com/s/3tb2j69l0acirt0/\
@@ -179,7 +177,8 @@ class PyCUB(object):
                 return False
             Parallel(n_jobs=8)(delayed(utils.getyun)(key, val) for key, val in
                                self.links['yun'].iteritems())
-            self.load(All=True, From=From, by=by)
+            self.load(All=False if homonames is not None else True, filename=homonames,
+                      From=From, by=by, inpar=inpar)
         elif From == 'ensembl':
             if homonames == 'all' or homonames is None:
                 with open('utils/meta/homolist.json', "r") as f:
@@ -269,7 +268,7 @@ class PyCUB(object):
 
 # LOADINGS AND SAVINGS
 
-    def load(self, session=None, All=False, filename='first500', From=None, by='entropyLocation'):
+    def load(self, session=None, All=False, filename='first500', From=None, by='entropyLocation', inpar=True):
         """
                 Get the data that is already present on a filename
 
@@ -342,18 +341,26 @@ class PyCUB(object):
 
                 # getting the homologies now
                 dou = 0
-                pdb.set_trace()
-                values = Parallel(n_jobs=-1)(delayed(utils.homoyun)(
-                    separation, filename,
-                    homology, by=by) for homology in homo_namelist)
-                for i, val in enumerate(values):
-                    self.all_homoset.update({homo_namelist[i]: h.homology(
-                        # TODO
-                        full=val[0].as_matrix(), names=val[1],
-                        nans=np.sum(val[2].as_matrix(), axis=1),
-                        lenmat=val[3].as_matrix(), doub=val[4])})
-                    dou += np.count_nonzero(val[4])
-
+                if inpar:
+                    values = Parallel(n_jobs=-1)(delayed(utils.homoyun)(
+                        separation, filename,
+                        homology, by=by) for homology in homo_namelist)
+                    for i, val in enumerate(values):
+                        self.all_homoset.update({homo_namelist[i]: h.homology(
+                            # TODO
+                            full=val[0].as_matrix(), names=val[1],
+                            nans=np.sum(val[2].as_matrix(), axis=1),
+                            lenmat=val[3].as_matrix(), doub=val[4])})
+                        dou += np.count_nonzero(val[4])
+                else:
+                    for homo in homo_namelist:
+                        val = utils.homoyun(separation, filename, homo, by=by)
+                        self.all_homoset.update({homo: h.homology(
+                            # TODO
+                            full=val[0].as_matrix(), names=val[1],
+                            nans=np.sum(val[2].as_matrix(), axis=1),
+                            lenmat=val[3].as_matrix(), doub=val[4])})
+                        dou += np.count_nonzero(val[4])
                 # create the hashomomatrix
                 self.all_homoset.loadhashomo()
                 print "you had " + str(dou) + " same species homologies"
@@ -374,21 +381,14 @@ class PyCUB(object):
                     self.loadmore('homology2001t2500', by=by)
                     self.loadmore('homology1001t2000', by=by)
             elif From is None:
-                if not os.path.isfile(folder + filename):
-                    zip_ref = zipfile.ZipFile(folder + filename + '.json.zip', 'r')
-                    zip_ref.extractall(folder)
-                    zip_ref.close()
-                    note = False
-                else:
-                    note = True
-
+                if not os.path.isfile(folder + filename + '.json'):
+                    print "unzipping " + folder + filename + '.json.gz'
+                    os.system("gzip -d " + folder + filename + '.json.gz')
                 with open(folder + filename + ".json", "r") as f:
-                    jsoni = f.read()
                     print "loading from " + filename
-                    self._undictify(json.loads(jsoni))
+                    self._undictify(json.loads(f.read()))
                     print "it worked !"
-                if not note:
-                    os.remove(folder + filename + ".json")
+                    os.system("gzip " + folder + filename + '.json')
 
             print "you now have " + str(np.count_nonzero(self.all_homoset.hashomo_matrix)) +\
                 " genes in total"
@@ -472,7 +472,7 @@ class PyCUB(object):
         else:
             print "You should try load first, this object is empty"
 
-    def save(self, name, save_workspace=True, save_homo=True, cmdlinetozip="mac"):
+    def save(self, name, save_workspace=True, save_homo=True, cmdlinetozip="gzip"):
         """
         call to save your work. you should call save on specific data structure if this is what you
         want to save.
@@ -503,17 +503,17 @@ class PyCUB(object):
         print "only work on mac for now, please write the cmd line to zip a file HERE"
         if cmdlinetozip == 'mac':
             os.system("ditto -c -k --sequesterRsrc " + filename + ' ' + filename + '.zip')
+            os.remove(filename)
         if cmdlinetozip == 'gzip':
             os.system("gzip " + filename)
         # with zipfile.ZipFile(filename + '.zip', 'w') as myzip:
         #    myzip.write(name + json)
-        os.remove(filename)
         self._is_saved = True
 
 
 # PREPROCESSINGS
 
-    def get_working_homoset(self, clusternb=None, species=None, homologies=None):
+    def get_working_homoset(self, clusternb=None, species=None, homologies=None, cleanhomo=None, cleanspecies=None):
         """
         create a subset of all_homoset on which you would like to do further computation
 
@@ -542,7 +542,7 @@ class PyCUB(object):
                     homo = hset.HomoSet()
                     ind = np.argwhere(np.asarray(self.all_homoset.clusters) == clusternb - 1)[:, 0]
                     species_name = [self.all_homoset.species_namelist[i] for i in ind]
-                    homo.homodict = self.all_homoset
+                    homo.homodict = dict(self.all_homoset.homodict)
                     homo.homodict.remove(species_name)
                     homo.homo_namelist = self.all_homoset.homo_namelist
                     homo.species_namelist = species_name
@@ -551,8 +551,13 @@ class PyCUB(object):
                     # version by homologies
                     homo = hset.HomoSet()
                     ind = np.argwhere(np.asarray(self.all_homoset.clusters) == clusternb - 1)[:, 0]
-                    homo_name = [self.all_homoset.homo_namelist[i] for i in ind]
-                    homo.homodict = dict((x, self.all_homoset[x]) for x in homo_name)
+                    if cleanhomo is not None:
+                        perc = self.all_homoset.hashomo_matrix.sum(1) / self.all_homoset.hashomo_matrix.shape[1]
+                        homo_name = [self.all_homoset.homo_namelist[i] for i in ind if perc[i] > cleanhomo]
+                    else:
+                        homo_name = [self.all_homoset.homo_namelist[i] for i in ind]
+                    for x in homo_name:
+                        homo.homodict.update({x: self.all_homoset.homodict[x]})
                     homo.homo_namelist = homo_name
                     homo.species_namelist = self.all_homoset.species_namelist
 
@@ -565,9 +570,12 @@ class PyCUB(object):
         if homologies is not None:
             homo.homodict = {k: homo.homodict[k] for k in homologies}
         if species is not None:
-            other = [item for item in homo.species_namelist if not (item in species)]
+            other = [item for item in homo.species_namelist if item not in species]
             homo.remove(sepcies=other)
         homo.loadhashomo()
+        if cleanspecies is not None:
+            homo.clean_species(thresh=cleanspecies)
+            homo.loadhashomo()
         homo.loadfullhomo()
         self.working_homoset = homo
         return homo
@@ -745,6 +753,9 @@ class PyCUB(object):
         plt.imshow(np.array(df))
         plt.savefig("utils/evolutionarydistances.pdf")
         plt.show()
+
+    def speciestable(self):
+        return utils.speciestable
 
     def compute_averages(self, homoset):
         """
