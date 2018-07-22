@@ -10,9 +10,8 @@ jkobject.com
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-#import holoviews as hv
-#from holoviews.operation.datashader import datashade, dynspread, shade
-from joblib import Parallel, delayed
+import holoviews as hv
+# from holoviews.operation.datashader import datashade, dynspread, shade
 
 import utils
 import homology as h
@@ -20,7 +19,7 @@ import homology as h
 from sklearn.cluster import KMeans
 from sklearn.cluster import MiniBatchKMeans
 from sklearn.metrics.pairwise import cosine_similarity
-#from kmodes.kmodes import KModes
+from kmodes.kmodes import KModes
 from sklearn import manifold as man
 from sklearn import metrics
 from sklearn.decomposition import PCA
@@ -65,7 +64,7 @@ class HomoSet(collections.MutableMapping):
     fulleng = None
     homodict = {}
     homo_namelist = []
-    species_namelist = set([])
+    species_namelist = []
     clusters = []
     homogroupnb = 2
     red_homomatrix = None
@@ -84,7 +83,7 @@ class HomoSet(collections.MutableMapping):
             self.homo_matrix = np.asarray(data["homo_matrix"]) if data.get(
                 "homo_matrix", None) is not None else None
             self.homo_namelist = data.get("homo_namelist", [])
-            self.species_namelist = set(data.get("species_namelist", []))
+            self.species_namelist = data.get("species_namelist", [])
             self.homogroupnb = data.get("homogroupnb", 2)
             self.clusters = data.get("clusters", [])
             self.datatype = data.get("datatype", '')
@@ -112,7 +111,7 @@ class HomoSet(collections.MutableMapping):
         else:
             self.homo_matrix = kwargs.get("homo_matrix", None)
             self.homo_namelist = kwargs.get("homo_namelist", [])
-            self.species_namelist = kwargs.get("species_namelist", set([]))
+            self.species_namelist = kwargs.get("species_namelist", [])
             self.homogroupnb = kwargs.get("homogroupnb", 2)
             self.clusters = kwargs.get("clusters", [])
             self.datatype = kwargs.get("datatype", '')
@@ -153,6 +152,9 @@ class HomoSet(collections.MutableMapping):
 
     def update(self, val):
         self.homodict.update(val)
+
+    def speciestable(self):
+        return utils.speciestable
 
 
 ##############################################################
@@ -196,20 +198,19 @@ class HomoSet(collections.MutableMapping):
             ax.scatter(self.red_homomatrix[:, 0], self.red_homomatrix[:, 1])
             plt.show()
         else:
-            """
-            #hv.notebook_extension('bokeh')
-            dynspread.max_px = 200
-            dynspread.threshold = 0.5
-            shade.cmap = "#30a2da"  # to match HV Bokeh default
-            points = hv.Points(self.red_homomatrix, label="all " + str(self.red_homomatrix.shape[0]) + " homologies")
+            hv.notebook_extension('bokeh')
+            # dynspread.max_px = 200
+            # dynspread.threshold = 0.5
+            # shade.cmap = "#30a2da"  # to match HV Bokeh default
+            # points = hv.Points(self.red_homomatrix, label="all " + str(self.red_homomatrix.shape[0]) + " homologies")
 
             def heatmap(coords, bins=10, offset=20.0, transform=lambda d, m: d, label=None):
-                ""
+                """
                 Given a set of coordinates, bins them into a 2d histogram grid
                 of the specified size, and optionally transforms the counts
                 and/or compresses them into a visible range starting at a
                 specified offset between 0 and 1.0.
-                ""
+                """
                 hist, xs, ys = np.histogram2d(coords.T[0], coords.T[1], bins=bins)
                 counts = hist[:, ::-1].T
                 transformed = transform(counts, counts != 0)
@@ -218,8 +219,7 @@ class HomoSet(collections.MutableMapping):
                 args = dict(label=label) if label else {}
                 return hv.Image(compressed, bounds=(xs[-1], ys[-1], xs[1], ys[1]), **args)
             print 'please write %output size=200" before calling this function'
-            return heatmap(self.red_homomatrix, 100)(style=dict(cmap="fire")) + datashade(points)
-            """
+            # return heatmap(self.red_homomatrix, 100)(style=dict(cmap="fire")) + datashade(points)
 
     def loadfullhomo(self):
         """
@@ -239,10 +239,11 @@ class HomoSet(collections.MutableMapping):
             print '{0}%\r'.format((x * 100) / len(self.homo_namelist)),
         self.homo_matrixnames = np.asarray(self.homo_matrixnames)
 
-    def loadhashomo(self):
+    def loadhashomo(self, withnames=False):
         """
         function to compute the matrix of bool saying wether species X has a gene or more in homology Y
         """
+        self.preprocessing(withnames=withnames)
         hashomo = np.zeros((len(self.homo_namelist),
                             len(self.species_namelist)), dtype=np.bool)
         for i, homo in enumerate(self.homo_namelist):
@@ -252,7 +253,7 @@ class HomoSet(collections.MutableMapping):
         self.hashomo_matrix = hashomo
 
     def size(self):
-        if self.has_homomatrix is None:
+        if self.hashomo_matrix is None:
             self.loadhashomo()
         return np.count_nonzero(self.hashomo_matrix)
 
@@ -277,7 +278,7 @@ class HomoSet(collections.MutableMapping):
                           proteinids=proteinids, Kaks_Scores=Kaks_Scores, lenmat=lenmat)
         self.homodict.update({'random_' + str(int(random.rand() * 1000)): homo})
 
-    def preprocessing(self, withtaxons=False):
+    def preprocessing(self, withtaxons=False, withnames=True):
         """
         will compute the full list of names, find doublons, and set the names to ints instead
         of strings. called after loading from ensembl and associate namelist in each homologies to a number
@@ -293,12 +294,12 @@ class HomoSet(collections.MutableMapping):
         taxons = []
         species = []  # we need to have another species list for the ordering
         # to be kept as it should (a set is ordered to be accessed in log time)
-        utils.speciestable = {}
         if self.homodict is not None:
             i = 0
             helper = {}
             for key, val in self.homodict.iteritems():
                 if withtaxons:
+                    speciestable = {}
                     doub = np.zeros(len(val.names[0]), dtype=np.bool)
                     names = []
                     temp = ''
@@ -312,16 +313,17 @@ class HomoSet(collections.MutableMapping):
                             if len(species_namelist) != old_l:
                                 species.append(val.names[0][j])
                                 taxons.append(val.names[1][j])
-                                utils.speciestable.update({i: name})
+                                speciestable.update({i: name})
                                 helper.update({name: i})
                                 i += 1
                         names.append(helper[name])
                     val.names = names
                     val.doub = doub
-                else:
-                    np.zeros(len(val.names), dtype=np.bool)
+                elif withnames:
+                    doub = np.zeros(len(val.names), dtype=np.bool)
                     names = []
                     temp = ''
+                    speciestable = {}
                     for j, name in enumerate(val.names):
                         if name == temp:
                             doub[j] = True
@@ -330,13 +332,30 @@ class HomoSet(collections.MutableMapping):
                             old_l = len(species_namelist)
                             species_namelist.add(name)
                             if len(species_namelist) != old_l:
-                                utils.speciestable.update({i: name})
+                                species.append(val.names[j])
+                                speciestable.update({i: name})
                                 helper.update({name: i})
                                 i += 1
                         names.append(helper[name])
                     val.names = names
                     val.doub = doub
-            self.species_namelist = species_namelist
+                else:
+                    pdb.set_trace()
+                    temp = -1
+                    positions = []
+                    for j, name in enumerate(val.names):
+                        if name != temp:
+                            temp = name
+                            old_l = len(species_namelist)
+                            species_namelist.add(name)
+                            if len(species_namelist) != old_l:
+                                positions.append(name)
+                                species.append(utils.speciestable[name])
+                    species = np.array(species)[positions]  # reordering with the right positions to correspond
+                    # to homo matrices
+            self.species_namelist = species
+            if withnames or withtaxons:
+                utils.speciestable = speciestable
             if withtaxons:
                 return taxons, species
 
@@ -385,6 +404,14 @@ class HomoSet(collections.MutableMapping):
         # TODO: to finish coding
         for key in self.homodict.keys():
             self.homodict[key].remove(species)
+
+    def clean_species(self, thresh=0.3):
+        spe = []
+        perc = self.hashomo_matrix.sum(0) / len(self.hashomo_matrix)
+        for i in range(len(perc)):
+            if perc[i] < thresh:
+                spe.append(self.species_namelist[i])
+        self.remove(spe)
 
     def plot_homoperspecies(self):
         """
@@ -447,10 +474,10 @@ class HomoSet(collections.MutableMapping):
                 # TODO: totest
                 alg = MiniBatchKMeans(n_clusters=homogroupnb)
 
-            # elif clustering == "kmodes":
+            elif clustering == "kmodes":
                 # https://github.com/nicodv/kmodes/blob/master/kmodes/kmodes.py
-                # alg = KModes(n_clusters=homogroupnb,
-                #            init='Huang', n_init=2, verbose=1)
+                alg = KModes(n_clusters=homogroupnb,
+                             init='Huang', n_init=2, verbose=1)
 
             else:
                 print "you entered a wrong clustering algorithm"
@@ -475,7 +502,7 @@ class HomoSet(collections.MutableMapping):
                     return clusts
             else:
                 break
-        print "the quality of the clustering is: "
+        print "the quality of the clustering is: [silhouette_score,calinski_harabaz_score]"
         print metricA
         print metricB
         if order:
@@ -495,18 +522,17 @@ class HomoSet(collections.MutableMapping):
         self.clusters = [0] * len(clust)
         begin = 0
         # reorder all matrices
-        species_namelist = list(self.species_namelist)
         for i in range(homogroupnb):
             ind = np.argwhere(clust == i)[:, 0]
             orderedhas[begin:begin + len(ind)] = self.hashomo_matrix[ind]
             # the list as well
-            sublist = [self.homo_namelist[e] for e in ind] if not byspecie else [species_namelist[e] for e in ind]
+            sublist = [self.species_namelist[e] for e in ind] if byspecie else [self.homo_namelist[e] for e in ind]
             ltemp[begin:begin + len(ind)] = sublist
             self.clusters[begin:begin + len(ind)] = clust[ind]
             begin += len(ind)
 
         if byspecie:
-            self.species_namelist = set(ltemp)
+            self.species_namelist = ltemp
         else:
             self.homo_namelist = ltemp
         if plot_ordering:
@@ -774,7 +800,7 @@ class HomoSet(collections.MutableMapping):
                 "clusters": self.clusters,
                 "homo_namelist": self.homo_namelist,
                 "homodict": dictihomo,
-                "species_namelist": list(self.species_namelist),
+                "species_namelist": self.species_namelist,
                 "speciestable": utils.speciestable,
                 "homogroupnb": self.homogroupnb,
                 "datatype": self.datatype,

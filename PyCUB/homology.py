@@ -126,17 +126,17 @@ class homology(object):
         """
         removes the list of species from this homology if it exists there
         """
-        names = [utils.speciestable[na] for na in self.names]
-        mask = np.ones(len(self.reduced.shape[0]), dtype=bool)
-        for spe in species:
-            for i, na in enumerates(names):
-                if na == spe:
-                    self.names.pop(i)
-                    mask[i] = False
-                    if self.cluster is not None:
-                        self.clusters.pop(i)
-        self.reduced = self.reduced[mask, :]
-        self.full = self.full[mask, :]
+        names = [utils.speciestable[na] for na in self.names] if type(species[0]) == str else self.names
+        mask = np.ones(len(self.names), dtype=bool)
+        pdb.set_trace()
+        for i, na in enumerate(names):
+            if na in species:
+                self.names.pop(i)
+                mask[i] = False
+                if self.clusters is not None:
+                    self.clusters.pop(i)
+        self.reduced = self.reduced[mask, :] if self.reduced is not None else None
+        self.full = self.full[mask, :] if self.full is not None else None
 
     def nb_unique_species(self):
         """
