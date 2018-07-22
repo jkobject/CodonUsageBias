@@ -149,14 +149,9 @@ def homoyun(separation, folder="first500", homo_name="YAL019W",
     # first_file = glob.glob(folder + "/" + homo_name + separation + "His.*")[0]
     # print "looking at homology :" + homo_name
     aminolist = amino if aminolist is None else aminolist
-
     struct = pd.DataFrame({'': []})
     for i, file in enumerate(glob.glob(folder + "/" + homo_name + separation + "*.*")):
-        if file[-7:-4] != 'ror' and file[-7:-4] in aminolist:
-            # TODO: write if it belongs to a list of amino
-            # acid (given by the user)
-            # we change the nan values as .5 as it is the mean of our distribution
-            # and we don't want to bias it
+        if file[-7:-4] != 'ror' and file[-7:-4].upper() in aminolist:
             if i == 0:
                 struct = pd.read_csv(file).sort_values(by='species').reset_index()
             else:

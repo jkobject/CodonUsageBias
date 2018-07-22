@@ -56,11 +56,11 @@ class Espece(object):
         """
         data = kwargs.get('data', None)
         if data is not None:
-            self.name = data.get(["name"], None)
-            self.metadata = data.get(["name"], None)["metadata"]
-            self.code = data.get(["code"], None)
-            self.taxonid = data.get(["taxonid"], None)
-            self.copynumbers = data.get(["copynumbers"], None)
+            self.name = data.get("name", None)
+            self.metadata = data.get("metadata", None)
+            self.code = data.get("code", None)
+            self.taxonid = data.get("taxonid", None)
+            self.copynumbers = data.get("copynumbers", None)
             self.code = data.get('code', None)
             self.is_stored = data.get('is_stored', None)
             self.average_entropy = data.get("average_entropy", None)
