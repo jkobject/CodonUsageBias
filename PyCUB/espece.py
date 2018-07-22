@@ -54,7 +54,7 @@ class Espece(object):
     def __init__(self, **kwargs):
         """
         """
-        data = kwargs.get('data', None)
+        data = kwargs.get("data", None)
         if data is not None:
             self.name = data.get("name", None)
             self.metadata = data.get("metadata", None)
