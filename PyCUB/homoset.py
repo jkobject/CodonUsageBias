@@ -239,11 +239,11 @@ class HomoSet(collections.MutableMapping):
             print '{0}%\r'.format((x * 100) / len(self.homo_namelist)),
         self.homo_matrixnames = np.asarray(self.homo_matrixnames)
 
-    def loadhashomo(self):
+    def loadhashomo(self, withnames=False):
         """
         function to compute the matrix of bool saying wether species X has a gene or more in homology Y
         """
-        self.preprocessing(withnames=False)
+        self.preprocessing(withnames=withnames)
         hashomo = np.zeros((len(self.homo_namelist),
                             len(self.species_namelist)), dtype=np.bool)
         for i, homo in enumerate(self.homo_namelist):

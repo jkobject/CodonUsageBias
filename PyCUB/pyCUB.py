@@ -341,25 +341,25 @@ class PyCUB(object):
 
                 # getting the homologies now
                 dou = 0
+                if by == "entropy":
+                    by = "entropyValue"
                 if inpar:
                     values = Parallel(n_jobs=-1)(delayed(utils.homoyun)(
                         separation, filename,
                         homology, by=by) for homology in homo_namelist)
                     for i, val in enumerate(values):
-                        self.all_homoset.update({homo_namelist[i]: h.homology(
-                            # TODO
-                            full=val[0].as_matrix(), names=val[1],
-                            nans=np.sum(val[2].as_matrix(), axis=1),
-                            lenmat=val[3].as_matrix(), doub=val[4])})
+                        self.all_homoset.update({homo: h.homology(
+                            full=val[0], names=val[1].tolist(),
+                            nans=val[2],
+                            lenmat=val[3], doub=val[4])})
                         dou += np.count_nonzero(val[4])
                 else:
                     for homo in homo_namelist:
                         val = utils.homoyun(separation, filename, homo, by=by)
                         self.all_homoset.update({homo: h.homology(
-                            # TODO
-                            full=val[0].as_matrix(), names=val[1],
-                            nans=np.sum(val[2].as_matrix(), axis=1),
-                            lenmat=val[3].as_matrix(), doub=val[4])})
+                            full=val[0], names=val[1].tolist(),
+                            nans=val[2],
+                            lenmat=val[3], doub=val[4])})
                         dou += np.count_nonzero(val[4])
                 # create the hashomomatrix
                 self.all_homoset.loadhashomo(withnames=True)
