@@ -200,7 +200,7 @@ class PyCUB(object):
                                                                    additional, saveonfiles,
                                                                    normalized, setnans, i, by, using)})
             # TODO: test full pipeline with frequency/entropy/entropylocation
-            taxons, species = self.all_homoset.preprocessing(withtaxons=True)
+            taxons, species = self.all_homoset.preprocessing_taxons(withtaxons=True)
             print "computing tRNA copy numbers"
             for i, spece in enumerate(species):
                 espece_val = spe.Espece(name=spece, taxonid=taxons[i])
@@ -363,13 +363,14 @@ class PyCUB(object):
                         dou += np.count_nonzero(val[4])
                 # create the hashomomatrix
                 self.all_homoset.loadhashomo(withnames=True)
+                pdb.set_trace()
                 print "you had " + str(dou) + " same species homologies"
                 print "reviewed " + str(len(homo_namelist)) + " homologies "
 
                 # if we haven't change the working with processing
                 self._is_saved = False
                 if not note:
-                    shutil.rmtree(filename)
+                    shutil.rmtree(folder + filename)
                 self._is_loaded = True
                 if All:
                     self.loadmore('homology4501t5000', by=by)
@@ -380,18 +381,20 @@ class PyCUB(object):
                     self.loadmore('homology3001t3500', by=by)
                     self.loadmore('homology2001t2500', by=by)
                     self.loadmore('homology1001t2000', by=by)
+                print "you now have " + str(np.count_nonzero(self.all_homoset.hashomo_matrix)) +\
+                    " genes in total"
             elif From is None:
                 if not os.path.isfile(folder + filename + '.json'):
                     print "unzipping " + folder + filename + '.json.gz'
                     os.system("gzip -d " + folder + filename + '.json.gz')
                 with open(folder + filename + ".json", "r") as f:
                     print "loading from " + filename
-                    self._undictify(json.loads(f.read()))
+                    additionals = self._undictify(json.loads(f.read()))
                     print "it worked !"
                     os.system("gzip " + folder + filename + '.json')
-
-            print "you now have " + str(np.count_nonzero(self.all_homoset.hashomo_matrix)) +\
-                " genes in total"
+                    print "you now have " + str(np.count_nonzero(self.all_homoset.hashomo_matrix)) +\
+                        " genes in total"
+                    return additionals
 
         else:
             print "hey, it looks like this object has already loaded some things"
@@ -472,7 +475,7 @@ class PyCUB(object):
         else:
             print "You should try load first, this object is empty"
 
-    def save(self, name, save_workspace=True, save_homo=True, cmdlinetozip="gzip"):
+    def save(self, name, save_workspace=True, save_homo=True, add_homosets={}, cmdlinetozip="gzip"):
         """
         call to save your work. you should call save on specific data structure if this is what you
         want to save.
@@ -491,7 +494,7 @@ class PyCUB(object):
         """
         filename = "utils/save/" + self.session + '/' + name + ".json"
         print "writing in " + name
-        dictify = self._dictify(save_workspace, save_homo)
+        dictify = self._dictify(save_workspace, save_homo, add_homosets)
         data = json.dumps(dictify, indent=4, separators=(',', ': '))
         dirname = os.path.dirname(filename)
         if not os.path.exists(dirname):
@@ -500,7 +503,6 @@ class PyCUB(object):
             f.write(data)
             print "it worked !"
         # now we zip to save 90% memory space
-        print "only work on mac for now, please write the cmd line to zip a file HERE"
         if cmdlinetozip == 'mac':
             os.system("ditto -c -k --sequesterRsrc " + filename + ' ' + filename + '.zip')
             os.remove(filename)
@@ -549,6 +551,7 @@ class PyCUB(object):
 
                 elif leng == len(self.all_homoset.homodict):
                     # version by homologies
+                    pdb.set_trace()
                     homo = hset.HomoSet()
                     ind = np.argwhere(np.asarray(self.all_homoset.clusters) == clusternb - 1)[:, 0]
                     if cleanhomo is not None:
@@ -573,9 +576,10 @@ class PyCUB(object):
             other = [item for item in homo.species_namelist if item not in species]
             homo.remove(sepcies=other)
         homo.loadhashomo()
-        if cleanspecies is not None:
-            homo.clean_species(thresh=cleanspecies)
-            homo.loadhashomo()
+        # big mistake to call this as it removes also species from the all homology as they both share the same objects
+        # if cleanspecies is not None:
+        #    homo.clean_species(thresh=cleanspecies)
+        #    homo.loadhashomo()
         homo.loadfullhomo()
         self.working_homoset = homo
         return homo
@@ -911,7 +915,7 @@ class PyCUB(object):
             print "compute the phylo distance matrix first (look at the doc)"
 # SPECIAL FUNCTION
 
-    def _dictify(self, save_workspace, save_homo):
+    def _dictify(self, save_workspace, save_homo, add_homosets):
         """
         Used by the saving function. transform the workspace object into a dictionary that can be
         json serializable
@@ -925,12 +929,14 @@ class PyCUB(object):
         dictispecies = {}
         for key, val in self.species.iteritems():
             dictispecies.update({key: val._dictify()})
-        return {"species": dictispecies,
-                "all_homoset": self.all_homoset._dictify() if save_homo and
-                (self.all_homoset is not None) else None,
-                "working_homoset": self.working_homoset._dictify() if save_workspace and
-                (self.working_homoset is not None) else None
-                }
+        di = {"species": dictispecies,
+              "all_homoset": self.all_homoset._dictify(savehomos=True) if save_homo and
+              (self.all_homoset is not None) else None,
+              "working_homoset": self.working_homoset._dictify() if save_workspace and
+              (self.working_homoset is not None) else None
+              }
+        for key, val in add_homosets:
+            di.update({key: val})
 
     def _undictify(self, data):
         """
@@ -943,14 +949,23 @@ class PyCUB(object):
         data: dict to undictify into the workspace object
         """
         species = {}
-        for key, val in data["species"].iteritems():
-            species.update({key: spe.Espece(data=val)})
         self.species = species
         self._is_saved = False
         self._is_loaded = True
-        self.all_homoset = hset.HomoSet(data=data["all_homoset"]) if data["all_homoset"] is not None else None
-        self.working_homoset = hset.HomoSet(data=data["working_homoset"]) if \
-            data["all_homoset"] is not None else None
+        ret = {}
+        for key, val in data:
+            if key == 'species':
+                for ke, va in val.iteritems():
+                    species.update({ke: spe.Espece(data=va)})
+            elif key == "all_homoset" and val is not None:
+                self.all_homoset = hset.HomoSet(data=val)
+            elif key == "working_homoset" and val is not None:
+                self.working_homoset = hset.HomoSet(data=val)
+                for v in self.working_homoset.homonamelist:  # as we don't save the homologies twice here
+                    self.working_homoset.update({v: self.all_homoset[v]})
+            else:
+                ret.update({key: val})
+        return ret
 
 
 """
