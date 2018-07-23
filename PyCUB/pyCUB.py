@@ -362,7 +362,7 @@ class PyCUB(object):
                             lenmat=val[3].as_matrix(), doub=val[4])})
                         dou += np.count_nonzero(val[4])
                 # create the hashomomatrix
-                self.all_homoset.loadhashomo()
+                self.all_homoset.loadhashomo(withnames=True)
                 print "you had " + str(dou) + " same species homologies"
                 print "reviewed " + str(len(homo_namelist)) + " homologies "
 
