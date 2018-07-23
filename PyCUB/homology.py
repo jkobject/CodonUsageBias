@@ -126,15 +126,19 @@ class homology(object):
         """
         removes the list of species from this homology if it exists there
         """
-        names = [utils.speciestable[na] for na in self.names] if type(species[0]) == str else self.names
-        mask = np.ones(len(self.names), dtype=bool)
-        pdb.set_trace()
-        for i, na in enumerate(names):
-            if na in species:
-                self.names.pop(i)
-                mask[i] = False
+        tradnames = [utils.speciestable[na] for na in self.names] if type(species[0]) == unicode or \
+            type(species[0]) == unicode else self.names
+        names = list(self.names)
+        cluster = []
+        mask = np.zeros(len(self.names), dtype=bool)
+        self.names = []
+        for i, na in enumerate(tradnames):
+            if na not in species:
+                self.names.append(names[i])
+                mask[i] = True
                 if self.clusters is not None:
-                    self.clusters.pop(i)
+                    cluster.append(self.clusters[i])
+        self.cluster = np.array(cluster) if self.clusters is not None else None
         self.reduced = self.reduced[mask, :] if self.reduced is not None else None
         self.full = self.full[mask, :] if self.full is not None else None
 

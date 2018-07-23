@@ -91,7 +91,10 @@ class HomoSet(collections.MutableMapping):
                 "phylo_distances", None) is not None else None
             self.red_homomatrix = np.asarray(data["red_homomatrix"]) if data.get(
                 "red_homomatrix", None) is not None else None
-            utils.speciestable = data.get("speciestable", {})
+            a = data.get("speciestable", {})
+            utils.speciestable = {}
+            for key, val in a.iteritems():
+                utils.speciestable.update({int(key): val})
             utils.phylo_distances = data.get("phylo_distances", None)
             utils.meandist = utils.phylo_distances.sum().sum() / (len(
                 utils.phylo_distances)**2 - len(utils.phylo_distances)) if utils.phylo_distances is not None else None
@@ -117,15 +120,17 @@ class HomoSet(collections.MutableMapping):
             self.datatype = kwargs.get("datatype", '')
             self.phylo_distances = kwargs.get("phylo_distances", None)
             self.red_homomatrix = kwargs.get("red_homomatrix", None)
-            utils.speciestable = kwargs.get("speciestable", {})
-            utils.phylo_distances = kwargs.get("phylo_distances", None)
-            utils.meandist = utils.phylo_distances.sum().sum() / (len(
-                utils.phylo_distances)**2 - len(utils.phylo_distances)) if utils.phylo_distances is not None else None
+            if kwargs.get("speciestable", {}):
+                utils.speciestable = kwargs.get("speciestable")
+                utils.phylo_distances = kwargs.get("phylo_distances", None)
+                utils.meandist = utils.phylo_distances.sum().sum() / (len(
+                    utils.phylo_distances)**2 - len(utils.phylo_distances)) if utils.phylo_distances is not None else None
             self.hashomo_matrix = kwargs.get("hashomo_matrix", None)
             self.fulleng = kwargs.get("fulleng", None)
             self.wasclusterized = kwargs.get('wasclusterized', False)
             self.homo_clusters = kwargs.get("homo_clusters", None)
             self.averagehomo_matrix = kwargs.get("averagehomo_matrix", None)
+            self.homodict = kwargs.get("homodict", {})
         # TODO: -- add loads and save everywhere
     # magic methods https://rszalski.github.io/magicmethods/
 
@@ -243,6 +248,7 @@ class HomoSet(collections.MutableMapping):
         """
         function to compute the matrix of bool saying wether species X has a gene or more in homology Y
         """
+        pdb.set_trace()
         self.preprocessing(withnames=withnames)
         hashomo = np.zeros((len(self.homo_namelist),
                             len(self.species_namelist)), dtype=np.bool)
@@ -290,74 +296,79 @@ class HomoSet(collections.MutableMapping):
                         and the corresponding species in the same order
                         only if with taxons
         """
+        if self.homodict is not None:
+            if withtaxons:
+                return self.preprocessing_taxons()
+            elif withnames:
+                self.preprocessing_names()
+            else:
+                self.preprocessing_namelist()
+
+    def preprocessing_taxons(self):
+        i = 0
+        helper = {}
         species_namelist = set([])
+        speciestable = {}
         taxons = []
+        species = []
+        for key, val in self.homodict.iteritems():
+            doub = np.zeros(len(val.names[0]), dtype=np.bool)
+            names = []
+            temp = ''
+            for j, name in enumerate(val.names[0]):
+                if name == temp:
+                    doub[j] = True
+                else:
+                    temp = name
+                    old_l = len(species_namelist)
+                    species_namelist.add(name)
+                    if len(species_namelist) != old_l:
+                        species.append(val.names[0][j])
+                        taxons.append(val.names[1][j])
+                        speciestable.update({i: name})
+                        helper.update({name: i})
+                        i += 1
+                names.append(helper[name])
+            val.names = names
+            val.doub = doub
+            utils.speciestable = speciestable
+        self.species_namelist = species
+        return taxons, species
+
+    def preprocessing_names(self):
+        species_namelist = set([])
         species = []  # we need to have another species list for the ordering
         # to be kept as it should (a set is ordered to be accessed in log time)
-        if self.homodict is not None:
-            i = 0
-            helper = {}
-            for key, val in self.homodict.iteritems():
-                if withtaxons:
-                    speciestable = {}
-                    doub = np.zeros(len(val.names[0]), dtype=np.bool)
-                    names = []
-                    temp = ''
-                    for j, name in enumerate(val.names[0]):
-                        if name == temp:
-                            doub[j] = True
-                        else:
-                            temp = name
-                            old_l = len(species_namelist)
-                            species_namelist.add(name)
-                            if len(species_namelist) != old_l:
-                                species.append(val.names[0][j])
-                                taxons.append(val.names[1][j])
-                                speciestable.update({i: name})
-                                helper.update({name: i})
-                                i += 1
-                        names.append(helper[name])
-                    val.names = names
-                    val.doub = doub
-                elif withnames:
-                    doub = np.zeros(len(val.names), dtype=np.bool)
-                    names = []
-                    temp = ''
-                    speciestable = {}
-                    for j, name in enumerate(val.names):
-                        if name == temp:
-                            doub[j] = True
-                        else:
-                            temp = name
-                            old_l = len(species_namelist)
-                            species_namelist.add(name)
-                            if len(species_namelist) != old_l:
-                                species.append(val.names[j])
-                                speciestable.update({i: name})
-                                helper.update({name: i})
-                                i += 1
-                        names.append(helper[name])
-                    val.names = names
-                    val.doub = doub
+        speciestable = {}
+        i = 0
+        helper = {}
+        for key, val in self.homodict.iteritems():
+            doub = np.zeros(len(val.names), dtype=np.bool)
+            names = []
+            temp = ''
+            for j, name in enumerate(val.names):
+                if name == temp:
+                    doub[j] = True
                 else:
-                    pdb.set_trace()
-                    temp = -1
-                    positions = []
-                    for j, name in enumerate(val.names):
-                        if name != temp:
-                            temp = name
-                            old_l = len(species_namelist)
-                            species_namelist.add(name)
-                            if len(species_namelist) != old_l:
-                                positions.append(name)
-                                species.append(utils.speciestable[name])
-                    species = np.array(species)[positions]  # reordering with the right positions to correspond
-                    # to homo matrices
-            self.species_namelist = species
-            if withnames or withtaxons:
-                utils.speciestable = speciestable
-            if withtaxons:
-                return taxons, species
+                    temp = name
+                    old_l = len(species_namelist)
+                    species_namelist.add(name)
+                    if len(species_namelist) != old_l:
+                        species.append(val.names[j])
+                        speciestable.update({i: name})
+                        helper.update({name: i})
+                        i += 1
+                names.append(helper[name])
+            val.names = names
+            val.doub = doub
+        utils.speciestable = speciestable
+        self.species_namelist = species
+
+    def preprocessing_namelist(self):
+        # as a dict of int is ordered
+        self.species_namelist = []
+        for key, val in utils.speciestable.iteritems():
+            self.species_namelist.append(val)
 
     def compute_entropyloc(self, using='normal'):
         """
@@ -487,7 +498,7 @@ class HomoSet(collections.MutableMapping):
             # BYSPECIES is a special case where one would like to keep all homologies and
             # remove species instead. we would advise the opposite though
             alg.fit(self.hashomo_matrix)
-            clust = alg.labels_
+            clust = alg.labels_.astype(int)
             metricA = metrics.silhouette_score(self.hashomo_matrix, clust, metric='euclidean')
             metricB = metrics.calinski_harabaz_score(self.hashomo_matrix, clust)
             if findnb is True:
@@ -787,14 +798,15 @@ class HomoSet(collections.MutableMapping):
         overlay = (primary * outlier * secondary).options('Area', fill_alpha=0.5, name='testdata')
         hv.Area.stack(overlay).relabel("cluster info: primary_clust +outlier +secondary_clust")
 
-    def _dictify(self):
+    def _dictify(self, savehomos=False):
         """
         Used by the saving function. transform the object into a dictionary that can be
         json serializable
         """
         dictihomo = {}
-        for key, val in self.homodict.iteritems():
-            dictihomo.update({key: val._dictify()})
+        if savehomos:
+            for key, val in self.homodict.iteritems():
+                dictihomo.update({key: val._dictify()})
         return {"hashomo_matrix": self.hashomo_matrix.tolist() if self.hashomo_matrix is not None else None,
                 "homo_matrix": self.homo_matrix.tolist() if self.homo_matrix is not None else None,
                 "clusters": self.clusters,
