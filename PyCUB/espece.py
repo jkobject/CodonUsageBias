@@ -121,7 +121,8 @@ class Espece(object):
         add = "biotypes=tRNA;level=transcript"
         r = requests.get(server + ext + add, headers={"Content-Type": "application/json"})
         if not r.ok:
-            r.raise_for_status()
+            print " !! ---> unavailable species"
+            return
         data = r.json()
         copynumber = {}
         for key, val in utils.anticodons.iteritems():
@@ -235,6 +236,8 @@ class Espece(object):
 
     def gettaxons(self):
         """
+        Pars the ensemblgenomes REST API to retrieve the taxons id for the species from which
+        we would not have any (downloaded via Yun for example)
         """
         # http: // rest.ensemblgenomes.org / info / genomes / arabidopsis_thaliana?
         server = "http://rest.ensemblgenomes.org"
@@ -285,4 +288,4 @@ class Espece(object):
                 "var_size": self.var_size,
                 "fullentropy": self.fullentropy.tolist() if self.fullentropy is not None else None,
                 "fullGCcount": self.fullGCcount.tolist() if self.fullGCcount is not None else None,
-                "tRNAentropy": self.tRNAentropy.tolist() if self.tRNAentropy is not None else None}
+                "tRNAentropy": self.tRNAentropy}
