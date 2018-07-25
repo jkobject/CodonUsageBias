@@ -11,8 +11,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import holoviews as hv
-# from holoviews.operation.datashader import datashade, dynspread, shade
-
+from holoviews.operation.datashader import datashade, dynspread, shade
+from bokeh.io import output_file, save, show
 import utils
 import homology as h
 
@@ -72,6 +72,7 @@ class HomoSet(collections.MutableMapping):
     homo_clusters = None
     datatype = ''
     averagehomo_matrix = None
+    stats = {}
 
     def __init__(self, **kwargs):
         """
@@ -92,6 +93,8 @@ class HomoSet(collections.MutableMapping):
             self.red_homomatrix = np.asarray(data["red_homomatrix"]) if data.get(
                 "red_homomatrix", None) is not None else None
             a = data.get("speciestable", {})
+            self.homo_matrixnames = np.asarray(data["homo_matrixnames"]) if data.get(
+                "homo_matrixnames", None) is not None else None
             utils.speciestable = {}
             for key, val in a.iteritems():
                 utils.speciestable.update({int(key): val})
@@ -107,6 +110,7 @@ class HomoSet(collections.MutableMapping):
                 "homo_clusters", None) is not None else None
             self.averagehomo_matrix = np.asarray(data["averagehomo_matrix"]) if data.get(
                 "averagehomo_matrix", None) is not None else None
+            self.stats = data.get('stats', {})
             tp = {}
             for key, val in data["homodict"].iteritems():
                 tp.update({key: h.homology(data=val)})
@@ -122,16 +126,18 @@ class HomoSet(collections.MutableMapping):
             self.red_homomatrix = kwargs.get("red_homomatrix", None)
             if kwargs.get("speciestable", {}):
                 utils.speciestable = kwargs.get("speciestable")
+            if kwargs.get("phylo_distances", False):
                 utils.phylo_distances = kwargs.get("phylo_distances", None)
-                utils.meandist = utils.phylo_distances.sum().sum() / (len(
-                    utils.phylo_distances)**2 - len(utils.phylo_distances)) if utils.phylo_distances is not None else None
+            utils.meandist = utils.phylo_distances.sum().sum() / (len(
+                utils.phylo_distances)**2 - len(utils.phylo_distances)) if utils.phylo_distances is not None else None
             self.hashomo_matrix = kwargs.get("hashomo_matrix", None)
             self.fulleng = kwargs.get("fulleng", None)
             self.wasclusterized = kwargs.get('wasclusterized', False)
             self.homo_clusters = kwargs.get("homo_clusters", None)
             self.averagehomo_matrix = kwargs.get("averagehomo_matrix", None)
             self.homodict = kwargs.get("homodict", {})
-        # TODO: -- add loads and save everywhere
+            self.stats = kwargs.get('stats', {})
+            self.homo_matrixnames = kwargs.get("homo_matrixnames", None)
     # magic methods https://rszalski.github.io/magicmethods/
 
     def __getitem__(self, key):
@@ -159,7 +165,7 @@ class HomoSet(collections.MutableMapping):
         self.homodict.update(val)
 
     def speciestable(self):
-        return utils.speciestable
+        return dict(utils.speciestable)
 
 
 ##############################################################
@@ -191,23 +197,27 @@ class HomoSet(collections.MutableMapping):
                 # red = man.TSNE(n_components=2, perplexity=perplexity, n_iter=iteration, verbose=3)
                 # .fit_transform(self.homo_matrix)
                 red = tsne.tsne(self.homo_matrix, no_dims=2, initial_dims=self.homo_matrix.shape[1], perplexity=30.0)
-            if With == 'PCA':
+            elif With == 'PCA':
                 red = PCA(n_components=2).fit_transform(self.homo_matrix)
-            if With == 'ltsa' or With == 'hessian':
+            elif With == 'ltsa' or With == 'hessian':
                 red = man.LocallyLinearEmbedding(self.homo_matrix.shape[0] / 100, 2,
                                                  eigen_solver='auto', method=With).fit_transform(self.homo_matrix)
+            else:
+                print "not a good red algorithm"
+                return
             self.red_homomatrix = red
         if not interactive:
             fig = plt.figure(figsize=(40, 40))
             ax = fig.add_subplot(111)
             ax.scatter(self.red_homomatrix[:, 0], self.red_homomatrix[:, 1])
             plt.show()
+            plt.savefig('utils/templot/red_homomatrix_homoset.pdf')
         else:
-            hv.notebook_extension('bokeh')
-            # dynspread.max_px = 200
-            # dynspread.threshold = 0.5
-            # shade.cmap = "#30a2da"  # to match HV Bokeh default
-            # points = hv.Points(self.red_homomatrix, label="all " + str(self.red_homomatrix.shape[0]) + " homologies")
+            hv.notebook_extension('bokeh', 'matplotlib')
+            dynspread.max_px = 200
+            dynspread.threshold = 0.5
+            shade.cmap = "#30a2da"  # to match HV Bokeh default
+            points = hv.Points(self.red_homomatrix, label="all " + str(self.red_homomatrix.shape[0]) + " homologies")
 
             def heatmap(coords, bins=10, offset=20.0, transform=lambda d, m: d, label=None):
                 """
@@ -224,15 +234,17 @@ class HomoSet(collections.MutableMapping):
                 args = dict(label=label) if label else {}
                 return hv.Image(compressed, bounds=(xs[-1], ys[-1], xs[1], ys[1]), **args)
             print 'please write %output size=200" before calling this function'
-            # return heatmap(self.red_homomatrix, 100)(style=dict(cmap="fire")) + datashade(points)
+            save(hv.renderer('bokeh').get_plot(datashade(points)).state, 'utils/templot/red_homomatrix_datashade.html')
+            save(hv.renderer('bokeh').get_plot(heatmap(self.red_homomatrix, 100)(style=dict(cmap="fire"))).state, 'utils/templot/red_homomatrix_heatmap.html')
+            return heatmap(self.red_homomatrix, 100)(style=dict(cmap="fire")) + datashade(points)
 
     def loadfullhomo(self):
         """
         function to concatenate all the homologies in one big array(practicle for certain computations)
         """
-        self.homo_matrix = self.homodict[self.homo_namelist[0]].full
-        self.homo_matrixnames = self.homodict[self.homo_namelist[0]].names
-        self.fulleng = self.homodict[self.homo_namelist[0]].lenmat
+        self.homo_matrix = self.homodict[self.homo_namelist[0]].full.copy()
+        self.homo_matrixnames = list(self.homodict[self.homo_namelist[0]].names)
+        self.fulleng = self.homodict[self.homo_namelist[0]].lenmat.copy()
         for x, homo in enumerate(self.homo_namelist[1:]):
             try:
                 self.homo_matrix = np.vstack((self.homo_matrix, self.homodict[homo].full))
@@ -248,7 +260,6 @@ class HomoSet(collections.MutableMapping):
         """
         function to compute the matrix of bool saying wether species X has a gene or more in homology Y
         """
-        pdb.set_trace()
         self.preprocessing(withnames=withnames)
         hashomo = np.zeros((len(self.homo_namelist),
                             len(self.species_namelist)), dtype=np.bool)
@@ -331,7 +342,7 @@ class HomoSet(collections.MutableMapping):
                 names.append(helper[name])
             val.names = names
             val.doub = doub
-            utils.speciestable = speciestable
+        utils.speciestable = speciestable
         self.species_namelist = species
         return taxons, species
 
@@ -367,7 +378,8 @@ class HomoSet(collections.MutableMapping):
     def preprocessing_namelist(self):
         # as a dict of int is ordered
         self.species_namelist = []
-        for key, val in utils.speciestable.iteritems():
+        speciestable = dict(utils.speciestable)
+        for key, val in speciestable.iteritems():
             self.species_namelist.append(val)
 
     def compute_entropyloc(self, using='normal'):
@@ -412,11 +424,16 @@ class HomoSet(collections.MutableMapping):
         """
         remove this list of species from the homologies
         """
-        # TODO: to finish coding
         for key in self.homodict.keys():
             self.homodict[key].remove(species)
 
     def clean_species(self, thresh=0.3):
+        """
+        will remove a species from all the homologies of this homoset
+
+        Warning, as the all/working homosets share the ref to homologies, deleting some species in working_homoset
+        will result in removing some species in some homologies of all_homoset
+        """
         spe = []
         perc = self.hashomo_matrix.sum(0) / len(self.hashomo_matrix)
         for i in range(len(perc)):
@@ -432,6 +449,7 @@ class HomoSet(collections.MutableMapping):
         plt.figure(figsize=(40, 10))
         plt.title('number of homologies per species')
         plt.bar(range(len(sumed)), sumed)
+        plt.savefig("utils/templot/clustersimilarity.pdf")
         print "you can always look at a particular range of species with 'homo_namelist' "
 
     def plot_speciesperhomo(self):
@@ -442,11 +460,12 @@ class HomoSet(collections.MutableMapping):
         plt.figure(figsize=(40, 10))
         plt.title('number of species per homologies')
         plt.bar(range(len(sumed)), sumed)
+        plt.savefig("utils/templot/clustersimilarity.pdf")
         print "you can always look at a particular range of species with 'homo_namelist' "
 
-    def order_from_matrix(self, clustering='kmeans', byspecie=False, order=True,
-                          plot_ordering=True, homogroupnb=2, findnb=False,
-                          reducedim=False):
+    def cluster_homologies(self, clustering='kmeans', byspecie=False, order=True,
+                           plot_ordering=True, homogroupnb=2, findnb=False,
+                           reducedim=False):
         """
         Compute an homology group :
         from matrix computation using the homo_matrix
@@ -468,7 +487,6 @@ class HomoSet(collections.MutableMapping):
         """
         # TODO: find more tests and visualisations to perform
         if reducedim:
-            # TODO: try to reduce the dimensionality here before clustering
             print "tocode yet"
         if findnb is True:
             homogroupnb = 2
@@ -550,7 +568,7 @@ class HomoSet(collections.MutableMapping):
             self._plot_clust(self.hashomo_matrix, orderedhas)
         return orderedhas
 
-    def get_clusterstats(self, by_proportion=True, sort=True):
+    def get_clusterstats(self, by_proportion=True, sort=True, interactive=True):
         """
         will find the number of cluster i per homologies and per species
 
@@ -562,15 +580,16 @@ class HomoSet(collections.MutableMapping):
         by_proportion: bool to compute the prop or the raw numbers
         sort: to sort by 'species','homologies' or None
         """
-        # TODO: totest
-        homoclusters = np.array((len(self.homodict), 3))
-        specluster = np.array((len(self.species_namelist), 3))
+        homoclusters = np.zeros((len(self.homodict), 3))
+        specluster = np.zeros((len(self.species_namelist), 3))
         if self.wasclusterized:
-            if self.stats is None:
-                for j, val in enumerate(self.homodict.iteritems()):
-                    x = 0
+            if not self.stats:
+                for j, (key, val) in enumerate(self.homodict.iteritems()):
+                    x = -1
                     hprop = np.zeros(3)
                     for i in range(len(val.clusters)):
+                        if not val.doub[i]:
+                            x += 1
                         if val.clusters[i] == 0:  # primary clusters
                             hprop[0] += 1
                             specluster[val.names[x]][0] += 1
@@ -580,12 +599,11 @@ class HomoSet(collections.MutableMapping):
                         else:   # secondary clusters
                             hprop[2] += 1
                             specluster[val.names[x]][2] += 1
-                        if val.doub[i + 1] is False:
-                            x += 1
                     homoclusters[j] = np.divide(hprop, i) if by_proportion else hprop
-                self.stats = {'homologies': homoclusters, 'species': specluster}
+                self.stats = {'homologies': homoclusters.tolist(), 'species': specluster.tolist()}
                 if sort:
-                    ind = self.stats['homologies'].argsort(axis=0)
+                    # TODO: totest
+                    ind = np.array(self.stats['homologies']).argsort(axis=0)
                     self.stats['homologies'][:] = self.stats['homologies'][ind]
                     if self.hashomo_matrix is not None:
                         self.hashomo_matrix[:] = self.hashomo_matrix[ind]
@@ -599,9 +617,8 @@ class HomoSet(collections.MutableMapping):
                         self.homo_matrixnames[:] = self.homo_matrixnames[ind]
                     if self.clusters is not None:
                         self.clusters[:] = self.clusters[ind]
-                    self.stats["species"] = self.stats["species"].tolist()
                     self.stats["species"].sort()
-            self._barplot()
+            return self._barplot()
         else:
             print "you need to find clusters first"
 
@@ -638,7 +655,7 @@ class HomoSet(collections.MutableMapping):
             plt.figure(figsize=(size, 200))
             plt.title('similarity amongst clusters per homologies')
             plt.imshow(simimatrix)
-            plt.savefig("utils/clustersimilarity.pdf")
+            plt.savefig("utils/templot/clustersimilarity.pdf")
             plt.show()
         self.cluster_similarity = simimatrix.copy()
         if cubdistance_matrix:
@@ -661,7 +678,7 @@ class HomoSet(collections.MutableMapping):
                 plt.figure(figsize=(size, 200))
                 plt.title('similarity amongst clusters per homologies')
                 plt.imshow(simimatrix)
-                plt.savefig("utils/CUBsimilarity.pdf")
+                plt.savefig("utils/templot/CUBsimilarity.pdf")
                 plt.show()
         self.cub_similarity = simimatrix
 
@@ -686,7 +703,6 @@ class HomoSet(collections.MutableMapping):
         cluster according to assessments.
         assess: plot or not the assessments
         """
-        # TODO: totest
         if best_eps:
             eps = self.findbest_eps(trainingset)
         for val in self.homo_namelist:
@@ -711,6 +727,7 @@ class HomoSet(collections.MutableMapping):
         Params:
         ------
         """
+        pdb.set_trace()
         score = 0
         scores = []
         best_score = 10000000
@@ -744,17 +761,18 @@ class HomoSet(collections.MutableMapping):
     def similarity_perspecies(self):
         """
         """
+    # TODO: to code
     # TODO have a function to compute similarity matrix for each genes of a species. and put it in
     # espece.py
 
-    def get_effectonvalues(self, values=['doublons,nans']):
+    def get_effectonvalues(self, values=['doublons,nans,KaKs_Scores,similarity_scores,proteinids,lenmat,GCcount']):
         """
         find if having doublons affects the values by comparing
         the mean position of doublons (if higher than average) and plotting them
 
         Here 0.5 means 0 effect, 1 and 0 are positive and negative effects
         """
-        # TODO: totest
+        # TODO: tofinishconding
         doubpositions = []
         nanpositions = []
         keys = []
@@ -776,27 +794,27 @@ class HomoSet(collections.MutableMapping):
         # TODO: have a plot with a cursor to choose one of the dimensions
         print '----------------------------------'
         print "the effect of doublons of the entropy is of: "
-        print np.array(doubpositions).mean(0)
+        print np.array(doubpositions).mes(0)
         print "the effect of nans of the entropy is of: "
         print np.array(nanpositions).mean(0)
 
 
 # ###################################################################
 
-    def _barplor(self):
+    def _barplot(self, interactive=True):
         """
         called by statistics function to plot a barplot of
         the proportion of different cluster per homologies
         and per species
         """
-        # TODO: totest
-        dims = dict(kdims='prop', vdims='homologies')
-        primary = hv.Area(self.stats[0], label='primary', **dims)
-        outlier = hv.Area(self.stats[1], label='outlier', **dims)
-        secondary = hv.Area(self.stats[2], label='secondary', **dims)
-        # could add xaxis = self.homoname_list
-        overlay = (primary * outlier * secondary).options('Area', fill_alpha=0.5, name='testdata')
-        hv.Area.stack(overlay).relabel("cluster info: primary_clust +outlier +secondary_clust")
+        hv.notebook_extension('bokeh') if interactive else hv.notebook_extension('matplotlib')
+        print 'please write %output size=100" before calling this function'
+        label = ["outliers", "primary", "secondary"]
+        dims = dict(kdims='homologies', vdims='props')
+        plot = hv.Overlay([hv.Area(self.stats["homologies"].T[i], label=label[i], **dims) for i in range(3)])
+        overlay = hv.Area.stack(plot).relabel("cluster info: primary_clust +outlier +secondary_clust")
+        save(hv.renderer('bokeh').get_plot(overlay).state, 'utils/templot/barplot_homoset.html')
+        return overlay + plot
 
     def _dictify(self, savehomos=False):
         """
@@ -807,6 +825,9 @@ class HomoSet(collections.MutableMapping):
         if savehomos:
             for key, val in self.homodict.iteritems():
                 dictihomo.update({key: val._dictify()})
+        stats = {}
+        for i in self.stats:
+
         return {"hashomo_matrix": self.hashomo_matrix.tolist() if self.hashomo_matrix is not None else None,
                 "homo_matrix": self.homo_matrix.tolist() if self.homo_matrix is not None else None,
                 "clusters": self.clusters,
@@ -815,8 +836,10 @@ class HomoSet(collections.MutableMapping):
                 "species_namelist": self.species_namelist,
                 "speciestable": utils.speciestable,
                 "homogroupnb": self.homogroupnb,
+                "homo_matrixnames": self.homo_matrixnames.tolist() if self.homo_matrixnames is not None else None,
+                "stats": self.stats,
                 "datatype": self.datatype,
-                "phylo_distances": self.phylo_distances.to_json(orient='split') if utils.phylo_distances is not None else None,
+                "phylo_distances": utils.phylo_distances.to_json(orient='split') if utils.phylo_distances is not None else None,
                 "red_homomatrix": self.red_homomatrix.tolist() if self.red_homomatrix is not None else None,
                 "fulleng": self.fulleng.tolist() if self.fulleng is not None else None,
                 "wasclusterized": self.wasclusterized,
@@ -838,7 +861,7 @@ class HomoSet(collections.MutableMapping):
         plt.figure(figsize=(size, 200))
         plt.title('the regular matrix')
         plt.imshow(self.hashomo_matrix.T if invert else self.hashomo_matrix)
-        plt.savefig("utils/hashomomatrix.pdf")
+        plt.savefig("utils/templot/hashomomatrix.pdf")
         plt.show()
 
     def _plot_clust(self, mat, orderedmat):
@@ -864,7 +887,7 @@ class HomoSet(collections.MutableMapping):
         plt.title('the ordered matrix')
         plt.imshow(orderedmat.T)
         plt.show()
-
+        plt.savefig("utils/templot/similarity_matrix.pdf")
         # affinity of the ordered matrix
         mat_sparseo = sparse.csr_matrix(orderedmat)
         similaritieso = cosine_similarity(mat_sparseo)
