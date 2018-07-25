@@ -9,7 +9,7 @@ import pandas as pd
 from scipy.stats import multinomial
 from scipy.stats import multivariate_normal
 from numpy.random import randint
-from math import log
+import math
 import glob
 import numpy as np
 import requests
@@ -47,7 +47,23 @@ import pdb
 
 """
 speciestable = {}
+index = {}
 phylo_distances = None  # pandas dataframe
+CodonsDict = {
+    'TTT': 0, 'TTC': 0, 'TTA': 0, 'TTG': 0, 'CTT': 0,
+    'CTC': 0, 'CTA': 0, 'CTG': 0, 'ATT': 0, 'ATC': 0,
+    'ATA': 0, 'ATG': 0, 'GTT': 0, 'GTC': 0, 'GTA': 0,
+    'GTG': 0, 'TAT': 0, 'TAC': 0, 'TAA': 0, 'TAG': 0,
+    'CAT': 0, 'CAC': 0, 'CAA': 0, 'CAG': 0, 'AAT': 0,
+    'AAC': 0, 'AAA': 0, 'AAG': 0, 'GAT': 0, 'GAC': 0,
+    'GAA': 0, 'GAG': 0, 'TCT': 0, 'TCC': 0, 'TCA': 0,
+    'TCG': 0, 'CCT': 0, 'CCC': 0, 'CCA': 0, 'CCG': 0,
+    'ACT': 0, 'ACC': 0, 'ACA': 0, 'ACG': 0, 'GCT': 0,
+    'GCC': 0, 'GCA': 0, 'GCG': 0, 'TGT': 0, 'TGC': 0,
+    'TGA': 0, 'TGG': 0, 'CGT': 0, 'CGC': 0, 'CGA': 0,
+    'CGG': 0, 'AGT': 0, 'AGC': 0, 'AGA': 0, 'AGG': 0,
+    'GGT': 0, 'GGC': 0, 'GGA': 0, 'GGG': 0}
+
 codons = {
     'ALA': ['GCA', 'GCC', 'GCG', 'GCT'],
     'ARG': ['CGA', 'CGC', 'CGG', 'CGT', 'AGG', 'AGA'],
@@ -124,6 +140,93 @@ smax = [0, 0, LMAX, 1414, 180, 0, 40]
 smax2 = [0, 0, LMAX, LMAX, 520, 0, 145]
 MAX = 20  # max value of leng after which we encounter
 # weird results in compute jerem's computation nbcod**leng
+colormap = ['#f39c12', "#1abc9c", "#3498db", "#2ecc71", "#9b59b6", '#34495e', '#f1c40f', '#e67e22', '#e74c3c', '#7f8c8d']
+callback = """
+            // JavaScript code goes here
+            console.log("callback-------callback");
+            var colors = ['#f39c12', "#1abc9c", "#3498db", "#2ecc71",
+                        "#9b59b6", '#34495e', '#f1c40f','#e67e22', '#e74c3c', '#7f8c8d'];
+            // the model that triggered the callback is cb_obj:
+            var b = cb_obj.get("active");
+            var rgbToHex = function(rgb){
+              var hex = Number(rgb).toString(16);
+              if (hex.length < 2) {
+                   hex = "0" + hex;
+              }
+              return hex;
+            };
+            var fullColorHex = function(r,g,b) {
+                var red = rgbToHex(r);
+                var green = rgbToHex(g);
+                var blue = rgbToHex(b);
+                return "#"+red+green+blue;
+            };
+            // models passed as args are automagically available
+            var data = source.data;
+            var len = data.color.length;
+            var col = [];
+            var othercol = '#1abc9c'
+            if(b === 1){
+                var j = 0;
+                for(i=0;i<len;++i){
+                    if(data.doub[i]){
+                        col[i-1] = colors[j];
+                        col.push(colors[j]);
+                    j++;
+                    }else{col.push("#999999");}
+                }
+                source.data.color = col;
+                source.change.emit();
+            }
+            if(b ===2){
+                var temp = 0
+                for(i=0;i<len;++i){
+                    temp =  Math.floor(255 * (1 - ((data.nans[i] + 1) / 19)));
+                    col.push(fullColorHex(temp, temp, temp));
+                    }
+                source.data.color = col;
+                source.change.emit();
+            }
+            if(b === 0) {
+                var j = 0;
+                if(data.clusters){
+                    for(i=0;i<len;++i){col.push(colors[1+data.clusters[i]]);}
+                }else{
+                    for(i=0;i<len;++i){col.push(othercol);}
+                }
+                source.data.color = col;
+                source.change.emit();
+            }
+            if(b === 3) {
+                var arr = Array(len);
+                while(i--) arr[i] = data.KaKs_Scores[i];
+                arr.sort();
+                var max = arr[len-1];
+                //console.log("max Ka/Ks score here is" + max);
+                for(i=0;i<len;++i){
+                    // normalizing
+                    col.push(fullColorHex(34,256*(data.KaKs_Scores[i]/max),76))
+                }
+                source.data.color = col;
+                source.change.emit();
+            }
+            if(b === 4){
+                for(i=0;i<len;++i) {
+                    col.push(fullColorHex(34,76,256*data.similarity_scores[i]))
+                }
+                data.color = col;
+                source.change.emit();
+            }
+            if(b === 5){
+                max = Math.max(...data.lengths)
+                for(i=0;i<len;++i) {
+                    temp =  Math.floor(255 * (1 - (data.lengths[i] / max)));
+                    col.push(fullColorHex(temp, temp, temp));
+                }
+                data.color = col;
+                source.change.emit();
+            }
+            """
 
 
 def homoyun(separation, folder="first500", homo_name="YAL019W",
@@ -162,6 +265,14 @@ def homoyun(separation, folder="first500", homo_name="YAL019W",
     species = struct['species'].values.transpose()[0]  # maybe we are missing some by only taking one
     doub = [False]
     doub.extend([False if species[i] is not species[i - 1] else True for i in range(1, len(species))])
+    for i, allnan in enumerate(nanvalues.all(1)):
+        if allnan:
+            nanvalues = np.vstack(nanvalues[0:i], nanvalues[i + 1:])
+            lenmat = np.vstack(lenmat[0:i], lenmat[i + 1:])
+            gentab = np.vstack(gentab[0:i], gentab[i + 1:])
+            species = np.vstack(species[0:i], species[i + 1:])
+            doub = np.vstack(doub[0:i], doub[i + 1:])
+    nanvalues = np.count_nonzero(nanvalues, 1)
     print "at homology " + homo_name
     return [gentab, species, nanvalues, lenmat, doub]
 
@@ -241,7 +352,7 @@ def loadfromensembl(homology, kingdom='compara=fungi', sequence='cdna',
         H = getloc(H, np.array(lenmat), using=using)
     # here we add two things into names but only as a temporary saving measures removed by the
     # application fo preprocessing in homoset.
-    homo = h.homology(names=[species, taxons], full=H, lenmat=lenmat,
+    homo = h.homology(names=[species, taxons], full=H, lenmat=lenmat, homocode=homology,
                       nans=nans, KaKs_Scores=KaKs_Scores, similarity_scores=similarities,
                       proteinids=proteinids, GCcount=GCcount)
     homo.order(withtaxons=True)  # a first ordering of the data, usefull afterward in the preprocessing
@@ -264,8 +375,11 @@ def process(data, normalized=False, setnans=False, by='entropy'):
     taxons = []
     proteinids = []
     GCcounts = []
+    # TODO: use SeqIO and compute the same values but add the option to compute
+    # Codon adaptation index from the function of Bio
     for dat in data:  # each species
         # https://en.wikipedia.org/wiki/Ka/Ks_ratio
+
         if dat["dn_ds"] is not None:
             KaKs_Scores.append(dat["dn_ds"])
         dat = dat['target']
@@ -276,8 +390,16 @@ def process(data, normalized=False, setnans=False, by='entropy'):
         if dat["protein_id"] is not None:
             proteinids.append(dat["protein_id"])
         species.append(dat['species'])
+
         valH, len_i, nan, GCcount = computeyun(dat['align_seq'].encode('ascii', 'ignore').replace("-", ""),
                                                normalized=normalized, setnans=setnans, by=by)
+        if valH is None:  # in case the species was in fact empty (db problem sometimes)
+            del KaKs_Scores[-1]
+            del similarities[-1]
+            del taxons[-1]
+            del proteinids[-1]
+            del species[-1]
+            continue
         H.append(valH)
         nans.append(nan)
         lenmat.append(len_i)
@@ -289,6 +411,33 @@ def process(data, normalized=False, setnans=False, by='entropy'):
         proteinids if len(proteinids) != 0 else None
 
 
+def reference_index(data):
+    # RCSU values are CodonCount/((1/num of synonymous codons) * sum of
+    # all synonymous codons)
+    c = [data[i:i + 3] for i in range(0, len(data), 3)]
+    index = {}
+    for k, amin in enumerate(amino):
+        subcodons = codons[amin]
+        nbcod = len(subcodons)  # replace Cleng
+        count = np.zeros(nbcod)
+        for i, cod in enumerate(codons[amin]):
+            for j, val in enumerate(c):
+                if val == cod:
+                    count[i] += 1
+                    c.pop(j)
+        lengsubseq = count.sum()  # replace subSlength
+        rcsu = []
+        if nbcod != 1 and lengsubseq != 0:
+            denominator = float(lengsubseq) / nbcod
+            # calculate the RSCU value for each of the codons
+            for i in range(len(subcodons)):
+                rcsu.append(count[i] / denominator)
+            # now generate the index W=RCSUi/RCSUmax:
+            rcsu_max = max(rcsu)
+            for i, codon in enumerate(subcodons):
+                index[codon] = rcsu[i] / rcsu_max
+
+
 def computeyun(data, setnans=False, normalized=False, by='entropy'):
     """
     function used by process to compte the 'entropy' or 'frequency' of the processed data
@@ -298,40 +447,56 @@ def computeyun(data, setnans=False, normalized=False, by='entropy'):
     len_i = []
     nans = 0
     pos = 0
-    GCcount = (data.count('G') + data.count('C')) / len(data)
-    for k, amin in enumerate(amino):
-        nbcod = len(codons[amin])  # replace Cleng
-        count = np.zeros(nbcod)
-        X = np.zeros(nbcod)
-        mn = np.ones(nbcod) / nbcod
-        for i, cod in enumerate(codons[amin]):
-            for j, val in enumerate(c):
-                if val == cod:
-                    count[i] += 1
-                    c.pop(j)
-        lengsubseq = count.sum()  # replace subSlength
-        if by == 'frequency':
-            if lengsubseq == 0:
-                valH[pos:pos + nbcod] = np.NaN if setnans else 1. / nbcod
-                nans += 1
-            else:
-                E = count / lengsubseq
-                valH[pos:pos + nbcod] = E
-            pos += nbcod
-        else:
-            if lengsubseq == 0:
-                valH[k] = np.NaN if setnans else 0.5
-                nans += 1
-            else:
-                Yg = multinomial.pmf(x=count, n=lengsubseq, p=mn)
-                # efor part
-                div, i = divmod(lengsubseq, nbcod)
-                X[:int(i)] = np.ceil(div) + 1
-                X[int(i):] = np.floor(div)
-                Eg = multinomial.pmf(x=X, n=lengsubseq, p=mn)
-                # end here
-                valH[k] = -np.log(Yg / Eg) / lengsubseq if normalized else -np.log(Yg / Eg)
-        len_i.append(lengsubseq)
+    GCcount = float(data.count('G') + data.count('C')) / len(data)
+    if by != 'cai':
+
+        for k, amin in enumerate(amino):
+            subcodons = codons[amin]
+            nbcod = len(subcodons)  # replace Cleng
+            count = np.zeros(nbcod)
+            X = np.zeros(nbcod)
+            mn = np.ones(nbcod) / nbcod
+            for i, cod in enumerate(codons[amin]):
+                for j, val in enumerate(c):
+                    if val == cod:
+                        count[i] += 1
+                        c.pop(j)
+            lengsubseq = count.sum()  # replace subSlength
+            len_i.append(lengsubseq)
+            if by == 'frequency':
+                if lengsubseq == 0:
+                    valH[pos:pos + nbcod] = np.NaN if setnans else 1. / nbcod
+                    nans += 1
+                else:
+                    E = count / lengsubseq
+                    valH[pos:pos + nbcod] = E
+                pos += nbcod
+            elif by == "entropy":
+                if lengsubseq == 0:
+                    valH[k] = np.NaN if setnans else 0.5
+                    nans += 1
+                else:
+                    Yg = multinomial.pmf(x=count, n=lengsubseq, p=mn)
+                    # efor part
+                    div, i = divmod(lengsubseq, nbcod)
+                    X[:int(i)] = np.ceil(div) + 1
+                    X[int(i):] = np.floor(div)
+                    Eg = multinomial.pmf(x=X, n=lengsubseq, p=mn)
+                    # end here
+                    valH[k] = -np.log(Yg / Eg) / lengsubseq if normalized else -np.log(Yg / Eg)
+    else:
+        cai_value, cai_length = 0, 0
+        # if no index is set or generated, the default SharpEcoliIndex will
+        # be used.
+        for codon in c:
+            if codon not in ['ATG', 'TGG', 'TAA', 'TAG', 'TGA']:
+                # these two codons are always one, exclude them:
+                cai_value += math.log(index[codon])
+                cai_length += 1
+
+        valH = math.exp(cai_value / (cai_length - 1.0))
+    if nans == k:
+        return None, None, None, None
     return valH, len_i, nans, GCcount
 
 
@@ -811,3 +976,7 @@ def permute(vect, start, end):
 def last_match_index(a, value):
     idx = np.array(np.unravel_index(((a < value)[::-1]).argmax(), a.shape))
     return a.shape - idx - 1
+
+
+def rgb2hex(rgb):
+    return '#%02x%02x%02x' % rgb

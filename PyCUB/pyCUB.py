@@ -25,15 +25,16 @@ except:
 from joblib import Parallel, delayed
 import multiprocessing
 
-#from rpy2.robjects.packages import importr
+from rpy2.robjects.packages import importr
 from ete2 import NCBITaxa
-#from rpy2 import robjects
-#import rpy2.robjects.packages as rpackages
-#from rpy2.robjects.vectors import StrVector
+from rpy2 import robjects
+import rpy2.robjects.packages as rpackages
+from rpy2.robjects.vectors import StrVector
 
 
 import pandas as pd
 import numpy as np
+from scipy.stats import multinomial
 
 import espece as spe
 import homoset as hset
@@ -45,6 +46,8 @@ from bokeh.models import *
 import matplotlib.pyplot as plt
 from sklearn import manifold as man
 from sklearn.decomposition import PCA
+
+from Bio import SeqIO
 
 
 import pdb
@@ -139,7 +142,7 @@ class PyCUB(object):
 
     def get_data(self, From='yun', homonames=None, kingdom='compara=fungi', sequence='cdna',
                  additional='type=orthologues', saveonfiles=False, normalized=True, setnans=False,
-                 by="entropy", using="normal", inpar=True):
+                 by="entropy", using="normal", tRNA=True, inpar=True):
         """
                 Download the data from somewhere on the web (Ensembl, Yun(with links))
 
@@ -186,6 +189,9 @@ class PyCUB(object):
             self.all_homoset = hset.HomoSet(homo_namelist=homonames, datatype=by)
             print "doing all " + str(len(homonames)) + " homologies"
             if bool(inpar):
+                # TODO: if CAI, find the ref sequence and compute
+                # it first with utils.reference_index(record.seq._data)
+                # Here, as it is an homology, the ref sequence should be the same
                 values = Parallel(n_jobs=num_cores)(delayed(utils.loadfromensembl)(
                     name, kingdom, sequence,
                     additional, saveonfiles,
@@ -204,7 +210,8 @@ class PyCUB(object):
             print "computing tRNA copy numbers"
             for i, spece in enumerate(species):
                 espece_val = spe.Espece(name=spece, taxonid=taxons[i])
-                espece_val.get_tRNAcopy()
+                if tRNA:
+                    espece_val.get_tRNAcopy()
                 self.species.update({spece: espece_val})
             self.all_homoset.loadhashomo()
         else:
@@ -268,7 +275,7 @@ class PyCUB(object):
 
 # LOADINGS AND SAVINGS
 
-    def load(self, session=None, All=False, filename='first500', From=None, by='entropyLocation', inpar=True):
+    def load(self, session=None, All=False, filename='first500', From=None, by='entropyLocation', tRNA=True, inpar=True):
         """
                 Get the data that is already present on a filename
 
@@ -331,10 +338,12 @@ class PyCUB(object):
                 i = 0
                 df = df.sort_values(by='name')
                 for _, row in df.iterrows():
+                    espece_val = spe.Espece(name=row['name'],
+                                            link=dflink.loc[dflink['name'] == row['name'], 'b'].tolist()[0])
+                    if tRNA:
+                        espece_val.get_tRNAcopy()
                     self.species.update({
-                        row['name']: spe.Espece(name=row['b'],
-                                                link=dflink.loc[dflink['name'] == row['name'],
-                                                                'b'].tolist()[0])})
+                        row['name']: espece_val})
                     utils.speciestable.update({i: row['name']})
                     i += 1
                 self.all_homoset.species_namelist = df['name'].tolist()
@@ -351,6 +360,7 @@ class PyCUB(object):
                         self.all_homoset.update({homo: h.homology(
                             full=val[0], names=val[1].tolist(),
                             nans=val[2],
+                            homocode=homo,
                             lenmat=val[3], doub=val[4])})
                         dou += np.count_nonzero(val[4])
                 else:
@@ -359,18 +369,18 @@ class PyCUB(object):
                         self.all_homoset.update({homo: h.homology(
                             full=val[0], names=val[1].tolist(),
                             nans=val[2],
+                            homocode=homo,
                             lenmat=val[3], doub=val[4])})
                         dou += np.count_nonzero(val[4])
                 # create the hashomomatrix
                 self.all_homoset.loadhashomo(withnames=True)
-                pdb.set_trace()
                 print "you had " + str(dou) + " same species homologies"
                 print "reviewed " + str(len(homo_namelist)) + " homologies "
 
                 # if we haven't change the working with processing
                 self._is_saved = False
                 if not note:
-                    shutil.rmtree(folder + filename)
+                    shutil.rmtree(file)
                 self._is_loaded = True
                 if All:
                     self.loadmore('homology4501t5000', by=by)
@@ -508,8 +518,6 @@ class PyCUB(object):
             os.remove(filename)
         if cmdlinetozip == 'gzip':
             os.system("gzip " + filename)
-        # with zipfile.ZipFile(filename + '.zip', 'w') as myzip:
-        #    myzip.write(name + json)
         self._is_saved = True
 
 
@@ -551,7 +559,6 @@ class PyCUB(object):
 
                 elif leng == len(self.all_homoset.homodict):
                     # version by homologies
-                    pdb.set_trace()
                     homo = hset.HomoSet()
                     ind = np.argwhere(np.asarray(self.all_homoset.clusters) == clusternb - 1)[:, 0]
                     if cleanhomo is not None:
@@ -611,98 +618,83 @@ class PyCUB(object):
         homoset.loadfullhomo()
         return homoset
 
-    def get_full_genomes(self, kingdom='fungi', seq='cds'):
+    def get_full_genomes(self, kingdom='fungi', seq='cds', by="entropy", normalized=False, setnans=False):
+        """
+        go trought all full genome fasta files in the ftp server of ensemblgenomes and
+        download then parse them to get the full entropy of the genome.
+        """
+        # TODO: totest
+
+        def _compute_full_entropy(handle, by='entropy', normalized=False, setnans=False):
+            """
+            called by get full genomes and similar to
+            """
+            GCcount = []
+            val = []
+            # TODO: if CAI, find the ref sequence and compute it first with utils.reference_index(record.seq._data)
+            for x, record in enumerate(SeqIO.parse(handle, "fasta")):
+                valH, _, _, GC = utils.computeyun(record.seq._data, setnans=setnans, normalized=normalized, by=by)
+                val.append(valH)
+                GCcount.append(GC)
+            return np.array(val), np.array(GCcount)
+
         ftp = FTP('ftp.ensemblgenomes.org')
         ftp.login()
         ftp.cwd('pub/release-40/' + kingdom + '/fasta/')
         data = []
         ftp.retrlines('NLST', data.append)
+        species_namelist = self.species.keys()
         for d in data:
+            ftp.cwd(d)
             if d[-10:] == 'collection':
-                ftp.cwd(d)
                 subdata = []
                 ftp.retrlines('NLST', subdata.append)
                 for sub in subdata:
-                    if sub in self.species_namelist:
+                    if sub in species_namelist:
                         link = []
                         ftp.cwd(sub + '/' + seq)
                         ftp.retrlines('NLST', link.append)
-                        with open("data/temp.fa.gz", "wb") as file:
-                            if sub[0] > 'r':
-                                da = link[2]
-                            elif sub[0] > 'c':
-                                da = link[1]
-                            else:
-                                da = link[2]
-                            ftp.retrbinary("RETR " + da, file.write)
-                        with gzip.open("data/temp.fa.gz", "rt") as handle:
-                            val, gccount = selfcomputefullloc(handle)
-                            self.species[sub].fullentropy = val.mean()
-                            self.species[sub].var_entropy = val.var()
-                            self.species[sub].fullGCcount = gccount
+                        with open("utils/data/temp.fa.gz", "wb") as file:
+                            for i in link:
+                                if i[-9:] == "all.fa.gz":
+                                    ftp.retrbinary("RETR " + i, file.write)
+                        with gzip.open("utils/data/temp.fa.gz", "rt") as handle:
+                            val, gccount = _compute_full_entropy(handle, by)
+                        self.species[sub].fullentropy = val.mean(1)
+                        self.species[sub].var_entropy = val.var(1)
+                        self.species[sub].fullGCcount = gccount.mean()
+                        self.species[sub].var_GCcount = gccount.var()
                         ftp.cwd('../..')
-                        os.remove("data/temp.fa.gz")
-                ftp.cwd('..')
-            else:
-                if sub in self.species_namelist:
-                    link = []
-                    ftp.cwd(sub + '/' + seq)
-                    ftp.retrlines('NLST', link.append)
-                    with open("data/temp.fa.gz", "wb") as file:
-                        if sub[0] > 'r':
-                            da = link[2]
-                        elif sub[0] > 'c':
-                            da = link[1]
-                        else:
-                            da = link[2]
-                        ftp.retrbinary("RETR " + da, file.write)
-                    with gzip.open("data/temp.fa.gz", "rt") as handle:
-                        val, gccount = selfcomputefullloc(handle)
-                        self.species[sub].fullentropy = val.mean()
-                        self.species[sub].var_entropy = val.var()
-                        self.species[sub].fullGCcount = gccount
-                    ftp.cwd('../..')
-                    os.remove("data/temp.fa.gz")
+                        os.remove("utils/data/temp.fa.gz")
 
-    def compute_full_entropy(self, handle):
-        """
-        """
-        GCcount = 0
-        val = []
-        for x, record in enumerate(SeqIO.parse(handle, "fasta")):
-            GCcount += (record.seq.count('G') + record.seq.count('C')) / len(record)
-            pos = 0
-            valH = np.zeros(len(amino)) if by != 'frequency' else np.zeros(59)
-            for k, amin in enumerate(amino):
-                nbcod = len(utils.codons[amin])  # replace Cleng
-                count = np.zeros(nbcod)
-                X = np.zeros(nbcod)
-                mn = np.ones(nbcod) / nbcod
-                for i, cod in enumerate(utils.codons[amin]):
-                    count[i] = record.seq.count(cod)
-                lengsubseq = count.sum()  # replace subSlength
-                if by == 'frequency':
-                    if lengsubseq == 0:
-                        valH[pos:pos + nbcod] = np.NaN if setnans else 1. / nbcod
-                    else:
-                        E = count / lengsubseq
-                        valH[pos:pos + nbcod] = E
-                    pos += nbcod
-                else:
-                    if lengsubseq == 0:
-                        valH[k] = np.NaN if setnans else 0.5
-                    else:
-                        Yg = multinomial.pmf(x=count, n=lengsubseq, p=mn)
-                        # efor part
-                        div, i = divmod(lengsubseq, nbcod)
-                        X[:int(i)] = np.ceil(div) + 1
-                        X[int(i):] = np.floor(div)
-                        Eg = multinomial.pmf(x=X, n=lengsubseq, p=mn)
-                        # end here
-                        valH[k] = -np.log(Yg / Eg) / lengsubseq if normalized else -np.log(Yg / Eg)
-            val.append(valH)
-        val = np.array(val)
-        return val, GCcount / x
+            else:
+                if d in species_namelist:
+                    link = []
+                    ftp.cwd(seq)
+                    ftp.retrlines('NLST', link.append)
+                    with open("utils/data/temp.fa.gz", "wb") as file:
+                        for i in link:
+                            if i[-9:] == "all.fa.gz":
+                                ftp.retrbinary("RETR " + i, file.write)
+                                break
+                    with gzip.open("utils/data/temp.fa.gz", "rt") as handle:
+                        val, gccount = _compute_full_entropy(handle, by)
+                        pdb.set_trace()
+                    self.species[d].fullentropy = val.mean(1)
+                    self.species[d].var_entropy = val.var(1)
+                    self.species[d].fullGCcount = gccount.mean()
+                    self.species[d].var_GCcount = gccount.var()
+                    ftp.cwd('..')
+                    os.remove("utils/data/temp.fa.gz")
+            ftp.cwd('..')
+
+    def get_taxons(self):
+        for key, val in self.species.iteritems():
+            try:
+                val.gettaxons()
+            except:
+                print key + " has no referenced taxons"
+        print "got taxons"
 
     def get_evolutionary_distance(self, display_tree=False, size=40):
         """
@@ -716,18 +708,20 @@ class PyCUB(object):
         the distance matrix (numpy array)
 
         """
-        # TODO: totest
+
         ncbi = NCBITaxa()
         taxons = []
         for key, val in self.species.iteritems():
-            taxons.append(val.taxonid)
+            if val.taxonid:
+                taxons.append(val.taxonid)
         tree = ncbi.get_topology(taxons)  # taxons
         # finding what this tree looks like
         if display_tree:
             print tree.get_ascii(attributes=["sci_name", "rank"])
-        with open('metaphylo/temp_tree.phy', 'w') as f:  # maybe will be newick format...
+
+        with open('utils/meta/metaphylo/temp_tree.phy', 'w') as f:  # maybe will be newick format...
             f.write(tree.write())
-        """
+        # """
         try:
             # https://stackoverflow.com/questions/19894365/running-r-script-from-python
             base = importr('base')
@@ -735,31 +729,24 @@ class PyCUB(object):
         except:
             print "you need to have R installed to compute the distance"
             return
-        packnames = ('treeio')
-        names_to_install = [x for x in packnames if not rpackages.isinstalled(x)]
-        if len(names_to_install) > 0:
-            utiles.install_packages(StrVector(names_to_install))
+        if not rpackages.isinstalled('treeio'):
+            utiles.install_packages(StrVector('treeio'))
         robjects.r('''
-            treeText <- readLines(metaphylo/temp_tree.phy)
+            treeText <- readLines("utils/meta/metaphylo/temp_tree.phy")
             treeText <- paste0(treeText, collapse="")
             library(treeio)
             tree <- read.tree(text = treeText) ## load tree
             distMat <- cophenetic(tree)
-            write.table(distMat,"metaphylo/phylodistMat_temp.csv")
+            write.table(distMat,"utils/meta/metaphylo/phylodistMat_temp.csv")
         ''')
-        """
-        df = pd.read_csv("metaphylo/phylodistMat_temp.csv")
+        # """
+        df = pd.read_csv("utils/meta/metaphylo/phylodistMat_temp.csv", delim_whitespace=True)
         utils.phylo_distances = df
-        utils.meandist = df.sum().sum() / (len(data)**2 - len(data))
-
-        plt.figure(figsize=(size, 200))
-        plt.title('evolutionary distances')
-        plt.imshow(np.array(df))
-        plt.savefig("utils/evolutionarydistances.pdf")
-        plt.show()
+        utils.meandist = df.sum().sum() / (len(df)**2 - len(df))
+        self.plot_distances(size=size)
 
     def speciestable(self):
-        return utils.speciestable
+        return dict(utils.speciestable)
 
     def compute_averages(self, homoset):
         """
@@ -824,9 +811,10 @@ class PyCUB(object):
         elif alg == 'pca':
             red = PCA(n_components=n).fit_transform(self.all_homoset.averagehomo_matrix)
         colors = [rgb() for homo in self.all_homoset]
+        speciestable = dict(utils.speciestable)
         source = ColumnDataSource(
             data=dict(x=red[:, 0], y=red[:, 1],
-                      label=["species : %s" % utils.speciestable[x__] for x__ in self.names,
+                      label=["species : %s" % speciestable[x__] for x__ in self.names,
                              "has trna : %s" % str(homo.isrecent) for homo in self.all_homoset],
                       color=colors))
         output_notebook()
@@ -905,12 +893,16 @@ class PyCUB(object):
         p.circle(x='x', y='y', source=source, color='color', size=[size * homo.var.mean() for _, homo in self.all_homoset.homodict.iteritems()])
         show(p)
 
-    def plot_distances(self):
+    def plot_distances(self, size=40):
         """
         plot the phylogenetic distance matrix
         """
         if utils.phylo_distances is not None:
+            plt.figure(figsize=(size, 200))
+            plt.title('evolutionary distances')
             plt.imshow(np.array(utils.phylo_distances))
+            plt.savefig("utils/evolutionarydistances.pdf")
+            plt.show()
         else:
             print "compute the phylo distance matrix first (look at the doc)"
 # SPECIAL FUNCTION
@@ -937,6 +929,7 @@ class PyCUB(object):
               }
         for key, val in add_homosets:
             di.update({key: val})
+        return di
 
     def _undictify(self, data):
         """
@@ -953,16 +946,19 @@ class PyCUB(object):
         self._is_saved = False
         self._is_loaded = True
         ret = {}
-        for key, val in data:
+        if data["all_homoset"] is not None:
+            self.all_homoset = hset.HomoSet(data=data["all_homoset"])
+        for key, val in data.iteritems():
             if key == 'species':
                 for ke, va in val.iteritems():
                     species.update({ke: spe.Espece(data=va)})
-            elif key == "all_homoset" and val is not None:
-                self.all_homoset = hset.HomoSet(data=val)
-            elif key == "working_homoset" and val is not None:
-                self.working_homoset = hset.HomoSet(data=val)
-                for v in self.working_homoset.homonamelist:  # as we don't save the homologies twice here
-                    self.working_homoset.update({v: self.all_homoset[v]})
+            elif key == "working_homoset":
+                if val is not None:
+                    self.working_homoset = hset.HomoSet(data=val)
+                    for v in self.working_homoset.homo_namelist:  # as we don't save the homologies twice here
+                        self.working_homoset.update({v: self.all_homoset[str(v)]})
+            elif key == "all_homoset":
+                pass
             else:
                 ret.update({key: val})
         return ret
