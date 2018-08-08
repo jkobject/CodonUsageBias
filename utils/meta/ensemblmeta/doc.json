@@ -1,0 +1,612 @@
+[
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415751",
+    "location": "3:19423168-19423168",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,FLA15,ATOEP7,AT3G52345,SPP2,CP33,OEP7,PAD4,AT3G52440,AT3G52330,AT3G52450,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_FW_Lesion_32"
+    },
+    "description": "Lesioning measured by fresh weight [23C and 8hrs daylight (Short Day) for 7 weeks]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415809",
+    "location": "3:19433186-19433186",
+    "attributes": {
+      "associated_gene": "AT3G52410,AT3G52470,FLA15,ATOEP7,CP33,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,SYP122",
+      "external_reference": "EmmaTrans_avrRpm1_32"
+    },
+    "description": "Following inoculation of two leaves per plant with 0.1 ml of 10 -8 cfu/ml bacteria in 10 mM MgSO4 buffer using a blunt-tipped syringe. Leaf collapse was scored at 20 hrs and again at 24 hrs after inoculation [20C and 12 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415730",
+    "location": "3:19416424-19416424",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,AT3G52302,AT3G52310,FLA15,ATOEP7,AT3G52345,SPP2,CP33,OEP7,PAD4,ATPQ,AT3G52440,AT3G52330,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_Antho_16_32"
+    },
+    "description": "Results expressed as binary data - determined by the presence (1) or absence (0) of anthocyanin in all 4 plants / accession after 5wks of growth [16C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415775",
+    "location": "3:19425188-19425188",
+    "attributes": {
+      "associated_gene": "AT3G52410,FLA15,ATOEP7,AT3G52345,SPP2,CP33,OEP7,PAD4,AT3G52440,AT3G52330,AT3G52450,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "KW_S34_Soil_L_2_32"
+    },
+    "description": "Sulfur concentrations in leaves grown in soil. Elemental analysis was performed with an ICP-MS (PerkinElmer). Sample normalized to calculated weights as described in Baxter et al. 2008 [20C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415809",
+    "location": "3:19433186-19433186",
+    "attributes": {
+      "associated_gene": "AT3G52410,AT3G52470,FLA15,ATOEP7,CP33,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,SYP122",
+      "external_reference": "EmmaTrans_avrB_32"
+    },
+    "description": "Following inoculation of two leaves per plant with 0.1 ml of 10 -8 cfu/ml bacteria in 10 mM MgSO4 buffer using a blunt-tipped syringe. Leaf collapse was scored at 20 hrs and again at 24 hrs after inoculation [20C and 12 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415809",
+    "location": "3:19433186-19433186",
+    "attributes": {
+      "associated_gene": "AT3G52410,AT3G52470,FLA15,ATOEP7,CP33,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,SYP122",
+      "external_reference": "KW_avrRpm1_32"
+    },
+    "description": "Following inoculation of two leaves per plant with 0.1 ml of 10 -8 cfu/ml bacteria in 10 mM MgSO4 buffer using a blunt-tipped syringe. Leaf collapse was scored at 20 hrs and again at 24 hrs after inoculation [20C and 12 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415795",
+    "location": "3:19430401-19430401",
+    "attributes": {
+      "associated_gene": "AT3G52410,FLA15,ATOEP7,CP33,OEP7,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,AT3G52360,SYP122",
+      "external_reference": "EmmaTrans_BS_32"
+    },
+    "description": "Four days after inoculation leaves were scored by eye for disease symptom using a scale from 0 (no visible symptom) to 10 (leaves collapse and turn yellow) with an increment of 1. [20C and 12 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415853",
+    "location": "3:19447028-19447028",
+    "attributes": {
+      "associated_gene": "AT3G52490,AT3G52410,AT3G52470,ATOEP7,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52500,AT3G52450,SYP122",
+      "external_reference": "EmmaTrans_Leaf_roll_16_32"
+    },
+    "description": "Results expressed as binary data determined by the presence (1) or absence (0) of rolled leaves in all 4 plants / accession at 5 weeks growth [16C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415872",
+    "location": "3:19452327-19452327",
+    "attributes": {
+      "associated_gene": "AT3G52490,AT3G52470,AT3G52510,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52500,AT3G52450",
+      "external_reference": "EmmaTrans_Noco2_32"
+    },
+    "description": "Presence / absence of sporangiophores determined on 5-10 seedlings of each genotype with three independent replications [20-22C with 10 hrs daylight and 70% humidity]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415850",
+    "location": "3:19446251-19446251",
+    "attributes": {
+      "associated_gene": "AT3G52490,AT3G52410,AT3G52470,ATOEP7,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52500,AT3G52450,SYP122",
+      "external_reference": "KW_Emoy*_32"
+    },
+    "description": "Presence / absence of sporangiophores determined on 5-10 seedlings of each genotype with three independent replications [20-22C with 10 hrs daylight and 70% humidity]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415807",
+    "location": "3:19432567-19432567",
+    "attributes": {
+      "associated_gene": "AT3G52410,AT3G52470,FLA15,ATOEP7,CP33,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,AT3G52360,SYP122",
+      "external_reference": "EmmaTrans_Fe56_Soil_L_2_32"
+    },
+    "description": "Iron concentrations in leaves grown in soil. Elemental analysis was performed with an ICP-MS (PerkinElmer). Sample normalized to calculated weights as described in Baxter et al. 2008 [20C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415809",
+    "location": "3:19433186-19433186",
+    "attributes": {
+      "associated_gene": "AT3G52410,AT3G52470,FLA15,ATOEP7,CP33,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,SYP122",
+      "external_reference": "EmmaTrans_Emoy*_32"
+    },
+    "description": "Presence / absence of sporangiophores determined on 5-10 seedlings of each genotype with three independent replications [20-22C with 10 hrs daylight and 70% humidity]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415731",
+    "location": "3:19416514-19416514",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,AT3G52302,AT3G52310,FLA15,ATOEP7,AT3G52345,SPP2,CP33,OEP7,PAD4,ATPQ,AT3G52440,AT3G52330,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_Leaf_roll_16_32"
+    },
+    "description": "Results expressed as binary data determined by the presence (1) or absence (0) of rolled leaves in all 4 plants / accession at 5 weeks growth [16C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415766",
+    "location": "3:19423867-19423867",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,FLA15,ATOEP7,AT3G52345,SPP2,CP33,OEP7,PAD4,AT3G52440,AT3G52330,AT3G52450,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_avrB_32"
+    },
+    "description": "Following inoculation of two leaves per plant with 0.1 ml of 10 -8 cfu/ml bacteria in 10 mM MgSO4 buffer using a blunt-tipped syringe. Leaf collapse was scored at 20 hrs and again at 24 hrs after inoculation [20C and 12 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415856",
+    "location": "3:19447281-19447281",
+    "attributes": {
+      "associated_gene": "AT3G52490,AT3G52410,AT3G52470,ATOEP7,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52500,AT3G52450",
+      "external_reference": "EmmaTrans_Seed_bank_133_91_32"
+    },
+    "description": "Genotypes consistently decreased in germination rate between 91 and 133 days of dry storage. This sudden reduction was scored by the slope between germination percentages at these two time points [91-133 days dry storage]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415731",
+    "location": "3:19416514-19416514",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,AT3G52302,AT3G52310,FLA15,ATOEP7,AT3G52345,SPP2,CP33,OEP7,PAD4,ATPQ,AT3G52440,AT3G52330,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "KW_Emoy*_32"
+    },
+    "description": "Presence / absence of sporangiophores determined on 5-10 seedlings of each genotype with three independent replications [20-22C with 10 hrs daylight and 70% humidity]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415875",
+    "location": "3:19452452-19452452",
+    "attributes": {
+      "associated_gene": "AT3G52490,AT3G52470,AT3G52510,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52500,AT3G52450",
+      "external_reference": "EmmaTrans_DSDS50_Maril_32"
+    },
+    "description": "Number of days of seed dry storage required to reach 50% germination or DSDS50 value (Alonso-Blanco et al. 2003) [Dry storage followed by 25C 12h day and 20C 12h night for 1 week]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415792",
+    "location": "3:19429843-19429843",
+    "attributes": {
+      "associated_gene": "AT3G52410,FLA15,ATOEP7,CP33,OEP7,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_Fe56_Soil_L_2_32"
+    },
+    "description": "Iron concentrations in leaves grown in soil. Elemental analysis was performed with an ICP-MS (PerkinElmer). Sample normalized to calculated weights as described in Baxter et al. 2008 [20C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415808",
+    "location": "3:19432985-19432985",
+    "attributes": {
+      "associated_gene": "AT3G52410,AT3G52470,FLA15,ATOEP7,CP33,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,SYP122",
+      "external_reference": "EmmaTrans_Seeddorm_32"
+    },
+    "description": "Number of days of seed dry storage required to reach 50% germination or DSDS50 value [Seeds stored in cellulose paper bags and kept in a dark incubator at 20C and 40% relative humidity]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415809",
+    "location": "3:19433186-19433186",
+    "attributes": {
+      "associated_gene": "AT3G52410,AT3G52470,FLA15,ATOEP7,CP33,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,SYP122",
+      "external_reference": "KW_Emoy*_32"
+    },
+    "description": "Presence / absence of sporangiophores determined on 5-10 seedlings of each genotype with three independent replications [20-22C with 10 hrs daylight and 70% humidity]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415872",
+    "location": "3:19452327-19452327",
+    "attributes": {
+      "associated_gene": "AT3G52490,AT3G52470,AT3G52510,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52500,AT3G52450",
+      "external_reference": "KW_Seeddorm_32"
+    },
+    "description": "Number of days of seed dry storage required to reach 50% germination or DSDS50 value [Seeds stored in cellulose paper bags and kept in a dark incubator at 20C and 40% relative humidity]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415792",
+    "location": "3:19429843-19429843",
+    "attributes": {
+      "associated_gene": "AT3G52410,FLA15,ATOEP7,CP33,OEP7,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_Se82_Soil_L_2_32"
+    },
+    "description": "Selenium concentrations in leaves grown in soil. Elemental analysis was performed with an ICP-MS (PerkinElmer). Sample normalized to calculated weights as described in Baxter et al. 2008 [20C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415809",
+    "location": "3:19433186-19433186",
+    "attributes": {
+      "associated_gene": "AT3G52410,AT3G52470,FLA15,ATOEP7,CP33,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,SYP122",
+      "external_reference": "KW_avrB_32"
+    },
+    "description": "Following inoculation of two leaves per plant with 0.1 ml of 10 -8 cfu/ml bacteria in 10 mM MgSO4 buffer using a blunt-tipped syringe. Leaf collapse was scored at 20 hrs and again at 24 hrs after inoculation [20C and 12 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415730",
+    "location": "3:19416424-19416424",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,AT3G52302,AT3G52310,FLA15,ATOEP7,AT3G52345,SPP2,CP33,OEP7,PAD4,ATPQ,AT3G52440,AT3G52330,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "KW_Antho_16_32"
+    },
+    "description": "Results expressed as binary data - determined by the presence (1) or absence (0) of anthocyanin in all 4 plants / accession after 5wks of growth [16C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415712",
+    "location": "3:19414149-19414149",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,AT3G52302,AT3G52310,FLA15,ATOEP7,AT3G52345,SPP2,IQD3,CP33,OEP7,PAD4,ATPQ,AT3G52330,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_S34_Soil_L_2_32"
+    },
+    "description": "Sulfur concentrations in leaves grown in soil. Elemental analysis was performed with an ICP-MS (PerkinElmer). Sample normalized to calculated weights as described in Baxter et al. 2008 [20C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415859",
+    "location": "3:19447467-19447467",
+    "attributes": {
+      "associated_gene": "AT3G52490,AT3G52410,AT3G52470,ATOEP7,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52500,AT3G52450",
+      "external_reference": "EmmaTrans_FRI_32"
+    },
+    "description": "RNA was extracted from leaves after 4 wks of growth. FRI gene expression levels were determined by Northern hybridization quantified relative to $Beta;-TUBULIN expression [Growth in greenhouse at 20-22C with 16hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415872",
+    "location": "3:19452327-19452327",
+    "attributes": {
+      "associated_gene": "AT3G52490,AT3G52470,AT3G52510,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52500,AT3G52450",
+      "external_reference": "EmmaTrans_DSDS50_Maril_32"
+    },
+    "description": "Number of days of seed dry storage required to reach 50% germination or DSDS50 value (Alonso-Blanco et al. 2003) [Dry storage followed by 25C 12h day and 20C 12h night for 1 week]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415872",
+    "location": "3:19452327-19452327",
+    "attributes": {
+      "associated_gene": "AT3G52490,AT3G52470,AT3G52510,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52500,AT3G52450",
+      "external_reference": "KW_Noco2_32"
+    },
+    "description": "Presence / absence of sporangiophores determined on 5-10 seedlings of each genotype with three independent replications [20-22C with 10 hrs daylight and 70% humidity]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415806",
+    "location": "3:19431779-19431779",
+    "attributes": {
+      "associated_gene": "AT3G52410,AT3G52470,FLA15,ATOEP7,CP33,OEP7,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,AT3G52360,SYP122",
+      "external_reference": "KW_avrRpm1_32"
+    },
+    "description": "Following inoculation of two leaves per plant with 0.1 ml of 10 -8 cfu/ml bacteria in 10 mM MgSO4 buffer using a blunt-tipped syringe. Leaf collapse was scored at 20 hrs and again at 24 hrs after inoculation [20C and 12 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415797",
+    "location": "3:19430459-19430459",
+    "attributes": {
+      "associated_gene": "AT3G52410,FLA15,ATOEP7,CP33,OEP7,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,AT3G52360,SYP122",
+      "external_reference": "EmmaTrans_Chlor_16_32"
+    },
+    "description": "Results expressed as binary data determined by the presence (1) or absence (0) of chlorosis in all 4 plants / accession after 5wks of growth [16C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415733",
+    "location": "3:19417000-19417000",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,AT3G52302,AT3G52310,FLA15,ATOEP7,AT3G52345,SPP2,CP33,OEP7,PAD4,ATPQ,AT3G52440,AT3G52330,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "KW_Emoy*_32"
+    },
+    "description": "Presence / absence of sporangiophores determined on 5-10 seedlings of each genotype with three independent replications [20-22C with 10 hrs daylight and 70% humidity]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415709",
+    "location": "3:19413742-19413742",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,AT3G52302,AT3G52310,FLA15,ATOEP7,AT3G52345,SPP2,IQD3,CP33,OEP7,PAD4,ATPQ,AT3G52330,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_FRI_32"
+    },
+    "description": "RNA was extracted from leaves after 4 wks of growth. FRI gene expression levels were determined by Northern hybridization quantified relative to $Beta;-TUBULIN expression [Growth in greenhouse at 20-22C with 16hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415775",
+    "location": "3:19425188-19425188",
+    "attributes": {
+      "associated_gene": "AT3G52410,FLA15,ATOEP7,AT3G52345,SPP2,CP33,OEP7,PAD4,AT3G52440,AT3G52330,AT3G52450,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_Fe56_Soil_L_2_32"
+    },
+    "description": "Iron concentrations in leaves grown in soil. Elemental analysis was performed with an ICP-MS (PerkinElmer). Sample normalized to calculated weights as described in Baxter et al. 2008 [20C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415775",
+    "location": "3:19425188-19425188",
+    "attributes": {
+      "associated_gene": "AT3G52410,FLA15,ATOEP7,AT3G52345,SPP2,CP33,OEP7,PAD4,AT3G52440,AT3G52330,AT3G52450,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_S34_Soil_L_2_32"
+    },
+    "description": "Sulfur concentrations in leaves grown in soil. Elemental analysis was performed with an ICP-MS (PerkinElmer). Sample normalized to calculated weights as described in Baxter et al. 2008 [20C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415868",
+    "location": "3:19450743-19450743",
+    "attributes": {
+      "associated_gene": "AT3G52490,AT3G52470,AT3G52510,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52500,AT3G52450",
+      "external_reference": "EmmaTrans_Seed_bank_133_91_32"
+    },
+    "description": "Genotypes consistently decreased in germination rate between 91 and 133 days of dry storage. This sudden reduction was scored by the slope between germination percentages at these two time points [91-133 days dry storage]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415792",
+    "location": "3:19429843-19429843",
+    "attributes": {
+      "associated_gene": "AT3G52410,FLA15,ATOEP7,CP33,OEP7,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_S34_Soil_L_2_32"
+    },
+    "description": "Sulfur concentrations in leaves grown in soil. Elemental analysis was performed with an ICP-MS (PerkinElmer). Sample normalized to calculated weights as described in Baxter et al. 2008 [20C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415795",
+    "location": "3:19430401-19430401",
+    "attributes": {
+      "associated_gene": "AT3G52410,FLA15,ATOEP7,CP33,OEP7,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,AT3G52360,SYP122",
+      "external_reference": "KW_BS_32"
+    },
+    "description": "Four days after inoculation leaves were scored by eye for disease symptom using a scale from 0 (no visible symptom) to 10 (leaves collapse and turn yellow) with an increment of 1. [20C and 12 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415792",
+    "location": "3:19429843-19429843",
+    "attributes": {
+      "associated_gene": "AT3G52410,FLA15,ATOEP7,CP33,OEP7,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "KW_Fe56_Soil_L_2_32"
+    },
+    "description": "Iron concentrations in leaves grown in soil. Elemental analysis was performed with an ICP-MS (PerkinElmer). Sample normalized to calculated weights as described in Baxter et al. 2008 [20C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415751",
+    "location": "3:19423168-19423168",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,FLA15,ATOEP7,AT3G52345,SPP2,CP33,OEP7,PAD4,AT3G52440,AT3G52330,AT3G52450,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_avrB_32"
+    },
+    "description": "Following inoculation of two leaves per plant with 0.1 ml of 10 -8 cfu/ml bacteria in 10 mM MgSO4 buffer using a blunt-tipped syringe. Leaf collapse was scored at 20 hrs and again at 24 hrs after inoculation [20C and 12 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415868",
+    "location": "3:19450743-19450743",
+    "attributes": {
+      "associated_gene": "AT3G52490,AT3G52470,AT3G52510,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52500,AT3G52450",
+      "external_reference": "KW_Seed_bank_133_91_32"
+    },
+    "description": "Genotypes consistently decreased in germination rate between 91 and 133 days of dry storage. This sudden reduction was scored by the slope between germination percentages at these two time points [91-133 days dry storage]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415853",
+    "location": "3:19447028-19447028",
+    "attributes": {
+      "associated_gene": "AT3G52490,AT3G52410,AT3G52470,ATOEP7,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52500,AT3G52450,SYP122",
+      "external_reference": "KW_AS2_CFU2_32"
+    },
+    "description": "In planta bacterial growth (number of CFU / leaf area) of the P. viridiflava strain was individually measured as described in Goss and Bergelson 2006 [20C and 12 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415710",
+    "location": "3:19413824-19413824",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,AT3G52302,AT3G52310,FLA15,ATOEP7,AT3G52345,SPP2,IQD3,CP33,OEP7,PAD4,ATPQ,AT3G52330,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_FRI_32"
+    },
+    "description": "RNA was extracted from leaves after 4 wks of growth. FRI gene expression levels were determined by Northern hybridization quantified relative to $Beta;-TUBULIN expression [Growth in greenhouse at 20-22C with 16hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415856",
+    "location": "3:19447281-19447281",
+    "attributes": {
+      "associated_gene": "AT3G52490,AT3G52410,AT3G52470,ATOEP7,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52500,AT3G52450",
+      "external_reference": "KW_Chlor_22_32"
+    },
+    "description": "Results expressed as binary data determined by the presence (1) or absence (0) of chlorosis in all 4 plants / accession after 5wks of growth [22C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415773",
+    "location": "3:19424998-19424998",
+    "attributes": {
+      "associated_gene": "AT3G52410,FLA15,ATOEP7,AT3G52345,SPP2,CP33,OEP7,PAD4,AT3G52440,AT3G52330,AT3G52450,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_avrB_32"
+    },
+    "description": "Following inoculation of two leaves per plant with 0.1 ml of 10 -8 cfu/ml bacteria in 10 mM MgSO4 buffer using a blunt-tipped syringe. Leaf collapse was scored at 20 hrs and again at 24 hrs after inoculation [20C and 12 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415712",
+    "location": "3:19414149-19414149",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,AT3G52302,AT3G52310,FLA15,ATOEP7,AT3G52345,SPP2,IQD3,CP33,OEP7,PAD4,ATPQ,AT3G52330,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_Se82_Soil_L_2_32"
+    },
+    "description": "Selenium concentrations in leaves grown in soil. Elemental analysis was performed with an ICP-MS (PerkinElmer). Sample normalized to calculated weights as described in Baxter et al. 2008 [20C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415792",
+    "location": "3:19429843-19429843",
+    "attributes": {
+      "associated_gene": "AT3G52410,FLA15,ATOEP7,CP33,OEP7,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "KW_S34_Soil_L_2_32"
+    },
+    "description": "Sulfur concentrations in leaves grown in soil. Elemental analysis was performed with an ICP-MS (PerkinElmer). Sample normalized to calculated weights as described in Baxter et al. 2008 [20C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415730",
+    "location": "3:19416424-19416424",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,AT3G52302,AT3G52310,FLA15,ATOEP7,AT3G52345,SPP2,CP33,OEP7,PAD4,ATPQ,AT3G52440,AT3G52330,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_Emwa1_32"
+    },
+    "description": "Presence / absence of sporangiophores determined on 5-10 seedlings of each genotype with three independent replications [20-22C with 10 hrs daylight and 70% humidity]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415872",
+    "location": "3:19452327-19452327",
+    "attributes": {
+      "associated_gene": "AT3G52490,AT3G52470,AT3G52510,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52500,AT3G52450",
+      "external_reference": "KW_DSDS50_Maril_32"
+    },
+    "description": "Number of days of seed dry storage required to reach 50% germination or DSDS50 value (Alonso-Blanco et al. 2003) [Dry storage followed by 25C 12h day and 20C 12h night for 1 week]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415857",
+    "location": "3:19447374-19447374",
+    "attributes": {
+      "associated_gene": "AT3G52490,AT3G52410,AT3G52470,ATOEP7,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52500,AT3G52450",
+      "external_reference": "KW_Emoy*_32"
+    },
+    "description": "Presence / absence of sporangiophores determined on 5-10 seedlings of each genotype with three independent replications [20-22C with 10 hrs daylight and 70% humidity]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415867",
+    "location": "3:19449783-19449783",
+    "attributes": {
+      "associated_gene": "AT3G52490,AT3G52470,AT3G52510,ATOEP7,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52500,AT3G52450",
+      "external_reference": "EmmaTrans_FRI_32"
+    },
+    "description": "RNA was extracted from leaves after 4 wks of growth. FRI gene expression levels were determined by Northern hybridization quantified relative to $Beta;-TUBULIN expression [Growth in greenhouse at 20-22C with 16hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415766",
+    "location": "3:19423867-19423867",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,FLA15,ATOEP7,AT3G52345,SPP2,CP33,OEP7,PAD4,AT3G52440,AT3G52330,AT3G52450,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_DW_Lesion_32"
+    },
+    "description": "Lesioning measured by dry weight [23C and 8hrs daylight (Short Day) for 7 weeks]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415733",
+    "location": "3:19417000-19417000",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,AT3G52302,AT3G52310,FLA15,ATOEP7,AT3G52345,SPP2,CP33,OEP7,PAD4,ATPQ,AT3G52440,AT3G52330,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_Emoy*_32"
+    },
+    "description": "Presence / absence of sporangiophores determined on 5-10 seedlings of each genotype with three independent replications [20-22C with 10 hrs daylight and 70% humidity]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415807",
+    "location": "3:19432567-19432567",
+    "attributes": {
+      "associated_gene": "AT3G52410,AT3G52470,FLA15,ATOEP7,CP33,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,AT3G52360,SYP122",
+      "external_reference": "EmmaTrans_Antho_16_32"
+    },
+    "description": "Results expressed as binary data - determined by the presence (1) or absence (0) of anthocyanin in all 4 plants / accession after 5wks of growth [16C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415728",
+    "location": "3:19416119-19416119",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,AT3G52302,AT3G52310,FLA15,ATOEP7,AT3G52345,SPP2,IQD3,CP33,OEP7,PAD4,ATPQ,AT3G52440,AT3G52330,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "KW_Emoy*_32"
+    },
+    "description": "Presence / absence of sporangiophores determined on 5-10 seedlings of each genotype with three independent replications [20-22C with 10 hrs daylight and 70% humidity]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415807",
+    "location": "3:19432567-19432567",
+    "attributes": {
+      "associated_gene": "AT3G52410,AT3G52470,FLA15,ATOEP7,CP33,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,AT3G52360,SYP122",
+      "external_reference": "KW_Fe56_Soil_L_2_32"
+    },
+    "description": "Iron concentrations in leaves grown in soil. Elemental analysis was performed with an ICP-MS (PerkinElmer). Sample normalized to calculated weights as described in Baxter et al. 2008 [20C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415872",
+    "location": "3:19452327-19452327",
+    "attributes": {
+      "associated_gene": "AT3G52490,AT3G52470,AT3G52510,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52500,AT3G52450",
+      "external_reference": "KW_Storage_56d_32"
+    },
+    "description": "Primary dormancy was measured as the progressive increase of germination rate measured after 56 days of dry storage [56 days dry storage as described in Alonso-Blanco et al 2003]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415809",
+    "location": "3:19433186-19433186",
+    "attributes": {
+      "associated_gene": "AT3G52410,AT3G52470,FLA15,ATOEP7,CP33,OEP7,AT3G52480,PAD4,AT3G52460,AT3G52440,AT3G52450,AT3G52390,SYP122",
+      "external_reference": "EmmaTrans_LD+V_32"
+    },
+    "description": "Number of days following stratification to opening of first flower. The experiment was stopped at 200 d and accessions that had not flowered at that point were assigned a value of 200 [18C with 16 hrs daylight and vernalized (5 wks at 4C)]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415751",
+    "location": "3:19423168-19423168",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,FLA15,ATOEP7,AT3G52345,SPP2,CP33,OEP7,PAD4,AT3G52440,AT3G52330,AT3G52450,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_DW_Lesion_32"
+    },
+    "description": "Lesioning measured by dry weight [23C and 8hrs daylight (Short Day) for 7 weeks]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415713",
+    "location": "3:19414236-19414236",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,AT3G52302,AT3G52310,FLA15,ATOEP7,AT3G52345,SPP2,IQD3,CP33,OEP7,PAD4,ATPQ,AT3G52330,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_K39_Soil_L_2_32"
+    },
+    "description": "Potassium concentrations in leaves grown in soil. Elemental analysis was performed with an ICP-MS (PerkinElmer). Sample normalized to calculated weights as described in Baxter et al. 2008 [20C and 16 hrs daylight]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415731",
+    "location": "3:19416514-19416514",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,AT3G52302,AT3G52310,FLA15,ATOEP7,AT3G52345,SPP2,CP33,OEP7,PAD4,ATPQ,AT3G52440,AT3G52330,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_Emoy*_32"
+    },
+    "description": "Presence / absence of sporangiophores determined on 5-10 seedlings of each genotype with three independent replications [20-22C with 10 hrs daylight and 70% humidity]"
+  },
+  {
+    "source": "Nordborg",
+    "Variation": "ENSVATH00415766",
+    "location": "3:19423867-19423867",
+    "attributes": {
+      "associated_gene": "AT3G52320,AT3G52410,FLA15,ATOEP7,AT3G52345,SPP2,CP33,OEP7,PAD4,AT3G52440,AT3G52330,AT3G52450,AT3G52390,AT3G52360,AT3G52350,SYP122",
+      "external_reference": "EmmaTrans_FW_Lesion_32"
+    },
+    "description": "Lesioning measured by fresh weight [23C and 8hrs daylight (Short Day) for 7 weeks]"
+  }
+]

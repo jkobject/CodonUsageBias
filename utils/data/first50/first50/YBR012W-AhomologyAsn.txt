@@ -1,0 +1,12 @@
+species,gene,entropyValue,entropyLocation,length
+saccharomyces_eubayanus,DI49_4463,0.060959,0.981354,37
+vanderwaltozyma_polyspora_dsm_70294,Kpol_1037p33,0.067609,0.987538,38
+vanderwaltozyma_polyspora_dsm_70294,Kpol_1066p32,-0.000000,0.352394,19
+vanderwaltozyma_polyspora_dsm_70294,Kpol_1055p49,0.002151,0.415752,30
+kazachstania_africana_cbs_2517,KAFR_0B06625,-0.000000,0.128585,38
+naumovozyma_dairenensis_cbs_421,NDAI_0A01420,0.043425,0.885414,20
+naumovozyma_dairenensis_cbs_421,NDAI_0G00610,0.241228,0.997802,31
+naumovozyma_dairenensis_cbs_421,NDAI_0B00740,0.109241,0.996039,30
+naumovozyma_dairenensis_cbs_421,NDAI_0D00660,0.153646,0.993281,18
+kazachstania_naganishii_cbs_8797,KNAG_0I01240,0.062812,0.957746,25
+naumovozyma_dairenensis_cbs_421,NDAI_0B04860,0.026193,0.811614,21

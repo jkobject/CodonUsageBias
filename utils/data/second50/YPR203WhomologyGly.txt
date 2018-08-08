@@ -1,0 +1,5 @@
+species,gene,entropyValue,entropyLocation,length
+saccharomyces_cerevisiae_x_saccharomyces_kudriavzevii_vin7,VIN7_1574,0.057924,0.461477,7
+saccharomyces_cerevisiae_x_saccharomyces_kudriavzevii_vin7,VIN7_5328,0.067578,0.380914,6
+zygosaccharomyces_bailii_isa1307,ZBAI_01791,0.019764,0.328316,36
+zygosaccharomyces_bailii_isa1307,ZBAI_07576,0.366204,0.937587,6

@@ -1,0 +1,7 @@
+species,gene,entropyValue,entropyLocation,length
+saccharomyces_cerevisiae_x_saccharomyces_kudriavzevii_vin7,VIN7_0181,0.254400,0.998345,20
+naumovozyma_castellii_cbs_4309,NCAS_0J00930,-0.000000,0.392761,15
+tetrapisispora_phaffii_cbs_4417,TPHA_0O00100,0.101366,0.875133,4
+tetrapisispora_phaffii_cbs_4417,TPHA_0K02350,-0.000000,0.246094,10
+kazachstania_africana_cbs_2517,KAFR_0C06560,0.074194,0.890977,10
+kazachstania_africana_cbs_2517,KAFR_0I02950,0.074194,0.890977,10
