@@ -1,0 +1,10 @@
+species,gene,entropyValue,entropyLocation,length
+saccharomyces_cerevisiae_x_saccharomyces_kudriavzevii_vin7,VIN7_4784,-0.000000,0.750000,3
+saccharomyces_sp_boulardii_,KO01_00075,-0.000000,0.750000,3
+kazachstania_naganishii_cbs_8797,KNAG_0E01130,0.101366,0.875133,4
+kazachstania_naganishii_cbs_8797,KNAG_0M00110,0.572904,0.996844,13
+_candida_glabrata,CAGL0G10175g,0.005853,0.519638,18
+_candida_glabrata,CAGL0C00209g,-0.000000,0.246094,10
+naumovozyma_castellii_cbs_4309,NCAS_0B00470,0.447940,0.875133,4
+naumovozyma_castellii_cbs_4309,NCAS_0E02100,0.531062,0.992592,8
+naumovozyma_castellii_cbs_4309,NCAS_0B00460,0.114536,0.930077,8

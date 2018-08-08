@@ -19,12 +19,16 @@ Then enter the project:
 Then you have to run the requirements to download the required packages:  
 `pip install -r requirements.txt`
 
+Make sure to have `gzip` and `R` installed and up to date.
+
 Once this is done you can:   
 `jupyter notebook pipeline.ipynb`
 
 And run it to test it yourself !
 
- 
+#CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
+#GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb 
+
 ## Goals 
 
 The goals of this project is to try to infer relations in the codon usage of different genes from different species using machine learning and to let researchers use it and improve it as they please.
@@ -67,15 +71,19 @@ http://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html
 
 4/ Using the statistical information on the process and data exploration on the outputted clusters, the next steps shall be defined. 
 
-### Further Ideas revolve around :
+### Further Ideas revolve around:
 Trying to find explanatory statistics of the features that I have as an input using :    
  * Autoencoders
  * Linear factor models
  * From the clusters using non linear classifiers that would explain some metadatas that Tobias is gathering.
  * Using more data from other databases. 
  * Using other statistics on the codon usages. 
+
+### next development plans would be:
+ * create a REST API using [Biothings](http://docs.biothings.io/) 
+ * implement further tests on the full genomes with [Popsc](http://www.chenshiyi.com/popsc.html)
  
-*repeated with different clustering algorithm and tested with statistical tests
+*repeated with different clustering algorithm and tested with statistical tests*
 
 ## Usage
 *to come*

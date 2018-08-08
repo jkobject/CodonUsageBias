@@ -6,7 +6,6 @@ jkobject.com
 
 """
 import requests
-import pdb
 import numpy as np
 import utils
 from scipy.stats import multinomial
@@ -19,40 +18,63 @@ except:
 class Espece(object):
     """docstring for Espece
 
+    This is an object that contains all required information of a species for PyCUB and some nice functions
+    to interact for each species
 
-            Params:
-            ------
-            code: a dict from gene_name to dna_seq string
-            metadata: a dict containing different metadata information
-            name : the full scientific name of the species
-            is_stored
+
+    Args:
+        code: a dict from gene_name to dna_seq string (deprecated)
+        metadata: a dict containing different metadata information that one can gather, preferentially boolean
+            flags to classify the species for plottings and comparings
+        name: the full scientific name of the species
+        is_stored, state if the data is stored in HD (deprecated)
+        link: the link to the ensembl genome
+        num_genes: the number of gene of this species
+        genome_size: the bp size of the coding genome
+        name: the name of the species
+        taxonid: the number assoxiated to this taxon
+        copynumbers: the approx. copynumbers if any of each tRNA known of this species
+        average_entropy: the mean CUB value for each amino acids (CUBD dimension)
+        average_size: the mean size of each homologies
+        var_entropy: the mean of fullvarentropy
+        fullentropy: the array containing all CUB values from the homologies of this species
+        fullvarentropy: the variance for each amino acids of the full CUB values of this species
+        fullGCcount: the GC content of the full coding genome
+        varGCcount: the variance of the GC content of the full coding genome
+        tRNAentropy: the entropy values of the copynumbers of the tRNAs if sufficient tRNAs exist
+        tot_homologies: the total number of homologies to cerevisiae
+
     """
 
-    code = None
+    code = None  # dict
+    num_genes = 0  # int
+    genome_size = 0  # int
+    link = None  # str
     metadata = {
-        "link": None,
-        "num_genes": 0,
-        "plant_pathogen": None,
-        "animal_pathogen": None,
-        "genome_size": 0,
-        "plant_symbiotic": None,  # endophyte or mycorrhizal
-        "brown_rot": None,
-        "white_rot": None
+        "isplant_pathogen": None,
+        "isanimal_pathogen": None,
+        "isplant_symbiotic": None,  # endophyte or mycorrhizal
+        "isbrown_rot": None,
+        "iswhite_rot": None
     }
-    is_stored = False
-    name = ''
-    taxonid = ''
-    copynumbers = None
-    average_entropy = None
-    average_size = None
-    var_entropy = None
-    var_size = None
-    fullentropy = None
-    fullGCcount = None
-    tRNAentropy = None
+    is_stored = False  # bool
+    name = ''  # str
+    taxonid = ''  # str
+    copynumbers = None  # dict
+    average_entropy = None  # array float
+    average_size = None  # float
+    var_entropy = None  # float
+    fullentropy = None  # array float
+    fullvarentropy = None  # array float
+    fullGCcount = None  # int
+    varGCcount = None  # float
+    tRNAentropy = None  # array float
+    tot_homologies = None  # int
 
     def __init__(self, **kwargs):
         """
+        can intialize the file from kwargs as a raw dictionnary for json format (output of dictify) or
+        from regular args.
         """
         data = kwargs.get("data", None)
         if data is not None:
@@ -61,15 +83,20 @@ class Espece(object):
             self.code = data.get("code", None)
             self.taxonid = data.get("taxonid", None)
             self.copynumbers = data.get("copynumbers", None)
-            self.code = data.get('code', None)
             self.is_stored = data.get('is_stored', None)
             self.average_entropy = data.get("average_entropy", None)
             self.average_size = data.get("average_size", None)
             self.var_entropy = data.get("var_entropy", None)
-            self.var_size = data.get("var_size", None)
             self.fullentropy = data["fullentropy"] if data.get("fullentropy", None) is not None else None
             self.fullGCcount = data["fullGCcount"] if data.get("fullGCcount", None) is not None else None
             self.tRNAentropy = data["tRNAentropy"] if data.get("tRNAentropy", None) is not None else None
+            self.num_genes = data.get("num_genes", 0)
+            self.genome_size = data.get("genome_size", 0)
+            self.link = data.get("link", None)
+            self.fullvarentropy = data.get("fullvarentropy", None)
+            self.varGCcount = data.get("varGCcount", None)
+            self.tot_homologies = data.get("tot_homologies", None)
+
         else:
             self.code = kwargs.get('code', None)
             self.is_stored = kwargs.get('is_stored', None)
@@ -79,22 +106,56 @@ class Espece(object):
             self.average_entropy = kwargs.get("average_entropy", None)
             self.average_size = kwargs.get("average_size", None)
             self.var_entropy = kwargs.get("var_entropy", None)
-            self.var_size = kwargs.get("var_size", None)
             self.fullentropy = kwargs.get("fullentropy", None)
             self.fullGCcount = kwargs.get("fullGCcount", None)
             self.tRNAentropy = kwargs.get("tRNAentropy", None)
+            self.num_genes = kwargs.get("num_genes", 0)
+            self.genome_size = kwargs.get("genome_size", 0)
+            self.link = kwargs.get("link", None)
+            self.fullvarentropy = kwargs.get("fullvarentropy", None)
+            self.varGCcount = kwargs.get("varGCcount", None)
+            self.tot_homologies = kwargs.get("tot_homologies", None)
+            self.metadata = kwargs.get("metadata", None)
 
-    def plot():
+# CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
+# GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
+
+    def plot(self):
         """
         will present some interesting info about this species.
         """
+        if self.name:
+            print "species: " + self.name
+        print "----------------------------------"
+        if self.taxonid:
+            print "taxonid" + str(self.taxonid)
+        print "metadata" + str(self.metadata)
+        print "----------------------------------"
+        if self.copynumbers is not None:
+            print "copynumbers of tRNA: " + str(self.copynumbers)
+        if self.average_size is not None:
+            print "average size: " + str(self.average_size)
+        if self.tRNAentropy is not None:
+            print "tRNA entropy: " + str(self.tRNAentropy)
+        if self.num_genes:
+            print "number of genes: " + str(self.num_genes)
+        if self.genome_size:
+            print "genome size: " + str(self.genome_size)
+        if self.tot_homologies is not None:
+            print "total number of homologies to cerevisiae: " + str(self.tot_homologies)
+        print "----------------------------------"
+        if self.average_entropy is not None:
+            print "average entropy: " + str(self.average_entropy)
+        if self.var_entropy is not None:
+            print "variance of entropy: " + str(self.var_entropy)
+        if self.fullvarentropy is not None:
+            print "full variance of entropy: " + str(self.fullvarentropy)
+        if self.varGCcount is not None:
+            print "variance of the GC content: " + str(self.varGCcount)
+        if self.meancai is not None:
+            print "mean CAI: " + str(self.meancai)
 
-    def get_metadata():
-        """
-        will call all functions to retrieve all possible metadatas for this species.
-        """
-
-    def get_tRNAcopy(self, getentropy=True, setnans=False):
+    def get_tRNAcopy(self, by="entropy", setnans=False):
         """
         Retrieves tRNA copy numbers from ensembl DB
         will print the number of tRNAs and the number of tRNAs with
@@ -104,16 +165,18 @@ class Espece(object):
         to do so: please write "dat" in the console. if you see something that
         should be corrected please do so from the console directly or from the code
         if there seems to be an error in the code
-
         if it is an error in the db that you can't do anything, like a mismatched codon
         and amino acid, you can't do much. resume the process by typing "c" in the console.
 
-        Params:
-        -------
-        species: string, the species from which you want the Trna copy number
+        Args:
+            species: string, the species from which you want the Trna copy number
+
         Returns:
-        ---------
-        dict[dict] : the tRNA copy number for the species given.
+            Will populate copynumbers. And tRNAentropy if by="entropy"
+            Or will not do anything if the species is unavailable and will print it
+
+        Raises:
+            AttributeError: this is a wrong argument try frequency or entropy
         """
         server = "http://rest.ensemblgenomes.org"
         print 'species: ' + self.name
@@ -167,7 +230,6 @@ class Espece(object):
                             num += 1
                     except KeyError:
                         print "KeyError"
-                        pdb.set_trace()
                 elif dat["name"][0:3] == 'trn':
                     try:
                         codn = dat["name"][5:8].upper()
@@ -181,7 +243,6 @@ class Espece(object):
                             num += 1
                     except KeyError:
                         print "KeyError"
-                        pdb.set_trace()
             elif dat["description"] is not None and len(dat["description"]) > 10:
                 if dat["description"][0:4] == 'tRNA':
                     try:
@@ -198,46 +259,54 @@ class Espece(object):
                             num += 1
                     except KeyError:
                         print "KeyError"
-                        pdb.set_trace()
         if num == 0:
             print "empty data"
         print "we got " + str(j) + " datapoints and managed to extract " + str(num)
         # we find probabilities of tRNA
         k = 0
-        tRNAentropy = np.zeros(18) if getentropy else None
-        for _, v in copynumber.iteritems():
-            n = np.array(v.values()).sum()
-            if n > 0:
-                for _, val in v.iteritems():
-                    val = val / n
-            if getentropy:
-                nbcod = len(v)  # replace Cleng
-                count = v.values()
-                X = np.zeros(nbcod)
-                mn = np.ones(nbcod) / nbcod
-                if n == 0:
-                    tRNAentropy[k] = np.NaN if setnans else 0.5
-                else:
-                    Yg = multinomial.pmf(x=count, n=n, p=mn)
-                    # efor part
-                    div, i = divmod(n, nbcod)
-                    X[:i] = np.ceil(div) + 1
-                    X[i:] = np.floor(div)
-                    Eg = multinomial.pmf(x=X, n=n, p=mn)
-                    # end here
-                    tRNAentropy[k] = -np.log(Yg / Eg)
-                k += 1
+        if num > 100:
+            tRNAentropy = np.zeros(18) if by == "entropy" else None
+            for _, v in copynumber.iteritems():
+                n = np.array(v.values()).sum()
+                if n > 0:
+                    for _, val in v.iteritems():
+                        val = val / n
+                # Else we keep the raw frequency values
+                if by == "entropy":
+                    nbcod = len(v)  # replace Cleng
+                    count = v.values()
+                    X = np.zeros(nbcod)
+                    mn = np.ones(nbcod) / nbcod
+                    if n == 0:
+                        tRNAentropy[k] = np.NaN if setnans else 0.5
+                    else:
+                        Yg = multinomial.pmf(x=count, n=n, p=mn)
+                        # efor part
+                        div, i = divmod(n, nbcod)
+                        X[:i] = np.ceil(div) + 1
+                        X[i:] = np.floor(div)
+                        Eg = multinomial.pmf(x=X, n=n, p=mn)
+                        # end here
+                        tRNAentropy[k] = -np.log(Yg / Eg)
+                    k += 1
+                elif by != "frequency":
+                    raise AttributeError("this is a wrong argument try frequency or entropy")
+
         # Here we can compute as well the entropy of the tRNA CNs when there is suficient number of val
         # else we can set it to zero (to NaN) this allows us to directly compare two values
         copynumber.update({'num': num})  # total number
         copynumber.update({'datapoints': j})  # possible number of datapoints
         self.copynumbers = copynumber
-        self.tRNAentropy = tRNAentropy if getentropy else None
+        if by == "entropy" and num > 100:
+            self.tRNAentropy = tRNAentropy
 
     def gettaxons(self):
         """
         Pars the ensemblgenomes REST API to retrieve the taxons id for the species from which
         we would not have any (downloaded via Yun for example)
+
+        Raises:
+            HTTPrequestError: not able to connect to the server
         """
         # http: // rest.ensemblgenomes.org / info / genomes / arabidopsis_thaliana?
         server = "http://rest.ensemblgenomes.org"
@@ -253,39 +322,34 @@ class Espece(object):
         """
         get from ensembl all the data about the epigenome that could help asking interesting questions
         about the CUB
-
-        Params:
-        ------
         """
+        # curl 'http://rest.ensemblgenomes.org/overlap/id/AT3G52430?feature=array_probe' - H 'Content-type:application/json'
+        # curl 'http://rest.ensemblgenomes.org/overlap/id/AT3G52430?feature=repeat' - H 'Content-type:application/json'
         pass
 
-    def relationtomymeta(self):
-        """
-        you can add you own metadata and then think about ways to look at wether or not they
-        influence the codon usage bias values.
-        """
-        pass
-        # compute the influence of their relationship to plants (symbiotic or rot)
-        # compute the influence of their nocivity
-        # compute the influence of the size of their prot cod genes, the genome size, the number of genes
-        # compute the influence of the GC count
-
-        #
     def _dictify(self):
         """
         Used by the saving function. transform the object into a dictionary that can be
         json serializable
+
+        Returns:
+            A dict holding every element to be jsonized
         """
         return {"name": self.name,
                 "code": self.code,
+                "num_genes": self.num_genes,
+                "genome_size": self.genome_size,
+                "link": self.link,
+                "fullvarentropy": self.fullvarentropy.tolist() if self.fullentropy is not None else None,
+                "varGCcount": self.varGCcount,
+                "tot_homologies": self.tot_homologies,
                 "taxonid": self.taxonid,
                 "copynumbers": self.copynumbers,
                 "metadata": self.metadata,
                 "is_stored": self.is_stored,
-                "average_entropy": self.average_entropy,
+                "average_entropy": self.average_entropy.tolist() if self.fullentropy is not None else None,
                 "average_size": self.average_size,
                 "var_entropy": self.var_entropy,
-                "var_size": self.var_size,
                 "fullentropy": self.fullentropy.tolist() if self.fullentropy is not None else None,
                 "fullGCcount": self.fullGCcount.tolist() if self.fullGCcount is not None else None,
-                "tRNAentropy": self.tRNAentropy}
+                "tRNAentropy": self.tRNAentropy.tolist() if self.tRNAentropy is not None else None}

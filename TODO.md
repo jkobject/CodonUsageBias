@@ -279,6 +279,21 @@ Deploy the data mining results in the form of a plan, monitoring and maintaining
 ### different hyperparams:
 
 {fungi,humans,somebacterias,plants}
-{'entropy', 'normalizedentropy','frequency', 'Avalue'}
+{'entropy', 'normalizedentropy','frequency', 'Avalue', 'CAI'}
 {gaussian clustering, dbscan} 
 analysis of 4 different datasets under 4 different measures 
+
+### ending by doing
+- debugging - JEU/VEND
+- coding more functions -SAM
+- debugging - DIM/LUN/
+- discovery - MARD/MERC/VEND/SAM/DIM6-11
+- cleaning - 14-16
+- preparing documents and all - 16-19
+- writing - 21-30
+- post-writing 30-2
+- correction - 3-6
+- latexing - 7-9
+- preparing logbook - 10
+
+Different factors have been proposed to be related to codon usage bias, including gene expression level (reflecting selection for optimizing translation process by tRNA abundance), %G+C composition (reflecting horizontal gene transfer or mutational bias), GC skew (reflecting strand-specific mutational bias), amino acid conservation, protein hydropathy, transcriptional selection, RNA stability, optimal growth temperature, hypersaline adaptation and dietary nitrogen

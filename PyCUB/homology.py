@@ -16,92 +16,152 @@ from mpl_toolkits.mplot3d import Axes3D
 import utils
 
 from bokeh.plotting import *
-from bokeh.io import output_file, save, show
+from bokeh.io import save, show
 from bokeh.models import *
 from bokeh.layouts import column
 import matplotlib.pyplot as plt
+from scipy.spatial.distance import euclidean
 
 import pdb
 
 
 class homology(object):
-    """in homology we store an homology with its dataframe,
-    it reduced reduced df with dim reduction and its clusters
-    it is supposed to be store in a homoogy dictionary
+    """in homology we store an homology with all its related data,
+    it reduced matrix with dim reduction and its clusters for example
+    it is supposed to be store in a dictionary of homologies
 
-    Params:
-    ------
-    names : list of int corresponding to names in utils.speciestable
-    full : np array of float (species, amino) of one homology
-    with entropy value vector per species
-    reduced :  np array float (species, x*y) of one homology dimensionality reduced
-    clusters : list[int] of cluster val for each species
-    centroids: the position in aminoacid# Dimension of each centroids
-    (number of centroid == number of cluster)
-    metrics: a dict of metrics names and values for the cluster of this homology
-    nans: numpy array of bool wether or not this position is a nan
-    lenmat: a numpy array species amino of int of length of each amino acids (number)
-    doub: nupy array of [bool] of wether or not this position is a doublon
-    ( a copy number of the gene for the species)
-    reduced_algo: dimensionality reduction algorithm used on this homology
+    an homology is a set of genes from different species related by a common ancester
+    gene and generally a common function.
+    the unique metadatas are generally from the reference species/genome
+
+    Args:
+        names: list of int corresponding to names in utils.speciestable
+        full: np.array[float] (species, amino) of one homology
+            with entropy value vector per species
+        reduced:  np.array[float] (species, x*y) of one homology dimensionality reduced
+        clusters: list[int] of cluster val for each species
+        centroids: np.array[float] the position in aminoacid# Dimension of each centroids
+            (number of centroid == number of cluster), dimension is reduced when plotted
+        metrics: a dict of metrics names and values for the cluster of this homology
+        nans: np.array[bool] wether or not this position is a nan
+        lenmat: a np.array[int] species amino of int of length of each amino acids (number)
+        doub: np.array[bool] of wether or not this position is a doublon
+            ( a copy number of the gene for the species)
+        reduced_algo: str dimensionality reduction algorithm used on this homology
+        var: np.array of the variance in the CUB value for each datapoint
+        mean: np.array[float] of the mean CUB for each datapoint
+        homocode: str the code of the homology
+        GCcount: np.array[float] GC bias for each datapoint
+        KaKs_Scores: np.array[float] a form of similarity score between genes/datapoints
+        similarity_scores: np.array[float] similarity score between genes/datapoints
+        proteinids: list[str] the protein names for each datapoints
+        isrecent: float a proxy for wether or not this homology has appeated recently
+        ishighpreserved: bool a proxy for wether or not this homology is conserved throughout evolution
+        geneids: list[str] the name of the genes
+        ref: np.array[float] the reference CUB value of cerevisiae gene
+        refprot: str the reference protein name of cerevisiae gene
+        refgene: str the reference gene name of cerevisiae gene
+        cai: np.array[float] the codon adaptation index of each gene
+        meancai: float the mean CAI of the CAI
+        protein_abundance: float the average abundance of the protein enoded by this gene in cerevisiae cells
+        weight: int the molecular weight of this protein
+        mRNA_abundance: float the average abundance of the messenger RNA of this coding gene in cerevisiae cells
+        cys_elements: int the number of cys regulatory elements known for cerevisiae on this gene
+            (the value is only referenced for secreted genes)
+        is_secreted: bool wether or not this protein is secreted out of the cell
+        decay_rate: float the half life in minute of this protein
+        tot_volume: int a proxy of the molecular volume of this protein
+        mean_hydrophobicity: a very distant proxy of the hydrophobicity of this protein
+        glucose_cost: the glucose cost of creating the amino acids required to build up this protein
+        synthesis_steps: the number of steps required by the cell to build up the amino acids of this protein
+        isoelectricpoint: float, a proxy of the Pi of this protein.
+
     """
 
-    full = None
-    var = None
-    mean = None
+    full = None  # np array len(species)xCUBD
+    var = None  # np array len(species)
+    mean = None  # np array float
 
-    clusters = None
-    centroids = None
+    clusters = None  # list
+    centroids = None  # np array Xx2/3/4
     metrics = {}
     homocode = 'None'
-    nans = None
-    nanspos = None
-    lenmat = None
-    names = None
-    doub = None
-    doublonpos = None
-    GCcount = None
+    nans = None  # array len(species)
+    lenmat = None  # array len(species)x 18
+    names = None  # list
+    doub = None  # array len(species)
+    GCcount = None  # array len(species)
 
-    reduced = None
+    reduced = None  # array len(species)x2/3/4
     reduced_algo = None
 
-    KaKs_Scores = None
-    similarity_scores = None
-    proteinids = []
-    isrecent = None
-    ishighpreserved = None
+    KaKs_Scores = None  # array len(species)
+    similarity_scores = None  # array len(species)
+    proteinids = []  # list[str]
+    isrecent = None  # float
+    ishighpreserved = None  # bool
+    geneids = None  # list
+    ref = None  # array CUBD
+    refprot = None
+    refgene = None
+    cai = None  # array len(species)
+    meancai = None  # float
 
-    # TODO: compute the mean variance in CUB value and mean range
-    # for each homology (add this when plotting)
-    # TODO: compute a distance matrix between the species
+    protein_abundance = None  # float
+    weight = None  # int
+    mRNA_abundance = None  # float
+    cys_elements = 0  # int
+    is_secreted = False  # bool
+    decay_rate = None  # float
+    tot_volume = None  # float
+    mean_hydrophobicity = None  # float
+    glucose_cost = None  # float
+    synthesis_steps = None  # float
+    isoelectricpoint = None  # float
 
     def __init__(self, **kwargs):
         """
-        will intialize an instance of the object and be used for the loading mechanism
+        can intialize the file from kwargs as a raw dictionnary for json format (output of dictify) or
+        from regular args.
         """
         data = kwargs.get("data", None)
         if data is not None:
             self.full = np.asarray(data.get("full")) if data.get("full", None) is not None else None
             self.var = np.asarray(data.get("var")) if data.get("var", None) is not None else None
             self.mean = np.asarray(data.get("mean")) if data.get("mean", None) is not None else None
-            self.clusters = np.asarray(data.get("clusters")) if data.get("clusters", None) is not None else None
+            self.clusters = data.get("clusters", None)
             self.centroids = np.asarray(data.get("centroids")) if data.get("centroids", None) is not None else None
             self.metrics = data.get("metrics", {})
             self.nans = np.asarray(data.get("nans")) if data.get("nans", None) is not None else None
-            self.nanspos = np.asarray(data.get("nanspos")) if data.get("nanspos", None) is not None else None
             self.lenmat = np.asarray(data.get("lenmat")) if data.get("lenmat", None) is not None else None
             self.names = data.get("names", None)
             self.doub = np.asarray(data.get("doub")) if data.get("doub", None) is not None else None
-            self.doublonpos = np.asarray(data.get("doublonpos")) if data.get("doublonpos", None) is not None else None
             self.GCcount = np.asarray(data.get("GCcount")) if data.get("GCcount", None) is not None else None
             self.reduced = np.asarray(data.get("reduced")) if data.get("reduced", None) is not None else None
             self.reduced_algo = data.get("reduced_algo", None)
-            self.KaKs_Scores = data.get("KaKs_Scores", None)
+            self.KaKs_Scores = np.asarray(data.get("KaKs_Scores", None)) if data.get("KaKs_Scores", None) is not None else None
             self.homocode = data.get("homocode", 'None')
-            self.similarity_scores = data.get("similarity_scores", None)
+            self.similarity_scores = np.asarray(data.get("similarity_scores", None)) if data.get("similarity_scores", None) is not None else None
             self.proteinids = data.get("proteinids", [])
             self.isrecent = data.get("isrecent", None)
             self.ishighpreserved = data.get("ishighpreserved", None)
+            self.geneids = data.get("geneids", None)
+            self.cai = np.asarray(data.get("cai", None)) if data.get("cai", None) is not None else None
+            self.meancai = data.get("meancai", None)
+            self.protein_abundance = data.get("protein_abundance", None)
+            self.weight = data.get("weight", None)
+            self.mRNA_abundance = data.get("mRNA_abundance", None)
+            self.cys_elements = data.get("cys_elements", 0)
+            self.is_secreted = data.get("is_secreted", False)
+            self.decay_rate = data.get("decay_rate", None)
+            self.tot_volume = data.get("tot_volume", None)
+            self.mean_hydrophobicity = data.get("mean_hydrophobicity", None)
+            self.glucose_cost = data.get("glucose_cost", None)
+            self.synthesis_steps = data.get("synthesis_steps", None)
+            self.isoelectricpoint = data.get("isoelectricpoint", None)
+            self.ref = np.asarray(data.get("ref", None)) if data.get("ref", None) is not None else None
+            self.refprot = data.get("refprot", None)
+            self.refgene = data.get("refgene", None)
         else:
             self.full = kwargs.get("full", None)
             self.var = kwargs.get("var", None)
@@ -110,12 +170,10 @@ class homology(object):
             self.centroids = kwargs.get("centroids", None)
             self.metrics = kwargs.get("metrics", {})
             self.nans = kwargs.get("nans", None)
-            self.nanspos = kwargs.get("nanspos", None)
             self.lenmat = kwargs.get("lenmat", None)
             self.names = kwargs.get("names", None)
             self.doub = kwargs.get("doub", None)
             self.homocode = kwargs.get("homocode", 'None')
-            self.doublonpos = kwargs.get("doublonpos", None)
             self.GCcount = kwargs.get("GCcount", None)
             self.reduced = kwargs.get("reduced", None)
             self.reduced_algo = kwargs.get("reduced_algo", None)
@@ -124,10 +182,32 @@ class homology(object):
             self.proteinids = kwargs.get("proteinids", [])
             self.isrecent = kwargs.get("isrecent", None)
             self.ishighpreserved = kwargs.get("ishighpreserved", None)
+            self.geneids = kwargs.get("geneids", None)
+            self.cai = kwargs.get("cai", None)
+            self.meancai = kwargs.get("meancai", None)
+            self.mRNA_abundance = kwargs.get("mRNA_abundance", None)
+            self.cys_elements = kwargs.get("cys_elements", 0)
+            self.is_secreted = kwargs.get("is_secreted", False)
+            self.decay_rate = kwargs.get("decay_rate", None)
+            self.tot_volume = kwargs.get("tot_volume", None)
+            self.mean_hydrophobicity = kwargs.get("mean_hydrophobicity", None)
+            self.glucose_cost = kwargs.get("glucose_cost", None)
+            self.synthesis_steps = kwargs.get("synthesis_steps", None)
+            self.isoelectricpoint = kwargs.get("isoelectricpoint", None)
+            self.ref = np.asarray(kwargs.get("ref", None)) if kwargs.get("ref", None) is not None else None
+            self.refprot = kwargs.get("refprot", None)
+            self.refgene = kwargs.get("refgene", None)
+
+# CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
+# GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
 
     def remove(self, species):
         """
         removes the list of species from this homology if it exists there
+
+        Args:
+            species: list[str] of species to remove
+
         """
         speciestable = dict(utils.speciestable)
         tradnames = [speciestable[na] for na in self.names] if type(species[0]) == unicode or \
@@ -136,7 +216,6 @@ class homology(object):
         cluster = []
         mask = np.zeros(len(self.names), dtype=bool)
         self.names = []
-        pdb.set_trace()
         for i, na in enumerate(tradnames):
             if na not in species:
                 self.names.append(names[i])
@@ -151,35 +230,21 @@ class homology(object):
         """
         compute the number of unique species in this homologies
         (basically count the number of doub)
+
+        Returns:
+            The number of unique species in this homology
         """
         return self.doub.shape[0] - np.count_nonzero(self.doub)
-
-    def getdoubpos(self):
-        pos = {}
-        speciestable = dict(utils.speciestable)
-        if self.doub is not None:
-            for i, val in enumerate(self.doub):
-                if val:
-                    mean = full[i - 1:i + 1].mean(0)
-                    pos.update({speciestable[self.names[i]]:
-                                np.divide(np.count_nonzero(mean > self.full, 0), self.nb_unique_species())})
-        return pos
-
-    def getnanpos(self):
-        pos = {}
-        speciestable = dict(utils.speciestable)
-        if self.nans is not None:
-            for i, val in enumerate(self.nans):
-                if val:
-                    pos.update({speciestable[self.names[i]]:
-                                np.divide(np.count_nonzero(val > self.full, 0), self.nb_unique_species())})
-        return pos
 
     def order(self, withtaxons=False):
         """
         order the names by numerical increasing order
         and sorts every representations as well according to this ordering
+
+        Args:
+            withtaxons: bool to true if there is taxonomic data (present before preprocessing)
         """
+        # TODO: totest
         names = self.names[0] if withtaxons else self.names
         indices = sorted(range(len(names)), key=lambda k: names[k])
         names.sort()
@@ -191,6 +256,24 @@ class homology(object):
             self.clusters = [self.clusters[i] for i in indices]
         if self.lenmat is not None:
             self.lenmat[:] = self.lenmat[indices]
+        if self.mean is not None:
+            self.mean[:] = self.mean[indices]
+        if self.nans is not None:
+            self.nans[:] = self.nans[indices]
+        if self.doub is not None:
+            self.doub[:] = self.doub[indices]
+        if self.GCcount is not None:
+            self.GCcount[:] = self.GCcount[indices]
+        if self.KaKs_Scores is not None:
+            self.KaKs_Scores[:] = self.KaKs_Scores[indices]
+        if self.similarity_scores is not None:
+            self.similarity_scores[:] = self.similarity_scores[indices]
+        if self.proteinids is not None:
+            self.proteinids = [self.proteinids[i] for i in indices]
+        if self.geneids is not None:
+            self.geneids = [self.geneids[i] for i in indices]
+        if self.cai is not None:
+            self.cai[:] = self.cai[indices]
         if withtaxons:
             self.names[0] = names
             for j, i in enumerate(indices):
@@ -198,94 +281,100 @@ class homology(object):
         else:
             self.names = names
 
-    def compute_halflife(self):
-        """
-        retrieve the half life of the mRNAs according to a db
-
-        """
-        # TODO to code
-        pass
-
     def compute_averages(self):
         """
+        Computes the mean, var and mean of the homology
         """
         self.mean = self.full.mean(0)
         self.var = self.full.var(0)
+        self.meancai = self.cai.mean()
 
     def reduce_dim(self, alg='tsne', n=2, perplexity=40):
         """
         reduce the dimensionality of your gene dataset to a defined dimension
         using the t-SNE algorithm
 
-        :param gene:  a matrix of gene codon usage per species
-                  n:  the desired dimension
-        perplexity :  an optional value when you know about tsne
+        Args:
+            alg: a matrix of gene codon usage per species
+            n: the desired dimension
+            perplexity: an optional value when you know about tsne
 
-        :return tsned: the reduced dataset
+        Returns:
+            The reduced dataset
         """
+        full = self.full if self.centroids is None else np.vstack((self.full, self.centroids))
+
         if alg == 'tsne':
-            red = man.TSNE(n_components=n, perplexity=perplexity).fit_transform(self.full)
+            red = man.TSNE(n_components=n, perplexity=perplexity).fit_transform(full)
         elif alg == 'pca':
-            red = PCA(n_components=n).fit_transform(self.full)
+            red = PCA(n_components=n).fit_transform(full)
         else:
-            raise("wrong algo my friend choose pca or tsne")
-        self.reduced = red
+            raise AttributeError("wrong algo my friend choose pca or tsne")
+        if self.centroids is None:
+            self.reduced = red
+        else:
+            self.reduced = red[:len(self.full)]
+            self.centroids = red[len(self.full):]
         self.reduced_algo = alg
         return red
 
-    def plot(self, reducer="tsne", per=40, interactive=False, D=2, size=20, shownans=False):
+    def plot(self, reducer="tsne", per=40, interactive=True, D=2, size=20):
         """
         plot the dimensionality reduced datapoint of the homology matrix
 
-        colors represents the different clusters
+        colors represents the different clusters you can set the interactivity to gain
+        deeper knowledge of the dataset. It can dim reduce the data and will also save
+        the figure in utils/save. Moreover, it will print some interesting data about the
+        homology
 
-        Params:
-        ------
-        reducer: flag the algorithm to reduce the matrix of 18D to D D
+        Args:
+            reducer: str flag the algorithm to reduce the matrix of utils.cubD to D D
             per: int he perplexity when using tsne algorithm
-        size: int the size of the plot
-        interactive: (recommended) wether to use bokeh or not to represend the data
-                    will show name of the species when hovering over datapoint
-                    will show a gradient of evolutionary distance of the species of
-                    the datapoint currently hovered to each other species
+            size: int the size of the plot
+            interactive: (recommended) wether to use bokeh or not to represend the data
+                        will show name of the species when hovering over datapoint
+                        will show a gradient of evolutionary distance of the species of
+                        the datapoint currently hovered to each other species
             D: int the goal dimension (2-3-4) when using matplotlib
+
+        Returns:
+            The plot interactive or not and some informations (as prints)
+
+        Raises:
+            UnboundLocalError: "you need to have dimensionality reduced to 2D to have a right plotting of the centroids"
         """
-        # TODO: use the ancestry distance from homoset (put it in utils)
-        # and add the possibility to plot it with colors
         colormap = list(utils.colormap)
+        spetable = dict(utils.speciestable)
         if self.clusters is not None:
             # colormap = [[rand(256), rand(256), rand(256)] for _ in range(100)]
             colors = [colormap[x + 1] for x in self.clusters]
         else:
             colors = [colormap[0]] * len(self.names)
-        if shownans:
-            for i, val in enumerate(self.nans):
-                if val:
-                    colors[i] = utils.rgb2hex((255 * (val / 18), 255 * (val / 18), 255 * (val / 18)))
         if self.reduced is None or self.reduced_algo != reducer:
             self.reduce_dim(alg=reducer, n=D, perplexity=per)
         elif self.reduced.shape[1] != D:
             self.reduce_dim(alg=reducer, n=D, perplexity=per)
-
         if interactive:
             print " if you are on a notebook you should write 'from bokeh.io import output_notebook'"
-            speciestable = dict(utils.speciestable)
             data = dict(x=self.reduced[:, 0], y=self.reduced[:, 1],
-                        species=[str(speciestable[n]) for n in self.names],
+                        species=[str(spetable[n]) for n in self.names],
                         meanentropy=["%.2f" % self.full[i].mean() for i in range(len(self.names))],
                         color=colors)
             if self.doub is not None:
                 data.update({'doub': self.doub})
             if self.clusters is not None:
                 data.update({'clusters': self.clusters})
+            # TODO: totest simiscore, kaks,ids,phylodist, protid,geneid,cai
+            # TODO addphylodists
             if self.similarity_scores is not None:
                 data.update({'similarity_scores': self.similarity_scores})
             if self.KaKs_Scores is not None:
                 data.update({'KaKs_Scores': self.KaKs_Scores})
             if self.nans is not None:
-                data.update({'nans': self.nans.sum(1)})
-            if self.proteinids is not None:
-                pass  # here use wether or not it is a new protein
+                data.update({'nans': self.nans})
+                # here use wether or not it is a new protein
+            if self.cai is not None:
+                data.update({'cai': self.cai})
             if self.lenmat is not None:
                 data.update({'lengths': self.lenmat.sum(1)})
             if self.GCcount is not None:
@@ -293,37 +382,22 @@ class homology(object):
             source = ColumnDataSource(data=data)
             output_notebook()
             labe = ["show Cluster", "show Doublon", "show Nans", "show KaKs_Scores",
-                    "show similarity_scores", "show Length"]
-            callback = CustomJS(args=dict(source=source), code=utils.callback)
+                    "show similarity_scores", "show Length", "show gc", "show cai"]  # 8
+            callback = CustomJS(args=dict(source=source), code=str(utils.callback))
             radio_button_group = widgets.RadioButtonGroup(
-                labels=labe, callback=callback)
+                labels=labe, callback=callback, active=0)
             hover = HoverTool(tooltips=[("species", "@species"), ("nan_nb", "@nans"),
                                         ("mean_entr", "@meanentropy"), ("length", "@lengths"), ("GCcount", "@gc")])
-            p = figure(title="T-sne of homologous gene X for each species",
-                       tools=[hover, BoxZoomTool(), WheelZoomTool(), SaveTool(), ResetTool()],
+            p = figure(title="Plot of the homology " + self.homocode,
+                       tools=[hover, WheelZoomTool(), PanTool(), SaveTool(), ResetTool()],
                        plot_width=800, plot_height=600)
             p.circle(x='x', y='y', source=source, color='color', size=10)
-            # TODO: add a plot of the similarity distances
             if self.centroids is not None:
-                p.square(self.centroids[0], self.centroids[0], size=12, color="olive", alpha=0.3)
-            save(column(radio_button_group, p), "utils/templot/homoplot_interactive_" + self.homocode + ".html")
+                if self.centroids.shape[1] > 2:
+                    raise UnboundLocalError("you need to have dimensionality reduced to 2D to have a right plotting of the centroids")
+                p.square(self.centroids[:, 0], self.centroids[:, 1], size=12, color="olive", alpha=0.3)
+            save(column(radio_button_group, p), "utils/templot/homoplot_interactive_.html")
             show(column(radio_button_group, p))
-            print "------------------------------------"
-            for key, val in self.metrics.iteritems():
-                print key + ': ' + str(val)
-            print "------------------------------------"
-            mea = self.full.mean(axis=0)
-            var = self.full.var(axis=0)
-            print "Amino, CUB value mean, variance"
-            for i in range(len(utils.amino)):
-                print utils.amino[i] + ": %.2f" % mea[i] + ", %.3f" % var[i]
-            if self.KaKs_Scores is not None:
-                print "avg KaKs Scores"
-                print self.KaKs_Scores.mean()
-            if self.similarity_scores is not None:
-                print "avg similarity Scores"
-                print self.similarity_scores.mean()
-            return p
         else:
             fig = plt.figure(figsize=(40, size))
             if D == 2:
@@ -337,35 +411,81 @@ class homology(object):
                 ax.scatter(self.reduced[:, 0], self.reduced[:, 1],
                            self.reduced[:, 2], s=self.reduced[:, 3] * 200, c=colors)
             else:
-                print "please choose a D between 2 and 4"
-                return
+                raise AttributeError("please choose a D between 2 and 4")
             plt.show()
-            plt.savefig("utils/templot/homoplot_matplotlib_" + self.homocode + ".pdf")
-            print "------------------------------------"
-            for key, val in self.metrics.iteritems():
-                print key + ': ' + str(val)
-            print "------------------------------------"
-            mea = self.full.mean(axis=0)
-            var = self.full.var(axis=0)
-            print "Amino, CUB value mean, variance"
-            for i in range(len(utils.amino)):
-                print utils.amino[i] + ": %.2f" % mea[i] + ", %.3f" % var[i]
-            if self.KaKs_Scores is not None:
-                print "avg KaKs Scores"
-                print self.KaKs_Scores.mean()
-            if self.similarity_scores is not None:
-                print "avg similarity Scores"
-                print self.similarity_scores.mean()
+            plt.savefig("utils/templot/homoplot_matplotlib_.pdf")
+        print "homology: " + self.homocode
+        print "------------------------------------"
+        for key, val in self.metrics.iteritems():
+            print key + ': ' + str(val)
+        print "------------------------------------"
+        mea = self.full.mean(axis=0)
+        var = self.full.var(axis=0)
+        print "Amino, CUB value mean, variance"
+        amino = list(utils.amino)
+        for i in range(len(amino)):
+            print amino[i] + ": %.2f" % mea[i] + ", %.3f" % var[i]
+        if self.KaKs_Scores is not None:
+            print "avg KaKs Scores"
+            print self.KaKs_Scores.mean()
+        if self.similarity_scores is not None:
+            print "avg similarity Scores"
+            print self.similarity_scores.mean()
+        print "------------------------------------"
+        if self.meancai is not None:
+            print "mean cai: " + str(self.meancai)
+        if self.isrecent is not None:
+            if self.isrecent:
+                print "fairly recent protein"
+        if self.ishighpreserved is not None:
+            if self.ishighpreserved:
+                print "high preserved protein"
+        if self.protein_abundance is not None:
+            print "abundance of the protein in a cell: " + str(self.protein_abundance)
+        if self.weight is not None:
+            print "weight of protein: " + str(self.weight)
+        if self.mRNA_abundance is not None:
+            print "abundance of mRNA: " + str(self.mRNA_abundance)
+        if self.cys_elements:
+            print "number of cys_elements: " + str(self.cys_elements)
+        if self.is_secreted:
+            print "the protein is secreted out of the cell"
+        if self.decay_rate is not None:
+            print "halflife (in mn): " + str(self.decay_rate)
+        if self.tot_volume is not None:
+            print "total volume of protein: " + str(self.tot_volume)
+        if self.mean_hydrophobicity is not None:
+            print "the pseudo hydrophobicity is of: " + str(self.mean_hydrophobicity)
+        if self.glucose_cost is not None:
+            print "the glucose cost: " + str(self.glucose_cost)
+        if self.synthesis_steps is not None:
+            print "synthesis steps: " + str(self.synthesis_steps)
+        if self.isoelectricpoint is not None:
+            print "the isoelectricpoint(Pi) is : " + str(self.isoelectricpoint)
 
-    def clusterize_(self, clustering='gaussian', eps=0.8, homogroupnb=None, assess=True):
+    def clusterize_(self, clustering='gaussian', eps=0.8, homogroupnb=None, assess=True, verbose=True):
         """
-        will clusterize the homology using gaussian mixture clustering or DBSCAN and order
-        them according
+        will clusterize the homology using gaussian mixture clustering or DBSCAN
+
+        and order them according
         to the density of each cluster (we are interested in the dense ones)
         and assess the quality using 3 criterion:
         BIC, AIC ,silhouette, cal_hara, phylodistance.
+
+        Args:
+            clustering: str flag the clustering algorithm [gaussian, dbscan]
+            eps: float, hyperparam of the max size of the nsphere of each cluster
+            homogroupnb: int hyperparam of gaussian for the number of clusters
+            assess: wether or not to assess the quality of the clustering
+            verbose: wether or not to show clustering quality information
+
+        Returns:
+            The clusters for each datapoint of the homology as a list[int]
+        Raises:
+            AttributeError: "Hey, please use gaussian or dbscan"
         """
-        if clustering == 'gaussian':
+        self.metrics = {}
+        if clustering == 'gaussian' and homogroupnb is not None:
             # http://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html
             alg = mixture.GaussianMixture(n_components=homogroupnb, n_init=2, init_params='random')
             alg.fit(self.full)
@@ -373,79 +493,115 @@ class homology(object):
                 aic = alg.aic(self.full)
                 bic = alg.bic(self.full)
                 self.metrics.update({'aic': aic, 'bic': bic})
-                print "the BIC scores for the GMM is"
-                print aic
-                print "the AIC scores for the GMM is"
-                print bic
+                if verbose:
+                    print "the BIC scores for the GMM is"
+                    print aic
+                    print "the AIC scores for the GMM is"
+                    print bic
+                self.metrics.update({'bic': bic, 'aic': aic})
+                self.metrics.update
             self.clusters = alg.predict(self.full).tolist()
-
-        elif clustering == 'dbscan' and homogroupnb is not None:
+            cov = alg.covariances_
+            self.centroids = alg.means_
+            dists = np.zeros((len(self.centroids), 2))
+            for i in range(len(self.centroids)):
+                dist = np.zeros(len(cov[i]))
+                for j in range(len(cov[i])):
+                    dist[j] = euclidean(self.centroids[i], cov[i][j])
+                dists[i] = [dist.mean(), dist.var()]
+            print "the mean,var of the distances of the covariances to the means of each clusters are: "
+            print dists
+            n_clusters_ = homogroupnb
+        elif clustering == 'dbscan':
             # http://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html
-            val = np.around(len(self.names) / (2 * (homogroupnb + 1)))
-            print val
+
             alg = cluster.DBSCAN(eps=eps, min_samples=7,
                                  algorithm='auto', n_jobs=-1)
             self.clusters = alg.fit_predict(self.full).tolist()
             n_clusters_ = len(set(self.clusters)) - (1 if -1 in self.clusters else 0)
-            # TODO: use gaussian clustering and look at the variance of the kernels
-            # (requested by dominique to maybe have some ideas of variance
-            # as it is not well displayed by eps) add this as another information
-            # when plotting and make gaussian clustering work well,
-            # then work using the values found by eps.
-
-            print "Estimated number of clusters using DBscan: " + str(n_clusters_)
+            if verbose:
+                print "Estimated number of clusters using DBscan: " + str(n_clusters_)
+        else:
+            raise AttributeError("Hey, please use gaussian or dbscan")
         if assess:
-                # print 'average phylo distance of the clusters: '+ str(avg_phylodistance)
             try:
                 silhouette = metrics.silhouette_score(self.full, self.clusters).item()
                 cal_hara = metrics.calinski_harabaz_score(self.full, self.clusters).item()
             except ValueError:
                 silhouette = 0
                 cal_hara = 0
-            self.metrics = {}
-            print 'silhouette_score ' + str(silhouette)
-            print 'cal_hara ' + str(cal_hara)
+
+            if verbose:
+                print 'silhouette_score ' + str(silhouette)
+                print 'cal_hara ' + str(cal_hara)
             self.metrics.update({'silhouette': silhouette,
                                  'cal_hara': cal_hara})
             if utils.phylo_distances is not None:
                 speciestable = dict(utils.speciestable)
                 avg_phylodistance = []
-                spe = [speciestable[j] for j in self.names]
-                div = utils.phylo_distances[spe].loc[spe].sum().sum() / (len(spe)**2 - len(spe))
-                for i in range(-1, n_clusters_ - 1):
+                hastaxons = utils.phylo_distances.index.tolist()
+                spe = [speciestable[j] for j in self.names if speciestable[j] in hastaxons]
+                div = float(utils.phylo_distances[spe].loc[spe].sum().sum()) / (len(spe)**2 - len(spe))
+                for i in range(-1, n_clusters_):
                     # Here the first value is for the outliers and the second for the unclusterized
                     # data points
-                    species = [speciestable[j] for j in self.names[np.argwhere(self.clusters == i)]]
-                    avg_phylodistance.append((utils.phylo_distances[species].
-                                              loc[species].sum().sum() / (len(species)**2 - len(species))) / div)
-                self.metrics.update({'avg_phylodistance': np.array(avg_phylodistance)})
-                print 'avg phylo dist of the clusters: ' + str(avg_phylodistance)
+                    ind = np.argwhere(np.array(self.clusters) == i).T[0]
+                    if len(ind) < 3:
+                        continue
+                    species = [speciestable[j] for j in ind if speciestable[j] in hastaxons]
+                    if len(species) < 2:
+                        continue
+                    avg_phylodistance.append((float(utils.phylo_distances[species].
+                                                    loc[species].sum().sum()) / (len(species)**2 - len(species))) / div)
+                self.metrics.update({'cluster_phylodistance': avg_phylodistance})
+                if verbose:
+                    print 'avg phylo dist of the clusters: ' + str(np.array(self.metrics['cluster_phylodistance']))
 
         return self.clusters
+
+    # TODO: add a classifier to high or low CUB given species info
 
     def _dictify(self):
         """
         Used by the saving function. transform the object into a dictionary that can be
         json serializable
+
+        Returns:
+            A dict holding every element to be jsonized
         """
         return {"reduced": self.reduced.tolist() if not (self.reduced is None) else None,
                 "clusters": self.clusters,
                 "full": self.full.tolist() if not (self.full is None) else None,
                 "names": self.names,
                 "homocode": self.homocode,
-                "centroids": self.centroids,
+                "centroids": self.centroids.tolist() if self.centroids is not None else None,
                 "metrics": self.metrics,
-                "KaKs_Scores": self.KaKs_Scores,
-                "similarity_scores": self.similarity_scores,
+                "KaKs_Scores": self.KaKs_Scores.tolist() if self.KaKs_Scores is not None else None,
+                "similarity_scores": self.similarity_scores.tolist() if self.similarity_scores is not None else None,
                 "proteinids": self.proteinids,
+                "geneids": self.geneids,
+                "cai": self.cai.tolist() if self.cai is not None else None,
+                "meancai": self.meancai,
                 "nans": self.nans.tolist() if self.nans is not None else None,
                 "doub": self.doub.tolist() if self.doub is not None else None,
                 "var": self.var.tolist() if self.var is not None else None,
                 "mean": self.mean.tolist() if self.mean is not None else None,
-                "nanspos": self.nanspos.tolist() if self.nanspos is not None else None,
                 "lenmat": self.lenmat.tolist() if self.lenmat is not None else None,
-                "doublonpos": self.doublonpos.tolist() if self.doublonpos is not None else None,
                 "GCcount": self.GCcount.tolist() if self.GCcount is not None else None,
                 "reduced_algo": self.reduced_algo,
                 "isrecent": self.isrecent,
-                "ishighpreserved": self.ishighpreserved}
+                "ishighpreserved": self.ishighpreserved,
+                "ref": self.ref.tolist() if self.ref is not None else None,
+                "refprot": self.refprot,
+                "refgene": self.refgene,
+                "protein_abundance": self.protein_abundance,
+                "weight": self.weight,
+                "mRNA_abundance": self.mRNA_abundance,
+                "cys_elements": self.cys_elements,
+                "is_secreted": self.is_secreted,
+                "decay_rate": self.decay_rate,
+                "tot_volume": self.tot_volume,
+                "mean_hydrophobicity": self.mean_hydrophobicity,
+                "glucose_cost": self.glucose_cost,
+                "synthesis_steps": self.synthesis_steps,
+                "isoelectricpoint": self.isoelectricpoint}
