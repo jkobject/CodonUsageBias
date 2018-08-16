@@ -51,15 +51,15 @@ class Espece(object):
     genome_size = 0  # int
     link = None  # str
     metadata = {
-        "isplant_pathogen": None,
-        "isanimal_pathogen": None,
-        "isplant_symbiotic": None,  # endophyte or mycorrhizal
-        "isbrown_rot": None,
-        "iswhite_rot": None
+        "isplant_pathogen": False,
+        "isanimal_pathogen": False,
+        "isplant_symbiotic": False,  # endophyte or mycorrhizal
+        "isbrown_rot": False,
+        "iswhite_rot": False
     }
     is_stored = False  # bool
     name = ''  # str
-    taxonid = ''  # str
+    taxonid = None  # str
     copynumbers = None  # dict
     average_entropy = None  # array float
     average_size = None  # float
@@ -68,8 +68,10 @@ class Espece(object):
     fullvarentropy = None  # array float
     fullGCcount = None  # int
     varGCcount = None  # float
+    meanGChomo = None  # float
     tRNAentropy = None  # array float
     tot_homologies = None  # int
+    meanecai = None  # float
 
     def __init__(self, **kwargs):
         """
@@ -79,23 +81,34 @@ class Espece(object):
         data = kwargs.get("data", None)
         if data is not None:
             self.name = data.get("name", None)
-            self.metadata = data.get("metadata", None)
+            if data.get("metadata", None) is None:
+                self.metadata = {
+                    "isplant_pathogen": False,
+                    "isanimal_pathogen": False,
+                    "isplant_symbiotic": False,  # endophyte or mycorrhizal
+                    "isbrown_rot": False,
+                    "iswhite_rot": False
+                }
+            else:
+                self.metadata = data.get("metadata", None)
             self.code = data.get("code", None)
             self.taxonid = data.get("taxonid", None)
             self.copynumbers = data.get("copynumbers", None)
             self.is_stored = data.get('is_stored', None)
-            self.average_entropy = data.get("average_entropy", None)
+            self.average_entropy = np.asarray(data["average_entropy"]) if data.get("average_entropy", False) else None
             self.average_size = data.get("average_size", None)
             self.var_entropy = data.get("var_entropy", None)
-            self.fullentropy = data["fullentropy"] if data.get("fullentropy", None) is not None else None
-            self.fullGCcount = data["fullGCcount"] if data.get("fullGCcount", None) is not None else None
-            self.tRNAentropy = data["tRNAentropy"] if data.get("tRNAentropy", None) is not None else None
+            self.fullentropy = np.asarray(data["fullentropy"]) if data.get("fullentropy", False) else None
+            self.fullGCcount = data.get("fullGCcount", None)
+            self.tRNAentropy = np.asarray(data["tRNAentropy"]) if data.get("tRNAentropy", False) else None
             self.num_genes = data.get("num_genes", 0)
             self.genome_size = data.get("genome_size", 0)
             self.link = data.get("link", None)
-            self.fullvarentropy = data.get("fullvarentropy", None)
+            self.fullvarentropy = np.asarray(data["fullvarentropy"]) if data.get("fullvarentropy", False) else None
             self.varGCcount = data.get("varGCcount", None)
             self.tot_homologies = data.get("tot_homologies", None)
+            self.meanGChomo = data.get("meanGChomo", None)
+            self.meanecai = data.get("meanecai", None)
 
         else:
             self.code = kwargs.get('code', None)
@@ -116,6 +129,8 @@ class Espece(object):
             self.varGCcount = kwargs.get("varGCcount", None)
             self.tot_homologies = kwargs.get("tot_homologies", None)
             self.metadata = kwargs.get("metadata", None)
+            self.meanGChomo = kwargs.get("meanGChomo", None)
+            self.meanecai = kwargs.get("meanecai", None)
 
 # CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
 # GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
@@ -152,10 +167,10 @@ class Espece(object):
             print "full variance of entropy: " + str(self.fullvarentropy)
         if self.varGCcount is not None:
             print "variance of the GC content: " + str(self.varGCcount)
-        if self.meancai is not None:
-            print "mean CAI: " + str(self.meancai)
+        if self.meanecai is not None:
+            print "mean ECAI: " + str(self.meanecai)
 
-    def get_tRNAcopy(self, by="entropy", setnans=False):
+    def get_tRNAcopy(self, by="entropy", setnans=False, baseCNvalue=2):
         """
         Retrieves tRNA copy numbers from ensembl DB
         will print the number of tRNAs and the number of tRNAs with
@@ -192,7 +207,7 @@ class Espece(object):
             copynumber.update({key: {}})
             for v in val:
                 v.replace('T', 'U')
-                copynumber[key].update({v.replace('T', 'U'): 0})
+                copynumber[key].update({v.replace('T', 'U'): baseCNvalue})
         num = 0
         j = 0
         for j, dat in enumerate(data):
@@ -346,6 +361,8 @@ class Espece(object):
                 "taxonid": self.taxonid,
                 "copynumbers": self.copynumbers,
                 "metadata": self.metadata,
+                "meanGChomo": self.meanGChomo,
+                "meanecai": self.meanecai,
                 "is_stored": self.is_stored,
                 "average_entropy": self.average_entropy.tolist() if self.fullentropy is not None else None,
                 "average_size": self.average_size,
