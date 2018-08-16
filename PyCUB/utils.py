@@ -14,7 +14,7 @@ import glob
 import numpy as np
 import requests
 import os
-
+from math import sqrt
 import json
 try:
     from urllib2 import urlopen as urlopen
@@ -70,7 +70,9 @@ import pdb
 
 """
 speciestable = {}
-index = {}
+indexcai = {}
+indexecai = {}
+
 phylo_distances = None  # pandas dataframe
 
 codamino = {
@@ -223,7 +225,7 @@ aminosort = ['LYS', 'ANS', 'THR', 'ILE', 'ARG', 'GLN', 'HIS', 'PRO', 'GLU', 'ASP
              'ALA', 'GLY', 'VAL', 'TYR', 'SER', 'LEU', 'CYS', 'PHE']
 LMAX = 2500
 MAXITR = 1000000
-smax = [0, 0, LMAX, 1414, 180, 0, 40]
+smax = [0, 0, LMAX, 1414, 110, 0, 40]
 smax2 = [0, 0, LMAX, LMAX, 520, 0, 145]
 CUBD = 18
 MAX = 20  # max value of leng after which we encounter
@@ -353,7 +355,15 @@ callback = """
                     }
                 source.data.color = col;
             }
-            if(b===7){ //CAI
+            if(b===7){ //ECAI
+                var temp = 0
+                for(i=0;i<len;++i){
+                    temp =  Math.floor(255 * data.ecai[i]);
+                    col.push(fullColorHex(52, temp, temp));
+                    }
+                source.data.color = col;
+            }
+            if(b===9){ //CAI
                 var temp = 0
                 for(i=0;i<len;++i){
                     temp =  Math.floor(255 * data.cai[i]);
@@ -365,7 +375,7 @@ callback = """
             """
 # TODO: maybe use a nonlinearity to increase the differences amongst color when the datapoints
 # are super close to each others (gc values, kaks scores..)
-callback_all = """
+callback_allgenes = """
             // JavaScript code goes here
             console.log("callback-------callback");
             var colors = ['#f39c12', "#1abc9c", "#3498db", "#2ecc71",
@@ -390,51 +400,307 @@ callback_all = """
             var len = data.color.length;
             var col = [];
             var othercol = '#1abc9c';
-            if(b === 0){
-                source.data.color = source.data.recent;
-            }
-            if(b ===1){
-                var temp = 0
-                for(i=0;i<len;++i){
-                    temp =  Math.floor(114 + (1000 * data.nans[i]));
-                    col.push(fullColorHex(52, 73, temp));
-                    }
+            
+            if(b === 0){ //show clusters
+                var j = 0;
+                if(data.clusters){
+                    for(i=0;i<len;++i){col.push(colors[1+data.clusters[i]]);}
+                }else{
+                    for(i=0;i<len;++i){col.push(othercol);}
+                }
                 source.data.color = col;
             }
-            if(b === 2) {
+            if(b === 1){//show num_genes
                 var temp = 0
-                max = Math.max(...data.KaKs_Scores)
+                max = Math.max(...data.num_genes)
                 for(i=0;i<len;++i){
-                    temp =  Math.floor(92 * data.KaKs_Scores[i]/max);
+                    temp =  Math.floor(92 * data.num_genes[i]/max);
                     col.push(fullColorHex(temp, 152, 219));
                     }
                 source.data.color = col;
             }
-            if(b === 3) {
+            if(b === 2) { //show genome_size
+                var temp = 0
+                max = Math.max(...data.genome_size)
+                for(i=0;i<len;++i){
+                    temp =  Math.floor(252 * data.genome_size[i]/max);
+                    col.push(fullColorHex(temp, 152, 219));
+                    }
+                source.data.color = col;
+            }
+            if(b === 3) {  //show show full/mean CUB diff
                 var temp = 0
                 for(i=0;i<len;++i){
-                    temp =  Math.floor(76 * data.similarity_scores[i]);
+                    temp =  Math.floor(200 * data.efulldiff[i]);
                     col.push(fullColorHex(temp, 204, 113));
                     }
                 source.data.color = col;
             }
-            if(b === 4){
-                max = Math.max(...data.lengths)
+            if(b === 4){ //Show GC count
+                var temp = 0
                 for(i=0;i<len;++i) {
-                    temp =  Math.floor(255 * (1 - (data.lengths[i] / max)));
-                    col.push(fullColorHex(temp, temp, temp));
+                    temp =  Math.floor(255 * data.gccount[i]);
+                    col.push(fullColorHex(temp, temp, 113));
                 }
                 data.color = col;
             }
-            if(b === 5){
+            if(b === 5){ //show fullmean GC diff
+                var temp = 0
+                for(i=0;i<len;++i) {
+                    temp =  Math.floor(255 * data.gcfulldiff[i]);
+                    col.push(fullColorHex(temp, 204, temp));
+                }
+                data.color = col;
+            }
+            if(b === 6){ //show GC variance
+                var temp = 0
+                for(i=0;i<len;++i) {
+                    temp =  Math.floor(455 * data.varGCcount[i]);
+                    col.push(fullColorHex(temp, temp, 113));
+                }
+                data.color = col;
+            }
+            if(b === 7){ //show distance to tRNA UB"
+                source.data.color = source.data.recent;
+            }
+            if(b === 8){ //  show tRNA number
+                var temp = 0
+                max = Math.max(...data.tRNA_number)
+                for(i=0;i<len;++i){
+                    temp =  Math.floor(54 + (200 * data.tRNA_number[i]/max));
+                    col.push(fullColorHex(52, 73, temp));
+                    }
+                source.data.color = col;
+            }
+            if(b === 9){ //  show avgphilodistance
+                var temp = 0
+                max = Math.max(...data.distances)
+                min = Math.min(...data.distances)
+                for(i=0;i<len;++i){
+                    temp =  Math.floor(54 + (254 * data.distances[i]/max));
+                    col.push(fullColorHex(52, 73, temp));
+                    }
+                source.data.color = col;
+            }
+            /*
+            if(b === 10){ //  show full phylodistance
                 var temp = 0
                 for(i=0;i<len;++i){
                     temp =  Math.floor(64 + 100 * data.gc[i]));
                     col.push(fullColorHex(52, 73, temp));
                     }
                 source.data.color = col;
+            }*/
+            if(b > 10){ //  show avgphilodistance
+                for(i=0;i<len;++i){
+                    if(data[String(b)][i]){
+                        col.push(colors[2])
+                    }else{
+                        col.push(colors[3])
+                    }
+                    }
+                source.data.color = col;
             }
             source.change.emit();
+            """
+callback_allhomo = """
+            // JavaScript code goes here
+        console.log("callback-------callback");
+        var colors = ['#f39c12', "#1abc9c", "#3498db", "#2ecc71",
+                    "#9b59b6", '#34495e', '#f1c40f','#e67e22', '#e74c3c', '#7f8c8d'];
+        // the model that triggered the callback is cb_obj:
+        var b = cb_obj.get("active");
+        var rgbToHex = function(rgb){
+          var hex = Number(rgb).toString(16);
+          if (hex.length < 2) {
+               hex = "0" + hex;
+          }
+          return hex;
+        };
+        var fullColorHex = function(r,g,b) {
+            var red = rgbToHex(r);
+            var green = rgbToHex(g);
+            var blue = rgbToHex(b);
+            return "#"+red+green+blue;
+        };
+        // models passed as args are automagically available
+        var data = source.data;
+        var len = data.color.length;
+        var col = [];
+        var othercol = '#1abc9c';
+        
+        if(b === 0){ //"show Recent/preserved"
+            source.data.color = data.recent;
+        }
+        if(b === 1){//"showclusters"
+            var j = 0;
+            if(data.clusters){
+                for(i=0;i<len;++i){col.push(colors[1+data.clusters[i]]);}
+            }else{
+                for(i=0;i<len;++i){col.push(othercol);}
+            }
+            source.data.color = col;
+        }
+        if(b === 2) { //"show avg similarity_scores"
+            var temp = 0
+            max = Math.max(...data.similarity_scores)
+            for(i=0;i<len;++i){
+                temp =  Math.floor(252 * data.similarity_scores[i]/max);
+                col.push(fullColorHex(temp, 152, 219));
+                }
+            source.data.color = col;
+        }
+        if(b === 3) {  //"show avg KaKs_Scores"
+            var temp = 0
+            max = Math.max(...data.KaKs_Scores)
+            for(i=0;i<len;++i){
+                temp =  Math.floor(200 * data.KaKs_Scores[i]/max);
+                col.push(fullColorHex(temp, 204, 113));
+                }
+            source.data.color = col;
+        }
+        if(b === 4){ //"show Nans avg"
+            var temp = 0
+            max = Math.max(...data.nans)
+            for(i=0;i<len;++i){
+                temp =  Math.floor(200 * data.nans[i]/max);
+                col.push(fullColorHex(temp, temp, 113));
+            }
+            source.data.color = col;
+        }
+        if(b === 5){ //lenmat
+            var temp = 0
+            max = Math.max(...data.lenmat)
+            for(i=0;i<len;++i){
+                temp =  Math.floor(200 * data.lenmat[i]/max);
+                col.push(fullColorHex(temp, temp, 113));
+            }
+            source.data.color = col;
+        }
+        if(b === 6){ //GCcount
+            var temp = 0
+            for(i=0;i<len;++i) {
+                temp =  Math.floor(255 * data.GCcount[i]);
+                col.push(fullColorHex(temp, 204, temp));
+            }
+            source.data.color = col;
+        }
+        if(b === 7){ //weight
+            var temp = 0
+            max = Math.max(...data.weight)
+            for(i=0;i<len;++i){
+                temp =  Math.floor(200 * data.weight[i]/max);
+                col.push(fullColorHex(temp, temp, 113));
+            }
+            source.data.color = col;
+        }
+        if(b === 8){ //protein_abundance
+            var temp = 0
+            max = Math.max(...data.protein_abundance)
+            for(i=0;i<len;++i){
+                temp =  Math.floor(200 * data.protein_abundance[i]/max);
+                col.push(fullColorHex(temp, 204, 113));
+            }
+            source.data.color = col;
+        }
+        if(b === 9){ //mRNA_abundance
+            var temp = 0
+            max = Math.max(...data.mRNA_abundance)
+            for(i=0;i<len;++i){
+                temp =  Math.floor(200 * data.mRNA_abundance[i]/max);
+                col.push(fullColorHex(113, temp, temp));
+            }
+            source.data.color = col;
+        }
+        if(b === 10){ //decay_rate
+            var temp = 0
+            max = Math.max(...data.decay_rate)
+            for(i=0;i<len;++i){
+                temp =  Math.floor(200 * data.decay_rate[i]/max);
+                col.push(fullColorHex(204, temp, 113));
+            }
+            source.data.color = col;
+        }
+        if(b === 11){ //is_secreted
+            var temp = 0
+            max = Math.max(...data.is_secreted)
+            for(i=0;i<len;++i){
+                temp =  Math.floor(200 * data.is_secreted[i]/max);
+                col.push(fullColorHex(temp, 113, temp));
+            }
+            source.data.color = col;
+        }
+        if(b === 12){ //cys_elements
+            var temp = 0
+            max = Math.max(...data.cys_elements)
+            for(i=0;i<len;++i){
+                temp =  Math.floor(200 * data.cys_elements[i]/max);
+                col.push(fullColorHex(temp,temp,76));
+            }
+            source.data.color = col;
+        }
+        if(b === 13){ //tot_volume
+            var temp = 0
+            max = Math.max(...data.tot_volume)
+            for(i=0;i<len;++i){
+                temp =  Math.floor(200 * data.tot_volume[i]/max);
+                col.push(fullColorHex(52, 76, temp));
+            }
+            source.data.color = col;
+        }
+        if(b === 14){ //mean_hydrophobicity
+            var temp = 0
+            max = Math.max(...data.mean_hydrophobicity)
+            for(i=0;i<len;++i){
+                temp =  Math.floor(200 * data.mean_hydrophobicity[i]/max);
+                col.push(fullColorHex(52, temp, 113));
+            }
+            source.data.color = col;
+        }
+        if(b === 15){ //glucose_cost
+            var temp = 0
+            max = Math.max(...data.glucose_cost)
+            for(i=0;i<len;++i){
+                temp =  Math.floor(200 * data.glucose_cost[i]/max);
+                col.push(fullColorHex(temp, 52, temp));
+            }
+            source.data.color = col;
+        }
+        if(b === 16){ //synthesis_steps
+            var temp = 0
+            max = Math.max(...data.synthesis_steps)
+            for(i=0;i<len;++i){
+                temp =  Math.floor(200 * data.synthesis_steps[i]/max);
+                col.push(fullColorHex(temp, temp, 76));
+            }
+            source.data.color = col;
+        }
+        if(b === 17){ //meanecai
+            var temp = 0
+            for(i=0;i<len;++i) {
+                temp =  Math.floor(455 * data.meanecai[i]);
+                col.push(fullColorHex(temp, temp, 113));
+            }
+            source.data.color = col;
+        }
+        if(b === 18){ //meancai
+            var temp = 0
+            for(i=0;i<len;++i) {
+                temp =  Math.floor(455 * data.meancai[i]);
+                col.push(fullColorHex(temp, temp, 113));
+            }
+            source.data.color = col;
+        }
+        if(b === 19){ //conservation
+            var temp = 0
+            max = Math.max(...data.conservation)
+            for(i=0;i<len;++i){
+                temp =  Math.floor(200 * data.conservation[i]/max);
+                col.push(fullColorHex(temp, temp, 76));
+            }
+            source.data.color = col;
+        }            
+        source.change.emit();
             """
 callback_plotall = """
             // JavaScript code goes here
@@ -587,7 +853,7 @@ def retrievenames():
 
 def loadfromensembl(homology, kingdom='compara=fungi', sequence='cdna',
                     additional='type=orthologues', saveonfiles=False, normalized=False,
-                    setnans=False, number=0, by="entropy", using="normal"):
+                    setnans=False, number=0, by="entropy", using="normal", getCAI=False):
     """
     Load from ensembl the datas required in parameters ( look at PyCUB.get_data for more information)
     returns a fully populated homology object.
@@ -605,7 +871,7 @@ def loadfromensembl(homology, kingdom='compara=fungi', sequence='cdna',
 
     Returns:
         a populated PyCUB.homology of the homology object by [names, taxons, full, lenmat, homocode, nans,
-        KaKs_Scores, similarity_scores, proteinids, GCcount, geneids, refs, cai, refgene, refprot,
+        KaKs_Scores, similarity_scores, proteinids, GCcount, geneids, refs, ecai, refgene, refprot,
         tot_volume, mean_hydrophobicity, glucose_cost, synthesis_steps, isoelectricpoint]
         OR None if the homology is empty
 
@@ -628,7 +894,7 @@ def loadfromensembl(homology, kingdom='compara=fungi', sequence='cdna',
     except ConnectionError:
         print "problem at " + homology
         if number > 50:
-            raise ConnectionError("tried 50 times but still not able to connect")
+            raise IOError("tried 50 times but still not able to connect")
         return loadfromensembl(homology, kingdom=kingdom, sequence=sequence,
                                additional=additional, saveonfiles=saveonfiles, normalized=normalized,
                                setnans=setnans, number=number + 1, by=by, using=using)
@@ -641,17 +907,17 @@ def loadfromensembl(homology, kingdom='compara=fungi', sequence='cdna',
         with open('utils/data/' + homology + '.json', "wb") as code:
             code.write(json.dump(data))
     species, GCcount, lenmat, H, nans, similarities, KaKs_Scores, taxons, proteinids,\
-        geneid, ref, cai, refgene, refprot, vol, cost, hydrophob, synthcost, isoepoint = process(
-            data, normalized=normalized, setnans=setnans, by=by)
+        geneid, ref, ecai, cai, refgene, refprot, vol, cost, hydrophob, synthcost, isoepoint, conservation, others = process(
+            data, normalized=normalized, setnans=setnans, by=by, getCAI=getCAI)
     if by == 'entropyLocation':
         H = getloc(H, np.array(lenmat), using=using)
     # here we add two things into names but only as a temporary saving measures removed by the
     # application fo preprocessing in homoset.
     homo = h.homology(names=[species, taxons], full=H, lenmat=lenmat, homocode=homology,
                       nans=nans, KaKs_Scores=KaKs_Scores, similarity_scores=similarities,
-                      proteinids=proteinids, GCcount=GCcount, geneids=geneid, refs=ref, cai=cai, refgene=refgene,
-                      refprot=refprot, tot_volume=vol, mean_hydrophobicity=cost, glucose_cost=hydrophob,
-                      synthesis_steps=synthcost, isoelectricpoint=isoepoint)
+                      proteinids=proteinids, GCcount=GCcount, geneids=geneid, refs=ref, ecai=ecai, cai=cai, refgene=refgene,
+                      refprot=refprot, tot_volume=vol, mean_hydrophobicity=hydrophob, glucose_cost=cost,
+                      synthesis_steps=synthcost, isoelectricpoint=isoepoint, conservation=conservation, othercods=others)
     homo.order(withtaxons=True)  # a first ordering of the data, usefull afterward in the preprocessing
     return homo
 
@@ -660,7 +926,7 @@ def loadfromensembl(homology, kingdom='compara=fungi', sequence='cdna',
 # CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
 # GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
 
-def process(data, normalized=False, setnans=False, by='entropy'):
+def process(data, normalized=False, setnans=False, by='entropy', getCAI=False):
     """
     function used by loadfromensembl() to process the retrieved data
 
@@ -679,7 +945,7 @@ def process(data, normalized=False, setnans=False, by='entropy'):
         proteinids: list[str] the id of each homologous protein
         geneid: list[str] the id of each homologous gene
         ref: np.array[float] the reference gene's CUB value
-        cai: np.array[float] the cai of each homologous gene
+        ecai: np.array[float] the ecai of each homologous gene
         id: str the source gene id
         protid: str the source protein id
         vol: int, the volume of the corresponding protein
@@ -699,23 +965,34 @@ def process(data, normalized=False, setnans=False, by='entropy'):
     proteinids = []
     GCcounts = []
     geneid = []
-    cai = []
+    ecai = []
+    conservation
+    cailist = []
+    others = 0
+    uncounted = 0
     # TODO retrieve also the reference genome
     # and compute its CAI
     referencespecies = data[0]["source"]['align_seq'].encode('ascii', 'ignore').replace("-", "")
+    uncounted = len(referencespecies) - (referencespecies.count('A') + referencespecies.count('T') +
+                                         referencespecies.count('C') + referencespecies.count('G'))
+    if uncounted:
+        print "ref uncounted = " + str(uncounted)
+        referencespecies = referencespecies.replace("Y", "T").replace("R", "G").replace("K", "G")\
+            .replace("M", "A").replace('S', 'C').replace("W", "A").replace("B", "C").replace("D", "T")\
+            .replace("H", "T").replace("V", "G").replace("N", "C")
     referencespecies = [referencespecies[i:i + 3] for i in range(0, len(referencespecies), 3)]
-    ref, _, _, uncounted = computeyun(list(referencespecies), normalized=normalized, setnans=setnans, by=by)
+    ref, _, _ = computeyun(list(referencespecies), normalized=normalized, setnans=setnans, by=by)
     reference_index(list(referencespecies))
-    vol, cost, hydrophob, synthcost, isoepoint = None, None, None, None, None
-    vol, cost, hydrophob, synthcost, isoepoint = compute_meta(list(referencespecies))
-    for dat in data:  # each species
+    vol, cost, hydrophob, synthcost, isoepoint, conservation = None, None, None, None, None, None
+    vol, cost, hydrophob, synthcost, isoepoint, conservation = compute_meta(list(referencespecies))
+    for n, dat in enumerate(data):  # each species
         # https://en.wikipedia.org/wiki/Ka/Ks_ratio
 
         if dat["dn_ds"] is not None:
             KaKs_Scores.append(dat["dn_ds"])
         dat = dat['target']
-        if dat["perc_id"] is not None:
-            similarities.append(dat["perc_id"])
+        if dat["perc_id"] is not None and dat["perc_pos"] is not None:
+            similarities.append(dat["perc_id"] / dat["perc_pos"])
         if dat["taxon_id"] is not None:
             taxons.append(dat["taxon_id"])
         if dat["protein_id"] is not None:
@@ -724,11 +1001,21 @@ def process(data, normalized=False, setnans=False, by='entropy'):
         if dat["id"] is not None:
             geneid.append(dat["id"])
         codseq = dat['align_seq'].encode('ascii', 'ignore').replace("-", "")
-        GCcount = float(codseq.count('G') + codseq.count('C')) / len(codseq)
+        GCcount = float(codseq.count('G') + codseq.count('C'))
+        uncounted = (len(codseq) - GCcount) - (codseq.count('A') + codseq.count('T'))
+        if uncounted:
+            print "uncounted = " + str(uncounted)
+            codseq = codseq.replace("Y", "T").replace("R", "G").replace("K", "G").replace("M", "A").replace('S', 'C')\
+                .replace("W", "A").replace("B", "C").replace("D", "T").replace("H", "T").replace("V", "G").replace("N", "C")
+            GCcount = float(codseq.count('G') + codseq.count('C'))
+        GCcount = GCcount / len(codseq)
         codseq = [codseq[i:i + 3] for i in range(0, len(codseq), 3)]
-        cai.append(computeCAI(list(codseq)))
-
-        valH, len_i, nan, uncount = computeyun(codseq, normalized=normalized, setnans=setnans, by=by)
+        if getCAI:
+            cai = computeCAI(list(codseq))
+            cailist.append(cai)
+        c, other = computeECAI(list(codseq))
+        ecai.append(c)
+        valH, len_i, nan = computeyun(codseq, normalized=normalized, setnans=setnans, by=by)
         if valH is None:  # in case the species was in fact empty (db problem sometimes)
             del KaKs_Scores[-1]
             del similarities[-1]
@@ -740,13 +1027,13 @@ def process(data, normalized=False, setnans=False, by='entropy'):
         nans.append(nan)
         lenmat.append(len_i)
         GCcounts.append(GCcount)
-        uncounted +=uncount
-    print "missed codons: "+str(uncounted)
+        others += other
     return species, np.array(GCcounts, dtype=int), np.array(lenmat, dtype=int), np.array(H),\
         np.array(nans), np.array(similarities) if len(similarities) != 0 else None,\
         np.array(KaKs_Scores) if len(KaKs_Scores) != 0 else None, taxons if len(taxons) != 0 else None,\
-        proteinids if len(proteinids) != 0 else None, geneid, ref, np.array(cai),\
-        data[0]["source"]["id"], data[0]["source"]["protein_id"], vol, cost, hydrophob, synthcost, isoepoint
+        proteinids if len(proteinids) != 0 else None, geneid, ref, np.array(ecai), np.array(cailist) if len(cailist) > 0 else None,\
+        data[0]["source"]["id"], data[0]["source"]["protein_id"], vol, cost, hydrophob, synthcost, isoepoint,\
+        float(others) / n
 
 
 def compute_meta(data):
@@ -764,16 +1051,17 @@ def compute_meta(data):
         synthcost: int the timesteps to synthetize the corresponding protein
         isoepoint: float the Pi value of the corresponding protein
     """
-    vol, cost, hydrophob, synthcost = 0, 0, 0, 0
+    vol, cost, hydrophob, synthcost, conservation = 0, 0, 0, 0, 0
     iso = []
     for cod in data:
         if cod not in ['ATG', 'TGG', 'TAA', 'TAG', 'TGA']:
-            synthsteps, glucosecost, hydrophoby, volume, isoepoint, _ = amino2meta[codamino[cod]]
+            synthsteps, glucosecost, hydrophoby, volume, isoepoint, conservat = amino2meta[codamino[cod]]
             vol += volume
             cost += glucosecost
             hydrophob += hydrophoby
             iso.append(isoepoint)
             synthcost += synthsteps
+            conservation += conservat
     iso = np.array(iso)
     mean = iso.mean()
     tempsup = 10000
@@ -784,10 +1072,10 @@ def compute_meta(data):
         elif a > tempmin and a < mean:
             tempmin = a
     isoepoint = (tempmin + tempsup) / 2
-    return vol, cost, hydrophob / len(data), synthcost, isoepoint
+    return vol, cost, hydrophob / len(data), synthcost, isoepoint, conservation
 
 
-def reference_index(data):
+def reference_index(data, forcai=False):
     """
     compute he RCSU value of this gene
 
@@ -799,16 +1087,14 @@ def reference_index(data):
     """
     # RCSU values are CodonCount/((1/num of synonymous codons) * sum of
     # all synonymous codons)
-    global index
+    global indexcai
+    global indexecai
     for k, amin in enumerate(amino):
         subcodons = codons[amin]
         nbcod = len(subcodons)  # replace Cleng
         count = np.zeros(nbcod)
-        for i, cod in enumerate(codons[amin]):
-            for j, val in enumerate(data):
-                if val == cod:
-                    count[i] += 1
-                    data.pop(j)
+        for i, cod in enumerate(subcodons):
+            count[i] = data.count(cod)
         lengsubseq = count.sum()  # replace subSlength
         rcsu = []
         if nbcod != 1 and lengsubseq != 0:
@@ -819,7 +1105,10 @@ def reference_index(data):
             # now generate the index W=RCSUi/RCSUmax:
             rcsu_max = max(rcsu)
             for i, codon in enumerate(subcodons):
-                index[codon] = rcsu[i] / rcsu_max
+                if forcai:
+                    indexcai[codon] = rcsu[i] / rcsu_max
+                else:
+                    indexecai[codon] = rcsu[i] / rcsu_max
 
 
 def computeCAI(data):
@@ -838,12 +1127,38 @@ def computeCAI(data):
     for codon in data:
         if codon not in ['ATG', 'TGG', 'TAA', 'TAG', 'TGA']:
             # these two codons are always one, exclude them:
-            val = index.get(codon, 1)
+            val = indexcai.get(codon, 1)
             if val != 0:
                 cai_value += math.log(val)
                 cai_length += 1
 
     return math.exp(cai_value / (cai_length - 1.0))
+
+
+def computeECAI(data):
+    """
+    compute the CAI according to the reference index WHICH NEEDS TO BE PREVIOUSLY COMPUTED
+
+    Args:
+        data: list[str] the list of codons in this sequence
+
+    Returns:
+        the CAI
+    """
+    cai_value, cai_length, other = 0, 0, 0
+    # if no index is set or generated, the default SharpEcoliIndex will
+    # be used.
+    for codon in data:
+        if codon not in ['ATG', 'TGG', 'TAA', 'TAG', 'TGA']:
+            # these two codons are always one, exclude them:
+            val = indexecai.get(codon, 1)
+            if val != 0:
+                cai_value += math.log(val)
+                cai_length += 1
+        else:
+            other += 1
+
+    return math.exp(cai_value / (cai_length - 1.0)), other
 
 
 def computeyun(data, setnans=False, normalized=False, by='entropy'):
@@ -857,38 +1172,50 @@ def computeyun(data, setnans=False, normalized=False, by='entropy'):
         setnans: bool to true if nans should be set to NaN instead of an avg value
 
     Returns:
-        the valH (CUB values array)list[float], the length of each amino acid codon set len_i (list[int]), the number of nans(int), the GCcount (float)
+        the valH (CUB values array)list[float], the length of
+        each amino acid codon set len_i (list[int]), the number of nans(int), the GCcount (float)
 
     """
     global CUBD
-    valH = np.zeros(len(amino)) if by != 'frequency' else np.zeros(59)  # the number of codons usefull
+    if by != 'frequency':
+        valH = np.zeros(len(amino))
+    if by != 'entropy':  # the number of codons usefull
+        CuF = np.zeros(59)
     CUBD = len(amino) if by != 'frequency' else 59
     len_i = []
     nans = 0
     pos = 0
-    uncounted = 0
     for k, amin in enumerate(amino):
         subcodons = codons[amin]
         nbcod = len(subcodons)  # replace Cleng
         count = np.zeros(nbcod)
         X = np.zeros(nbcod)
         mn = np.ones(nbcod) / nbcod
-        for i, cod in enumerate(codons[amin]):
-            for j, val in enumerate(data):
+        for i, cod in enumerate(subcodons):
+            count[i] = data.count(cod)
+        """
+        for val in data:
+            for i, cod in enumerate(subcodons):
+                print val, cod
+                print val == cod
                 if val == cod:
                     count[i] += 1
-                    data.pop(j)
+                    pad.pop(j)
+                    j -= 1
+                    break
+            j += 1
+        """
         lengsubseq = count.sum()  # replace subSlength
         len_i.append(lengsubseq)
-        if by == 'frequency'or by == "entropy"+"frequency":
+        if by == 'frequency'or by == "entropy" + "frequency":
             if lengsubseq == 0:
-                valH[pos:pos + nbcod] = np.NaN if setnans else 1. / nbcod
+                CuF[pos:pos + nbcod] = np.NaN if setnans else 1. / nbcod
                 nans += 1
             else:
                 E = count / lengsubseq
-                valH[pos:pos + nbcod] = E
+                CuF[pos:pos + nbcod] = E
             pos += nbcod
-        if by == "entropy" or by == "entropy"+"frequency":
+        if by == "entropy" or by == "entropy" + "frequency":
             if lengsubseq == 0:
                 valH[k] = np.NaN if setnans else 0.5
                 nans += 1
@@ -901,9 +1228,16 @@ def computeyun(data, setnans=False, normalized=False, by='entropy'):
                 Eg = multinomial.pmf(x=X, n=lengsubseq, p=mn)
                 # end here
                 valH[k] = -np.log(Yg / Eg) / lengsubseq if normalized else -np.log(Yg / Eg)
-    if nans == k:
-        return None, None, None, None
-    return valH, len_i, nans, len(data)
+    if by == 'frequency':
+        valH = CuF
+    elif by == 'entropy' + 'frequency':
+        if nans == k:
+            return None, None, None, None
+        return valH, CuF, len_i, nans / 2
+    else:
+        if nans == k:
+            return None, None, None
+        return valH, len_i, nans
 
 
 def getloc(valH, geneleng, using='computejerem'):
@@ -911,7 +1245,7 @@ def getloc(valH, geneleng, using='computejerem'):
     the function to compute the entropy location (adpated from Yun Deng's code University of Kent 2018)
     need the entropy values from the genes an homology and the length values as well.
 
-    Args:  
+    Args:
         valH: the ordered entropy values
         geneleng: the corresponding length values
         using: str flags the function to use from computejerem, permutation, full, normal
@@ -925,8 +1259,8 @@ def getloc(valH, geneleng, using='computejerem'):
     val = np.zeros((18, numberindiv))
     for ind, nbcod in enumerate([2, 3, 4, 6]):
         lengs = []
-        for i in acodon[ind]:
-            lengs.extend(geneleng[:, i])
+        for y in acodon[ind]:
+            lengs.extend(geneleng[:, y])
         # we get a series of length for each species
         # for each amino acid of this codon length
         # we have all 2 then all 3 then all ..
@@ -942,15 +1276,16 @@ def getloc(valH, geneleng, using='computejerem'):
             if leng < nbcod:
                 valHloc[y] = 0
                 continue
-            posx, posy = divmod(argu[i], numberindiv)
+            posx, posy = divmod(argu[y], numberindiv)
             # we access the position knowing that we need to convert row number
             # into the possible position on the entropy matrix
             E = valH[posy, acodon[ind][posx]]
             # if H is also superior or inferior to the threshold, according to the
             # computation of the entropy location, both their values should be the
             # same.
+            # print '{0:.2f}%\r'.format(float(((y + (ind * len(lengs))) * 100)) / (len(lengs) * 4)),
             if lt != leng:
-                print '{0}%\r'.format(((y + (ind * len(lengs))) * 100) / (len(lengs) * 4)),
+                print str(nbcod) + ',' + str(leng), str(leng**nbcod),
                 lt = leng
                 mn = np.ones(nbcod) / nbcod
                 X = np.zeros(nbcod)
@@ -963,7 +1298,7 @@ def getloc(valH, geneleng, using='computejerem'):
                 if Eg == 0:
                     valHloc[y] = 0
                     continue
-                ref = computepartition(nbcod, leng, 1000000, using=using)
+                ref = computepartition(nbcod, leng, using=using)
                 try:
                     ref = np.divide(np.log(np.divide(Eg, ref)), leng)
                     hist, edges = np.histogram(ref, int((ref.max() - ref.min()) * 10000))
@@ -1060,6 +1395,7 @@ def randomdraw(nbcod, leng):
     listvect = []
     # we iterate this way to have only a max value or everything thanks to a
     # sampling without replacement
+    print 'randomdraw\r',
     while ind != MAXITR:
         prevect = [0] * nbcod
         prevect[1:] = list(np.sort(randint(0, leng + 1, nbcod - 1)))
@@ -1206,11 +1542,12 @@ def computejerem(nbcod, leng):
     """
     if mlen(leng, nbcod) == 'full':
         # if we are ok to do full method
-
+        print "computejerem\r",
         # TODO: check if it is faster to replace by log computations
         # Here we have a problem if we compute directly with a range starting with zero as we will
         # end up dividing by zero, the best idea is to reuse computationas for 2/3/4 codons to compute
         # the first part at where one the the values [A,B,nC,D,E,.] is at zero
+
         def comp2(densities, comp, initialval, leng, val):
             densities.append(comp)
             val.append(list(initialval))
@@ -1468,6 +1805,20 @@ def rgb2hex(rgb):
         the corresponding hex str
     """
     return '#%02x%02x%02x' % rgb
+
+
+def endresdistance(a, b):
+    """
+    """
+    me = (a + b) / 2
+    return sqrt(kl(a, me) + kl(b, me))
+
+
+def kl(a, b):
+    """
+    kulback-leiber distance
+    """
+    return (np.log(a / b) * a).sum()
 
 
 class dotdict(dict):
