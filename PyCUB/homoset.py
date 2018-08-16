@@ -16,7 +16,6 @@ from bokeh.io import save, show
 from bokeh.plotting import *
 from bokeh.models import *
 from bokeh.layouts import column
-
 import utils
 import homology as h
 
@@ -27,6 +26,8 @@ from kmodes.kmodes import KModes
 from sklearn import manifold as man
 from sklearn import metrics
 from sklearn.decomposition import PCA
+from sklearn.preprocessing import normalize
+from sklearn.metrics.pairwise import paired_distances as prdist
 import tsne
 from scipy import random
 from scipy import sparse
@@ -368,7 +369,6 @@ class HomoSet(collections.MutableMapping):
         self.hashomo_matrix = hashomo
         print "loaded"
 
-
     def size(self):
         """
         the size of the homoset (number of genes)
@@ -510,7 +510,7 @@ class HomoSet(collections.MutableMapping):
                 species_namelist.add(speciestable[name])
         return list(species_namelist)
 
-    def compute_ages(self, preserved=True, minpreserv=0.9, minsimi=0.9):
+    def compute_ages(self, preserved=True, minpreserv=0.9, minsimi=0.85):
         """
         will compute whether or not a coding gene is highly preserved and if not how recent it is
 
@@ -525,10 +525,11 @@ class HomoSet(collections.MutableMapping):
         Raises:
             UnboundLocalError: "you need to have the similarity_scores"
         """
-        if self.homodict[self.keys()[0]].similarity_scores is None:
+        if self.homodict[self.keys()[-1]].similarity_scores is None:
             raise UnboundLocalError("you need to have the similarity_scores")
-        if self.homodict[self.keys()[0]].isrecent is None:
+        if self.homodict[self.keys()[-1]].isrecent is None:
             phylo_distances = utils.phylo_distances.copy()
+            allowed = phylo_distances.index.tolist()
             speciestable = dict(utils.speciestable)
             for _, homo in self.homodict.iteritems():
                 # if the homology is one of species that are closely related solely (meaning it is a recent one)
@@ -542,13 +543,16 @@ class HomoSet(collections.MutableMapping):
                     else:
                         homo.ishighpreserved = False
                     homo.isrecent = False
-                    species = [speciestable[n] for i, n in enumerate(homo.names) if not homo.doub[i]]
+                    species = [speciestable[n] for i, n in enumerate(homo.names) if not homo.doub[i] and speciestable[n] in allowed]
+                    if len(species) < 2:
+                        # we can't decide ...
+                        continue
                     dist = float(phylo_distances[species].loc[species].sum().sum()) / (len(species)**2 - len(species))
-                    if dist > mindistance:
+                    if dist < utils.meandist:
                         print "found a homology with mean " + str(dist)
                         homo.isrecent = dist / utils.meandist
-                    else:
-                        homo.isrecent = False
+        else:
+            print "it was already loaded"
 
     def compute_entropyloc(self, using='computejerem'):
         """
@@ -566,7 +570,7 @@ class HomoSet(collections.MutableMapping):
             UnboundLocalError: "you need to have your CUB values as entropy"
         """
         pdb.set_trace()
-        if self.datatype is 'entropy':
+        if self.datatype == 'entropy':
             if self.homo_matrix is None:
                 self.loadfullhomo()
             self.homo_matrix = utils.getloc(self.homo_matrix, self.fulleng, using=using)
@@ -577,8 +581,8 @@ class HomoSet(collections.MutableMapping):
             pos = 0
             for x, homo in enumerate(self.homo_namelist):
                 self[homo].full = self.homo_matrix[pos:pos + len(self[homo].full)]
-                self[homo].var = None
-                self[homo].mean = None
+                self[homo].var = self[homo].full.var(0)
+                self[homo].mean = self[homo].full.mean(0)
                 self[homo].clusters = None
                 self[homo].centroids = None
                 self[homo].metrics = {}
@@ -815,7 +819,7 @@ class HomoSet(collections.MutableMapping):
         else:
             raise UnboundLocalError("you need to find clusters first")
 
-    def compare_clusters(self, cubdistance_matrix=True, plot=True, size=40):
+    def compare_clusters(self, cubdistance_matrix=True, plot=True, interactive=True, size=40):
         """
         for each clusters in homologies, will compare them with a similarity matrix
         and a distance matrix
@@ -865,9 +869,8 @@ class HomoSet(collections.MutableMapping):
             j += 1
         self.cluster_similarity = simimatrix.copy()
         if plot:
-            self.plot_simiclust()
+            simiclust = self.plot_simiclust(interactive=interactive, size=size)
         if cubdistance_matrix:
-            se = np.zeros((len(self.species_namelist), utils.CUBD))
             j = 0
             simimatrix = np.zeros((len(self.homodict), len(self.homodict)))
             for _, homo in self.iteritems():
@@ -892,13 +895,23 @@ class HomoSet(collections.MutableMapping):
                     comp = se.copy()
                     # we need to have the values of the homo we compare to that are not in homo we compare
                     # from, to be the same in order for the distance to be zero at these values
-                    comp[np.array(homocmp.names)[np.invert(homocmp.doub)]] = homocmp.full[np.invert(homocmp.doub)]
-                    simimatrix[j, i] = np.sqrt(np.einsum('ij,ij->i', se, comp)).sum() / similar
+                    comp[np.array(homocmp.names)[
+                        np.logical_and(np.invert(homocmp.doub),
+                                       se.any(1)[homocmp.names])]] = homocmp.full[
+                        np.logical_and(np.invert(homocmp.doub),
+                                       se.any(1)[homocmp.names])]
+                    simimatrix[j, i] = prdist(se, comp).sum() / similar
                     i += 1
                 j += 1
-        self.cub_similarity = simimatrix
-        if plot:
-            self.plot_distcub()
+            simimatrix[np.where(simimatrix > 1)] = 1
+            self.cub_similarity = 1 - simimatrix
+            if plot:
+                distcub = self.plot_distcub(interactive=interactive, size=size)
+                if interactive:
+                    show(column(distcub, simiclust))
+        else:
+            if interactive:
+                show(simiclust)
 
     def find_clusters(self, clustering='dbscan', homogroupnb=None,
                       assess=True, eps=0.8, best_eps=True, trainingset=30,
@@ -938,7 +951,7 @@ class HomoSet(collections.MutableMapping):
         if best_eps:
             score = 0
             for _, homo in self.iteritems():
-                score += homo.metrics["avg_phylodistance"][2:].mean() - (homo.metrics["avg_phylodistance"][0] - 1)
+                score += np.array(homo.metrics["cluster_phylodistance"][1:]).mean() - (homo.metrics["cluster_phylodistance"][0] - 1)
             print "-----------------TOT------------------"
             print score
 
@@ -1054,6 +1067,7 @@ class HomoSet(collections.MutableMapping):
         if savehomos:
             for key, val in self.iteritems():
                 dictihomo.update({key: val._dictify()})
+
         return {"hashomo_matrix": self.hashomo_matrix.tolist() if self.hashomo_matrix is not None else None,
                 "homo_matrix": self.homo_matrix.tolist() if self.homo_matrix is not None else None,
                 "clusters": self.clusters,
@@ -1063,7 +1077,7 @@ class HomoSet(collections.MutableMapping):
                 "cub_similarity": self.cub_similarity.tolist() if self.cub_similarity is not None else None,
                 "homodict": dictihomo,
                 "species_namelist": self.species_namelist,
-                "speciestable": utils.speciestable if savehomos else None,
+                "speciestable": dict(utils.speciestable) if savehomos else None,
                 "homogroupnb": self.homogroupnb,
                 "homo_matrixnames": self.homo_matrixnames.tolist() if self.homo_matrixnames is not None else None,
                 "stats": self.stats,
@@ -1089,7 +1103,6 @@ class HomoSet(collections.MutableMapping):
             size: size of the matrix
 
         """
-        # TODO: totest
         if interactive:
             print "no invert here"
             colormap = list(utils.colormap)
@@ -1135,7 +1148,7 @@ class HomoSet(collections.MutableMapping):
             plt.savefig("utils/templot/hashomomatrix.pdf")
             plt.show()
 
-    def plot_simiclust(self, size=40, interactive=False):
+    def plot_simiclust(self, interactive=True, size=40):
         """
         plot the similarity matrix of each homologies from its clusters
 
@@ -1145,20 +1158,22 @@ class HomoSet(collections.MutableMapping):
             interactive: bool to use the bokeh interactive version
             size: size of the matrix
         """
-        # TODO: totest
         if self.cluster_similarity is not None:
             if interactive:
                 colormap = list(utils.colormap)
                 xname = []
+                yname = []
                 xname.extend(self.homo_namelist * len(self.homo_namelist))
+                for i in self.homo_namelist:
+                    yname.extend([i] * len(self.homo_namelist))
                 data = dict(
                     xname=xname,
-                    yname=list(xname),
-                    colors=colormap[0] * (len(self.homo_namelist)**2),
-                    alphas=self.cub_similarity.flatten(),
+                    yname=yname,
+                    colors=[colormap[1]] * (len(self.homo_namelist)**2),
+                    alphas=self.cluster_similarity.flatten(),
                 )
                 output_notebook()
-                hover = HoverTool(tooltips=[('names: ', '@yname, @xname')('similarity: ', '@alphas')])
+                hover = HoverTool(tooltips=[('names: ', '@yname, @xname'), ('similarity: ', '@alphas')])
                 p = figure(title="similarity matrix of each homologies from its clusters",
                            x_range=list(reversed(self.homo_namelist)), y_range=self.homo_namelist,
                            x_axis_location="above", tools=[hover, WheelZoomTool(), PanTool(), SaveTool(), ResetTool()])
@@ -1174,7 +1189,7 @@ class HomoSet(collections.MutableMapping):
                        color='colors', alpha='alphas', line_color=None,
                        hover_line_color='black', hover_color='colors')
                 save(p, 'utils/templot/simicluster.html')
-                show(p)  # show the plot
+                return p  # show the plot
             else:
                 plt.figure(figsize=(size, 200))
                 plt.title('the homologies similarity of their clusters')
@@ -1182,7 +1197,7 @@ class HomoSet(collections.MutableMapping):
                 plt.savefig("utils/templot/simiclust.pdf")
                 plt.show()
 
-    def plot_distcub(self, size=40, interactive=False):
+    def plot_distcub(self, interactive=False, size=40):
         """
         plot the distance matrix of each homologies from the average of their CUB distances
 
@@ -1197,16 +1212,19 @@ class HomoSet(collections.MutableMapping):
             if interactive:
                 colormap = list(utils.colormap)
                 xname = []
+                yname = []
                 xname.extend(self.homo_namelist * len(self.homo_namelist))
+                for i in self.homo_namelist:
+                    yname.extend([i] * len(self.homo_namelist))
                 data = dict(
                     xname=xname,
-                    yname=list(xname),
-                    colors=colormap[0] * (len(self.homo_namelist)**2),
+                    yname=yname,
+                    colors=[colormap[2]] * (len(self.homo_namelist)**2),
                     alphas=1 - self.cub_similarity.flatten(),
                 )
 
                 output_notebook()
-                hover = HoverTool(tooltips=[('names: ', '@yname, @xname')('distcub: ', '@alphas')])
+                hover = HoverTool(tooltips=[('names: ', '@yname, @xname'), ('distcub: ', '@alphas')])
                 p = figure(title="the distance matrix of each homologies from the average of their CUB distances",
                            x_range=list(reversed(self.homo_namelist)), y_range=self.homo_namelist,
                            x_axis_location="above", tools=[hover, WheelZoomTool(), PanTool(), SaveTool(), ResetTool()])
@@ -1221,8 +1239,8 @@ class HomoSet(collections.MutableMapping):
                 p.rect('xname', 'yname', 0.9, 0.9, source=data,
                        color='colors', alpha='alphas', line_color=None,
                        hover_line_color='black', hover_color='colors')
-                save(p, 'utils/templot/simicluster.html')
-                show(p)  # show the plot
+                save(p, 'utils/templot/distcub.html')
+                return p  # show the plot
             else:
                 plt.figure(figsize=(size, 200))
                 plt.title('the homologies similarities to the avg dist of their CUB')
