@@ -190,7 +190,7 @@ class PyCUB(object):
             if d == species:
                 ftp.cwd(d)
                 link = []
-                ftp.cwd(seq)
+                ftp.cwd('cds')
                 ftp.retrlines('NLST', link.append)
                 with open("utils/data/temp.fa.gz", "wb") as file:
                     for i in link:

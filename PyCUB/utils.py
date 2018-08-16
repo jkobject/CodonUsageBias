@@ -73,6 +73,8 @@ speciestable = {}
 indexcai = {}
 indexecai = {}
 
+listvect = None
+
 phylo_distances = None  # pandas dataframe
 
 codamino = {
@@ -225,7 +227,7 @@ aminosort = ['LYS', 'ANS', 'THR', 'ILE', 'ARG', 'GLN', 'HIS', 'PRO', 'GLU', 'ASP
              'ALA', 'GLY', 'VAL', 'TYR', 'SER', 'LEU', 'CYS', 'PHE']
 LMAX = 2500
 MAXITR = 1000000
-smax = [0, 0, LMAX, 1414, 110, 0, 40]
+smax = [0, 0, LMAX, 1414, 100, 0, 35]
 smax2 = [0, 0, LMAX, LMAX, 520, 0, 145]
 CUBD = 18
 MAX = 20  # max value of leng after which we encounter
@@ -1391,20 +1393,34 @@ def randomdraw(nbcod, leng):
     Returns:
         the partition array
     """
-    ind = 0
-    listvect = []
+    global listvect
     # we iterate this way to have only a max value or everything thanks to a
     # sampling without replacement
     print 'randomdraw\r',
-    while ind != MAXITR:
-        prevect = [0] * nbcod
-        prevect[1:] = list(np.sort(randint(0, leng + 1, nbcod - 1)))
-        for i in range(nbcod - 1):
-            prevect[i] = prevect[i + 1] - prevect[i]
-        prevect[-1] = leng - prevect[-1]
-        listvect.append(list(prevect))
-        ind += 1
-    listvect.sort()
+    if listvect is None:
+        listvect = np.zeros((MAXITR, nbcod))
+        for ind in xrange(MAXITR):
+            prevect = np.zeros(nbcod)
+            prevect[1:] = np.sort(randint(0, leng + 1, nbcod - 1))
+            for i in range(nbcod - 1):
+                prevect[i] = prevect[i + 1] - prevect[i]
+            prevect[-1] = leng - prevect[-1]
+            listvect[ind] = prevect
+    elif nbcod != listvect.shape[1]:
+        listvect = np.zeros((MAXITR, nbcod))
+        for ind in xrange(MAXITR):
+            prevect = np.zeros(nbcod)
+            prevect[1:] = np.sort(randint(0, leng + 1, nbcod - 1))
+            for i in range(nbcod - 1):
+                prevect[i] = prevect[i + 1] - prevect[i]
+            prevect[-1] = leng - prevect[-1]
+            listvect[ind] = prevect
+    else:
+        add = leng - listvect[0].sum()
+        posx = np.arange(0, MAXITR)
+        posy = randint(0, nbcod - 1, MAXITR)
+        listvect[posx, posy] += add
+
     return multinomial(leng, np.ones(nbcod) / nbcod).pmf(listvect)
 
 
