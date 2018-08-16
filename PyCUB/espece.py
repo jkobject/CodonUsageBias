@@ -170,7 +170,7 @@ class Espece(object):
         if self.meanecai is not None:
             print "mean ECAI: " + str(self.meanecai)
 
-    def get_tRNAcopy(self, by="entropy", setnans=False, baseCNvalue=2):
+    def get_tRNAcopy(self, by="entropy", setnans=False, kingdom='fungi', baseCNvalue=2):
         """
         Retrieves tRNA copy numbers from ensembl DB
         will print the number of tRNAs and the number of tRNAs with
@@ -193,7 +193,7 @@ class Espece(object):
         Raises:
             AttributeError: this is a wrong argument try frequency or entropy
         """
-        server = "http://rest.ensemblgenomes.org"
+        server = "http://rest.ensemblgenomes.org" if kingdom != 'vertebrate' else "http://rest.ensembl.org"
         print 'species: ' + self.name
         ext = "/lookup/genome/" + self.name + '?'
         add = "biotypes=tRNA;level=transcript"
@@ -315,7 +315,7 @@ class Espece(object):
         if by == "entropy" and num > 100:
             self.tRNAentropy = tRNAentropy
 
-    def gettaxons(self):
+    def gettaxons(self, kingdom='fungi'):
         """
         Pars the ensemblgenomes REST API to retrieve the taxons id for the species from which
         we would not have any (downloaded via Yun for example)
@@ -324,7 +324,7 @@ class Espece(object):
             HTTPrequestError: not able to connect to the server
         """
         # http: // rest.ensemblgenomes.org / info / genomes / arabidopsis_thaliana?
-        server = "http://rest.ensemblgenomes.org"
+        server = "http://rest.ensemblgenomes.org" if kingdom != 'vertebrate' else "http://rest.ensembl.org"
         print 'species: ' + self.name
         ext = "/info/genomes/" + self.name + '?'
         r = requests.get(server + ext, headers={"Content-Type": "application/json"})

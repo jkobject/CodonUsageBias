@@ -194,8 +194,8 @@ class homology(object):
             self.geneids = kwargs.get("geneids", None)
             self.ecai = kwargs.get("ecai", None)
             self.meanecai = kwargs.get("meanecai", None)
-            self.cai = np.asarray(kwargs["cai"])
-            self.meancai = kwargs["meancai"]
+            self.cai = kwargs.get("cai", None)
+            self.meancai = kwargs.get("meancai", None)
             self.mRNA_abundance = kwargs.get("mRNA_abundance", 0.)
             self.protein_abundance = kwargs.get("mRNA_abundance", 0.)
             self.weight = kwargs.get("weight", 0)
@@ -207,7 +207,7 @@ class homology(object):
             self.glucose_cost = kwargs.get("glucose_cost", None)
             self.synthesis_steps = kwargs.get("synthesis_steps", None)
             self.isoelectricpoint = kwargs.get("isoelectricpoint", None)
-            self.ref = np.asarray(kwargs.get("ref", None)) if kwargs.get("ref", None) is not None else None
+            self.ref = kwargs.get("ref", None)
             self.refprot = kwargs.get("refprot", None)
             self.refgene = kwargs.get("refgene", None)
             self.othercods = kwargs.get("othercods", None)
@@ -606,7 +606,7 @@ class homology(object):
                 "proteinids": self.proteinids,
                 "geneids": self.geneids,
                 "ecai": self.ecai.tolist() if self.ecai is not None else None,
-                "meanecai": float(self.meanecai),
+                "meanecai": self.meanecai,
                 "cai": self.cai.tolist() if self.cai is not None else None,
                 "meancai": self.meancai,
                 "nans": self.nans.tolist() if self.nans is not None else None,
