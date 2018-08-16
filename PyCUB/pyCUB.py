@@ -180,9 +180,13 @@ class PyCUB(object):
     def getHomologylist(self, species='saccharomyces_cerevisiae', kingdom='fungi'):
         """
         """
-        ftp = FTP('ftp.ensemblgenomes.org')
+        location = 'ftp.ensemblgenomes.org' if kingdom != 'vertebrate' else 'ftp.ensembl.org'
+        release = 'release-40/' if kingdom != 'vertebrate' else 'release-93'
+        ftp = FTP(location)
         ftp.login()
-        ftp.cwd('pub/release-40/' + kingdom + '/fasta/')
+        if kingdom == 'vertebrate':
+            kingdom = ''
+        ftp.cwd('pub/' + release + kingdom + '/fasta/')
         data = []
         name = []
         ftp.retrlines('NLST', data.append)
@@ -201,7 +205,7 @@ class PyCUB(object):
                         name.append(record.name)
         self.homolist = name
 
-    def get_data(self, From='yun', homonames=None, kingdom='compara=fungi', sequence='cdna',
+    def get_data(self, From='yun', homonames=None, kingdom='fungi', sequence='cdna',
                  additional='type=orthologues', saveonfiles=False, normalized=True, setnans=False,
                  by="entropy", using="normal", tRNA=True, getCAI=True, first=20, inpar=True):
         """
@@ -247,10 +251,12 @@ class PyCUB(object):
                       From=From, by=by, inpar=inpar)
         elif From == 'ensembl':
             if homonames == 'all' or homonames is None:
-                if self.homolist is None:
+                if self.homolist is None and kingdom == 'fungi':
                     with open('utils/meta/homolist.json', "r") as f:
                         self.homolist = json.loads(f.read())
                 else:
+                    if self.homolist is None:
+                        raise UnboundLocalError("you have to load the homologies first")
                     print "using the loaded homolist from ensembl"
             else:
                 self.homolist = homonames
@@ -260,7 +266,7 @@ class PyCUB(object):
             print ' '
             homonamelist = []
             if getCAI:
-                createRefCAI(first=first)
+                self.createRefCAI(first=first, kingdom=kingdom)
             if bool(inpar):
                 values = Parallel(n_jobs=num_cores)(delayed(utils.loadfromensembl)(
                     name, kingdom, sequence,
@@ -283,7 +289,6 @@ class PyCUB(object):
             self.all_homoset.homo_namelist = homonamelist
             # TODO: test full pipeline with frequency/entropy/entropylocation
             taxons, species = self.all_homoset.preprocessing(withtaxons=True)
-            pdb.set_trace()
             if tRNA:
                 print "computing tRNA copy numbers"
             for i, spece in enumerate(species):
@@ -831,10 +836,13 @@ class PyCUB(object):
                 print "missed codons: "+str(len(c))
                 return valH, GCcount
                 """
-
-        ftp = FTP('ftp.ensemblgenomes.org')
+        location = 'ftp.ensemblgenomes.org' if kingdom != 'vertebrate' else 'ftp.ensembl.org'
+        release = 'release-40/' if kingdom != 'vertebrate' else 'release-93'
+        ftp = FTP(location)
         ftp.login()
-        ftp.cwd('pub/release-40/' + kingdom + '/fasta/')
+        if kingdom == 'vertebrate':
+            kingdom = ''
+        ftp.cwd('pub/' + release + kingdom + '/fasta/')
         data = []
         ftp.retrlines('NLST', data.append)
         species_namelist = self.species.keys()
@@ -955,13 +963,14 @@ class PyCUB(object):
         utils.meandist = df.sum().sum() / (len(df)**2 - len(df))
         self.plot_distances(size=size)
 
-    def createRefCAI(self, speciestocompare='saccharomyces_cerevisiae', first=20):
+    def createRefCAI(self, speciestocompare='saccharomyces_cerevisiae', kingdom='fungi', first=20):
         """
         do a compute CAI
 
         where we get Tobias' data to find highly expressed genes and
         use them to compute codon frequency for the reference set and use it to compute
-        the CAI and mean CAI for each homology.
+        the CAI and mean CAI for each ho
+        mology.
         """
 
         data = pd.read_csv("utils/meta/protdata/tob_currated.csv")
@@ -969,17 +978,21 @@ class PyCUB(object):
         expres = data["Protein Abundance (molecules per cell)"].values
         ind = expres.argsort()
         highlyexpressed = [homonames[i] for i in ind[:first]]
-        ftp = FTP('ftp.ensemblgenomes.org')
-        kingdom = 'fungi'
+
+        location = 'ftp.ensemblgenomes.org' if kingdom != 'vertebrate' else 'ftp.ensembl.org'
+        release = 'release-40/' if kingdom != 'vertebrate' else 'release-93'
+        ftp = FTP(location)
         ftp.login()
-        ftp.cwd('pub/release-40/' + kingdom + '/fasta/')
+        if kingdom == 'vertebrate':
+            kingdom = ''
+        ftp.cwd('pub/' + release + kingdom + '/fasta/')
         data = []
         ftp.retrlines('NLST', data.append)
         for d in data:
             if d == speciestocompare:
                 ftp.cwd(d)
                 link = []
-                ftp.cwd(seq)
+                ftp.cwd('cds')
                 ftp.retrlines('NLST', link.append)
                 with open("utils/data/temp.fa.gz", "wb") as file:
                     for i in link:
@@ -1446,7 +1459,7 @@ class PyCUB(object):
         return self.scoregenes, self.coeffgenes, attrlist
 
     @lru_cache(maxsize=None)
-    def getRelation2G3DD(self, species_name='saccharomyces_cerevisiae',
+    def getRelation2G3DD(self, species_name='saccharomyces_cerevisiae', kingdom='fungi',
                          intrachromosome="utils/meta/3Dmodel/interactions_HindIII_fdr0.01_intra_cerevisiae.csv",
                          interchromose=["utils/meta/3Dmodel/cerevisiae_inter1.csv",
                                         "utils/meta/3Dmodel/cerevisiae_inter2.csv",
@@ -1499,10 +1512,14 @@ class PyCUB(object):
             'XX': 20,
             'XXI': 21
         }
-        ftp = FTP('ftp.ensemblgenomes.org')
-        kingdom = 'fungi'
+
+        location = 'ftp.ensemblgenomes.org' if kingdom != 'vertebrate' else 'ftp.ensembl.org'
+        release = 'release-40/' if kingdom != 'vertebrate' else 'release-93'
+        ftp = FTP(location)
         ftp.login()
-        ftp.cwd('pub/release-40/' + kingdom + '/fasta/')
+        if kingdom == 'vertebrate':
+            kingdom = ''
+        ftp.cwd('pub/' + release + kingdom + '/fasta/')
         data = []
         ftp.retrlines('NLST', data.append)
         for d in data:
@@ -1526,7 +1543,7 @@ class PyCUB(object):
                         nb += 1
                         valH, CuF, _, _, unused = utils.computeyun(codseq, setnans=False, normalized=False,
                                                                    by="entropy" + "frequency")
-                        server = "http://rest.ensemblgenomes.org"
+                        server = "http://rest.ensemblgenomes.org" if kingdom != 'vertebrate' else "http://rest.ensembl.org"
                         names.append(record.id)
                         vals.append(valH)
                         cufs.append(CuF)
