@@ -1774,7 +1774,7 @@ class PyCUB(object):
                 ret.update({key: val})
         return ret
 
-    def loadspeciestable():
+    def loadspeciestable(self):
         filename = "utils/meta/savings/speciestable.json"
         if not os.path.isfile(filename):
             raise IOError("no speciestable file")
@@ -1782,9 +1782,8 @@ class PyCUB(object):
             utils.speciestable = json.loads(f.read())
             print "it worked !"
 
-    def savespeciestable():
+    def savespeciestable(self):
         filename = "utils/meta/savings/speciestable.json"
-        print "writing in " + name
         data = json.dumps(dict(utils.speciestable), indent=4, separators=(',', ': '))
         dirname = os.path.dirname(filename)
         if not os.path.exists(dirname):

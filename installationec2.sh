@@ -35,3 +35,11 @@ c.IPKernelApp.pylab = 'inline'  # in-line figure when using Matplotlib
 c.NotebookApp.ip = '*'  # Serve notebooks locally.
 c.NotebookApp.open_browser = False  # Do not open a browser window by default when using notebooks.
 c.NotebookApp.password = 'sha1:fc216:3a35a98ed980b9...'
+
+## you can add more memory with 
+swapon -s
+lsblk
+sudo mkswap /dev/$disk
+sudo swapon /dev/$disk
+# and add to /etc/fstab
+/dev/$disk       none    swap    sw  0       0
