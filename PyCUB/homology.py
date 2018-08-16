@@ -61,8 +61,8 @@ class homology(object):
         ref: np.array[float] the reference CUB value of cerevisiae gene
         refprot: str the reference protein name of cerevisiae gene
         refgene: str the reference gene name of cerevisiae gene
-        cai: np.array[float] the codon adaptation index of each gene
-        meancai: float the mean CAI of the CAI
+        ecai: np.array[float] the codon adaptation index of each gene
+        meanecai: float the mean ecai of the ecai
         protein_abundance: float the average abundance of the protein enoded by this gene in cerevisiae cells
         weight: int the molecular weight of this protein
         mRNA_abundance: float the average abundance of the messenger RNA of this coding gene in cerevisiae cells
@@ -104,20 +104,24 @@ class homology(object):
     ref = None  # array CUBD
     refprot = None
     refgene = None
+    ecai = None  # array len(species)
+    meanecai = None  # float
     cai = None  # array len(species)
     meancai = None  # float
 
-    protein_abundance = None  # float
-    weight = None  # int
-    mRNA_abundance = None  # float
+    protein_abundance = 0.  # float
+    weight = 0  # int
+    conservation = None  # float
+    mRNA_abundance = 0.  # float
     cys_elements = 0  # int
     is_secreted = False  # bool
-    decay_rate = None  # float
+    decay_rate = 0.  # float
     tot_volume = None  # float
     mean_hydrophobicity = None  # float
     glucose_cost = None  # float
     synthesis_steps = None  # float
     isoelectricpoint = None  # float
+    othercods = None  # float
 
     def __init__(self, **kwargs):
         """
@@ -141,19 +145,23 @@ class homology(object):
             self.reduced_algo = data.get("reduced_algo", None)
             self.KaKs_Scores = np.asarray(data.get("KaKs_Scores", None)) if data.get("KaKs_Scores", None) is not None else None
             self.homocode = data.get("homocode", 'None')
-            self.similarity_scores = np.asarray(data.get("similarity_scores", None)) if data.get("similarity_scores", None) is not None else None
+            self.similarity_scores = np.asarray(data.get("similarity_scores", None))\
+                if data.get("similarity_scores", None) is not None else None
             self.proteinids = data.get("proteinids", [])
             self.isrecent = data.get("isrecent", None)
             self.ishighpreserved = data.get("ishighpreserved", None)
             self.geneids = data.get("geneids", None)
-            self.cai = np.asarray(data.get("cai", None)) if data.get("cai", None) is not None else None
+            self.conservation = data.get("conservation", None)
+            self.cai = np.asarray(data["cai"]) if data.get("cai") else None
             self.meancai = data.get("meancai", None)
-            self.protein_abundance = data.get("protein_abundance", None)
-            self.weight = data.get("weight", None)
-            self.mRNA_abundance = data.get("mRNA_abundance", None)
+            self.ecai = np.asarray(data["ecai"]) if data.get("ecai", False) else None
+            self.meanecai = data.get("meanecai", None)
+            self.protein_abundance = data.get("protein_abundance", 0.)
+            self.weight = data.get("weight", 0)
+            self.mRNA_abundance = data.get("mRNA_abundance", 0.)
             self.cys_elements = data.get("cys_elements", 0)
             self.is_secreted = data.get("is_secreted", False)
-            self.decay_rate = data.get("decay_rate", None)
+            self.decay_rate = data.get("decay_rate", 0.)
             self.tot_volume = data.get("tot_volume", None)
             self.mean_hydrophobicity = data.get("mean_hydrophobicity", None)
             self.glucose_cost = data.get("glucose_cost", None)
@@ -162,6 +170,7 @@ class homology(object):
             self.ref = np.asarray(data.get("ref", None)) if data.get("ref", None) is not None else None
             self.refprot = data.get("refprot", None)
             self.refgene = data.get("refgene", None)
+            self.othercods = data.get("othercods", None)
         else:
             self.full = kwargs.get("full", None)
             self.var = kwargs.get("var", None)
@@ -183,12 +192,16 @@ class homology(object):
             self.isrecent = kwargs.get("isrecent", None)
             self.ishighpreserved = kwargs.get("ishighpreserved", None)
             self.geneids = kwargs.get("geneids", None)
-            self.cai = kwargs.get("cai", None)
-            self.meancai = kwargs.get("meancai", None)
-            self.mRNA_abundance = kwargs.get("mRNA_abundance", None)
+            self.ecai = kwargs.get("ecai", None)
+            self.meanecai = kwargs.get("meanecai", None)
+            self.cai = np.asarray(kwargs["cai"])
+            self.meancai = kwargs["meancai"]
+            self.mRNA_abundance = kwargs.get("mRNA_abundance", 0.)
+            self.protein_abundance = kwargs.get("mRNA_abundance", 0.)
+            self.weight = kwargs.get("weight", 0)
             self.cys_elements = kwargs.get("cys_elements", 0)
             self.is_secreted = kwargs.get("is_secreted", False)
-            self.decay_rate = kwargs.get("decay_rate", None)
+            self.decay_rate = kwargs.get("decay_rate", 0.)
             self.tot_volume = kwargs.get("tot_volume", None)
             self.mean_hydrophobicity = kwargs.get("mean_hydrophobicity", None)
             self.glucose_cost = kwargs.get("glucose_cost", None)
@@ -197,6 +210,9 @@ class homology(object):
             self.ref = np.asarray(kwargs.get("ref", None)) if kwargs.get("ref", None) is not None else None
             self.refprot = kwargs.get("refprot", None)
             self.refgene = kwargs.get("refgene", None)
+            self.othercods = kwargs.get("othercods", None)
+            self.conservation = kwargs.get("conservation", None)
+
 
 # CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
 # GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
@@ -244,7 +260,6 @@ class homology(object):
         Args:
             withtaxons: bool to true if there is taxonomic data (present before preprocessing)
         """
-        # TODO: totest
         names = self.names[0] if withtaxons else self.names
         indices = sorted(range(len(names)), key=lambda k: names[k])
         names.sort()
@@ -262,6 +277,8 @@ class homology(object):
             self.nans[:] = self.nans[indices]
         if self.doub is not None:
             self.doub[:] = self.doub[indices]
+        if self.var is not None:
+            self.var[:] = self.var[indices]
         if self.GCcount is not None:
             self.GCcount[:] = self.GCcount[indices]
         if self.KaKs_Scores is not None:
@@ -272,8 +289,8 @@ class homology(object):
             self.proteinids = [self.proteinids[i] for i in indices]
         if self.geneids is not None:
             self.geneids = [self.geneids[i] for i in indices]
-        if self.cai is not None:
-            self.cai[:] = self.cai[indices]
+        if self.ecai is not None:
+            self.ecai[:] = self.ecai[indices]
         if withtaxons:
             self.names[0] = names
             for j, i in enumerate(indices):
@@ -287,7 +304,10 @@ class homology(object):
         """
         self.mean = self.full.mean(0)
         self.var = self.full.var(0)
-        self.meancai = self.cai.mean()
+        if self.ecai is not None:
+            self.meanecai = self.ecai.mean()
+        if self.cai is not None:
+            self.meancai = self.cai.mean()
 
     def reduce_dim(self, alg='tsne', n=2, perplexity=40):
         """
@@ -364,7 +384,7 @@ class homology(object):
                 data.update({'doub': self.doub})
             if self.clusters is not None:
                 data.update({'clusters': self.clusters})
-            # TODO: totest simiscore, kaks,ids,phylodist, protid,geneid,cai
+            # TODO: totest simiscore, kaks,ids,phylodist, protid,geneid,ecai
             # TODO addphylodists
             if self.similarity_scores is not None:
                 data.update({'similarity_scores': self.similarity_scores})
@@ -373,6 +393,8 @@ class homology(object):
             if self.nans is not None:
                 data.update({'nans': self.nans})
                 # here use wether or not it is a new protein
+            if self.ecai is not None:
+                data.update({'ecai': self.ecai})
             if self.cai is not None:
                 data.update({'cai': self.cai})
             if self.lenmat is not None:
@@ -382,7 +404,7 @@ class homology(object):
             source = ColumnDataSource(data=data)
             output_notebook()
             labe = ["show Cluster", "show Doublon", "show Nans", "show KaKs_Scores",
-                    "show similarity_scores", "show Length", "show gc", "show cai"]  # 8
+                    "show similarity_scores", "show Length", "show gc", "show ecai", "show cai"]  # 9
             callback = CustomJS(args=dict(source=source), code=str(utils.callback))
             radio_button_group = widgets.RadioButtonGroup(
                 labels=labe, callback=callback, active=0)
@@ -394,7 +416,8 @@ class homology(object):
             p.circle(x='x', y='y', source=source, color='color', size=10)
             if self.centroids is not None:
                 if self.centroids.shape[1] > 2:
-                    raise UnboundLocalError("you need to have dimensionality reduced to 2D to have a right plotting of the centroids")
+                    raise UnboundLocalError("you need to have dimensionality reduced to 2D \
+                        to have a right plotting of the centroids")
                 p.square(self.centroids[:, 0], self.centroids[:, 1], size=12, color="olive", alpha=0.3)
             save(column(radio_button_group, p), "utils/templot/homoplot_interactive_.html")
             show(column(radio_button_group, p))
@@ -432,6 +455,8 @@ class homology(object):
             print "avg similarity Scores"
             print self.similarity_scores.mean()
         print "------------------------------------"
+        if self.meanecai is not None:
+            print "mean ecai: " + str(self.meanecai)
         if self.meancai is not None:
             print "mean cai: " + str(self.meancai)
         if self.isrecent is not None:
@@ -548,7 +573,7 @@ class homology(object):
                     ind = np.argwhere(np.array(self.clusters) == i).T[0]
                     if len(ind) < 3:
                         continue
-                    species = [speciestable[j] for j in ind if speciestable[j] in hastaxons]
+                    species = [speciestable[self.names[j]] for j in ind if speciestable[self.names[j]] in hastaxons]
                     if len(species) < 2:
                         continue
                     avg_phylodistance.append((float(utils.phylo_distances[species].
@@ -580,6 +605,8 @@ class homology(object):
                 "similarity_scores": self.similarity_scores.tolist() if self.similarity_scores is not None else None,
                 "proteinids": self.proteinids,
                 "geneids": self.geneids,
+                "ecai": self.ecai.tolist() if self.ecai is not None else None,
+                "meanecai": float(self.meanecai),
                 "cai": self.cai.tolist() if self.cai is not None else None,
                 "meancai": self.meancai,
                 "nans": self.nans.tolist() if self.nans is not None else None,
@@ -601,6 +628,8 @@ class homology(object):
                 "is_secreted": self.is_secreted,
                 "decay_rate": self.decay_rate,
                 "tot_volume": self.tot_volume,
+                "othercods": self.othercods,
+                "conservation": self.conservation,
                 "mean_hydrophobicity": self.mean_hydrophobicity,
                 "glucose_cost": self.glucose_cost,
                 "synthesis_steps": self.synthesis_steps,
