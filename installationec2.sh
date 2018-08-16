@@ -14,6 +14,11 @@ git clone https://github.com/jkobject/PyCUB.git
 cd PyCUB
 pip install -r requirements.txt
 #if you find any problem with rpy2, either you don't have R installed, either you have but it is not the latest version
+#if the problem is about gcc compiler :
+ln -s /usr/lib/gcc/$os/$version/libgomp.spec /usr/lib64/libgomp.spec
+ln -s /usr/lib/gcc/$os/$version/libgomp.a /usr/lib64/libgomp.a
+ln -s /usr/lib64/libgomp.so.1.0.0 /usr/lib64/libgomp.so
+#
 cd ../..
 mkdir ssl
 cd ssl
