@@ -29,6 +29,13 @@ import pdb
     Values:
     ------
     speciestable: dict[int] will be used by all other objects to make numbers corresponds to species
+    indexcai: a dict[amino: value] to known what is the frequency of this amino acid in a gene X of the reference species for the
+        reference_index() and computeCAI() function
+    indexecai: a dict[amino: value] to known what is the frequency of this amino acid in a gene X of the reference species for the
+        reference_index() and computeECAI() function it is different to the CAI ones as it does not contains
+        the references for a set of highly expressed genes but the ones for each homologies
+    listvect: used by the fast partition compute function
+    phylo_distances: df where the phylodistance df is stored (see PyCUB.pyCUB.get_evolutionnary_distance())
     codons: dictionaary[list[str]] making codons corresponds to amino acids,
     amino: list[str] amino acids in their alphabetical ordering
     aminosort: list[str] amino acids sorted by the number of their codons and the alphabetical orderings
@@ -44,30 +51,25 @@ import pdb
         other values to reach 1 million iterations for each codon number when similarity is not counted when
         computing the partition function.
 
-    index: a dict[amino: value] to known what is the frequency of this amino acid in a gene X of the reference species for the
-        reference_index() and computeCAI() function
-    phylo_distances: df where the phylodistance df is stored (see PyCUB.pyCUB.get_evolutionnary_distance())
     anticodons: dict the anticodons (usefull sometimes see tRNA_copynumbers)
     amino2reduce: dict the mapping of amino acid values to their correponding char
-    codamino: the map from codons to aminoacids
+    codamino: dict the map from codons to aminoacids
     CUBD: int the dimension of the CUB values (either 18 or 49)
-    MAX: a max value of leng for the computepartition function above which the size is so big that it overflows python
+    MAX: int a max value of leng for the computepartition function above which the size is so big that it overflows python
         arbitrary sized values are not present in python funtions that are optimized
-    amino2meta: mapping of amino acids to some of their chemical characteristics displayed below
-    synthsteps: the number of step to synthetize this amino acid
-    glucosecost: the number of glucode to synth this amino acid
-    hydrophob: a value of how hydrophobic this amino acid is
-    volume: the volume of this molecule ( in Ang^3)
-    isoelectricpoint: the Pi value of this amino
-    conservation: how much this amino acid is conserved (deprecated)
-    colormap: the colormap used in PyCUB
-    callback: the callback used in the homology interactive plot (used to change colors of dots according to what data
+    amino2meta: dict mapping of amino acids to some of their chemical characteristics displayed below
+    synthsteps: list the number of step to synthetize this amino acid
+    glucosecost: list the number of glucode to synth this amino acid
+    hydrophob: list a value of how hydrophobic this amino acid is
+    volume: list the volume of this molecule ( in Ang^3)
+    isoelectricpoint: list the Pi value of this amino
+    conservation: list how much this amino acid is conserved (deprecated)
+    colormap: list the colormap used in PyCUB
+    callback: str the callback used in the homology interactive plot (used to change colors of dots according to what data
         is selected)
-    callback_all: the callback used in the PyCUB interactive plot (used to change colors of dots according to what data
+    callback_allgenes: 
+    callback_allhomo: str the callback used in the PyCUB interactive plot (used to change colors of dots according to what data
         is selected)
-    callback_plotall: the callback used in the homoset.plotall (when size is small) interactive plot
-        (used to change colors of dots according to what data is selected)
-
 """
 speciestable = {}
 indexcai = {}
@@ -226,7 +228,7 @@ amino = ['ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HIS',
 aminosort = ['LYS', 'ANS', 'THR', 'ILE', 'ARG', 'GLN', 'HIS', 'PRO', 'GLU', 'ASP',
              'ALA', 'GLY', 'VAL', 'TYR', 'SER', 'LEU', 'CYS', 'PHE']
 LMAX = 2500
-MAXITR = 1000000
+MAXITR = 5000000
 smax = [0, 0, LMAX, 1414, 100, 0, 35]
 smax2 = [0, 0, LMAX, LMAX, 520, 0, 145]
 CUBD = 18
@@ -853,7 +855,7 @@ def retrievenames():
         pd.read_csv("utils/meta/names_with_links.csv", header=None, names=['name', 'b'])
 
 
-def loadfromensembl(homology, kingdom='compara=fungi', sequence='cdna',
+def loadfromensembl(homology, kingdom='fungi', sequence='cdna',
                     additional='type=orthologues', saveonfiles=False, normalized=False,
                     setnans=False, number=0, by="entropy", using="normal", getCAI=False):
     """
@@ -870,11 +872,14 @@ def loadfromensembl(homology, kingdom='compara=fungi', sequence='cdna',
         saveonfiles: bool to true if the retrieved data should be saved on a file
         setnans: bool to true if nans should be set to NaN instead of an avg value
         using: the method to compute the partition function if using entropy location
+        getCAI: wether or not to compute CAI !! need to have called the corresponding function on 
+            Pycub before hand !!
 
     Returns:
         a populated PyCUB.homology of the homology object by [names, taxons, full, lenmat, homocode, nans,
         KaKs_Scores, similarity_scores, proteinids, GCcount, geneids, refs, ecai, refgene, refprot,
-        tot_volume, mean_hydrophobicity, glucose_cost, synthesis_steps, isoelectricpoint]
+        tot_volume, mean_hydrophobicity, glucose_cost, synthesis_steps, isoelectricpoint,cai,
+        conservation, uncounted]
         OR None if the homology is empty
 
     Raises:
@@ -888,7 +893,7 @@ def loadfromensembl(homology, kingdom='compara=fungi', sequence='cdna',
         # dna   cdna    cds ncrna   Protein EMBL    GENBANK MySQL   TSV GTF GFF3
         ext += 'sequence=' + sequence
     if kingdom is not None:
-        ext += ';' + kingdom
+        ext += ';compara=' + kingdom
     if additional is not None:
         ext += ';' + additional
     try:
@@ -934,6 +939,11 @@ def process(data, normalized=False, setnans=False, by='entropy', getCAI=False):
 
     Args:
         data: list[str] the list of codons in this sequence
+        normalized: to normalize of not the data (entropy)
+        setnans: to show Nans or replace them
+        by: 'entropy' the CUB metric to use
+        getCAI: wether or not to compute CAI !! need to have called the corresponding function on 
+            Pycub before hand !!
 
     Returns:
         species: list[str] the name of each homologous species
@@ -948,6 +958,9 @@ def process(data, normalized=False, setnans=False, by='entropy', getCAI=False):
         geneid: list[str] the id of each homologous gene
         ref: np.array[float] the reference gene's CUB value
         ecai: np.array[float] the ecai of each homologous gene
+        cai: np.arrau[float] the cai of each homologous genes
+        conservation: str the total amino acid conservation of the protein
+        uncounted: float frequency of uncounted elements
         id: str the source gene id
         protid: str the source protein id
         vol: int, the volume of the corresponding protein
@@ -968,7 +981,6 @@ def process(data, normalized=False, setnans=False, by='entropy', getCAI=False):
     GCcounts = []
     geneid = []
     ecai = []
-    conservation
     cailist = []
     others = 0
     uncounted = 0
@@ -994,7 +1006,7 @@ def process(data, normalized=False, setnans=False, by='entropy', getCAI=False):
             KaKs_Scores.append(dat["dn_ds"])
         dat = dat['target']
         if dat["perc_id"] is not None and dat["perc_pos"] is not None:
-            similarities.append(dat["perc_id"] / dat["perc_pos"])
+            similarities.append(dat["perc_id"] / dat["perc_pos"] if dat["perc_pos"] != 0 else 0)
         if dat["taxon_id"] is not None:
             taxons.append(dat["taxon_id"])
         if dat["protein_id"] is not None:
@@ -1035,7 +1047,7 @@ def process(data, normalized=False, setnans=False, by='entropy', getCAI=False):
         np.array(KaKs_Scores) if len(KaKs_Scores) != 0 else None, taxons if len(taxons) != 0 else None,\
         proteinids if len(proteinids) != 0 else None, geneid, ref, np.array(ecai), np.array(cailist) if len(cailist) > 0 else None,\
         data[0]["source"]["id"], data[0]["source"]["protein_id"], vol, cost, hydrophob, synthcost, isoepoint,\
-        float(others) / n
+        conservation, float(others) / (n + 1)
 
 
 def compute_meta(data):
@@ -1082,10 +1094,11 @@ def reference_index(data, forcai=False):
     compute he RCSU value of this gene
 
     this gene will be the reference gene from which we will compute the CAI
-    of other genes
+    of other genes can be used both for CAI and ECAI
 
     Args:
         data: list[str] the list of codons in this sequence
+        forcai: set to true if it is to compute the indexcai which is used to compute the cai values
     """
     # RCSU values are CodonCount/((1/num of synonymous codons) * sum of
     # all synonymous codons)
@@ -1139,13 +1152,13 @@ def computeCAI(data):
 
 def computeECAI(data):
     """
-    compute the CAI according to the reference index WHICH NEEDS TO BE PREVIOUSLY COMPUTED
+    compute the Evolutionary CAI according to the reference index WHICH NEEDS TO BE PREVIOUSLY COMPUTED
 
     Args:
         data: list[str] the list of codons in this sequence
 
     Returns:
-        the CAI
+        the ECAI, the amount of codons that were in ['ATG', 'TGG', 'TAA', 'TAG', 'TGA']
     """
     cai_value, cai_length, other = 0, 0, 0
     # if no index is set or generated, the default SharpEcoliIndex will
@@ -1385,6 +1398,7 @@ def randomdraw(nbcod, leng):
     Basically works by computing a random subset of every possible codon presence
     for a defined amino acid (and it number of repetitions)
     done by computing the pdf from a multinomial according to those values
+    It will use a specific dynamic programming trick to increase the computation by more than 200*
 
     Params:
         leng: int length of sequence
@@ -1825,6 +1839,7 @@ def rgb2hex(rgb):
 
 def endresdistance(a, b):
     """
+    a statistical distance measure between two random vectors
     """
     me = (a + b) / 2
     return sqrt(kl(a, me) + kl(b, me))
@@ -1832,13 +1847,17 @@ def endresdistance(a, b):
 
 def kl(a, b):
     """
-    kulback-leiber distance
+    kulback-leiber distance computation
     """
     return (np.log(a / b) * a).sum()
 
 
 class dotdict(dict):
-    """dot.notation access to dictionary attributes"""
+    """
+    dot.notation access to dictionary attributes
+
+    May be used to pass a dict within it and access it by ".value" instead of "[value]"
+    """
     __getattr__ = dict.get
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
