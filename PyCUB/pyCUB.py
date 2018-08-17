@@ -992,7 +992,9 @@ class PyCUB(object):
             first: the number of highly expressed genes to retrieve
 
         """
-
+        if kingdom != 'fungi':
+            print "if kingdom is not fungi, need to provide another file"
+            return
         data = pd.read_csv("utils/meta/protdata/tob_currated.csv")
         homonames = data["ORF"].values
         expres = data["Protein Abundance (molecules per cell)"].values
@@ -1520,7 +1522,6 @@ class PyCUB(object):
                 print val + ": " + str(self.coeffgenes[i])
         return self.scoregenes, self.coeffgenes, attrlist
 
-    @lru_cache(maxsize=None)
     def getRelation2G3DD(self, species_name='saccharomyces_cerevisiae', kingdom='fungi',
                          intrachromosome="utils/meta/3Dmodel/interactions_HindIII_fdr0.01_intra_cerevisiae.csv",
                          interchromose=["utils/meta/3Dmodel/cerevisiae_inter1.csv",
@@ -1616,8 +1617,8 @@ class PyCUB(object):
                     for record in SeqIO.parse(handle, "fasta"):
                         codseq = [record.seq._data[i:i + 3] for i in range(0, len(record.seq._data), 3)]
                         nb += 1
-                        valH, CuF, _, _, unused = utils.computeyun(codseq, setnans=False, normalized=False,
-                                                                   by="entropy" + "frequency")
+                        valH, CuF, _, _ = utils.computeyun(codseq, setnans=False, normalized=False,
+                                                           by="entropy" + "frequency")
                         server = "http://rest.ensemblgenomes.org" if kingdom != 'vertebrate' else "http://rest.ensembl.org"
                         names.append(record.id)
                         vals.append(valH)
@@ -1630,8 +1631,6 @@ class PyCUB(object):
                         print '{0} genes\r'.format(nb),
                         decoded = r.json()
                         chrom = chrom2int.get(str(decoded["seq_region_name"]), False)
-                        if nb == 100:
-                            break
                         if not chrom:
                             names.pop()
                             vals.pop()
@@ -1639,7 +1638,7 @@ class PyCUB(object):
                             continue
                         # we associate valH to a position retrieve the positions
                         positions.append([chrom, (decoded["start"] + decoded["end"]) / 2])
-
+                pdb.set_trace()
                 os.remove("utils/data/temp.fa.gz")
                 ind = sorted(range(len(positions)), key=lambda k: positions[k])
                 vals = np.array(vals)[ind]

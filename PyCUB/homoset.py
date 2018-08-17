@@ -29,6 +29,7 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import normalize
 from sklearn.metrics.pairwise import paired_distances as prdist
 import tsne
+from MulticoreTSNE import MulticoreTSNE as TSNE
 from scipy import random
 from scipy import sparse
 
@@ -229,7 +230,8 @@ class HomoSet(collections.MutableMapping):
 # CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
 # GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
 
-    def plot_all(self, With='tsne', perplexity=60, interactive=False, iteration=300):
+    def plot_all(self, With='tsne', perplexity=60, interactive=False, bins=100, offset=20, iteration=400, redo=False,
+                 bypasstsne=False, inpar=True):
         """
         will plot all the homologies in the full_homo_matrix (and compute it)
         (sometimes around 800 000 datapoints) to look at any kind of relationships
@@ -256,12 +258,16 @@ class HomoSet(collections.MutableMapping):
             size = 'medium'
         else:
             size = 'big'
-        if self.red_homomatrix is None:
+        if self.red_homomatrix is None or redo:
             if With == 'tsne':
-                if size == 'small':
-                    red = man.TSNE(n_components=2, perplexity=30.0).fit_transform(self.homo_matrix)
+                if size == 'small' or bypasstsne:
+                    if inpar:
+                        red = TSNE(n_components=2, perplexity=30.0, verbose=2, n_jobs=-1, iteration=iteration).fit_transform(self.homo_matrix)
+                        # https://github.com/DmitryUlyanov/Multicore-TSNE}},
+                    else:
+                        red = man.TSNE(n_components=2, perplexity=30.0, verbose=2, iteration=iteration).fit_transform(self.homo_matrix)
                 else:
-                    red = tsne.tsne(self.homo_matrix, no_dims=2, initial_dims=self.homo_matrix.shape[1], perplexity=30.0)
+                    red = tsne.tsne(self.homo_matrix, no_dims=2, initial_dims=self.homo_matrix.shape[1], perplexity=30.0, iteration=iteration)
             elif With == 'PCA':
                 red = PCA(n_components=2).fit_transform(self.homo_matrix)
             elif With == 'ltsa' or With == 'hessian':
@@ -327,7 +333,7 @@ class HomoSet(collections.MutableMapping):
                     return hv.Image(compressed, bounds=(xs[-1], ys[-1], xs[1], ys[1]), **args)
                 print 'please write %output size=200" before calling this function'
                 datashader = datashade(points)
-                heatmaper = heatmap(self.red_homomatrix, 100)(style=dict(cmap="fire"))
+                heatmaper = heatmap(self.red_homomatrix, bins=bins, offset=offset)(style=dict(cmap="fire"))
                 save(hv.renderer('bokeh').get_plot(datashader).state, 'utils/templot/red_homomatrix_datashade.html')
                 save(hv.renderer('bokeh').get_plot(heatmaper).state, 'utils/templot/red_homomatrix_heatmap.html')
                 return heatmaper + datashader
@@ -336,19 +342,25 @@ class HomoSet(collections.MutableMapping):
         """
         function to concatenate all the homologies in one big array(practicle for certain computations)
         """
-        self.homo_matrix = self[self.homo_namelist[0]].full.copy()
-        self.homo_matrixnames = list(self[self.homo_namelist[0]].names)
-        self.fulleng = self[self.homo_namelist[0]].lenmat.copy()
+        homo_matrix = self[self.homo_namelist[0]].full.copy()
+        homo_matrixnames = list(self[self.homo_namelist[0]].names)
+        fulleng = self[self.homo_namelist[0]].lenmat.copy()
         for x, homo in enumerate(self.homo_namelist[1:]):
             try:
-                self.homo_matrix = np.vstack((self.homo_matrix, self[homo].full))
-                self.homo_matrixnames.extend(self[homo].names)
-                self.fulleng = np.vstack((self.fulleng, self[homo].lenmat))
+                homo_matrix = np.vstack((homo_matrix, self[homo].full))
+                homo_matrixnames.extend(self[homo].names)
+                fulleng = np.vstack((fulleng, self[homo].lenmat))
             except ValueError:
                 print x, self[homo].full.shape
                 pdb.set_trace()
             print '{0}%\r'.format((x * 100) / len(self.homo_namelist)),
-        self.homo_matrixnames = np.asarray(self.homo_matrixnames)
+        self.homo_matrix = homo_matrix
+        self.fulleng = fulleng
+        self.homo_matrixnames = np.asarray(homo_matrixnames)
+        if np.isinf(self.homo_matrix).any():
+            self.homo_matrix[np.isinf(self.homo_matrix)] = 20
+            for val in self.values():
+                val.full[np.isinf(val.full)] = 20
         print "loaded"
 
     def loadhashomo(self, withnames=False):
@@ -1087,7 +1099,7 @@ class HomoSet(collections.MutableMapping):
                 "homo_clusters": self.homo_clusters.tolist() if self.homo_clusters is not None else None,
                 "averagehomo_matrix": self.averagehomo_matrix.tolist() if self.averagehomo_matrix is not None else None}
 
-    def plot_hashomo(self, invert=False, size=40, interactive=False):
+    def plot_hashomo(self, invert=False, size=40, interactive=False, rangeto=None):
         """
         plot the has homo matrix
 
@@ -1104,10 +1116,12 @@ class HomoSet(collections.MutableMapping):
             colormap = list(utils.colormap)
             xname = []
             yname = []
+            if rangeto is None:
+                rangeto = range(len(self.homo_namelist))
             color = []
             homoclust = len(self.clusters) == len(self.homo_namelist)
             for i in range(len(self.species_namelist)):
-                for j in range(len(self.homo_namelist)):
+                for j in rangeto:
                     xname.append(self.homo_namelist[j])
                     yname.append(self.species_namelist[i])
                     if homoclust:
@@ -1122,9 +1136,11 @@ class HomoSet(collections.MutableMapping):
             output_notebook()
             hover = HoverTool(tooltips=[('names: ', '@yname, @xname')])
             p = figure(title="presence of homologies between species",
-                       x_range=list(reversed(self.homo_namelist)), y_range=self.species_namelist,
+                       x_range=list(reversed([self.homo_namelist[y] for y in rangeto])),
+                       y_range=self.species_namelist,
                        x_axis_location="above", tools=[hover, WheelZoomTool(), PanTool(), SaveTool(), ResetTool()])
-            p.plot_width = 800
+
+            p.plot_width = 2000
             p.plot_height = 2000
             p.grid.grid_line_color = None
             p.axis.axis_line_color = None
