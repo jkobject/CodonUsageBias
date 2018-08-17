@@ -98,6 +98,11 @@ class PyCUB(object):
                 for the project of Jeremie KALFON please use whatever datasets you may find usefull
                 (you can also download from Ensembl)
 
+            coeffgenes: np.array regressing values for each attributes
+            scoregenes: the score of the regressor
+            scorespecies: the score of the regressor
+            coeffspecies: np.array regressing values for each attributes
+
     """
 
     links = {'yun': {
@@ -139,10 +144,9 @@ class PyCUB(object):
     _is_saved = False
     session = None
     coeffgenes = None
-    regressgenes = None
+    scoregenes = None
     scorespecies = None
     coeffspecies = None
-    regressspecies = None
 
     def __init__(self, species={}, _is_saved=False,
                  _is_loaded=False, working_homoset=None, all_homoset=None, session='session1'):
@@ -179,6 +183,12 @@ class PyCUB(object):
 
     def getHomologylist(self, species='saccharomyces_cerevisiae', kingdom='fungi'):
         """
+        A function to retrieve the homologies directly from a given species (it is better to use
+        one of the key species for the different kingdoms (sacharomyces, HS, Arabidopsis..))
+
+        Args:
+            specie: str the name of the specie to get the homology from
+            kingdom: str the kingdom where we can find this specie
         """
         location = 'ftp.ensemblgenomes.org' if kingdom != 'vertebrate' else 'ftp.ensembl.org'
         release = 'release-40/' if kingdom != 'vertebrate' else 'release-93'
@@ -217,7 +227,8 @@ class PyCUB(object):
 
         Args:
             From: str flag 'yun' or 'ensembl':
-            homonames: list[str] what particular homologies you want to scrap
+            homonames: list[str] what particular homologies you want to scrap if 'all' and you have used the 
+                getHomologylist() function, will get the homologies from there
             kingdom: str same for kingdoms
             sequence: str the type of sequences you want to use
             additional: str additional information about the scrapping
@@ -229,10 +240,13 @@ class PyCUB(object):
             using: str flag 'random' 'normal' 'permutation' 'full'
             inpar: bool or int for parallel computing and number of core
             tRNA: bool whether or not to compute tRNA data
+            getCAI: bool flag to true to retrieve the CAI as well 
+            first: int the first most expressed genes to compute the CAI ref statistics
 
         Raises:
             AttributeError: "you can't compute codon frequency with Yun's data...", 'not the right From'
-
+            UnboundLocalError: "you have to load the homologies first"
+            AttributeError: 'not the right From'
 
         http://rest.ensemblgenomes.org/
         """
@@ -971,6 +985,12 @@ class PyCUB(object):
         use them to compute codon frequency for the reference set and use it to compute
         the CAI and mean CAI for each ho
         mology.
+
+        Args:
+            speciestocompare: str the name of the species to retrieve the genes from
+            kingdom: str the kingdom where we can find it
+            first: the number of highly expressed genes to retrieve
+
         """
 
         data = pd.read_csv("utils/meta/protdata/tob_currated.csv")
@@ -1069,7 +1089,7 @@ class PyCUB(object):
 # CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
 # GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
 
-    def compare_species(self, showvar=True, to='full', reducer='tsne', perplexity=40, eps=0.3, size=10):
+    def compare_species(self, showvar=True, reducer='tsne', perplexity=40, eps=0.3, size=10):
         """
         compare the species according to their mean CUB, plot the mean CUB
         to their full CUB, to their tRNA copy numbers, to the euclidean distance of their CUB
@@ -1085,14 +1105,17 @@ class PyCUB(object):
         to some evolutionary for one codon
 
         Args:
-            showvar: bool to true if you want the plot to show the CUB value mean variance as sizes of the dots.
-            to: str, flag to 'full' or 'avg' to know to what the tRNA entropy should be compared against (either
-                the full entropy values from the get_full_genomes() function or the averaged one from the set of
-                homologies we have)
+            size: the average size of the datapoints in the pointcloud representation of this dataset
+            showvar: bool to true, show the mean variance in CUB values accros this homology as a variation in dot sizes
+            eps: float the hyperparamter of the clustering algorithm applied to this dataset
+            homoset: PyCUB.homoset the homoset to use
+            reducer: str the reducer to use 'tsne' or 'PCA'
+            perplexity: int the perplexity hyperparam for tSNE
+
 
         Raises:
-             UnboundLocalError: "you have to compute averages, use PyCUB.compute_averages(homoset)",
-                "you have to compute tRNA values, use PyCUB.get_tRNAcopy()"
+            UnboundLocalError: "you need to compute the averages of the all_homoset. use PyCUB.compute_averages(homoset)"
+            UnboundLocalError: "you have to compute tRNA values, use PyCUB.get_tRNAcopy()"
             AttributeError: "try avg or full"
 
         """
@@ -1212,6 +1235,32 @@ class PyCUB(object):
     def regress_on_species(self, without=[""], full=True, onlyhomo=False, perctrain=0.8, algo="lasso",
                            eps=0.001, n_alphas=100):
         """
+        Will fit a regression curve on the CUB values of the different species according to the metadatas
+        available for each of them.
+
+        It will try to see if there is enough information in the metadata to retrieve CUB values. and if there is,
+        how much for each metadata (if we constraint the number of regressors) is it better for mean homology CUB 
+        or full genome CUB ?  
+        or raw frequency, should we remove some data?
+
+        Args:
+            without: list[str] of flags [similarity_scores, KaKs_Scores, nans, lenmat, GCcount, weight,
+                protein_abundance, mRNA_abundance, decay_rate, cys_elements, tot_volume, mean_hydrophobicity,
+                glucose_cost, synthesis_steps, is_recent, meanecai]
+            full: bool flags to true to use full CUB values or meanCUB values,  as regressee
+            homoset: PyCUB.homoset the homoset to use
+            perctrain: the percentage of training set to total set ( the rest is used as test set)
+            algo: str flag to lasso or nn to use either Lasso with Cross Validation, or a 2 layer  neural net
+            eps: the eps value for the Lasso
+            n_alphas: the number of alphas for the lasso 
+
+        Returns:
+            scoregenes: float, the score of the regression performed
+            coeffgenes: the coefficient applied to each category (for each CUB value if using full)
+            attrlist: the corresponding list[str] of attribute used 
+
+        Raises:
+            UnboundLocalError: "wrong params"
         """
         params = []
         phylo_distances = self.phylo_distances()
@@ -1305,13 +1354,14 @@ class PyCUB(object):
             minpreserv: float minimal percentage of homologous species that have this homology
             minsimi: float minimal avg similarity between genes to consider them highly preserved
             showvar: bool to true, show the mean variance in CUB values accros this homology as a variation in dot sizes
-            eps: the hyperparamter of the clustering algorithm applied to this dataset
+            eps: float the hyperparamter of the clustering algorithm applied to this dataset
+            homoset: PyCUB.homoset the homoset to use
+            reducer: str the reducer to use 'tsne' or 'PCA'
+            perplexity: int the perplexity hyperparam for tSNE
 
 
         Raises:
             UnboundLocalError: "you need to compute the averages of the all_homoset. use PyCUB.compute_averages(homoset)"
-
-
         """
         if not homosapiens:
             if homoset[-1].isrecent is None:
@@ -1388,7 +1438,7 @@ class PyCUB(object):
         save(column(radio_button_group, p), "utils/templot/homology_compare.html")
         show(column(radio_button_group, p))
 
-    def regress_on_genes(self, homoset, full=True, without=['meanecai'], perctrain=0.8, algo="lasso", eps=0.001, n_alphas=100):
+    def regress_on_genes(self, homoset, full=True, without=['meanecai', 'meancai'], perctrain=0.8, algo="lasso", eps=0.001, n_alphas=100):
         """
         Will fit a regression curve on the CUB values of the different homologies according to the metadatas
         available for each of them.
@@ -1398,12 +1448,24 @@ class PyCUB(object):
         or ECAI values
         or raw frequency, should we remove some data
 
-        Args:s
+        Args:
             without: list[str] of flags [similarity_scores, KaKs_Scores, nans, lenmat, GCcount, weight,
                 protein_abundance, mRNA_abundance, decay_rate, cys_elements, tot_volume, mean_hydrophobicity,
                 glucose_cost, synthesis_steps, is_recent, meanecai]
-            full: str flags to ["full", "mean", "ecai"] full CUB values, meanCUB values, mean ECAI as regressee
+            full: bool flags to true to use full CUB values or meanCUB values,  as regressee
+            homoset: PyCUB.homoset the homoset to use
+            perctrain: the percentage of training set to total set ( the rest is used as test set)
+            algo: str flag to lasso or nn to use either Lasso with Cross Validation, or a 2 layer  neural net
+            eps: the eps value for the Lasso
+            n_alphas: the number of alphas for the lasso 
 
+        Returns:
+            scoregenes: float, the score of the regression performed
+            coeffgenes: the coefficient applied to each category (for each CUB value if using full)
+            attrlist: the corresponding list[str] of attribute used 
+
+        Raises:
+            UnboundLocalError: "wrong params"
         """
         params = []
         values = ["similarity_scores", "KaKs_Scores", "nans", "lenmat", "GCcount", "weight",
@@ -1472,6 +1534,19 @@ class PyCUB(object):
         retrieve the data for the species sacharomyces cerevisiae and Schizosaccharomyces pombe
         and find if similarity distances of CUB using entropy between genes of this species is predictive
         of closeness of genes in the nucleus.
+
+        Used to confirm a work on nature and see if we can have some similar results by only looking at the 
+        CUB
+
+        Args:
+            species_name: str the name of the species to look for
+            kingdom: str the kingdom in which to find the species
+            intrachromosome: str the location of the csv interaction data for intrachromosome respecting the format 
+                of the default file
+            interchromose: str the location of the csv interaction data for interchromose respecting the format 
+                of the default file
+            bins: int, the number of bin to use (a power of 2)
+            seq: the type of sequence to compare to. (to compute the CUB from)
         """
         # get gene distance matrix from entropy value distance or Andres Schindelin metrics
         # compare to see how much the distance between one can explain the distance between another by
@@ -1692,6 +1767,13 @@ class PyCUB(object):
             """
             modified binary search for closest value search in a sorted array
             David Soroko @https://stackoverflow.com/questions/30245166
+
+            Args:
+                value: a value to look for 
+                arr: array like, an array to skim 
+
+            Returns:
+                the closest value present in the array
             """
             if value < arr[0]:
                 return arr[0]
@@ -1792,6 +1874,12 @@ class PyCUB(object):
         return ret
 
     def loadspeciestable(self):
+        """
+        short function to retrieve the speciestable from Disk
+
+        Raises:
+            IOError: "no speciestable file"
+        """
         filename = "utils/meta/savings/speciestable.json"
         if not os.path.isfile(filename):
             raise IOError("no speciestable file")
@@ -1800,6 +1888,12 @@ class PyCUB(object):
             print "it worked !"
 
     def savespeciestable(self):
+        """
+        short function to put the speciestable on Disk
+
+        This is done since there may be some memory leakage, probably due to some autoreloading behavior
+        of the global data stored on utils.
+        """
         filename = "utils/meta/savings/speciestable.json"
         data = json.dumps(dict(utils.speciestable), indent=4, separators=(',', ': '))
         dirname = os.path.dirname(filename)
