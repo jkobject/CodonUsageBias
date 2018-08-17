@@ -13,6 +13,10 @@ conda install jupyter notebook
 git clone https://github.com/jkobject/PyCUB.git
 cd PyCUB
 pip install -r requirements.txt
+
+git clone https://github.com/DmitryUlyanov/Multicore-TSNE.git
+cd Multicore-TSNE/
+pip install .
 #if you find any problem with rpy2, either you don't have R installed, either you have but it is not the latest version
 #if the problem is about gcc compiler :
 ln -s /usr/lib/gcc/$os/$version/libgomp.spec /usr/lib64/libgomp.spec
@@ -25,7 +29,7 @@ cd ssl
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout "cert.key" -out "cert.pem" -batch
 ipython
 from IPython.lib import passwd
-passwd()
+-> passwd()
 exit
 vi ~/.jupyter/jupyter_notebook_config.py
 c = get_config()  # Get the config object.
@@ -43,3 +47,18 @@ sudo mkswap /dev/$disk
 sudo swapon /dev/$disk
 # and add to /etc/fstab
 /dev/$disk       none    swap    sw  0       0
+
+## to load stuff from the server
+scp -i "~/Documents/Projects/amzkey/AWS-2.pem" ec2-user@ec2-52-213-244-82.eu-west-1.compute.amazonaws.com:PyCUB/CodonUsageBias/utils/$FILE utils/$FILE
+
+## to continue the work while disconnected 
+disown -h %PAUSEDJOBNUMBER
+
+
+
+
+
+
+
+
+
