@@ -216,6 +216,46 @@ class homology(object):
             self.othercods = kwargs.get("othercods", None)
             self.conservation = kwargs.get("conservation", None)
 
+    def __str__(self):
+        returnd = 'full: ' + str(self.full) +\
+            '\nfullmax: ' + str(self.full.max()) +\
+            '\nvar: ' + str(self.var) +\
+            '\nmean: ' + str(self.mean) +\
+            '\nmetrics: ' + str(self.metrics) +\
+            '\nhomocode: ' + self.homocode +\
+            '\nnans: ' + str(self.nans) +\
+            '\nnansmean: ' + str(self.nans.mean()) +\
+            '\nlenmat: ' + str(self.lenmat) +\
+            '\nnames: ' + str(self.names) +\
+            '\ndoub: ' + str(self.doub) +\
+            '\nGCcount: ' + str(self.GCcount) +\
+            '\nKaKs_Scores: ' + str(self.KaKs_Scores) +\
+            '\nsimilarity_scores: ' + str(self.similarity_scores) +\
+            '\nproteinids: ' + str(self.proteinids) +\
+            '\nisrecent: ' + str(self.isrecent) +\
+            '\nishighpreserved: ' + str(self.ishighpreserved) +\
+            '\ngeneids: ' + str(self.geneids) +\
+            '\nref: ' + str(self.ref) +\
+            '\nrefprot: ' + str(self.refprot) +\
+            '\nrefgene: ' + str(self.refgene) +\
+            '\necai: ' + str(self.ecai) +\
+            '\nmeanecai: ' + str(self.meanecai) +\
+            '\ncai: ' + str(self.cai) +\
+            '\nmeancai: ' + str(self.meancai) +\
+            '\nprotein_abundance: ' + str(self.protein_abundance) +\
+            '\nweight: ' + str(self.weight) +\
+            '\nconservation: ' + str(self.conservation) +\
+            '\nmRNA_abundance: ' + str(self.mRNA_abundance) +\
+            '\ncys_elements: ' + str(self.cys_elements) +\
+            '\nis_secreted: ' + str(self.is_secreted) +\
+            '\ndecay_rate: ' + str(self.decay_rate) +\
+            '\ntot_volume: ' + str(self.tot_volume) +\
+            '\nmean_hydrophobicity: ' + str(self.mean_hydrophobicity) +\
+            '\nglucose_cost: ' + str(self.glucose_cost) +\
+            '\nsynthesis_steps: ' + str(self.synthesis_steps) +\
+            '\nisoelectricpoint: ' + str(self.isoelectricpoint) +\
+            '\nothercods: ' + str(self.othercods)
+        return returnd
 
 # CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
 # GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
@@ -285,9 +325,15 @@ class homology(object):
         if self.GCcount is not None:
             self.GCcount[:] = self.GCcount[indices]
         if self.KaKs_Scores is not None:
-            self.KaKs_Scores[:] = self.KaKs_Scores[indices]
+            if len(self.KaKs_Scores) < len(self.full):
+                self.KaKs_Scores = None
+            else:
+                self.KaKs_Scores[:] = self.KaKs_Scores[indices]
         if self.similarity_scores is not None:
-            self.similarity_scores[:] = self.similarity_scores[indices]
+            if len(self.similarity_scores) < len(self.full):
+                self.similarity_scores = None
+            else:
+                self.similarity_scores[:] = self.similarity_scores[indices]
         if self.proteinids is not None:
             self.proteinids = [self.proteinids[i] for i in indices]
         if self.geneids is not None:

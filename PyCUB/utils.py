@@ -907,7 +907,10 @@ def loadfromensembl(homology, kingdom='fungi', sequence='cdna',
                                setnans=setnans, number=number + 1, by=by, using=using)
     if not r.ok:
         r.raise_for_status()
-    data = r.json()['data'][0]['homologies']
+    data = r.json()['data']
+    if not data:
+        return None
+    data = data[0]['homologies']
     if not data:
         return None
     if saveonfiles:
@@ -1007,13 +1010,10 @@ def process(data, normalized=False, setnans=False, by='entropy', getCAI=False):
         dat = dat['target']
         if dat["perc_id"] is not None and dat["perc_pos"] is not None:
             similarities.append(dat["perc_id"] / dat["perc_pos"] if dat["perc_pos"] != 0 else 0)
-        if dat["taxon_id"] is not None:
-            taxons.append(dat["taxon_id"])
-        if dat["protein_id"] is not None:
-            proteinids.append(dat["protein_id"])
+        taxons.append(dat["taxon_id"] if dat["taxon_id"] is not None else '')
+        proteinids.append(dat["protein_id"] if dat["protein_id"] is not None else '')
         species.append(dat['species'])
-        if dat["id"] is not None:
-            geneid.append(dat["id"])
+        geneid.append(dat["id"] if dat["id"] is not None else '')
         codseq = dat['align_seq'].encode('ascii', 'ignore').replace("-", "")
         GCcount = float(codseq.count('G') + codseq.count('C'))
         uncounted = (len(codseq) - GCcount) - (codseq.count('A') + codseq.count('T'))
@@ -1042,7 +1042,7 @@ def process(data, normalized=False, setnans=False, by='entropy', getCAI=False):
         lenmat.append(len_i)
         GCcounts.append(GCcount)
         others += other
-    return species, np.array(GCcounts, dtype=int), np.array(lenmat, dtype=int), np.array(H),\
+    return species, np.array(GCcounts), np.array(lenmat, dtype=int), np.array(H),\
         np.array(nans), np.array(similarities) if len(similarities) != 0 else None,\
         np.array(KaKs_Scores) if len(KaKs_Scores) != 0 else None, taxons if len(taxons) != 0 else None,\
         proteinids if len(proteinids) != 0 else None, geneid, ref, np.array(ecai), np.array(cailist) if len(cailist) > 0 else None,\
@@ -1065,7 +1065,7 @@ def compute_meta(data):
         synthcost: int the timesteps to synthetize the corresponding protein
         isoepoint: float the Pi value of the corresponding protein
     """
-    vol, cost, hydrophob, synthcost, conservation = 0, 0, 0, 0, 0
+    vol, cost, hydrophob, synthcost, conservation, i = 0, 0, 0, 0, 0, 0
     iso = []
     for cod in data:
         if cod not in ['ATG', 'TGG', 'TAA', 'TAG', 'TGA']:
@@ -1076,6 +1076,7 @@ def compute_meta(data):
             iso.append(isoepoint)
             synthcost += synthsteps
             conservation += conservat
+            i += 1
     iso = np.array(iso)
     mean = iso.mean()
     tempsup = 10000
@@ -1086,7 +1087,7 @@ def compute_meta(data):
         elif a > tempmin and a < mean:
             tempmin = a
     isoepoint = (tempmin + tempsup) / 2
-    return vol, cost, hydrophob / len(data), synthcost, isoepoint, conservation
+    return vol, cost, float(hydrophob) / i, synthcost, isoepoint, float(conservation) / i
 
 
 def reference_index(data, forcai=False):
@@ -1242,6 +1243,8 @@ def computeyun(data, setnans=False, normalized=False, by='entropy'):
                 X[int(i):] = np.floor(div)
                 Eg = multinomial.pmf(x=X, n=lengsubseq, p=mn)
                 # end here
+                if Eg == 0:
+                    valH[k] = 20
                 valH[k] = -np.log(Yg / Eg) / lengsubseq if normalized else -np.log(Yg / Eg)
     if by == 'frequency':
         valH = CuF
