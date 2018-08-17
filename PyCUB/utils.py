@@ -1706,7 +1706,7 @@ def computejerem(nbcod, leng):
         return randomdraw(nbcod, leng)
 
 
-def computepartition_normal_approximation(nbcod, leng, probavector=None):
+def computepartition_normal_approximation(nbcod, leng, probavector):
     """
     one of the 4 partition function algorithm, works by
     approximates the binomial distribution with a multidimensional gaussian function
@@ -1722,10 +1722,9 @@ def computepartition_normal_approximation(nbcod, leng, probavector=None):
     """
     # TODO: debug the singular matrix problem
     pdb.set_trace()
-    proba = np.ones(nbcod) / nbcod if probavector is None else probavector
-    mean = proba * leng
-    ker = np.kron(proba, proba).reshape(nbcod, nbcod) * (-leng)
-    np.fill_diagonal(ker, (proba * (1 - proba)) * leng)
+    mean = probavector * leng
+    ker = np.kron(probavector, probavector).reshape(nbcod, nbcod) * (-leng)
+    np.fill_diagonal(ker, (probavector * (1 - probavector)) * leng)
     if leng**nbcod < MAXITR:
         if nbcod == 2:
             x, y = np.mgrid[0:leng, 0:leng]

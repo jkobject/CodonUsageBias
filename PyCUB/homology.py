@@ -48,8 +48,8 @@ class homology(object):
         doub: np.array[bool] of wether or not this position is a doublon
             ( a copy number of the gene for the species)
         reduced_algo: str dimensionality reduction algorithm used on this homology
-        var: np.array of the variance in the CUB value for each amino acid
-        mean: np.array[float] of the mean CUB for each amino acid
+        var: np.array of the variance in the CUB value for each datapoint
+        mean: np.array[float] of the mean CUB for each datapoint
         homocode: str the code of the homology
         GCcount: np.array[float] GC bias for each datapoint
         KaKs_Scores: np.array[float] a form of similarity score between genes/datapoints
@@ -75,12 +75,15 @@ class homology(object):
         glucose_cost: the glucose cost of creating the amino acids required to build up this protein
         synthesis_steps: the number of steps required by the cell to build up the amino acids of this protein
         isoelectricpoint: float, a proxy of the Pi of this protein.
+        conservation: float, the total conservation of each amino of the corresponding protein
+        othercods: float, the average number of codons other than the ones of the 18 amino acids we are 
+            looking at per species on the homology 
 
     """
 
     full = None  # np array len(species)xCUBD
-    var = None  # np array len(amino)
-    mean = None  # np array float len(amino)
+    var = None  # np array len(species)
+    mean = None  # np array float
 
     clusters = None  # list
     centroids = None  # np array Xx2/3/4
