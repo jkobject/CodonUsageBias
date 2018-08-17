@@ -67,7 +67,6 @@ class HomoSet(collections.MutableMapping):
             datatype: str of the CUB value type [entropy, A_value(entropyLocation), frequency]
             averagehomo_matrix: np.array[float] of the avg CUB values per homologies
             stats: dict of statistics on the clusterings (see get_clusterstats())
-            interactions: np.array[float] of the interaction values between each genes in the homoset
 
     """
 
@@ -86,7 +85,6 @@ class HomoSet(collections.MutableMapping):
     datatype = ''
     averagehomo_matrix = None
     stats = {}
-    interactions = None
 
     def __init__(self, **kwargs):
         """
@@ -134,7 +132,6 @@ class HomoSet(collections.MutableMapping):
                 self.homodict.update({key: h.homology(data=val)})
             self.cluster_similarity = np.asarray(data['cluster_similarity']) if data.get("cluster_similarity", False) else None
             self.cub_similarity = np.asarray(data['cub_similarity']) if data.get("cub_similarity", False) else None
-            self.interactions = np.asarray(data['interactions']) if data.get("interactions", False) else None
         else:
             self.homo_matrix = kwargs.get("homo_matrix", None)
             self.homo_namelist = kwargs.get("homo_namelist", [])
@@ -163,7 +160,6 @@ class HomoSet(collections.MutableMapping):
             self.homo_matrixnames = kwargs.get("homo_matrixnames", None)
             if kwargs.get("CUBD", False):
                 utils.CUBD = kwargs.get("CUBD", 18)
-            self.interactions = np.asarray(kwargs['interactions']) if kwargs.get("interactions", False) else None
     # magic methods https://rszalski.github.io/magicmethods/
 
     def __getitem__(self, key):
@@ -1082,7 +1078,6 @@ class HomoSet(collections.MutableMapping):
                 "homo_matrixnames": self.homo_matrixnames.tolist() if self.homo_matrixnames is not None else None,
                 "stats": self.stats,
                 "datatype": self.datatype,
-                "interactions": self.interactions.tolist() if self.interactions is not None else None,
                 "phylo_distances": utils.phylo_distances.to_json(orient='split') if
                 utils.phylo_distances is not None and savehomos else None,
                 "CUBD": utils.CUBD,
@@ -1100,7 +1095,8 @@ class HomoSet(collections.MutableMapping):
 
         Args:
             interactive: bool to use the bokeh interactive version
-            size: size of the matrix
+            size: int size of the matrix
+            invert: bool flag to true to invert the plot
 
         """
         if interactive:
