@@ -75,8 +75,7 @@ class Espece(object):
 
     def __init__(self, **kwargs):
         """
-        can intialize the file from kwargs as a raw dictionnary for json format (output of dictify) or
-        from regular args.
+        can intialize the file from kwargs as a raw dictionnary for json format (output of dictify) or from regular args.
         """
         data = kwargs.get("data", None)
         if data is not None:
@@ -173,9 +172,9 @@ class Espece(object):
     def get_tRNAcopy(self, by="entropy", setnans=False, kingdom='fungi', baseCNvalue=2):
         """
         Retrieves tRNA copy numbers from ensembl DB
+       
         will print the number of tRNAs and the number of tRNAs with
         a knwon codons ( the usefull ones)
-
         will stop and set a trace for the user to inspect the data
         to do so: please write "dat" in the console. if you see something that
         should be corrected please do so from the console directly or from the code
@@ -317,8 +316,9 @@ class Espece(object):
 
     def gettaxons(self, kingdom='fungi'):
         """
-        Pars the ensemblgenomes REST API to retrieve the taxons id for the species from which
-        we would not have any (downloaded via Yun for example)
+        Pars the ensemblgenomes REST API to retrieve the taxons id 
+
+        for the species from which we would not have any (downloaded via Yun for example)
 
         Raises:
             HTTPrequestError: not able to connect to the server
@@ -335,8 +335,7 @@ class Espece(object):
 
     def get_epigenomes(self):
         """
-        get from ensembl all the data about the epigenome that could help asking interesting questions
-        about the CUB
+        get from ensembl all the data about the epigenome that could help asking interesting questions about the CUB
         """
         # curl 'http://rest.ensemblgenomes.org/overlap/id/AT3G52430?feature=array_probe' - H 'Content-type:application/json'
         # curl 'http://rest.ensemblgenomes.org/overlap/id/AT3G52430?feature=repeat' - H 'Content-type:application/json'
@@ -344,8 +343,7 @@ class Espece(object):
 
     def _dictify(self):
         """
-        Used by the saving function. transform the object into a dictionary that can be
-        json serializable
+        Used by the saving function. transform the object into a dictionary that can be json serializable
 
         Returns:
             A dict holding every element to be jsonized
