@@ -75,8 +75,7 @@ class Espece(object):
 
     def __init__(self, **kwargs):
         """
-        can intialize the file from kwargs as a raw dictionnary for json format (output of dictify) or
-        from regular args.
+        can intialize the file from kwargs as a raw dictionnary for json format (output of dictify) or from regular args.
         """
         data = kwargs.get("data", None)
         if data is not None:
@@ -132,50 +131,52 @@ class Espece(object):
             self.meanGChomo = kwargs.get("meanGChomo", None)
             self.meanecai = kwargs.get("meanecai", None)
 
-# CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
-# GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
-
-    def plot(self):
+    def __str__(self):
         """
         will present some interesting info about this species.
         """
+        toret = ''
         if self.name:
-            print "species: " + self.name
-        print "----------------------------------"
+            toret += "\nspecies: " + self.name
+        toret += "\n----------------------------------"
         if self.taxonid:
-            print "taxonid" + str(self.taxonid)
-        print "metadata" + str(self.metadata)
-        print "----------------------------------"
+            toret += "\ntaxonid" + str(self.taxonid)
+        toret += "\nmetadata" + str(self.metadata)
+        toret += "\n----------------------------------"
         if self.copynumbers is not None:
-            print "copynumbers of tRNA: " + str(self.copynumbers)
+            toret += "\ncopynumbers of tRNA: " + str(self.copynumbers)
         if self.average_size is not None:
-            print "average size: " + str(self.average_size)
+            toret += "\naverage size: " + str(self.average_size)
         if self.tRNAentropy is not None:
-            print "tRNA entropy: " + str(self.tRNAentropy)
+            toret += "\ntRNA entropy: " + str(self.tRNAentropy)
         if self.num_genes:
-            print "number of genes: " + str(self.num_genes)
+            toret += "\nnumber of genes: " + str(self.num_genes)
         if self.genome_size:
-            print "genome size: " + str(self.genome_size)
+            toret += "\ngenome size: " + str(self.genome_size)
         if self.tot_homologies is not None:
-            print "total number of homologies to cerevisiae: " + str(self.tot_homologies)
-        print "----------------------------------"
+            toret += "\ntotal number of homologies to cerevisiae: " + str(self.tot_homologies)
+        toret += "\n----------------------------------"
         if self.average_entropy is not None:
-            print "average entropy: " + str(self.average_entropy)
+            toret += "\naverage entropy: " + str(self.average_entropy)
         if self.var_entropy is not None:
-            print "variance of entropy: " + str(self.var_entropy)
+            toret += "\nvariance of entropy: " + str(self.var_entropy)
         if self.fullvarentropy is not None:
-            print "full variance of entropy: " + str(self.fullvarentropy)
+            toret += "\nfull variance of entropy: " + str(self.fullvarentropy)
         if self.varGCcount is not None:
-            print "variance of the GC content: " + str(self.varGCcount)
+            toret += "\nvariance of the GC content: " + str(self.varGCcount)
         if self.meanecai is not None:
-            print "mean ECAI: " + str(self.meanecai)
+            toret += "\nmean ECAI: " + str(self.meanecai)
+        return toret
+
+# CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
+# GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
 
     def get_tRNAcopy(self, by="entropy", setnans=False, kingdom='fungi', baseCNvalue=2):
         """
         Retrieves tRNA copy numbers from ensembl DB
+
         will print the number of tRNAs and the number of tRNAs with
         a knwon codons ( the usefull ones)
-
         will stop and set a trace for the user to inspect the data
         to do so: please write "dat" in the console. if you see something that
         should be corrected please do so from the console directly or from the code
@@ -317,8 +318,9 @@ class Espece(object):
 
     def gettaxons(self, kingdom='fungi'):
         """
-        Pars the ensemblgenomes REST API to retrieve the taxons id for the species from which
-        we would not have any (downloaded via Yun for example)
+        Pars the ensemblgenomes REST API to retrieve the taxons id 
+
+        for the species from which we would not have any (downloaded via Yun for example)
 
         Raises:
             HTTPrequestError: not able to connect to the server
@@ -335,8 +337,7 @@ class Espece(object):
 
     def get_epigenomes(self):
         """
-        get from ensembl all the data about the epigenome that could help asking interesting questions
-        about the CUB
+        get from ensembl all the data about the epigenome that could help asking interesting questions about the CUB
         """
         # curl 'http://rest.ensemblgenomes.org/overlap/id/AT3G52430?feature=array_probe' - H 'Content-type:application/json'
         # curl 'http://rest.ensemblgenomes.org/overlap/id/AT3G52430?feature=repeat' - H 'Content-type:application/json'
@@ -344,8 +345,7 @@ class Espece(object):
 
     def _dictify(self):
         """
-        Used by the saving function. transform the object into a dictionary that can be
-        json serializable
+        Used by the saving function. transform the object into a dictionary that can be json serializable
 
         Returns:
             A dict holding every element to be jsonized

@@ -900,7 +900,6 @@ class PyCUB(object):
                                 break
                     with gzip.open("utils/data/temp.fa.gz", "rt") as handle:
                         val, gccount = _compute_full_entropy(handle, by, avg)
-                        pdb.set_trace()
                     self.species[d].fullentropy = val.mean(1) if avg else val
                     self.species[d].fullvarentropy = (val.var(1)**(0.5)).mean() if avg else None
                     self.species[d].fullGCcount = gccount.mean() if avg else gccount
@@ -1083,7 +1082,7 @@ class PyCUB(object):
         ind = homoset.homo_matrixnames.argsort()
         GCmat = np.zeros((len(homoset.homo_namelist), len(homoset.species_namelist)))
         for i, val in enumerate(homoset.homo_namelist):
-            GCmat[i, homoset[val].names] = homoset[val].GCcount
+            GCmat[i, np.array(homoset[val].names)[np.invert(homoset[val].doub)]] = homoset[val].GCcount[np.invert(homoset[val].doub)]
         GCmat = GCmat.sum(0) / np.count_nonzero(GCmat, 0)
         for i, spece in enumerate(homoset.species_namelist):
             self.species[spece].meanGChomo = GCmat[i]
@@ -1094,7 +1093,7 @@ class PyCUB(object):
             bslicetoavg = homoset.fulleng[ind[pos:pos + un]]
 
             self.species[speciestable[i]].average_entropy = aslicetoavg.mean(axis=0)
-            self.species[speciestable[i]].average_size = bslicetoavg.sum(0).mean()
+            self.species[speciestable[i]].average_size = bslicetoavg.sum(1).mean()
             # variances are mean variances over all values
             self.species[speciestable[i]].var_entropy = (aslicetoavg.var(axis=0)**(0.5)).mean()
             pos += un
@@ -1544,7 +1543,8 @@ class PyCUB(object):
                                         "utils/meta/3Dmodel/cerevisiae_inter2.csv",
                                         "utils/meta/3Dmodel/cerevisiae_inter3.csv",
                                         "utils/meta/3Dmodel/cerevisiae_inter4.csv",
-                                        "utils/meta/3Dmodel/cerevisiae_inter5.csv"], bins=2000, seq='cds', use='diament2'):
+                                        "utils/meta/3Dmodel/cerevisiae_inter5.csv"], bins=2000, seq='cds', use='diament2',
+                         euclide=False):
         """
         https://www.nature.com/articles/ncomms6876
 
@@ -1613,6 +1613,7 @@ class PyCUB(object):
             kingdom = ''
         ftp.cwd('pub/' + release + kingdom + '/fasta/')
         data = []
+        print 'change'
         ftp.retrlines('NLST', data.append)
         pdb.set_trace()
         for d in data:
@@ -1727,6 +1728,9 @@ class PyCUB(object):
                         for p in pos:
                             dist3D[p, 0] = 1
                             dist3D[0, p] = 1
+                            for p_ in pos:
+                                dist3D[p, p_] = 1
+                                dist3D[p_, p] = 1
                     else:
                         missedrelation += 1
                 n = 1
@@ -1744,6 +1748,9 @@ class PyCUB(object):
                             for p in pos:
                                 dist3D[p, n] = 1
                                 dist3D[n, p] = 1
+                                for p_ in pos:
+                                    dist3D[p, p_] = 1
+                                    dist3D[p_, p] = 1
                         else:
                             missedrelation += 1
                     n += 1
@@ -1766,9 +1773,8 @@ class PyCUB(object):
                     distcuf = np.zeros((len(positions), len(positions)), dtype=float)
                     distcub = np.zeros((len(positions), len(positions)), dtype=float)
                     distent = np.zeros((len(positions), len(positions)), dtype=float)
-                    vals = np.ma.masked_equal(vals, 0)
-                    cufs = np.ma.masked_equal(cufs, 0)
-                    cubs = np.ma.masked_equal(cubs, 0)
+                    #cubs = np.ma.masked_equal(cubs, 0)
+                    j = 0
                     for val in vals:
                         i = 0
                         for comp in vals:
@@ -1777,12 +1783,12 @@ class PyCUB(object):
                                 distcub[j, i] = distcub[i, j]
                                 distcuf[j, i] = distcuf[i, j]
                             elif i > j:
-                                distent[j, i] = euclidean(val, comp)
-                                distcub[j, i] = utils.endresdistance(cubs[j], cubs[i])
-                                distcuf[j, i] = utils.endresdistance(cufs[j], cufs[i])
+                                distent[j, i] = euclidean(val, comp) if euclide else utils.endresdistance(val, comp)
+                                distcub[j, i] = euclidean(cubs[j], cubs[i]) if euclide else utils.endresdistance(cubs[j], cubs[i])
+                                distcuf[j, i] = euclidean(cufs[j], cufs[i]) if euclide else utils.endresdistance(cufs[j], cufs[i])
                             i += 1
                         j += 1
-                        print '\rdistcomputation ' + str(j) + 'over ' + str(len(vals)),
+                        print '\rdistcomputation ' + str(j) + ' over ' + str(len(vals)),
 
                     if use == "diament1":
                         div, i = divmod(len(names), bins)
@@ -1794,7 +1800,6 @@ class PyCUB(object):
                         X[:int(i)] = np.ceil(div) + 1
                         X[int(i):] = np.floor(div)
                         start = 0
-                        pdb.set_trace()
                         for num, val in enumerate(X):
                             star = 0
                             for nu, va in enumerate(X):
@@ -1888,7 +1893,6 @@ class PyCUB(object):
                     cuf = np.ma.masked_equal(cuf, 0)
                     cub = np.ma.masked_equal(cub, 0)
                     j = 0
-                    pdb.set_trace()
                     for val in ent:
                         i = 0
                         for comp in ent:
