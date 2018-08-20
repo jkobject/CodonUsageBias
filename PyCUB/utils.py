@@ -72,7 +72,6 @@ import pdb
         is selected)
 """
 speciestable = {}
-indexcai = {}
 indexecai = {}
 
 listvect = None
@@ -155,7 +154,15 @@ codamino = {
     'GTA': 'VAL',
     'GTC': 'VAL',
     'GTG': 'VAL',
-    'GTT': 'VAL'
+    'GTT': 'VAL',
+
+    'ATG': 'MET',
+
+    'TGG': 'TRP',
+
+    'TAG': 'STOP',
+    'TGA': 'STOP',
+    'TAA': 'STOP'
 }
 codons = {
     'ALA': ['GCA', 'GCC', 'GCG', 'GCT'],  # GC
@@ -736,8 +743,9 @@ callback_plotall = """
             }
             if(b ===2){
                 var temp = 0
+                max = Math.max(...data.meanentropy)
                 for(i=0;i<len;++i){
-                    temp =  Math.floor(50 + (156 * data.meanentropy[i]));
+                    temp =  Math.floor(256 * data.meanentropy[i]/max);
                     col.push(fullColorHex(52, 73, temp));
                     }
                 source.data.color = col;
@@ -747,7 +755,7 @@ callback_plotall = """
                 max = Math.max(...data.lengths)
                 console.log(max)
                 for(i=0;i<len;++i){
-                    temp =  Math.floor(192 * (data.lengths[i]/max));
+                    temp =  Math.floor(252 * Math.pow((data.lengths[i]/max),0.5));
                     col.push(fullColorHex(temp, 152, 219));
                     }
                 source.data.color = col;
@@ -857,7 +865,7 @@ def retrievenames():
 
 def loadfromensembl(homology, kingdom='fungi', sequence='cdna',
                     additional='type=orthologues', saveonfiles=False, normalized=False,
-                    setnans=False, number=0, by="entropy", using="normal", getCAI=False):
+                    setnans=False, number=0, by="entropy", using="normal", getCAI=None):
     """
     Load from ensembl the datas required in parameters ( look at PyCUB.get_data for more information)
     returns a fully populated homology object.
@@ -936,7 +944,7 @@ def loadfromensembl(homology, kingdom='fungi', sequence='cdna',
 # CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
 # GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
 
-def process(data, normalized=False, setnans=False, by='entropy', getCAI=False):
+def process(data, normalized=False, setnans=False, by='entropy', getCAI=None):
     """
     function used by loadfromensembl() to process the retrieved data
 
@@ -1018,14 +1026,13 @@ def process(data, normalized=False, setnans=False, by='entropy', getCAI=False):
         GCcount = float(codseq.count('G') + codseq.count('C'))
         uncounted = (len(codseq) - GCcount) - (codseq.count('A') + codseq.count('T'))
         if uncounted:
-            print "uncounted = " + str(uncounted)
             codseq = codseq.replace("Y", "T").replace("R", "G").replace("K", "G").replace("M", "A").replace('S', 'C')\
                 .replace("W", "A").replace("B", "C").replace("D", "T").replace("H", "T").replace("V", "G").replace("N", "C")
             GCcount = float(codseq.count('G') + codseq.count('C'))
         GCcount = GCcount / len(codseq)
         codseq = [codseq[i:i + 3] for i in range(0, len(codseq), 3)]
-        if getCAI:
-            cai = computeCAI(list(codseq))
+        if getCAI is not None:
+            cai = computeCAI(list(codseq), getCAI)
             cailist.append(cai)
         c, other = computeECAI(list(codseq))
         ecai.append(c)
@@ -1036,6 +1043,7 @@ def process(data, normalized=False, setnans=False, by='entropy', getCAI=False):
             del taxons[-1]
             del proteinids[-1]
             del species[-1]
+            del ecai[-1]
             continue
         H.append(valH)
         nans.append(nan)
@@ -1103,8 +1111,8 @@ def reference_index(data, forcai=False):
     """
     # RCSU values are CodonCount/((1/num of synonymous codons) * sum of
     # all synonymous codons)
-    global indexcai
     global indexecai
+    indexcai = {}
     for k, amin in enumerate(amino):
         subcodons = codons[amin]
         nbcod = len(subcodons)  # replace Cleng
@@ -1125,9 +1133,11 @@ def reference_index(data, forcai=False):
                     indexcai[codon] = rcsu[i] / rcsu_max
                 else:
                     indexecai[codon] = rcsu[i] / rcsu_max
+    if forcai:
+        return indexcai
 
 
-def computeCAI(data):
+def computeCAI(data, cai):
     """
     compute the CAI according to the reference index WHICH NEEDS TO BE PREVIOUSLY COMPUTED
 
@@ -1143,7 +1153,7 @@ def computeCAI(data):
     for codon in data:
         if codon not in ['ATG', 'TGG', 'TAA', 'TAG', 'TGA']:
             # these two codons are always one, exclude them:
-            val = indexcai.get(codon, 1)
+            val = cai.get(codon, 1)
             if val != 0:
                 cai_value += math.log(val)
                 cai_length += 1
@@ -1233,7 +1243,7 @@ def computeyun(data, setnans=False, normalized=False, by='entropy'):
             pos += nbcod
         if by == "entropy" or by == "entropy" + "frequency":
             if lengsubseq == 0:
-                valH[k] = np.NaN if setnans else 0.5
+                valH[k] = np.NaN if setnans else 0.
                 nans += 1
             else:
                 Yg = multinomial.pmf(x=count, n=lengsubseq, p=mn)
@@ -1842,9 +1852,13 @@ def rgb2hex(rgb):
 def endresdistance(a, b):
     """
     a statistical distance measure between two random vectors
+    Here we mask and don't compute zeros as it is how we should do 
+    in KL for multinomially distributed data (better even would be to 
+    have used a prior=> replacing the masked values by 1/59)
     """
     me = (a + b) / 2
-    return sqrt(kl(a, me) + kl(b, me))
+    x = kl(a, me) + kl(b, me)
+    return sqrt(x) if x > 0 else 0
 
 
 def kl(a, b):
