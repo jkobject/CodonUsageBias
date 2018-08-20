@@ -1,4 +1,4 @@
-""""
+"""
 Created by Jeremie KALFON
 Date : 21 FEV 2018
 University of Kent, ECE paris
@@ -183,7 +183,9 @@ class PyCUB(object):
 
     def getHomologylist(self, species='saccharomyces_cerevisiae', kingdom='fungi'):
         """
-        A function to retrieve the homologies directly from a given species (it is better to use
+        A function to retrieve the homologies directly from a given species 
+
+        (it is better to use
         one of the key species for the different kingdoms (sacharomyces, HS, Arabidopsis..))
 
         Args:
@@ -227,7 +229,7 @@ class PyCUB(object):
 
         Args:
             From: str flag 'yun' or 'ensembl':
-            homonames: list[str] what particular homologies you want to scrap if 'all' and you have used the 
+            homonames: list[str] what particular homologies you want to scrap if 'all' and you have used the
                 getHomologylist() function, will get the homologies from there
             kingdom: str same for kingdoms
             sequence: str the type of sequences you want to use
@@ -240,7 +242,7 @@ class PyCUB(object):
             using: str flag 'random' 'normal' 'permutation' 'full'
             inpar: bool or int for parallel computing and number of core
             tRNA: bool whether or not to compute tRNA data
-            getCAI: bool flag to true to retrieve the CAI as well 
+            getCAI: bool flag to true to retrieve the CAI as well
             first: int the first most expressed genes to compute the CAI ref statistics
 
         Raises:
@@ -279,8 +281,7 @@ class PyCUB(object):
             print "doing all " + str(len(self.homolist)) + " homologies"
             print ' '
             homonamelist = []
-            if getCAI:
-                self.createRefCAI(first=first, kingdom=kingdom)
+            getCAI = self.createRefCAI(first=first, kingdom=kingdom) if getCAI else None
             if bool(inpar):
                 values = Parallel(n_jobs=num_cores)(delayed(utils.loadfromensembl)(
                     name, kingdom, sequence,
@@ -317,6 +318,7 @@ class PyCUB(object):
     def get_metadata_Ensembl(self, kingdoms):
         """
         download it and put it where it belongs in the Espece object
+
         parse the server https://fungi.ensembl.org/info/website/ftp/index.html
         will also get the metadata from the kingdoms that you are analysing
 
@@ -336,9 +338,9 @@ class PyCUB(object):
 
     def get_mymetadata(self, From='jerem', inpar=True):
         """
-        Go ahead and design your own metadata retrieval here.
-        obviously you woud need to change some other functions.
+        Go ahead and design your own metadata retrieval here. 
 
+        obviously you woud need to change some other functions.
         for me it is mean protein abundances in cerevisiae cells.
 
         Args:
@@ -357,12 +359,14 @@ class PyCUB(object):
 
     def import_metadataTobias(self):
         """
-        will import the metadata obtained from tobias for the fungi species affiliated to
-        cerevisiae to each species for further diagnostics.
+        will import the metadata obtained from tobias for the fungi species affiliated to cerevisiae to each species for further diagnostics.
 
         Populates metadata[num_genes, plant_pathogen, animal_pathogen, genome_size, plant_symbiotic, brown_rot, white_rot]
         for each species
         and weight, mRNA_abundance, is_secreted, protein_abundance, cys_elements, decay_rate for each homology
+
+        Args:
+            None
         """
         # species metadata
         data = pd.read_csv("utils/meta/Yun_Species_Context.csv")
@@ -532,11 +536,11 @@ class PyCUB(object):
                 with open(folder + filename + ".json", "r") as f:
                     print "loading from " + filename
                     additionals = self._undictify(json.loads(f.read()))
-                    print "it worked !"
-                    os.system("gzip " + folder + filename + '.json')
-                    print "you now have " + str(np.count_nonzero(self.all_homoset.hashomo_matrix)) +\
-                        " genes in total"
-                    return additionals
+                print "it worked !"
+                os.system("gzip " + folder + filename + '.json')
+                print "you now have " + str(np.count_nonzero(self.all_homoset.hashomo_matrix)) +\
+                    " genes in total"
+                return additionals
 
         else:
             print "hey, it looks like this object has already loaded some things"
@@ -621,8 +625,8 @@ class PyCUB(object):
 
     def save(self, name, save_workspace=True, save_homo=True, add_homosets={}, cmdlinetozip="gzip"):
         """
-        call to save your work. you should call save on specific data structure if this is what you
-        want to save.
+        call to save your work. you should call save on specific data structure if this is what you want to save.
+
         Will call other object's save, will transform all the variable into dict and save the dicts
         as json files. will save the df also as json files. PyCUB and homoset have
         their own json file.
@@ -752,8 +756,9 @@ class PyCUB(object):
         else:
             homo = homoset
         if homologies is not None:
-            homo.homodict = {k: homoset.homodict[k] for k in homologies}
-            homo.homo_namelist = homologies
+            homo.homodict = {k: homoset[k] for k in homologies} if type(homologies[0]) is str else \
+                {homoset.homo_namelist[k]: homoset[k] for k in homologies}
+            homo.homo_namelist = homo.homodict.keys()
         homo.hashomo_matrix = None
         homo.homo_matrix = None
         homo.homo_matrixnames = None
@@ -772,9 +777,9 @@ class PyCUB(object):
     def get_full_genomes(self, kingdom='fungi', seq='cds', avg=True, by="entropy", normalized=False):
         """
         go trought all full genome fasta files in the ftp server of ensemblgenomes and
+
         download then parse them to get the full entropy of the genome.
         usefull for futher comparison steps.
-
         will populate the fullentropy, fullvarentropy, fullGCcount,
         varGCcount of each species where the full sequence is known
 
@@ -877,9 +882,9 @@ class PyCUB(object):
                         with gzip.open("utils/data/temp.fa.gz", "rt") as handle:
                             val, gccount = _compute_full_entropy(handle, by, avg)
                         self.species[sub].fullentropy = val.mean(1) if avg else val
-                        self.species[sub].fullvarentropy = val.var(1).mean() if avg else None
+                        self.species[sub].fullvarentropy = (val.var(1)**(0.5)).mean() if avg else None
                         self.species[sub].fullGCcount = gccount.mean() if avg else gccount
-                        self.species[sub].varGCcount = gccount.var() if avg else None
+                        self.species[sub].varGCcount = gccount.var()**(0.5) if avg else None
                         ftp.cwd('../..')
                         os.remove("utils/data/temp.fa.gz")
 
@@ -897,9 +902,9 @@ class PyCUB(object):
                         val, gccount = _compute_full_entropy(handle, by, avg)
                         pdb.set_trace()
                     self.species[d].fullentropy = val.mean(1) if avg else val
-                    self.species[d].fullvarentropy = val.var(1).mean() if avg else None
+                    self.species[d].fullvarentropy = (val.var(1)**(0.5)).mean() if avg else None
                     self.species[d].fullGCcount = gccount.mean() if avg else gccount
-                    self.species[d].varGCcount = gccount.var() if avg else None
+                    self.species[d].varGCcount = gccount.var()**(0.5) if avg else None
                     ftp.cwd('..')
                     os.remove("utils/data/temp.fa.gz")
             ftp.cwd('..')
@@ -907,6 +912,9 @@ class PyCUB(object):
     def get_taxons(self):
         """
         find the taxons of each referenced species (see PyCUB.Espece.gettaxons())
+
+        Args:
+            None
         """
         for key, val in self.species.iteritems():
             try:
@@ -917,8 +925,7 @@ class PyCUB(object):
 
     def get_evolutionary_distance(self, display_tree=False, size=40):
         """
-        uses metadata of the ancestry tree and computes a theoretical evolutionary
-        distance matrix between each species
+        uses metadata of the ancestry tree and computes a theoretical evolutionary distance matrix between each species
 
         can optionaly take any hierarchical evolutionary file between a group of species
         will populate utils.phylo_distances with a pandas.df of the phylodistance
@@ -955,7 +962,10 @@ class PyCUB(object):
             print EnvironmentError("you need to have R installed to compute the distance")
             return
         if not rpackages.isinstalled('treeio'):
-            utiles.install_packages(StrVector('treeio'))
+            robjects.r('''
+                source("https://bioconductor.org/biocLite.R")
+                biocLite("treeio")
+                ''')
         robjects.r('''
             treeText <- readLines("utils/meta/metaphylo/temp_tree.phy")
             treeText <- paste0(treeText, collapse="")
@@ -1026,11 +1036,14 @@ class PyCUB(object):
                         if record.id in highlyexpressed:
                             codseq.extend([record.seq._data[i:i + 3] for i in range(0, len(record.seq._data), 3)])
                 os.remove("utils/data/temp.fa.gz")
-                utils.reference_index(codseq, forcai=True)
+        return utils.reference_index(codseq, forcai=True)
 
     def speciestable(self):
         """
         a copy of the utils.speciestable
+
+        Args:
+            None
 
         Returns:
             a copy of the utils.speciestable (dict[int,str] of species to their PyCUB coded value
@@ -1040,6 +1053,9 @@ class PyCUB(object):
     def phylo_distances(self):
         """
         a copy of the phylodistances dataframe see (get_evolutionary_distance())
+
+        Args:
+            None
 
         Returns:
             a copy of the phylodistances dataframe see (get_evolutionary_distance())
@@ -1080,7 +1096,7 @@ class PyCUB(object):
             self.species[speciestable[i]].average_entropy = aslicetoavg.mean(axis=0)
             self.species[speciestable[i]].average_size = bslicetoavg.sum(0).mean()
             # variances are mean variances over all values
-            self.species[speciestable[i]].var_entropy = aslicetoavg.var(axis=0).mean()
+            self.species[speciestable[i]].var_entropy = (aslicetoavg.var(axis=0)**(0.5)).mean()
             pos += un
             self.species[speciestable[i]].tot_homologies = un
         print "homology averages : " + str(homoset.homo_matrix.mean(axis=0))
@@ -1093,10 +1109,11 @@ class PyCUB(object):
 
     def compare_species(self, showvar=True, reducer='tsne', perplexity=40, eps=0.3, size=10):
         """
-        compare the species according to their mean CUB, plot the mean CUB
+        compare the species according to their mean CUB,
+
+        plot the mean CUB
         to their full CUB, to their tRNA copy numbers, to the euclidean distance of their CUB
         to the one of their phylogenetic matrix.
-
         in this plot, the mean entropy value is plotted as a regular homology plot but each dot is a species
         thus we can compare them together, moreover, the size of the dots informs oneself of the variance
         in entropy per species. the color intensity informs on how much this is close to what is given by the
@@ -1234,15 +1251,17 @@ class PyCUB(object):
         save(column(radio_button_group, p), "utils/templot/homology_compare.html")
         show(column(radio_button_group, p))
 
+    def compute_ages(self, homoset, preserved=True, minpreserv=0.9, minsimi=0.85):
+        homoset.compute_ages(preserved=preserved, minpreserv=minpreserv, minsimi=minsimi)
+
     def regress_on_species(self, without=[""], full=True, onlyhomo=False, perctrain=0.8, algo="lasso",
                            eps=0.001, n_alphas=100):
         """
-        Will fit a regression curve on the CUB values of the different species according to the metadatas
-        available for each of them.
+        Will fit a regression curve on the CUB values of the different species according to the metadatas available for each of them.
 
         It will try to see if there is enough information in the metadata to retrieve CUB values. and if there is,
-        how much for each metadata (if we constraint the number of regressors) is it better for mean homology CUB 
-        or full genome CUB ?  
+        how much for each metadata (if we constraint the number of regressors) is it better for mean homology CUB
+        or full genome CUB ?
         or raw frequency, should we remove some data?
 
         Args:
@@ -1254,12 +1273,12 @@ class PyCUB(object):
             perctrain: the percentage of training set to total set ( the rest is used as test set)
             algo: str flag to lasso or nn to use either Lasso with Cross Validation, or a 2 layer  neural net
             eps: the eps value for the Lasso
-            n_alphas: the number of alphas for the lasso 
+            n_alphas: the number of alphas for the lasso
 
         Returns:
             scoregenes: float, the score of the regression performed
             coeffgenes: the coefficient applied to each category (for each CUB value if using full)
-            attrlist: the corresponding list[str] of attribute used 
+            attrlist: the corresponding list[str] of attribute used
 
         Raises:
             UnboundLocalError: "wrong params"
@@ -1335,15 +1354,13 @@ class PyCUB(object):
                            minpreserv=0.9, minsimi=0.9, showvar=True, eps=0.28, reducer='tsne', perplexity=40):
         """
         finds for species with a common ancester separated by a pseudo phylogenetic distance X,
+
         genes/functions that are novel to only a subset.
         plot the two with their differences the differences between the two
-
         also considers an homology as highly preserved if it is shared amongst most of the species
         and if the average similarity score is high amongst this homology.
-
         also shows if there is a relationship between the number of amino acids the sequence does not
         encode for and the codon usage bias
-
         We could have used the sequence dating of ensembl but it only works for homo sapiens for now
         maybe use it for homosapiens later
 
@@ -1442,8 +1459,7 @@ class PyCUB(object):
 
     def regress_on_genes(self, homoset, full=True, without=['meanecai', 'meancai'], perctrain=0.8, algo="lasso", eps=0.001, n_alphas=100):
         """
-        Will fit a regression curve on the CUB values of the different homologies according to the metadatas
-        available for each of them.
+        Will fit a regression curve on the CUB values of the different homologies according to the metadatas available for each of them.
 
         It will try to see if there is enough information in the metadata to retrieve CUB values. and if there is,
         how much for each metadata (if we constraint the number of regressors) is it better for entropy values, mean entropy
@@ -1459,12 +1475,12 @@ class PyCUB(object):
             perctrain: the percentage of training set to total set ( the rest is used as test set)
             algo: str flag to lasso or nn to use either Lasso with Cross Validation, or a 2 layer  neural net
             eps: the eps value for the Lasso
-            n_alphas: the number of alphas for the lasso 
+            n_alphas: the number of alphas for the lasso
 
         Returns:
             scoregenes: float, the score of the regression performed
             coeffgenes: the coefficient applied to each category (for each CUB value if using full)
-            attrlist: the corresponding list[str] of attribute used 
+            attrlist: the corresponding list[str] of attribute used
 
         Raises:
             UnboundLocalError: "wrong params"
@@ -1528,7 +1544,7 @@ class PyCUB(object):
                                         "utils/meta/3Dmodel/cerevisiae_inter2.csv",
                                         "utils/meta/3Dmodel/cerevisiae_inter3.csv",
                                         "utils/meta/3Dmodel/cerevisiae_inter4.csv",
-                                        "utils/meta/3Dmodel/cerevisiae_inter5.csv"], bins=32000, seq='cds'):
+                                        "utils/meta/3Dmodel/cerevisiae_inter5.csv"], bins=2000, seq='cds', use='diament2'):
         """
         https://www.nature.com/articles/ncomms6876
 
@@ -1536,15 +1552,15 @@ class PyCUB(object):
         and find if similarity distances of CUB using entropy between genes of this species is predictive
         of closeness of genes in the nucleus.
 
-        Used to confirm a work on nature and see if we can have some similar results by only looking at the 
+        Used to confirm a work on nature and see if we can have some similar results by only looking at the
         CUB
 
         Args:
             species_name: str the name of the species to look for
             kingdom: str the kingdom in which to find the species
-            intrachromosome: str the location of the csv interaction data for intrachromosome respecting the format 
+            intrachromosome: str the location of the csv interaction data for intrachromosome respecting the format
                 of the default file
-            interchromose: str the location of the csv interaction data for interchromose respecting the format 
+            interchromose: str the location of the csv interaction data for interchromose respecting the format
                 of the default file
             bins: int, the number of bin to use (a power of 2)
             seq: the type of sequence to compare to. (to compute the CUB from)
@@ -1598,6 +1614,7 @@ class PyCUB(object):
         ftp.cwd('pub/' + release + kingdom + '/fasta/')
         data = []
         ftp.retrlines('NLST', data.append)
+        pdb.set_trace()
         for d in data:
             if d in species_name:
                 ftp.cwd(d)
@@ -1610,19 +1627,35 @@ class PyCUB(object):
                             ftp.retrbinary("RETR " + i, file.write)
                 vals = []
                 cufs = []
+                cubs = []
                 names = []
                 positions = []
                 nb = 0
+                codons = list(utils.codamino.keys())
                 with gzip.open("utils/data/temp.fa.gz", "rt") as handle:
                     for record in SeqIO.parse(handle, "fasta"):
-                        codseq = [record.seq._data[i:i + 3] for i in range(0, len(record.seq._data), 3)]
+                        uncounted = len(record.seq._data) - (record.seq._data.count('A') + record.seq._data.count('T') +
+                                                             record.seq._data.count('C') + record.seq._data.count('G'))
+                        if uncounted:
+                            print "ref uncounted = " + str(uncounted)
+                            codseq = record.seq._data.replace("Y", "T").replace("R", "G").replace("K", "G")\
+                                .replace("M", "A").replace('S', 'C').replace("W", "A").replace("B", "C").replace("D", "T")\
+                                .replace("H", "T").replace("V", "G").replace("N", "C")
+                        else:
+                            codseq = record.seq._data
+                        codseq = [codseq[i:i + 3] for i in range(0, len(codseq), 3)]
+                        leng = len(codseq)
+                        CuF = np.zeros(64)
+                        for i, val in enumerate(codons):
+                            CuF[i] = codseq.count(val)
                         nb += 1
-                        valH, CuF, _, _ = utils.computeyun(codseq, setnans=False, normalized=False,
+                        valH, CuB, _, _ = utils.computeyun(codseq, setnans=False, normalized=False,
                                                            by="entropy" + "frequency")
                         server = "http://rest.ensemblgenomes.org" if kingdom != 'vertebrate' else "http://rest.ensembl.org"
                         names.append(record.id)
                         vals.append(valH)
-                        cufs.append(CuF)
+                        cufs.append((CuF / leng).tolist())
+                        cubs.append(CuB)
                         ext = "/lookup/id/" + record.id + "?expand=1"
                         r = requests.get(server + ext, headers={"Content-Type": "application/json"})
                         if not r.ok:
@@ -1635,15 +1668,16 @@ class PyCUB(object):
                             names.pop()
                             vals.pop()
                             cufs.pop()
+                            cubs.pop()
                             continue
                         # we associate valH to a position retrieve the positions
                         positions.append([chrom, (decoded["start"] + decoded["end"]) / 2])
-                pdb.set_trace()
-                os.remove("utils/data/temp.fa.gz")
                 ind = sorted(range(len(positions)), key=lambda k: positions[k])
                 vals = np.array(vals)[ind]
                 cufs = np.array(cufs)[ind]
+                cubs = np.array(cubs)[ind]
                 positions = np.array(positions)[ind]
+                names = [names[i] for i in ind]
 
                 tempchrom = 0
                 tempind = 0
@@ -1665,10 +1699,14 @@ class PyCUB(object):
                         if tempind >= maxind:
                             break
                     dists[n] = tempdist
+                    tempind -= 1
                     # we found a position
-                    tempdist = 1000000
+                    tempdist = 10000000
                     gene2pos.update({n: [tempchrom, tempdf['locus1'][tempind]]})
-                    pos2gene.update({(tempchrom, tempdf['locus1'][tempind]): n})
+                    if pos2gene.get((tempchrom, tempdf['locus1'][tempind]), False):
+                        pos2gene[(tempchrom, tempdf['locus1'][tempind])].append(n)
+                    else:
+                        pos2gene.update({(tempchrom, tempdf['locus1'][tempind]): [n]})
                 # for each gene positions we look at the closest point in the contact map (list of positison)
                 # we create a mapping dict for that.
                 tempchrom = 0
@@ -1676,7 +1714,8 @@ class PyCUB(object):
                 missedrelation = 0
                 tempdf = df.loc[df['chr1'] == 1]
                 dist3D = np.zeros((len(positions), len(positions)), dtype=int)
-                np.fill_diagonal(dist3D, 1)
+                dist3D += 1000000
+                np.fill_diagonal(dist3D, 0)
                 # Doing the first one for efficiency
                 tempdf = df.loc[df['chr1'] == 1]
                 relatedto = tempdf.loc[tempdf['locus1'] == gene2pos[0][1]]
@@ -1685,8 +1724,9 @@ class PyCUB(object):
                 for i in range(len(chro)):
                     pos = pos2gene.get((chro[i], int(loc[i])), False)
                     if pos:
-                        dist3D[pos:0]
-                        dist3D[0:pos]
+                        for p in pos:
+                            dist3D[p, 0] = 1
+                            dist3D[0, p] = 1
                     else:
                         missedrelation += 1
                 n = 1
@@ -1701,14 +1741,14 @@ class PyCUB(object):
                     for i in range(len(chro)):
                         pos = pos2gene.get((chro[i], int(loc[i])), False)
                         if pos:
-                            dist3D[pos:n]
-                            dist3D[n:pos]
+                            for p in pos:
+                                dist3D[p, n] = 1
+                                dist3D[n, p] = 1
                         else:
                             missedrelation += 1
                     n += 1
                 print "got " + str(missedrelation) + " missed relation"
-
-                shortestpath = dijkstra(dist3D, directed=False) - 1  # to set shortest as 1
+                shortestpath = dijkstra(dist3D, directed=False)  # to set shortest as 1
 
                 # for each genes, we look if there is a contact gene in the contact map with the mapping
                 # if the genes are the ones next to each other, we mark them as close to each other
@@ -1716,55 +1756,164 @@ class PyCUB(object):
                 # then we compute 1hop distances on this matrix
                 #
                 # if tempchrom + 1 == val['chr1']
-
                 # val['chr1']
                 # for all values
                 # we take n subsets for which we compute the average CUB,
                 # then for each we compute a CUB distance value as a big distance
                 # matrix of size n x n n should be 32 000
                 # we create another distance matrix using an Andres distance metrics on the CUF values
+                if use != "jerem1":
+                    distcuf = np.zeros((len(positions), len(positions)), dtype=float)
+                    distcub = np.zeros((len(positions), len(positions)), dtype=float)
+                    distent = np.zeros((len(positions), len(positions)), dtype=float)
+                    vals = np.ma.masked_equal(vals, 0)
+                    cufs = np.ma.masked_equal(cufs, 0)
+                    cubs = np.ma.masked_equal(cubs, 0)
+                    for val in vals:
+                        i = 0
+                        for comp in vals:
+                            if i < j:
+                                distent[j, i] = distent[i, j]
+                                distcub[j, i] = distcub[i, j]
+                                distcuf[j, i] = distcuf[i, j]
+                            elif i > j:
+                                distent[j, i] = euclidean(val, comp)
+                                distcub[j, i] = utils.endresdistance(cubs[j], cubs[i])
+                                distcuf[j, i] = utils.endresdistance(cufs[j], cufs[i])
+                            i += 1
+                        j += 1
+                        print '\rdistcomputation ' + str(j) + 'over ' + str(len(vals)),
 
-                div, i = divmod(len(names), bins)
-                X = np.zeros(bins)
-                cuf = np.zeros((bins, 59))
-                ent = np.zeros((bins, 18))
-                dist3D = np.zeros((bins, bins), dtype=float)
-                X[:int(i)] = np.ceil(div) + 1
-                X[int(i):] = np.floor(div)
-                start = 0
-                for num, val in enumerate(X):
-                    ent[num] = vals[start:start + int(val)].mean(0)
-                    cuf[num] = cufs[start:start + int(val)].mean(0)
-                    star = 0
-                    for nu, va in enumerate(X):
-                        dist3D[num, nu] = shortestpath[start:start + int(val), star:star + int(va)].mean()
-                        star += int(va)
-                    start += int(val)
-                del vals
-                del cufs
-                del shortestpath
-                distcuf = np.zeros((bins, bins), dtype=float)
-                distent = np.zeros((bins, bins), dtype=float)
-                j = 0
-                pdb.set_trace()
-                for val in ent:
-                    i = 0
-                    for comp in ent:
-                        if i < j:
-                            distent[j, i] = distent[i, j]
-                            distcuf[j, i] = distcuf[i, j]
-                        elif i > j:
-                            distent[j, i] = euclidean(val, comp)
-                            distcuf[j, i] = utils.endresdistance(cuf[j], cuf[i])
-                        i += 1
-                    j += 1
-                self.rho_ent, self.pent = spearmanr(distent, dist3D)
-                self.rho_cuf, self.pcuf = spearmanr(distcuf, dist3D)
-                return self.rho_ent, self.pent, self.rho_cuf, self.pcuf
+                    if use == "diament1":
+                        div, i = divmod(len(names), bins)
+                        X = np.zeros(bins)
+                        cuf = np.zeros((bins, bins))
+                        cub = np.zeros((bins, bins))
+                        ent = np.zeros((bins, bins))
+                        dist3D = np.zeros((bins, bins), dtype=float)
+                        X[:int(i)] = np.ceil(div) + 1
+                        X[int(i):] = np.floor(div)
+                        start = 0
+                        pdb.set_trace()
+                        for num, val in enumerate(X):
+                            star = 0
+                            for nu, va in enumerate(X):
+                                dist3D[num, nu] = shortestpath[start:start + int(val), star:star + int(va)].mean()
+                                cuf[num, nu] = distcuf[start:start + int(val), star:star + int(va)].mean()
+                                cub[num, nu] = distcub[start:start + int(val), star:star + int(va)].mean()
+                                ent[num, nu] = distent[start:start + int(val), star:star + int(va)].mean()
+                                star += int(va)
+                            start += int(val)
+                            print '\rbinninng ' + str(num),
+                        del distcuf
+                        del distcub
+                        del distent
+                        del shortestpath
+                        self.rho_ent, self.pent = spearmanr(ent, dist3D, axis=None)
+                        self.rho_cub, self.pcub = spearmanr(cub, dist3D, axis=None)
+                        self.rho_cuf, self.pcuf = spearmanr(cuf, dist3D, axis=None)
+                    elif use == "diament2":
+                        div, i = divmod(len(names)**2, bins)
+                        X = np.zeros(bins)
+                        cuf = np.zeros(bins)
+                        cub = np.zeros(bins)
+                        ent = np.zeros(bins)
+                        dist3D = np.zeros(bins)
+                        X[:int(i)] = np.ceil(div) + 1
+                        X[int(i):] = np.floor(div)
+
+                        distent = np.ravel(distent)
+                        shortestpath = np.ravel(shortestpath)
+                        distcub = np.ravel(distcub)
+                        distcuf = np.ravel(distcuf)
+                        # for CUF
+                        ind = np.argsort(distent)
+                        distent = distent[ind]
+                        sortshortestpath = shortestpath[ind]
+                        start = 0
+                        for i, val in enumerate(X):
+                            dist3D[i] = sortshortestpath[start:start + int(val)].mean()
+                            ent[i] = distent[start:start + int(val)].mean()
+                            start += int(val)
+                        self.rho_ent, self.pent = spearmanr(ent, dist3D)
+                        # for CUB
+                        ind = np.argsort(distcuf)
+                        distcuf = distcuf[ind]
+                        sortshortestpath = shortestpath[ind]
+                        start = 0
+                        for i, val in enumerate(X):
+                            dist3D[i] = sortshortestpath[start:start + int(val)].mean()
+                            cuf[i] = distcuf[start:start + int(val)].mean()
+                            start += int(val)
+                        self.rho_cuf, self.pcuf = spearmanr(cuf, dist3D)
+                        # for CUF
+                        ind = np.argsort(distcub)
+                        distcub = distcub[ind]
+                        sortshortestpath = shortestpath[ind]
+                        start = 0
+                        for i, val in enumerate(X):
+                            dist3D[i] = sortshortestpath[start:start + int(val)].mean()
+                            cub[i] = distcub[start:start + int(val)].mean()
+                            start += int(val)
+                        self.rho_cub, self.pcub = spearmanr(cub, dist3D)
+
+                else:
+                    # computation jerem 1st
+                    div, i = divmod(len(names), bins)
+                    X = np.zeros(bins)
+                    cuf = np.zeros((bins, 64))
+                    cub = np.zeros((bins, 59))
+                    ent = np.zeros((bins, 18))
+                    dist3D = np.zeros((bins, bins), dtype=float)
+                    X[:int(i)] = np.ceil(div) + 1
+                    X[int(i):] = np.floor(div)
+                    start = 0
+                    for num, val in enumerate(X):
+                        ent[num] = vals[start:start + int(val)].mean(0)
+                        cuf[num] = cufs[start:start + int(val)].mean(0)
+                        cub[num] = cubs[start:start + int(val)].mean(0)
+                        star = 0
+                        for nu, va in enumerate(X):
+                            dist3D[num, nu] = shortestpath[start:start + int(val), star:star + int(va)].mean()
+                            star += int(va)
+                        start += int(val)
+                        print '\rbinninng ' + str(num),
+                    del vals
+                    del cufs
+                    del shortestpath
+                    distcuf = np.zeros((bins, bins), dtype=float)
+                    distcub = np.zeros((bins, bins), dtype=float)
+                    distent = np.zeros((bins, bins), dtype=float)
+                    ent = np.ma.masked_equal(ent, 0)
+                    cuf = np.ma.masked_equal(cuf, 0)
+                    cub = np.ma.masked_equal(cub, 0)
+                    j = 0
+                    pdb.set_trace()
+                    for val in ent:
+                        i = 0
+                        for comp in ent:
+                            if i < j:
+                                distent[j, i] = distent[i, j]
+                                distcub[j, i] = distcub[i, j]
+                                distcuf[j, i] = distcuf[i, j]
+                            elif i > j:
+                                distent[j, i] = euclidean(val, comp)
+                                distcub[j, i] = utils.endresdistance(cub[j], cub[i])
+                                distcuf[j, i] = utils.endresdistance(cuf[j], cuf[i])
+
+                            i += 1
+                        j += 1
+                        print '\rdistcomputation ' + str(j),
+
+                    self.rho_ent, self.pent = spearmanr(distent, dist3D, axis=None)
+                    self.rho_cub, self.pcub = spearmanr(distcub, dist3D, axis=None)
+                    self.rho_cuf, self.pcuf = spearmanr(distcuf, dist3D, axis=None)
+                return self.rho_ent, self.pent, self.rho_cuf, self.pcuf, self.rho_cub, self.pcub
 
         def search(value, arr):
             """
             modified binary search for closest value search in a sorted array
+
             David Soroko @https://stackoverflow.com/questions/30245166
 
             Args:
@@ -1815,8 +1964,8 @@ class PyCUB(object):
 
     def _dictify(self, save_workspace, save_homo, add_homosets):
         """
-        Used by the saving function. transform the workspace object into a dictionary that can be
-        json serializable
+        Used by the saving function. transform the workspace object into a dictionary that can be json serializable
+
         adding some params because else the object may be too big
 
         Args:
@@ -1843,6 +1992,7 @@ class PyCUB(object):
     def _undictify(self, data):
         """
         same function but to retransform everything
+
         Here we don't use other classes undictify functions but we just recreate them by passing it
         to their init methods which is clearer.
 
@@ -1876,6 +2026,8 @@ class PyCUB(object):
         """
         short function to retrieve the speciestable from Disk
 
+        Args:
+            None
         Raises:
             IOError: "no speciestable file"
         """
@@ -1883,8 +2035,11 @@ class PyCUB(object):
         if not os.path.isfile(filename):
             raise IOError("no speciestable file")
         with open(filename, "r") as f:
-            utils.speciestable = json.loads(f.read())
+            speciestable = json.loads(f.read())
             print "it worked !"
+        utils.speciestable = {}
+        for key, val in speciestable.iteritems():
+            utils.speciestable.update({int(key): str(val)})
 
     def savespeciestable(self):
         """
@@ -1892,6 +2047,9 @@ class PyCUB(object):
 
         This is done since there may be some memory leakage, probably due to some autoreloading behavior
         of the global data stored on utils.
+
+        Args:
+            None
         """
         filename = "utils/meta/savings/speciestable.json"
         data = json.dumps(dict(utils.speciestable), indent=4, separators=(',', ': '))
