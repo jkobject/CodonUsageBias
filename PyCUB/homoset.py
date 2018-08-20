@@ -40,8 +40,8 @@ import pdb
 
 class HomoSet(collections.MutableMapping):
     """HomoSet is the object containing evrey homology as a dictionnary according to thie rhomology code
-        from Homoset you can do much computation that requires the set of homologies
 
+        from Homoset you can do much computation that requires the set of homologies
         Object where we store an homology group basically where we do our entire
         Computation from.
         Be aware that even if you use str, the keys will be stored as unicode as jsonized dict will
@@ -89,16 +89,18 @@ class HomoSet(collections.MutableMapping):
 
     def __init__(self, **kwargs):
         """
-        will initialize the object with the different values you might have from another project
-        use the data dictionnary to add any type of data
+        will initialize the object with the different values you might have from another project use the data dictionnary to add any type of data
+
+        kwargs:
+            a dictionary to any values present in the homoset
         """
         data = kwargs.get("data", None)
         if data is not None:
             utils.CUBD = data.get("CUBD", 18)
             self.homo_matrix = np.asarray(data["homo_matrix"]) if data.get(
                 "homo_matrix", None) is not None else None
-            self.homo_namelist = data.get("homo_namelist", [])
-            self.species_namelist = data.get("species_namelist", [])
+            self.homo_namelist = [str(i) for i in data.get("homo_namelist", [])]
+            self.species_namelist = [str(i) for i in data.get("species_namelist", [])]
             self.homogroupnb = data.get("homogroupnb", 2)
             self.clusters = data.get("clusters", [])
             self.datatype = data.get("datatype", '')
@@ -231,9 +233,10 @@ class HomoSet(collections.MutableMapping):
 # GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
 
     def plot_all(self, With='tsne', perplexity=60, interactive=False, bins=100, offset=20, iteration=400, redo=False,
-                 bypasstsne=False, inpar=True):
+                 bypasstsne=False, dotsize=7, inpar=True):
         """
         will plot all the homologies in the full_homo_matrix (and compute it)
+
         (sometimes around 800 000 datapoints) to look at any kind of relationships
         as there is too much datapoints, the plots are density ones.
 
@@ -252,7 +255,7 @@ class HomoSet(collections.MutableMapping):
         if self.homo_matrix is None:
             self.loadfullhomo()
         size = len(self.homo_matrix)
-        if size < 3000:
+        if size < 4000:
             size = 'small'
         elif size < 10000:
             size = 'medium'
@@ -262,12 +265,15 @@ class HomoSet(collections.MutableMapping):
             if With == 'tsne':
                 if size == 'small' or bypasstsne:
                     if inpar:
-                        red = TSNE(n_components=2, perplexity=30.0, verbose=2, n_jobs=-1, iteration=iteration).fit_transform(self.homo_matrix)
+                        red = TSNE(n_components=2, perplexity=30.0, verbose=2, n_jobs=-1,
+                                   n_iter=iteration).fit_transform(self.homo_matrix)
                         # https://github.com/DmitryUlyanov/Multicore-TSNE}},
                     else:
-                        red = man.TSNE(n_components=2, perplexity=30.0, verbose=2, iteration=iteration).fit_transform(self.homo_matrix)
+                        red = man.TSNE(n_components=2, perplexity=30.0, verbose=2,
+                                       n_iter=iteration).fit_transform(self.homo_matrix)
                 else:
-                    red = tsne.tsne(self.homo_matrix, no_dims=2, initial_dims=self.homo_matrix.shape[1], perplexity=30.0, iteration=iteration)
+                    red = tsne.tsne(self.homo_matrix, no_dims=2, initial_dims=self.homo_matrix.shape[1],
+                                    perplexity=30.0)
             elif With == 'PCA':
                 red = PCA(n_components=2).fit_transform(self.homo_matrix)
             elif With == 'ltsa' or With == 'hessian':
@@ -281,14 +287,16 @@ class HomoSet(collections.MutableMapping):
         speciestable = dict(utils.speciestable)
         if size == "small":
             colors = []
+            homonames = []
             for i, val in enumerate(self.homodict.values()):
                 colors.extend([colormap[i]] * len(val.names))
+                homonames.extend([val.homocode] * len(val.names))
         if not interactive:
             fig = plt.figure(figsize=(40, 40))
             ax = fig.add_subplot(111)
             ax.scatter(self.red_homomatrix[:, 0], self.red_homomatrix[:, 1], s=dotsize, color=colors)
             plt.show()
-            plt.savefig('utils/templot/red_homomatrix_homoset.pdf')
+            plt.savefig('utils/templot/full_homoset.pdf')
         else:
             if size == "small":
                 data = dict(x=red[:, 0], y=red[:, 1],
@@ -296,6 +304,7 @@ class HomoSet(collections.MutableMapping):
                             meanentropy=["%.2f" % self.homo_matrix[i].mean() for i in range(len(self.homo_matrix))],
                             color=colors,
                             homologies=colors,
+                            homonames=homonames,
                             lengths=self.fulleng.sum(1))
                 source = ColumnDataSource(data=data)
                 output_notebook()
@@ -303,7 +312,8 @@ class HomoSet(collections.MutableMapping):
                 callback = CustomJS(args=dict(source=source), code=str(utils.callback_plotall))
                 radio_button_group = widgets.RadioButtonGroup(
                     labels=labe, callback=callback, active=0)
-                hover = HoverTool(tooltips=[("species", "@species"), ("mean_entr", "@meanentropy"), ("length", "@lengths")])
+                hover = HoverTool(tooltips=[("species", "@species"), ("mean_entr", "@meanentropy"),
+                                            ("length", "@lengths"), ("homology: ", "@homonames")])
                 p = figure(title="Full plot of the homoset",
                            tools=[hover, WheelZoomTool(), PanTool(), SaveTool(), ResetTool()],
                            plot_width=800, plot_height=600)
@@ -334,13 +344,16 @@ class HomoSet(collections.MutableMapping):
                 print 'please write %output size=200" before calling this function'
                 datashader = datashade(points)
                 heatmaper = heatmap(self.red_homomatrix, bins=bins, offset=offset)(style=dict(cmap="fire"))
-                save(hv.renderer('bokeh').get_plot(datashader).state, 'utils/templot/red_homomatrix_datashade.html')
-                save(hv.renderer('bokeh').get_plot(heatmaper).state, 'utils/templot/red_homomatrix_heatmap.html')
+                save(hv.renderer('bokeh').get_plot(datashader).state, 'utils/templot/full_homoset_datashade.html')
+                save(hv.renderer('bokeh').get_plot(heatmaper).state, 'utils/templot/full_homoset_heatmap.html')
                 return heatmaper + datashader
 
     def loadfullhomo(self):
         """
         function to concatenate all the homologies in one big array(practicle for certain computations)
+
+        Args:
+            None
         """
         homo_matrix = self[self.homo_namelist[0]].full.copy()
         homo_matrixnames = list(self[self.homo_namelist[0]].names)
@@ -367,6 +380,8 @@ class HomoSet(collections.MutableMapping):
         """
         function to compute the matrix of bool saying wether species X has a gene or more in homology Y
 
+        Args:
+            None
         """
         hashomo = np.zeros((len(self.homo_namelist),
                             len(self.species_namelist)), dtype=np.bool)
@@ -381,7 +396,10 @@ class HomoSet(collections.MutableMapping):
         """
         the size of the homoset (number of genes)
 
-        Returns;
+        Args:
+            None
+
+        Returns:
             int the number of genes
         """
         if self.hashomo_matrix is None:
@@ -392,10 +410,13 @@ class HomoSet(collections.MutableMapping):
         """
         a function to populate a homology with random values
 
-        Returns;
+        Args:
+            None
+
+        Returns:
             the name of the random homology (str)
         """
-        full = np.random.rand(len(self.species_namelist), utils.CUBD)
+        full = np.random.rand(len(self.species_namelist), utils.CUBD) * 20
         nans = np.zeros(len(self.species_namelist))
         names = []
         proteinids = []
@@ -415,11 +436,13 @@ class HomoSet(collections.MutableMapping):
 
     def preprocessing(self, withtaxons=False, withnames=True):
         """
-        will compute the full list of names, find doublons, and set the names to ints instead
+        will compute the full list of names, 
+
+        find doublons, and set the names to ints instead
         of strings. called after loading from ensembl and associate namelist in each homologies to a number
         in utils.speciestable
 
-        Params:
+        Args:
             withtaxons: bool to true calls preprocessing_taxons() else one of the other two
             withnames: bool to true to call preprocessing_names() else calls preprocessing_namelist()
 
@@ -476,6 +499,9 @@ class HomoSet(collections.MutableMapping):
     def preprocessing_names(self):
         """
         same as preprocessing_taxons() but admiting there is no taxon information (Yun's data for example)
+
+        Args:
+            None
         """
         species_namelist = set([])
         species = []  # we need to have another species list for the ordering
@@ -507,8 +533,10 @@ class HomoSet(collections.MutableMapping):
 
     def preprocessing_namelist(self):
         """
-        same as preprocessing_names() but without preprocessing the names of each homologies
-        only updating the species_namelist
+        same as preprocessing_names() but without preprocessing the names of each homologies only updating the species_namelist
+
+        Args:
+            None
         """
         # as a dict of int is ordered
         species_namelist = set([])
@@ -557,15 +585,14 @@ class HomoSet(collections.MutableMapping):
                         continue
                     dist = float(phylo_distances[species].loc[species].sum().sum()) / (len(species)**2 - len(species))
                     if dist < utils.meandist:
-                        print "found a homology with mean " + str(dist)
+                        # print "found a homology with mean " + str(dist)
                         homo.isrecent = dist / utils.meandist
         else:
             print "it was already loaded"
 
     def compute_entropyloc(self, using='computejerem'):
         """
-        called if need entropy location and used ensembl data. you can always compute entropy location
-        from entropy data.
+        called if need entropy location and used ensembl data. you can always compute entropy location from entropy data.
 
         Will be much faster than doing it directly when calling
         ensembl's data as it computes the partition function
@@ -589,7 +616,7 @@ class HomoSet(collections.MutableMapping):
             pos = 0
             for x, homo in enumerate(self.homo_namelist):
                 self[homo].full = self.homo_matrix[pos:pos + len(self[homo].full)]
-                self[homo].var = self[homo].full.var(0)
+                self[homo].var = self[homo].full.var(0)**(0.5)
                 self[homo].mean = self[homo].full.mean(0)
                 self[homo].clusters = None
                 self[homo].centroids = None
@@ -657,9 +684,9 @@ class HomoSet(collections.MutableMapping):
                            plot_ordering=True, homogroupnb=2, findnb=False):
         """
         Compute an homology group :
+
         from matrix computation using the homo_matrix
         (or from network computation in homologize_from_network)
-
         Can be computed many times and will updata homoset with the most recent homoset found
         if homoset exists, it will save it.
 
@@ -733,7 +760,9 @@ class HomoSet(collections.MutableMapping):
 
     def orderfromclust(self, homogroupnb, clust, byspecie=False, plot_ordering=True):
         """
-        creates an ordering of every elements (names, homologies according to the found clusters)
+        creates an ordering of every elements 
+
+        (names, homologies according to the found clusters)
         from an ordered cluster of species or of homologies
         self.hashomomatrix should reflect this orientation as well
 
@@ -780,6 +809,7 @@ class HomoSet(collections.MutableMapping):
         plot for each species, how much its genes are outliers, how much are belonging
         to a secondary cluster and how much are belonging to the principal cluster.
         --> create a long stacked bar plot with these values
+
         Args:
             sort: bool to true to sort everyhting according to the statistics differences
             interactive: bool to true to have an interactive barplot
@@ -807,11 +837,13 @@ class HomoSet(collections.MutableMapping):
                         else:   # secondary clusters
                             hprop[2] += 1
                             specluster[val.names[x]][2] += 1
-                    homoclusters[j] = np.divide(hprop, i)
+
+                    homoclusters[j] = np.divide(hprop, i) if i != 0 else [1, 0, 0]
                 specluster = np.divide(specluster.T, specluster.sum(1)).T
                 specluster = specluster[~np.isnan(specluster).any(axis=1)]
                 self.stats = {'homologies': homoclusters.tolist(), 'species': specluster.tolist()}
                 if sort:
+                    pdb.set_trace()
                     ind = sorted(range(len(self.stats['homologies'])), key=lambda k: self.stats['homologies'][k])
                     self.stats['homologies'].sort()
                     if self.hashomo_matrix is not None:
@@ -829,15 +861,13 @@ class HomoSet(collections.MutableMapping):
 
     def compare_clusters(self, cubdistance_matrix=True, plot=True, interactive=True, size=40):
         """
-        for each clusters in homologies, will compare them with a similarity matrix
-        and a distance matrix
+        for each clusters in homologies, will compare them with a similarity matrix and a distance matrix
 
         compare amongst the working homoset homologies, the clusters together,
         by what species they contains by creating a new vector of species presence
         in each cluster and plotting the similarity matrix of each of those vectors.
         --> create a compare function in homoset of
         homologies clusters similarity matrix and ordering.
-
         basically the distance should be nan if it has not the species,
         -1 if outlier to other and 1 if one cluster to another and zeros if the same to the same
 
@@ -923,18 +953,17 @@ class HomoSet(collections.MutableMapping):
 
     def find_clusters(self, clustering='dbscan', homogroupnb=None,
                       assess=True, eps=0.8, best_eps=True, trainingset=30,
-                      epoch=20, ranges=[0.2, 0.9], size=10):
+                      epoch=20, ranges=[0.2, 0.9], size=10, redo=False):
         """
         Finds, for each homologies in the working homoset, groups that are part of compact clusters
+
         it will be using gaussian mixture clustering or DBSCAN and order them according
         to the density of each cluster (we are interested in the densest ones) and assess
         the quality using 3 criterion:BIC, number of outliers,
-
         also: - find if we are close to ancestry tree,
         here we need to represent a comparison of the closeness
         in a phylogenetic tree to a cluster of species
         --> given a grouping of phylogenetic tree, what cluster is the most similar to it
-
 
         Args:
             clustering: method (DBSCAN, gaussian mixture)
@@ -949,7 +978,7 @@ class HomoSet(collections.MutableMapping):
             size: int the x size of the plot
         """
         if best_eps:
-            eps = self.findbest_eps(trainingset, clustering)
+            eps = self.findbest_eps(trainingset, clustering, epoch=epoch, ranges=ranges, size=size, redo=redo)
         for val in self.homo_namelist:
             print val
             self[val].clusterize_(clustering=clustering, eps=eps,
@@ -966,8 +995,7 @@ class HomoSet(collections.MutableMapping):
     def findbest_eps(self, trainingset=400, clustering="dbscan",
                      epoch=20, ranges=[0.2, 0.9], size=10, redo=False):
         """
-        will find the best eps hyperparameter (the one that minimizes the evolutionary distance
-        within its clusters)
+        will find the best eps hyperparameter (the one that minimizes the evolutionary distance within its clusters)
 
         Args:
             trainingset: int the number of homologies in your training set (should be 20% of the total)
@@ -994,12 +1022,13 @@ class HomoSet(collections.MutableMapping):
             if clustering == "gaussian":
                 epoch = 8
                 val = 1
-            for _ in range(epoch):
-                itr = 0
+            # random draw
+            homolist = [self.homo_namelist[int(random.rand() * len(self.homo_namelist))] for _ in range(trainingset)]
+            for epochstep in range(epoch):
                 score = 0
-                for _, homo in self.iteritems():
-                    if itr > trainingset:
-                        break
+                print '\repoch: ' + str(epochstep),
+                for ste in range(trainingset):
+                    homo = self[homolist[ste]]
                     homo.clusterize_(clustering=clustering,
                                      eps=val, homogroupnb=val, assess=True, verbose=False)
                     sc = 0
@@ -1013,10 +1042,9 @@ class HomoSet(collections.MutableMapping):
                             weight = 1
                         sc += homo.metrics["cluster_phylodistance"][i] * weight
                     score += sc
-                    itr += 1
                 # get the best eps of all
                 # compute its similarity on the full set of homologies
-                score = score / itr
+                score = score / ste
                 scores.append(score)
                 vals.append(val)
                 if score < best_score:
@@ -1037,9 +1065,7 @@ class HomoSet(collections.MutableMapping):
 
     def _barplot(self, interactive=True):
         """
-        called by statistics function to plot a barplot of
-        the proportion of different cluster per homologies
-        and per species
+        called by statistics function to plot a barplot of the proportion of different cluster per homologies and per species
 
         Args:
             interactive: bool to true if you want to use the bokeh interactive version
@@ -1061,8 +1087,7 @@ class HomoSet(collections.MutableMapping):
 
     def _dictify(self, savehomos=False):
         """
-        Used by the saving function. transform the object into a dictionary that can be
-        json serializable
+        Used by the saving function. transform the object into a dictionary that can be json serializable
 
         Args:
             savehomos: bool to true if you consider this homology as containing all the information
@@ -1262,8 +1287,7 @@ class HomoSet(collections.MutableMapping):
 
     def _plot_clust(self, mat, orderedmat):
         """
-        will plot the correlation matrix of the has_homomatrix before and after ordering
-        allowing one to show its effect
+        will plot the correlation matrix of the has_homomatrix before and after ordering allowing one to show its effect
 
         Args:
             mat: np.array[bool] the current homology matrix

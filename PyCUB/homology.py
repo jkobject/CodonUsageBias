@@ -27,9 +27,9 @@ import pdb
 
 class homology(object):
     """in homology we store an homology with all its related data,
+
     it reduced matrix with dim reduction and its clusters for example
     it is supposed to be store in a dictionary of homologies
-
     an homology is a set of genes from different species related by a common ancester
     gene and generally a common function.
     the unique metadatas are generally from the reference species/genome
@@ -76,8 +76,8 @@ class homology(object):
         synthesis_steps: the number of steps required by the cell to build up the amino acids of this protein
         isoelectricpoint: float, a proxy of the Pi of this protein.
         conservation: float, the total conservation of each amino of the corresponding protein
-        othercods: float, the average number of codons other than the ones of the 18 amino acids we are 
-            looking at per species on the homology 
+        othercods: float, the average number of codons other than the ones of the 18 amino acids we are
+            looking at per species on the homology
 
     """
 
@@ -85,13 +85,13 @@ class homology(object):
     var = None  # np array len(species)
     mean = None  # np array float
 
-    clusters = None  # list
+    clusters = None  # list[int]
     centroids = None  # np array Xx2/3/4
     metrics = {}
     homocode = 'None'
     nans = None  # array len(species)
     lenmat = None  # array len(species)x 18
-    names = None  # list
+    names = None  # list[int]
     doub = None  # array len(species)
     GCcount = None  # array len(species)
 
@@ -103,10 +103,10 @@ class homology(object):
     proteinids = []  # list[str]
     isrecent = None  # float
     ishighpreserved = None  # bool
-    geneids = None  # list
+    geneids = None  # list[str]
     ref = None  # array CUBD
-    refprot = None
-    refgene = None
+    refprot = None  # str
+    refgene = None  # str
     ecai = None  # array len(species)
     meanecai = None  # float
     cai = None  # array len(species)
@@ -147,13 +147,13 @@ class homology(object):
             self.reduced = np.asarray(data.get("reduced")) if data.get("reduced", None) is not None else None
             self.reduced_algo = data.get("reduced_algo", None)
             self.KaKs_Scores = np.asarray(data.get("KaKs_Scores", None)) if data.get("KaKs_Scores", None) is not None else None
-            self.homocode = data.get("homocode", 'None')
+            self.homocode = str(data.get("homocode", 'None'))
             self.similarity_scores = np.asarray(data.get("similarity_scores", None))\
                 if data.get("similarity_scores", None) is not None else None
-            self.proteinids = data.get("proteinids", [])
+            self.proteinids = [str(i) for i in data.get("proteinids", [])]
             self.isrecent = data.get("isrecent", None)
             self.ishighpreserved = data.get("ishighpreserved", None)
-            self.geneids = data.get("geneids", None)
+            self.geneids = [str(i) for i in data.get("geneids", None)]
             self.conservation = data.get("conservation", None)
             self.cai = np.asarray(data["cai"]) if data.get("cai") else None
             self.meancai = data.get("meancai", None)
@@ -171,8 +171,8 @@ class homology(object):
             self.synthesis_steps = data.get("synthesis_steps", None)
             self.isoelectricpoint = data.get("isoelectricpoint", None)
             self.ref = np.asarray(data.get("ref", None)) if data.get("ref", None) is not None else None
-            self.refprot = data.get("refprot", None)
-            self.refgene = data.get("refgene", None)
+            self.refprot = str(data.get("refprot", None))
+            self.refgene = str(data.get("refgene", None))
             self.othercods = data.get("othercods", None)
         else:
             self.full = kwargs.get("full", None)
@@ -217,31 +217,25 @@ class homology(object):
             self.conservation = kwargs.get("conservation", None)
 
     def __str__(self):
-        returnd = 'full: ' + str(self.full) +\
+        speciestable = dict(utils.speciestable)
+        returnd = '\nhomology: ' + self.homocode +\
+            '\nsize: ' + str(len(self.full)) +\
             '\nfullmax: ' + str(self.full.max()) +\
             '\nvar: ' + str(self.var) +\
             '\nmean: ' + str(self.mean) +\
             '\nmetrics: ' + str(self.metrics) +\
-            '\nhomocode: ' + self.homocode +\
-            '\nnans: ' + str(self.nans) +\
-            '\nnansmean: ' + str(self.nans.mean()) +\
-            '\nlenmat: ' + str(self.lenmat) +\
-            '\nnames: ' + str(self.names) +\
-            '\ndoub: ' + str(self.doub) +\
-            '\nGCcount: ' + str(self.GCcount) +\
+            '\nnans mean: ' + str(self.nans.mean()) +\
+            '\nlengths mean/var: ' + str(self.lenmat.sum(1).mean()) + ', ' + str(self.lenmat.sum(1).var()**(0.5)) +\
+            '\ndoublon sum: ' + str(self.doub.sum()) +\
+            '\nGCcount mean/var: ' + str(self.GCcount.mean()) + ', ' + str(self.GCcount.var()**(0.5)) +\
             '\nKaKs_Scores: ' + str(self.KaKs_Scores) +\
-            '\nsimilarity_scores: ' + str(self.similarity_scores) +\
-            '\nproteinids: ' + str(self.proteinids) +\
             '\nisrecent: ' + str(self.isrecent) +\
             '\nishighpreserved: ' + str(self.ishighpreserved) +\
-            '\ngeneids: ' + str(self.geneids) +\
             '\nref: ' + str(self.ref) +\
             '\nrefprot: ' + str(self.refprot) +\
             '\nrefgene: ' + str(self.refgene) +\
-            '\necai: ' + str(self.ecai) +\
-            '\nmeanecai: ' + str(self.meanecai) +\
-            '\ncai: ' + str(self.cai) +\
-            '\nmeancai: ' + str(self.meancai) +\
+            '\necai mean/var: ' + str(self.ecai.mean()) + ', ' + str(self.ecai.var()**(0.5)) +\
+            '\ncai mean/var: ' + str(self.cai.mean()) + ', ' + str(self.cai.var()**(0.5)) +\
             '\nprotein_abundance: ' + str(self.protein_abundance) +\
             '\nweight: ' + str(self.weight) +\
             '\nconservation: ' + str(self.conservation) +\
@@ -288,7 +282,11 @@ class homology(object):
     def nb_unique_species(self):
         """
         compute the number of unique species in this homologies
+
         (basically count the number of doub)
+
+        Args:
+            None
 
         Returns:
             The number of unique species in this homology
@@ -298,6 +296,7 @@ class homology(object):
     def order(self, withtaxons=False):
         """
         order the names by numerical increasing order
+
         and sorts every representations as well according to this ordering
 
         Args:
@@ -340,6 +339,8 @@ class homology(object):
             self.geneids = [self.geneids[i] for i in indices]
         if self.ecai is not None:
             self.ecai[:] = self.ecai[indices]
+        if self.cai is not None:
+            self.cai[:] = self.cai[indices]
         if withtaxons:
             self.names[0] = names
             for j, i in enumerate(indices):
@@ -350,9 +351,12 @@ class homology(object):
     def compute_averages(self):
         """
         Computes the mean, var and mean of the homology
+
+        Args:
+            None
         """
         self.mean = self.full.mean(0)
-        self.var = self.full.var(0)
+        self.var = self.full.var(0)**(0.5)
         if self.ecai is not None:
             self.meanecai = self.ecai.mean()
         if self.cai is not None:
@@ -360,8 +364,7 @@ class homology(object):
 
     def reduce_dim(self, alg='tsne', n=2, perplexity=40):
         """
-        reduce the dimensionality of your gene dataset to a defined dimension
-        using the t-SNE algorithm
+        reduce the dimensionality of your gene dataset to a defined dimension using the t-SNE algorithm
 
         Args:
             alg: a matrix of gene codon usage per species
@@ -582,7 +585,7 @@ class homology(object):
                 dist = np.zeros(len(cov[i]))
                 for j in range(len(cov[i])):
                     dist[j] = euclidean(self.centroids[i], cov[i][j])
-                dists[i] = [dist.mean(), dist.var()]
+                dists[i] = [dist.mean(), dist.var()**(0.5)]
             print "the mean,var of the distances of the covariances to the means of each clusters are: "
             print dists
             n_clusters_ = homogroupnb
@@ -590,7 +593,7 @@ class homology(object):
             # http://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html
 
             alg = cluster.DBSCAN(eps=eps, min_samples=7,
-                                 algorithm='auto', n_jobs=-1)
+                                 algorithm='auto', n_jobs=1)
             self.clusters = alg.fit_predict(self.full).tolist()
             n_clusters_ = len(set(self.clusters)) - (1 if -1 in self.clusters else 0)
             if verbose:
@@ -614,15 +617,18 @@ class homology(object):
                 speciestable = dict(utils.speciestable)
                 avg_phylodistance = []
                 hastaxons = utils.phylo_distances.index.tolist()
-                spe = [speciestable[j] for j in self.names if speciestable[j] in hastaxons]
+                spe = list(set([speciestable[j] for j in self.names if speciestable[j] in hastaxons]))
+                if len(spe) < 2:
+                    self.metrics.update({'cluster_phylodistance': [1.]})
+                    if verbose:
+                        print 'not enough species'
+                    return self.clusters
                 div = float(utils.phylo_distances[spe].loc[spe].sum().sum()) / (len(spe)**2 - len(spe))
                 for i in range(-1, n_clusters_):
                     # Here the first value is for the outliers and the second for the unclusterized
                     # data points
                     ind = np.argwhere(np.array(self.clusters) == i).T[0]
-                    if len(ind) < 3:
-                        continue
-                    species = [speciestable[self.names[j]] for j in ind if speciestable[self.names[j]] in hastaxons]
+                    species = list(set([speciestable[self.names[j]] for j in ind if speciestable[self.names[j]] in hastaxons]))
                     if len(species) < 2:
                         continue
                     avg_phylodistance.append((float(utils.phylo_distances[species].
@@ -637,8 +643,10 @@ class homology(object):
 
     def _dictify(self):
         """
-        Used by the saving function. transform the object into a dictionary that can be
-        json serializable
+        Used by the saving function. transform the object into a dictionary that can be json serializable
+
+        Args:
+            None
 
         Returns:
             A dict holding every element to be jsonized
