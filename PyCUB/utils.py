@@ -1865,15 +1865,17 @@ def kl(a, b):
     """
     kulback-leiber distance computation
     """
+    a = np.ma.masked_equal(a, 0)
+    b = np.ma.masked_equal(b, 0)
     return (np.log(a / b) * a).sum()
 
 
 # class dotdict(dict):
-#     """
-#     dot.notation access to dictionary attributes
+    """
+    dot.notation access to dictionary attributes
 
-#     May be used to pass a dict within it and access it by ".value" instead of "[value]"
-#     """
-#     __getattr__ = dict.get
-#     __setattr__ = dict.__setitem__
-#     __delattr__ = dict.__delitem__
+    May be used to pass a dict within it and access it by ".value" instead of "[value]"
+    """
+    #__getattr__ = dict.get
+    #__setattr__ = dict.__setitem__
+    #__delattr__ = dict.__delitem__

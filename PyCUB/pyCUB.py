@@ -901,7 +901,6 @@ class PyCUB(object):
                                 break
                     with gzip.open("utils/data/temp.fa.gz", "rt") as handle:
                         val, gccount = _compute_full_entropy(handle, by, avg)
-                        pdb.set_trace()
                     self.species[d].fullentropy = val.mean(1) if avg else val
                     self.species[d].fullvarentropy = (val.var(1)**(0.5)).mean() if avg else None
                     self.species[d].fullGCcount = gccount.mean() if avg else gccount
@@ -1076,7 +1075,7 @@ class PyCUB(object):
         ind = homoset.homo_matrixnames.argsort()
         GCmat = np.zeros((len(homoset.homo_namelist), len(homoset.species_namelist)))
         for i, val in enumerate(homoset.homo_namelist):
-            GCmat[i, homoset[val].names] = homoset[val].GCcount
+            GCmat[i, np.array(homoset[val].names)[np.invert(homoset[val].doub)]] = homoset[val].GCcount[np.invert(homoset[val].doub)]
         GCmat = GCmat.sum(0) / np.count_nonzero(GCmat, 0)
         for i, spece in enumerate(homoset.species_namelist):
             self.species[spece].meanGChomo = GCmat[i]
@@ -1087,7 +1086,7 @@ class PyCUB(object):
             bslicetoavg = homoset.fulleng[ind[pos:pos + un]]
 
             self.species[speciestable[i]].average_entropy = aslicetoavg.mean(axis=0)
-            self.species[speciestable[i]].average_size = bslicetoavg.sum(0).mean()
+            self.species[speciestable[i]].average_size = bslicetoavg.sum(1).mean()
             # variances are mean variances over all values
             self.species[speciestable[i]].var_entropy = (aslicetoavg.var(axis=0)**(0.5)).mean()
             pos += un
@@ -1535,7 +1534,8 @@ class PyCUB(object):
                                         "utils/meta/3Dmodel/cerevisiae_inter2.csv",
                                         "utils/meta/3Dmodel/cerevisiae_inter3.csv",
                                         "utils/meta/3Dmodel/cerevisiae_inter4.csv",
-                                        "utils/meta/3Dmodel/cerevisiae_inter5.csv"], bins=2000, seq='cds', use='diament2', compute="jerem"):
+                                        "utils/meta/3Dmodel/cerevisiae_inter5.csv"], bins=2000, seq='cds', use='diament2',
+                         euclide=False):
         """
         https://www.nature.com/articles/ncomms6876
 
@@ -1607,6 +1607,7 @@ class PyCUB(object):
             kingdom = ''
         ftp.cwd('pub/' + release + kingdom + '/fasta/')
         data = []
+        print 'change'
         ftp.retrlines('NLST', data.append)
         pdb.set_trace()
         for d in data:
@@ -1676,52 +1677,74 @@ class PyCUB(object):
                 tempchrom = 0
                 tempind = 0
                 tempdf = df.loc[df['chr1'] == 1]
-                if compute == 'jerem':
-                    gene2pos = {}
-                    pos2gene = {}
-                    dists = np.zeros(len(positions))
-                    tempdist = 1000000
-                    for n, val in enumerate(positions):
-                        if val[0] >= tempchrom + 1:
-                            tempdf = df.loc[df['chr1'] == val[0]]
-                            tempchrom = val[0]
-                            tempind = tempdf.index[0]
-                            maxind = tempdf.index[-1]
-                        # Here we could use a modified binar search instead
-                        while abs(tempdf['locus1'][tempind] - val[1]) <= tempdist:
-                            tempdist = abs(tempdf['locus1'][tempind] - val[1])
-                            tempind += 1
-                            if tempind >= maxind:
-                                break
-                        dists[n] = tempdist
-                        tempind -= 1
-                        # we found a position
-                        tempdist = 10000000
-                        gene2pos.update({n: [tempchrom, tempdf['locus1'][tempind]]})
-                        if pos2gene.get((tempchrom, tempdf['locus1'][tempind]), False):
-                            pos2gene[(tempchrom, tempdf['locus1'][tempind])].append(n)
-                        else:
-                            pos2gene.update({(tempchrom, tempdf['locus1'][tempind]): [n]})
-                    # for each gene positions we look at the closest point in the contact map (list of positison)
-                    # we create a mapping dict for that.
-                    tempchrom = 0
-                    print "average distance is" + str(dists.mean())
-                    missedrelation = 0
-                    tempdf = df.loc[df['chr1'] == 1]
-                    dist3D = np.zeros((len(positions), len(positions)), dtype=int)
-                    dist3D += 1000000
-                    np.fill_diagonal(dist3D, 0)
-                    # Doing the first one for efficiency
-                    tempdf = df.loc[df['chr1'] == 1]
-                    relatedto = tempdf.loc[tempdf['locus1'] == gene2pos[0][1]]
+                gene2pos = {}
+                pos2gene = {}
+                dists = np.zeros(len(positions))
+                tempdist = 1000000
+                for n, val in enumerate(positions):
+                    if val[0] >= tempchrom + 1:
+                        tempdf = df.loc[df['chr1'] == val[0]]
+                        tempchrom = val[0]
+                        tempind = tempdf.index[0]
+                        maxind = tempdf.index[-1]
+                    # Here we could use a modified binar search instead
+                    while abs(tempdf['locus1'][tempind] - val[1]) <= tempdist:
+                        tempdist = abs(tempdf['locus1'][tempind] - val[1])
+                        tempind += 1
+                        if tempind >= maxind:
+                            break
+                    dists[n] = tempdist
+                    tempind -= 1
+                    # we found a position
+                    tempdist = 10000000
+                    gene2pos.update({n: [tempchrom, tempdf['locus1'][tempind]]})
+                    if pos2gene.get((tempchrom, tempdf['locus1'][tempind]), False):
+                        pos2gene[(tempchrom, tempdf['locus1'][tempind])].append(n)
+                    else:
+                        pos2gene.update({(tempchrom, tempdf['locus1'][tempind]): [n]})
+                # for each gene positions we look at the closest point in the contact map (list of positison)
+                # we create a mapping dict for that.
+                tempchrom = 0
+                print "average distance is" + str(dists.mean())
+                missedrelation = 0
+                tempdf = df.loc[df['chr1'] == 1]
+                dist3D = np.zeros((len(positions), len(positions)), dtype=int)
+                dist3D += 1000000
+                np.fill_diagonal(dist3D, 0)
+                # Doing the first one for efficiency
+                tempdf = df.loc[df['chr1'] == 1]
+                relatedto = tempdf.loc[tempdf['locus1'] == gene2pos[0][1]]
+                chro = list(relatedto["chr2"])
+                loc = list(relatedto["locus2"])
+                for i in range(len(chro)):
+                    pos = pos2gene.get((chro[i], int(loc[i])), False)
+                    if pos:
+                        for p in pos:
+                            dist3D[p, 0] = 1
+                            dist3D[0, p] = 1
+                            for p_ in pos:
+                                dist3D[p, p_] = 1
+                                dist3D[p_, p] = 1
+                    else:
+                        missedrelation += 1
+                n = 1
+                for val in positions[1:]:
+                    dist3D[n, n - 1] = 1
+                    dist3D[n - 1, n] = 1
+                    if val[0] >= tempchrom + 1:
+                        tempdf = df.loc[df['chr1'] == val[0]]
+                    relatedto = tempdf.loc[tempdf['locus1'] == gene2pos[n][1]]
                     chro = list(relatedto["chr2"])
                     loc = list(relatedto["locus2"])
                     for i in range(len(chro)):
                         pos = pos2gene.get((chro[i], int(loc[i])), False)
                         if pos:
                             for p in pos:
-                                dist3D[p, 0] = 1
-                                dist3D[0, p] = 1
+                                dist3D[p, n] = 1
+                                dist3D[n, p] = 1
+                                for p_ in pos:
+                                    dist3D[p, p_] = 1
+                                    dist3D[p_, p] = 1
                         else:
                             missedrelation += 1
                     n = 1
@@ -1828,9 +1851,8 @@ class PyCUB(object):
                     distcuf = np.zeros((len(positions), len(positions)), dtype=float)
                     distcub = np.zeros((len(positions), len(positions)), dtype=float)
                     distent = np.zeros((len(positions), len(positions)), dtype=float)
-                    vals = np.ma.masked_equal(vals, 0)
-                    cufs = np.ma.masked_equal(cufs, 0)
-                    cubs = np.ma.masked_equal(cubs, 0)
+                    #cubs = np.ma.masked_equal(cubs, 0)
+                    j = 0
                     for val in vals:
                         i = 0
                         for comp in vals:
@@ -1839,12 +1861,12 @@ class PyCUB(object):
                                 distcub[j, i] = distcub[i, j]
                                 distcuf[j, i] = distcuf[i, j]
                             elif i > j:
-                                distent[j, i] = euclidean(val, comp)
-                                distcub[j, i] = utils.endresdistance(cubs[j], cubs[i])
-                                distcuf[j, i] = utils.endresdistance(cufs[j], cufs[i])
+                                distent[j, i] = euclidean(val, comp) if euclide else utils.endresdistance(val, comp)
+                                distcub[j, i] = euclidean(cubs[j], cubs[i]) if euclide else utils.endresdistance(cubs[j], cubs[i])
+                                distcuf[j, i] = euclidean(cufs[j], cufs[i]) if euclide else utils.endresdistance(cufs[j], cufs[i])
                             i += 1
                         j += 1
-                        print '\rdistcomputation ' + str(j) + 'over ' + str(len(vals)),
+                        print '\rdistcomputation ' + str(j) + ' over ' + str(len(vals)),
 
                     if use == "diament1":
                         div, i = divmod(len(names), bins)
@@ -1949,7 +1971,6 @@ class PyCUB(object):
                     cuf = np.ma.masked_equal(cuf, 0)
                     cub = np.ma.masked_equal(cub, 0)
                     j = 0
-                    pdb.set_trace()
                     for val in ent:
                         i = 0
                         for comp in ent:

@@ -207,15 +207,41 @@ class HomoSet(collections.MutableMapping):
             raise TypeError("the type you should enter is int or unicode or str")
 
     def __delitem__(self, key):
-        del self.homodict[key]
+        """
+        same as in dict()
+
+        Args:
+            key: str, unicode the key at which to add
+
+        Raises:
+            TypeError "the type you should enter is int or unicode or str"
+            KeyError
+        """
+        if type(key) is unicode:
+            del self.homodict[key]
+        elif type(key) is int:
+            del self.homodict[self.homo_namelist[key]]
+        elif type(key) is str:
+            del self.homodict[unicode(key)]
+        else:
+            raise TypeError("the type you should enter is int or unicode or str")
 
     def __iter__(self):
+        """
+        same as in dict()
+        """
         return iter(self.homodict)
 
     def iteritems(self):
+        """
+        same as in dict()
+        """
         return self.homodict.iteritems()
 
     def __len__(self):
+        """
+        gives you the length of the homoset ( number of homologies)
+        """
         return len(self.homodict)
 
     def update(self, val):
@@ -462,9 +488,13 @@ class HomoSet(collections.MutableMapping):
     def preprocessing_taxons(self):
         """
         preprocess the data by computing the names as ints
+
         creates a speciestable to find the corresponding names
         computes the doublons and compute the species_namelist of this homoset
         will returns the species and the corresponding taxons  extracted from the homology.names
+
+        Args:
+            None
         """
         i = 0
         helper = {}
@@ -819,11 +849,13 @@ class HomoSet(collections.MutableMapping):
             UnboundLocalError: "you need to find clusters first"
         """
         homoclusters = np.zeros((len(self.homodict), 3))
+        speciestable = dict(utils.speciestable)
         specluster = np.zeros((len(self.species_namelist), 3))
         if self.wasclusterized:
             if not self.stats or redo:
-                for j, (key, val) in enumerate(self.iteritems()):
+                for j, homo in enumerate(self.homo_namelist):
                     x = -1
+                    val = self[homo]
                     hprop = np.zeros(3)
                     for i in range(len(val.clusters)):
                         if not val.doub[i]:
@@ -838,12 +870,11 @@ class HomoSet(collections.MutableMapping):
                             hprop[2] += 1
                             specluster[val.names[x]][2] += 1
 
-                    homoclusters[j] = np.divide(hprop, i) if i != 0 else [1, 0, 0]
+                    homoclusters[j] = np.divide(hprop, 1 + i) if i != 0 else np.array([1, 0, 0])
                 specluster = np.divide(specluster.T, specluster.sum(1)).T
                 specluster = specluster[~np.isnan(specluster).any(axis=1)]
                 self.stats = {'homologies': homoclusters.tolist(), 'species': specluster.tolist()}
                 if sort:
-                    pdb.set_trace()
                     ind = sorted(range(len(self.stats['homologies'])), key=lambda k: self.stats['homologies'][k])
                     self.stats['homologies'].sort()
                     if self.hashomo_matrix is not None:
@@ -852,7 +883,23 @@ class HomoSet(collections.MutableMapping):
                         self.homo_namelist[:] = [self.homo_namelist[i] for i in ind]
                     if self.clusters:
                         self.clusters[:] = [self.clusters[i] for i in ind]
+                    if self.homo_matrix is not None:
+                        self.homo_matrix = self.homo_matrix[ind]
+                    if self.homo_matrixnames is not None:
+                        self.homo_matrixnames = self.homo_matrixnames[ind]
+                    if self.fulleng is not None:
+                        self.fulleng = self.fulleng[ind]
+                    if self.homo_clusters is not None:
+                        self.homo_clusters = self.homo_clusters[ind]
+                    ind = sorted(range(len(self.stats["species"])), key=lambda k: self.stats["species"][k])
+                    self.species_namelist = speciestable.values()
+                    self.species_namelist = [self.species_namelist[i] for i in ind]
+                    for val in speciestable.values():
+                        if val not in self.species_namelist:
+                            self.species_namelist.append(val)
                     self.stats["species"].sort()
+                    print "beware, species_namelist does not represent speciesdict/loadhashomo/loadfullhomo/etc"
+                    print "just do homoset.species_namelist = cub.speciesdict().values() to retrieve the correspondance"
             else:
                 print "using cached data to save computation"
             return self._barplot()
@@ -878,7 +925,7 @@ class HomoSet(collections.MutableMapping):
             size: int the size of the plot
         """
         j = 0
-        simimatrix = np.zeros((len(self.homodict), len(self.homodict)), dtype=float)
+        simimatrix = np.zeros((len(self.homodict), len(self.homodict)))
         for _, homo in self.iteritems():
             a = set(homo.names)
             se = np.zeros(len(self.species_namelist), dtype=int) - 2
@@ -927,8 +974,8 @@ class HomoSet(collections.MutableMapping):
                         continue
                     similar = len(a.intersection(homocmp.names))
                     if not similar:
-                        i += 1
                         simimatrix[j, i] = np.NaN
+                        i += 1
                         continue
                     comp = se.copy()
                     # we need to have the values of the homo we compare to that are not in homo we compare
@@ -941,8 +988,10 @@ class HomoSet(collections.MutableMapping):
                     simimatrix[j, i] = prdist(se, comp).sum() / similar
                     i += 1
                 j += 1
-            simimatrix[np.where(simimatrix > 1)] = 1
+            simimatrix = simimatrix / simimatrix.max()
+            pdb.set_trace()
             self.cub_similarity = 1 - simimatrix
+            self.cub_similarity = np.nan_to_num(self.cub_similarity)
             if plot:
                 distcub = self.plot_distcub(interactive=interactive, size=size)
                 if interactive:
@@ -988,6 +1037,8 @@ class HomoSet(collections.MutableMapping):
         if best_eps:
             score = 0
             for _, homo in self.iteritems():
+                if len(homo.metrics["cluster_phylodistance"]) == 1:
+                    score += 1
                 score += np.array(homo.metrics["cluster_phylodistance"][1:]).mean() - (homo.metrics["cluster_phylodistance"][0] - 1)
             print "-----------------TOT------------------"
             print score
@@ -1257,7 +1308,7 @@ class HomoSet(collections.MutableMapping):
                     xname=xname,
                     yname=yname,
                     colors=[colormap[2]] * (len(self.homo_namelist)**2),
-                    alphas=1 - self.cub_similarity.flatten(),
+                    alphas=self.cub_similarity.flatten(),
                 )
 
                 output_notebook()
