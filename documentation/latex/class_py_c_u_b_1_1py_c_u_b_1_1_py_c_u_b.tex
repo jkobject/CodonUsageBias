@@ -1,0 +1,1022 @@
+\hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b}{}\section{Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+UB Class Reference}
+\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b}\index{Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+UB@{Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+UB}}
+
+
+\mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b}{Py\+C\+UB}} is the main object of the project that allows the user to access most of the functions.  
+
+
+Inheritance diagram for Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+UB\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a0a8de5f32a03de2c681c0582d9998f03}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, species=\{\}, \+\_\+is\+\_\+saved=False, \+\_\+is\+\_\+loaded=False, working\+\_\+homoset=None, all\+\_\+homoset=None, session=\textquotesingle{}session1\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em will initialize the object with the different values you might have from another project \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ae06a2843c0718f86396ee255dfc6ae6f}{get\+Homologylist}} (self, species=\textquotesingle{}saccharomyces\+\_\+cerevisiae\textquotesingle{}, kingdom=\textquotesingle{}fungi\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em A function to retrieve the homologies directly from a given species. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ac4d231f47432a18f84da1cef8673b50b}{get\+\_\+data}} (self, From=\textquotesingle{}yun\textquotesingle{}, homonames=None, kingdom=\textquotesingle{}fungi\textquotesingle{}, sequence=\textquotesingle{}cdna\textquotesingle{}, additional=\textquotesingle{}type=orthologues\textquotesingle{}, saveonfiles=False, normalized=True, setnans=False, by=\char`\"{}entropy\char`\"{}, using=\char`\"{}normal\char`\"{}, t\+R\+NA=True, get\+C\+AI=True, first=20, inpar=True)
+\begin{DoxyCompactList}\small\item\em Download the data from somewhere on the web (Ensembl, Yun(with links)) \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ae561ba39b9c3919a83b51944f155e4a4}{get\+\_\+metadata\+\_\+\+Ensembl}} (self, kingdoms)
+\begin{DoxyCompactList}\small\item\em download it and put it where it belongs in the Espece object \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a1ff011ae5b64518d60bedcf1b98314ef}{get\+\_\+mymetadata}} (self, From=\textquotesingle{}jerem\textquotesingle{}, inpar=True)
+\begin{DoxyCompactList}\small\item\em Go ahead and design your own metadata retrieval here. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_acd80f084f6671584c42542813874cd02}{import\+\_\+metadata\+Tobias}} (self)
+\begin{DoxyCompactList}\small\item\em will import the metadata obtained from tobias for the fungi species affiliated to cerevisiae to each species for further diagnostics. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ab471e823b0eba23af5a5322008ec09da}{load}} (self, session=None, All=False, filename=\textquotesingle{}first500\textquotesingle{}, From=None, by=\textquotesingle{}entropy\textquotesingle{}, t\+R\+NA=True, inpar=True)
+\begin{DoxyCompactList}\small\item\em Get the data that is already present on a filename. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a16a1ab6be5dddcedf94852088936c1f2}{loadmore}} (self, filename=\textquotesingle{}first500\textquotesingle{}, by=\textquotesingle{}entropy\+Location\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em Get the data that is already present on a filename when you already have data. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a477c55065989b10bce8389c5edaf3322}{save}} (self, name, save\+\_\+workspace=True, save\+\_\+homo=True, add\+\_\+homosets=\{\}, cmdlinetozip=\char`\"{}gzip\char`\"{})
+\begin{DoxyCompactList}\small\item\em call to save your work. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a1916ef696d74af1028a2aeff643727db}{get\+\_\+working\+\_\+homoset}} (self, clusternb=None, species=None, homologies=None, cleanhomo=None)
+\begin{DoxyCompactList}\small\item\em create a subset of all\+\_\+homoset on which you would like to do further computation \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a9fab964d44e03b46d330b3754f5c39fb}{get\+\_\+subset}} (self, homoset, withcopy=False, clusternb=None, species=None, homologies=None)
+\begin{DoxyCompactList}\small\item\em either changes or returns a subset of the provided homoset \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a53b60adfafbe019421d010c5fed04f5c}{get\+\_\+full\+\_\+genomes}} (self, kingdom=\textquotesingle{}fungi\textquotesingle{}, seq=\textquotesingle{}cds\textquotesingle{}, avg=True, by=\char`\"{}entropy\char`\"{}, normalized=False)
+\begin{DoxyCompactList}\small\item\em go trought all full genome fasta files in the ftp server of ensemblgenomes and \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a4e9a2d43aacfc8d2fb1610140f2439f2}{get\+\_\+taxons}} (self)
+\begin{DoxyCompactList}\small\item\em find the taxons of each referenced species (see Py\+C\+U\+B.\+Espece.\+gettaxons()) \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_af0d7bed125f4437bea6b8051f9922c1d}{get\+\_\+evolutionary\+\_\+distance}} (self, display\+\_\+tree=False, size=40)
+\begin{DoxyCompactList}\small\item\em uses metadata of the ancestry tree and computes a theoretical evolutionary distance matrix between each species \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a40a742a1a05fc21c7bced2c75fb93fc6}{create\+Ref\+C\+AI}} (self, speciestocompare=\textquotesingle{}saccharomyces\+\_\+cerevisiae\textquotesingle{}, kingdom=\textquotesingle{}fungi\textquotesingle{}, first=20)
+\begin{DoxyCompactList}\small\item\em do a compute C\+AI \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_af3e280c265200f13946e4bdcb4cd9dd0}{speciestable}} (self)
+\begin{DoxyCompactList}\small\item\em a copy of the utils.\+speciestable \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a2ea40ac1dd5b4ad8847ec12c867d457f}{phylo\+\_\+distances}} (self)
+\begin{DoxyCompactList}\small\item\em a copy of the phylodistances dataframe see (\mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_af0d7bed125f4437bea6b8051f9922c1d}{get\+\_\+evolutionary\+\_\+distance()}}) \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a9526c0d10381daf5abc8ea120454e701}{compute\+\_\+averages}} (self, homoset)
+\begin{DoxyCompactList}\small\item\em compute the average entropy \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ad7f24b316bc8c257719da20c0792ec01}{compare\+\_\+species}} (self, showvar=True, reducer=\textquotesingle{}tsne\textquotesingle{}, perplexity=40, eps=0.\+3, size=10)
+\begin{DoxyCompactList}\small\item\em compare the species according to their mean C\+UB, \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_af1cab3e8d69796c1a9a54a57a76228cd}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_af1cab3e8d69796c1a9a54a57a76228cd}} 
+def {\bfseries compute\+\_\+ages} (self, homoset, preserved=True, minpreserv=0.\+9, minsimi=0.\+85)
+\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_af37319783148fc8864d894b3e2f89078}{regress\+\_\+on\+\_\+species}} (self, without=\mbox{[}\char`\"{}\char`\"{}\mbox{]}, full=True, onlyhomo=False, perctrain=0.\+8, algo=\char`\"{}lasso\char`\"{}, eps=0.\+001, n\+\_\+alphas=100)
+\begin{DoxyCompactList}\small\item\em Will fit a regression curve on the C\+UB values of the different species according to the metadatas available for each of them. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ad350376cd68d4daacec78c694ed754c6}{compare\+\_\+homologies}} (self, homoset, homosapiens=False, mindistance=10, preserved=True, size=10, minpreserv=0.\+9, minsimi=0.\+9, showvar=True, eps=0.\+28, reducer=\textquotesingle{}tsne\textquotesingle{}, perplexity=40)
+\begin{DoxyCompactList}\small\item\em finds for species with a common ancester separated by a pseudo phylogenetic distance X, \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a1b65efe7deb4ba5f65203c8be6fc7af2}{regress\+\_\+on\+\_\+genes}} (self, homoset, full=True, without=\mbox{[}\textquotesingle{}meanecai\textquotesingle{}, meancai, perctrain=0.\+8, algo=\char`\"{}lasso\char`\"{}, eps=0.\+001, n\+\_\+alphas=100)
+\begin{DoxyCompactList}\small\item\em Will fit a regression curve on the C\+UB values of the different homologies according to the metadatas available for each of them. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a06d83a29ac506b4a9422ef7e64eef0b0}{get\+Relation2\+G3\+DD}} (self, species\+\_\+name=\textquotesingle{}saccharomyces\+\_\+cerevisiae\textquotesingle{}, kingdom=\textquotesingle{}fungi\textquotesingle{}, intrachromosome=\char`\"{}utils/meta/3\+Dmodel/interactions\+\_\+\+Hind\+I\+I\+I\+\_\+fdr0.\+01\+\_\+intra\+\_\+cerevisiae.\+csv\char`\"{}, interchromose=\mbox{[}\char`\"{}utils/meta/3\+Dmodel/cerevisiae\+\_\+inter1.\+csv\char`\"{}, utils, meta, Dmodel, cerevisiae\+\_\+inter2, csv, utils, meta, Dmodel, cerevisiae\+\_\+inter3, csv, utils, meta, Dmodel, cerevisiae\+\_\+inter4, csv, utils, meta, Dmodel, cerevisiae\+\_\+inter5, csv, bins=2000, seq=\textquotesingle{}cds\textquotesingle{}, use=\textquotesingle{}diament2\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em \href{https://www.nature.com/articles/ncomms6876}{\tt https\+://www.\+nature.\+com/articles/ncomms6876} \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a4e13b55153bbe774e9203818f2b7f690}{plot\+\_\+distances}} (self, size=40)
+\begin{DoxyCompactList}\small\item\em plot the phylogenetic distance matrix \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ac37364050a4ec9a7ddf3d6c1562e49a5}{loadspeciestable}} (self)
+\begin{DoxyCompactList}\small\item\em short function to retrieve the speciestable from Disk \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a8249834e1d2f7d061ae06ffa5a1adc32}{savespeciestable}} (self)
+\begin{DoxyCompactList}\small\item\em short function to put the speciestable on Disk \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a60cc232d3d52f88fe8a80244b3fcddc8}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a60cc232d3d52f88fe8a80244b3fcddc8}} 
+{\bfseries species}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a91b69c31f346c4983b40c1525739cf16}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a91b69c31f346c4983b40c1525739cf16}} 
+{\bfseries homolist}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ab2fcbabe6d3870dbbaa0cfd11605b004}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ab2fcbabe6d3870dbbaa0cfd11605b004}} 
+{\bfseries pent}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a9f1b34d59aff65055117cde8a174a474}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a9f1b34d59aff65055117cde8a174a474}} 
+{\bfseries pcub}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a0081f01dedc28de7864a2424c6760546}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a0081f01dedc28de7864a2424c6760546}} 
+{\bfseries pcuf}
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a34f579da0a139dffa0a01c3a90e9ef8d}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a34f579da0a139dffa0a01c3a90e9ef8d}} 
+dictionary {\bfseries links}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a39f174e37479c070657a4e9e710a53ca}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a39f174e37479c070657a4e9e710a53ca}} 
+dictionary {\bfseries species} = \{\}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ad3b3799416b15243c9027230dcd68482}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ad3b3799416b15243c9027230dcd68482}} 
+{\bfseries working\+\_\+homoset} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a5e68f8b0897b4e75b69abd6f1ac1beed}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a5e68f8b0897b4e75b69abd6f1ac1beed}} 
+{\bfseries all\+\_\+homoset} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a24fdc39b781fc1974625810704bd8140}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a24fdc39b781fc1974625810704bd8140}} 
+{\bfseries session} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_abf0e792c29eb4ea90049ca996cad0022}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_abf0e792c29eb4ea90049ca996cad0022}} 
+{\bfseries coeffgenes} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a70eae30eb6f055c7955969ec573a3f23}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a70eae30eb6f055c7955969ec573a3f23}} 
+{\bfseries scoregenes} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_acbae28b1a15a26eedfa82aed4c8ae24f}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_acbae28b1a15a26eedfa82aed4c8ae24f}} 
+{\bfseries scorespecies} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a37440d3a799d825552f477fc4a44c54f}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a37440d3a799d825552f477fc4a44c54f}} 
+{\bfseries coeffspecies} = None
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_acf1d1899b90f65a22eef8bc93b1735ab}{\+\_\+dictify}} (self, save\+\_\+workspace, save\+\_\+homo, add\+\_\+homosets)
+\begin{DoxyCompactList}\small\item\em Used by the saving function. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a8f60d259562234b7872cdc9cef03ce75}{\+\_\+undictify}} (self, data)
+\begin{DoxyCompactList}\small\item\em same function but to retransform everything \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_aeb1012203f7072dafb43d297f76a438e}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_aeb1012203f7072dafb43d297f76a438e}} 
+{\bfseries \+\_\+is\+\_\+saved}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a1cfa3e77ee07be4e8f1dd233fc97fea3}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a1cfa3e77ee07be4e8f1dd233fc97fea3}} 
+{\bfseries \+\_\+is\+\_\+loaded}
+\end{DoxyCompactItemize}
+\subsection*{Static Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_aeb1012203f7072dafb43d297f76a438e}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_aeb1012203f7072dafb43d297f76a438e}} 
+bool {\bfseries \+\_\+is\+\_\+saved}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b}{Py\+C\+UB}} is the main object of the project that allows the user to access most of the functions. 
+
+When using it, please follow the documentation and examples on notebooks thought you can still use it as you please and use some of the nice tricks provided here and in python
+
+
+\begin{DoxyParams}{Parameters}
+{\em species} & dictionary of Espece objects from the name of the species. (see espece.\+py) \\
+\hline
+{\em working\+\_\+homoset} & Py\+C\+U\+B.\+homoset object that stores a subset of the homologies you want to work on all\+\_\+homoset Py\+C\+U\+B.\+homoset that stores the all the homologies \\
+\hline
+{\em session} & str the session name you want to use (will appear in the savings for example \\
+\hline
+{\em \+\_\+is\+\_\+saved} & bool trivial system only boolean \\
+\hline
+{\em links} & dict of all the links readily available in \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b}{Py\+C\+UB}}. for the project of Jeremie K\+A\+L\+F\+ON please use whatever datasets you may find usefull (you can also download from Ensembl)\\
+\hline
+{\em coeffgenes} & np.\+array regressing values for each attributes \\
+\hline
+{\em scoregenes} & the score of the regressor \\
+\hline
+{\em scorespecies} & the score of the regressor \\
+\hline
+{\em coeffspecies} & np.\+array regressing values for each attributes \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a0a8de5f32a03de2c681c0582d9998f03}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a0a8de5f32a03de2c681c0582d9998f03}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!\+\_\+\+\_\+init\+\_\+\+\_\+@{\+\_\+\+\_\+init\+\_\+\+\_\+}}
+\index{\+\_\+\+\_\+init\+\_\+\+\_\+@{\+\_\+\+\_\+init\+\_\+\+\_\+}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{\+\_\+\+\_\+init\+\_\+\+\_\+()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{species = {\ttfamily \{\}},  }\item[{}]{\+\_\+is\+\_\+saved = {\ttfamily False},  }\item[{}]{\+\_\+is\+\_\+loaded = {\ttfamily False},  }\item[{}]{working\+\_\+homoset = {\ttfamily None},  }\item[{}]{all\+\_\+homoset = {\ttfamily None},  }\item[{}]{session = {\ttfamily \textquotesingle{}session1\textquotesingle{}} }\end{DoxyParamCaption})}
+
+
+
+will initialize the object with the different values you might have from another project 
+
+
+\begin{DoxyParams}{Parameters}
+{\em species} & dictionary of Espece objects from the name of the species. (see espece.\+py) \\
+\hline
+{\em working\+\_\+homoset} & Py\+C\+U\+B.\+homoset object that stores a subset of the homologies you want to work on all\+\_\+homoset Py\+C\+U\+B.\+homoset that stores the all the homologies \\
+\hline
+{\em session} & str the session name you want to use (will appear in the savings for example \\
+\hline
+{\em \+\_\+is\+\_\+saved} & bool trivial system only boolean \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_acf1d1899b90f65a22eef8bc93b1735ab}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_acf1d1899b90f65a22eef8bc93b1735ab}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!\+\_\+dictify@{\+\_\+dictify}}
+\index{\+\_\+dictify@{\+\_\+dictify}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{\+\_\+dictify()}{\_dictify()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+\_\+dictify (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{save\+\_\+workspace,  }\item[{}]{save\+\_\+homo,  }\item[{}]{add\+\_\+homosets }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Used by the saving function. 
+
+transform the workspace object into a dictionary that can be json serializable \begin{DoxyVerb}   adding some params because else the object may be too big
+\end{DoxyVerb}
+
+
+
+\begin{DoxyParams}{Parameters}
+{\em save\+\_\+workspace} & bool to save working\+\_\+homoset \\
+\hline
+{\em save\+\_\+homo} & bool to save all\+\_\+homoset \\
+\hline
+{\em ass\+\_\+homosets} & Py\+C\+U\+B.\+homoset instances to add to this dict\\
+\hline
+\end{DoxyParams}
+\begin{DoxyParagraph}{Return}
+A dict holding every element to be jsonized 
+\end{DoxyParagraph}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+plot\+\_\+distances(), and Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+save().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a8f60d259562234b7872cdc9cef03ce75}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a8f60d259562234b7872cdc9cef03ce75}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!\+\_\+undictify@{\+\_\+undictify}}
+\index{\+\_\+undictify@{\+\_\+undictify}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{\+\_\+undictify()}{\_undictify()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+\_\+undictify (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{data }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+same function but to retransform everything 
+
+Here we don\textquotesingle{}t use other classes undictify functions but we just recreate them by passing it to their init methods which is clearer.
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & dict to undictify into the workspace object\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Other Py\+C\+U\+B.\+homosets that would have been saved as add\+\_\+homosets 
+\end{DoxyReturn}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+\_\+dictify(), and Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+load().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ad350376cd68d4daacec78c694ed754c6}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ad350376cd68d4daacec78c694ed754c6}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!compare\+\_\+homologies@{compare\+\_\+homologies}}
+\index{compare\+\_\+homologies@{compare\+\_\+homologies}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{compare\+\_\+homologies()}{compare\_homologies()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+compare\+\_\+homologies (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{homoset,  }\item[{}]{homosapiens = {\ttfamily False},  }\item[{}]{mindistance = {\ttfamily 10},  }\item[{}]{preserved = {\ttfamily True},  }\item[{}]{size = {\ttfamily 10},  }\item[{}]{minpreserv = {\ttfamily 0.9},  }\item[{}]{minsimi = {\ttfamily 0.9},  }\item[{}]{showvar = {\ttfamily True},  }\item[{}]{eps = {\ttfamily 0.28},  }\item[{}]{reducer = {\ttfamily \textquotesingle{}tsne\textquotesingle{}},  }\item[{}]{perplexity = {\ttfamily 40} }\end{DoxyParamCaption})}
+
+
+
+finds for species with a common ancester separated by a pseudo phylogenetic distance X, 
+
+genes/functions that are novel to only a subset. plot the two with their differences the differences between the two also considers an homology as highly preserved if it is shared amongst most of the species and if the average similarity score is high amongst this homology. also shows if there is a relationship between the number of amino acids the sequence does not encode for and the codon usage bias We could have used the sequence dating of ensembl but it only works for homo sapiens for now maybe use it for homosapiens later
+
+
+\begin{DoxyParams}{Parameters}
+{\em homosapiens} & bool to true if we should use homosapiens dataset on gene dates \\
+\hline
+{\em mindistance} & int the minimal phylogenetic distance between in average in this homology to consider it highly conserved \\
+\hline
+{\em preserved} & bool to true if we should find highly preserved genes or not \\
+\hline
+{\em size} & the average size of the datapoints in the pointcloud representation of this dataset \\
+\hline
+{\em minpreserv} & float minimal percentage of homologous species that have this homology \\
+\hline
+{\em minsimi} & float minimal avg similarity between genes to consider them highly preserved \\
+\hline
+{\em showvar} & bool to true, show the mean variance in C\+UB values accros this homology as a variation in dot sizes \\
+\hline
+{\em eps} & float the hyperparamter of the clustering algorithm applied to this dataset \\
+\hline
+{\em homoset} & Py\+C\+U\+B.\+homoset the homoset to use \\
+\hline
+{\em reducer} & str the reducer to use \textquotesingle{}tsne\textquotesingle{} or \textquotesingle{}P\+CA\textquotesingle{} \\
+\hline
+{\em perplexity} & int the perplexity hyperparam for t\+S\+NE\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Unbound\+Local\+Error} & \char`\"{}you need to compute the averages of the all\+\_\+homoset. use Py\+C\+U\+B.\+compute\+\_\+averages(homoset)\char`\"{} \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+regress\+\_\+on\+\_\+species().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ad7f24b316bc8c257719da20c0792ec01}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ad7f24b316bc8c257719da20c0792ec01}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!compare\+\_\+species@{compare\+\_\+species}}
+\index{compare\+\_\+species@{compare\+\_\+species}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{compare\+\_\+species()}{compare\_species()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+compare\+\_\+species (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{showvar = {\ttfamily True},  }\item[{}]{reducer = {\ttfamily \textquotesingle{}tsne\textquotesingle{}},  }\item[{}]{perplexity = {\ttfamily 40},  }\item[{}]{eps = {\ttfamily 0.3},  }\item[{}]{size = {\ttfamily 10} }\end{DoxyParamCaption})}
+
+
+
+compare the species according to their mean C\+UB, 
+
+plot the mean C\+UB to their full C\+UB, to their t\+R\+NA copy numbers, to the euclidean distance of their C\+UB to the one of their phylogenetic matrix. in this plot, the mean entropy value is plotted as a regular homology plot but each dot is a species thus we can compare them together, moreover, the size of the dots informs oneself of the variance in entropy per species. the color intensity informs on how much this is close to what is given by the t\+R\+NA values. (additional information such as name of the species, number of t\+R\+NA values,metadata and the point from its t\+R\+NA value is plotted when hovering the dot) then we can also compare the mean of homologies or else, the full entropy of the cdna sequence per species is also computed the euclidean distance amongst the species for the full entropy to see if a difference can be linked to some evolutionary for one codon
+
+
+\begin{DoxyParams}{Parameters}
+{\em size} & the average size of the datapoints in the pointcloud representation of this dataset \\
+\hline
+{\em showvar} & bool to true, show the mean variance in C\+UB values accros this homology as a variation in dot sizes \\
+\hline
+{\em eps} & float the hyperparamter of the clustering algorithm applied to this dataset \\
+\hline
+{\em homoset} & Py\+C\+U\+B.\+homoset the homoset to use \\
+\hline
+{\em reducer} & str the reducer to use \textquotesingle{}tsne\textquotesingle{} or \textquotesingle{}P\+CA\textquotesingle{} \\
+\hline
+{\em perplexity} & int the perplexity hyperparam for t\+S\+NE\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Unbound\+Local\+Error} & \char`\"{}you need to compute the averages of the all\+\_\+homoset. use Py\+C\+U\+B.\+compute\+\_\+averages(homoset)\char`\"{} \\
+\hline
+{\em Unbound\+Local\+Error} & \char`\"{}you have to compute t\+R\+N\+A values, use Py\+C\+U\+B.\+get\+\_\+t\+R\+N\+Acopy()\char`\"{} \\
+\hline
+{\em Attribute\+Error} & \char`\"{}try avg or full\char`\"{} \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+compute\+\_\+averages().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a9526c0d10381daf5abc8ea120454e701}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a9526c0d10381daf5abc8ea120454e701}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!compute\+\_\+averages@{compute\+\_\+averages}}
+\index{compute\+\_\+averages@{compute\+\_\+averages}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{compute\+\_\+averages()}{compute\_averages()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+compute\+\_\+averages (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{homoset }\end{DoxyParamCaption})}
+
+
+
+compute the average entropy 
+
+Will add species related averages gotten from this homoset in the species container, and in the homoset everytime you compute averages from a set, they will get erased !
+
+
+\begin{DoxyParams}{Parameters}
+{\em homoset} & Py\+C\+U\+B.\+homoset from which to compute the averages \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+speciestable().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a40a742a1a05fc21c7bced2c75fb93fc6}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a40a742a1a05fc21c7bced2c75fb93fc6}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!create\+Ref\+C\+AI@{create\+Ref\+C\+AI}}
+\index{create\+Ref\+C\+AI@{create\+Ref\+C\+AI}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{create\+Ref\+C\+A\+I()}{createRefCAI()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+create\+Ref\+C\+AI (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{speciestocompare = {\ttfamily \textquotesingle{}saccharomyces\+\_\+cerevisiae\textquotesingle{}},  }\item[{}]{kingdom = {\ttfamily \textquotesingle{}fungi\textquotesingle{}},  }\item[{}]{first = {\ttfamily 20} }\end{DoxyParamCaption})}
+
+
+
+do a compute C\+AI 
+
+where we get Tobias\textquotesingle{} data to find highly expressed genes and use them to compute codon frequency for the reference set and use it to compute the C\+AI and mean C\+AI for each ho mology.
+
+
+\begin{DoxyParams}{Parameters}
+{\em speciestocompare} & str the name of the species to retrieve the genes from \\
+\hline
+{\em kingdom} & str the kingdom where we can find it \\
+\hline
+{\em first} & the number of highly expressed genes to retrieve \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+data(), and Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+evolutionary\+\_\+distance().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ac4d231f47432a18f84da1cef8673b50b}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ac4d231f47432a18f84da1cef8673b50b}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!get\+\_\+data@{get\+\_\+data}}
+\index{get\+\_\+data@{get\+\_\+data}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{get\+\_\+data()}{get\_data()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+data (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{From = {\ttfamily \textquotesingle{}yun\textquotesingle{}},  }\item[{}]{homonames = {\ttfamily None},  }\item[{}]{kingdom = {\ttfamily \textquotesingle{}fungi\textquotesingle{}},  }\item[{}]{sequence = {\ttfamily \textquotesingle{}cdna\textquotesingle{}},  }\item[{}]{additional = {\ttfamily \textquotesingle{}type=orthologues\textquotesingle{}},  }\item[{}]{saveonfiles = {\ttfamily False},  }\item[{}]{normalized = {\ttfamily True},  }\item[{}]{setnans = {\ttfamily False},  }\item[{}]{by = {\ttfamily \char`\"{}entropy\char`\"{}},  }\item[{}]{using = {\ttfamily \char`\"{}normal\char`\"{}},  }\item[{}]{t\+R\+NA = {\ttfamily True},  }\item[{}]{get\+C\+AI = {\ttfamily True},  }\item[{}]{first = {\ttfamily 20},  }\item[{}]{inpar = {\ttfamily True} }\end{DoxyParamCaption})}
+
+
+
+Download the data from somewhere on the web (Ensembl, Yun(with links)) 
+
+you can provide a lot of different values to scrape Ensembl\textquotesingle{}s datasets it will compute from ensembl to retrieve a similar dataset as what yun\textquotesingle{}s data is.
+
+
+\begin{DoxyParams}{Parameters}
+{\em From} & str flag \textquotesingle{}yun\textquotesingle{} or \textquotesingle{}ensembl\textquotesingle{}\+: \\
+\hline
+{\em homonames} & list\mbox{[}str\mbox{]} what particular homologies you want to scrap if \textquotesingle{}all\textquotesingle{} and you have used the \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ae06a2843c0718f86396ee255dfc6ae6f}{get\+Homologylist()}} function, will get the homologies from there \\
+\hline
+{\em kingdom} & str same for kingdoms \\
+\hline
+{\em sequence} & str the type of sequences you want to use \\
+\hline
+{\em additional} & str additional information about the scrapping \\
+\hline
+{\em saveonfiles} & bool save the unprocessed data before populating working homoset \\
+\hline
+{\em normalized} & bool if you want the values to be normalized by the length of the codons (lengths are always saved) \\
+\hline
+{\em setnans} & bool if you want to save the nans as metadata \\
+\hline
+{\em by} & str flag \textquotesingle{}entropy\textquotesingle{}, \textquotesingle{}entropy\+Location\textquotesingle{} (entropy location), \textquotesingle{}frequency\textquotesingle{} \\
+\hline
+{\em using} & str flag \textquotesingle{}random\textquotesingle{} \textquotesingle{}normal\textquotesingle{} \textquotesingle{}permutation\textquotesingle{} \textquotesingle{}full\textquotesingle{} \\
+\hline
+{\em inpar} & bool or int for parallel computing and number of core \\
+\hline
+{\em t\+R\+NA} & bool whether or not to compute t\+R\+NA data \\
+\hline
+{\em get\+C\+AI} & bool flag to true to retrieve the C\+AI as well \\
+\hline
+{\em first} & int the first most expressed genes to compute the C\+AI ref statistics\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Attribute\+Error} & \char`\"{}you can\textquotesingle{}t compute codon frequency with Yun\textquotesingle{}s data...\char`\"{}, \textquotesingle{}not the right From\textquotesingle{} \\
+\hline
+{\em Unbound\+Local\+Error} & \char`\"{}you have to load the homologies first\char`\"{} \\
+\hline
+{\em Attribute\+Error} & \textquotesingle{}not the right From\textquotesingle{} \begin{DoxyVerb}   http://rest.ensemblgenomes.org/\end{DoxyVerb}
+ \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+Homologylist().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_af0d7bed125f4437bea6b8051f9922c1d}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_af0d7bed125f4437bea6b8051f9922c1d}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!get\+\_\+evolutionary\+\_\+distance@{get\+\_\+evolutionary\+\_\+distance}}
+\index{get\+\_\+evolutionary\+\_\+distance@{get\+\_\+evolutionary\+\_\+distance}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{get\+\_\+evolutionary\+\_\+distance()}{get\_evolutionary\_distance()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+evolutionary\+\_\+distance (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{display\+\_\+tree = {\ttfamily False},  }\item[{}]{size = {\ttfamily 40} }\end{DoxyParamCaption})}
+
+
+
+uses metadata of the ancestry tree and computes a theoretical evolutionary distance matrix between each species 
+
+can optionaly take any hierarchical evolutionary file between a group of species will populate utils.\+phylo\+\_\+distances with a pandas.\+df of the phylodistance and meandist with the average distance amongst species in the df, species are referenced by their taxon ids. you have to have taxons in your species. will also plot the distance matrix
+
+
+\begin{DoxyParams}{Parameters}
+{\em display\+\_\+tree} & bool to true to print the phylogenetic tree as a txt (may be quite big) \\
+\hline
+{\em size} & int the x size of the plot\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Environment\+Error} & \char`\"{}you need to have R installed to compute the distance\char`\"{} \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+taxons().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a53b60adfafbe019421d010c5fed04f5c}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a53b60adfafbe019421d010c5fed04f5c}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!get\+\_\+full\+\_\+genomes@{get\+\_\+full\+\_\+genomes}}
+\index{get\+\_\+full\+\_\+genomes@{get\+\_\+full\+\_\+genomes}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{get\+\_\+full\+\_\+genomes()}{get\_full\_genomes()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+full\+\_\+genomes (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{kingdom = {\ttfamily \textquotesingle{}fungi\textquotesingle{}},  }\item[{}]{seq = {\ttfamily \textquotesingle{}cds\textquotesingle{}},  }\item[{}]{avg = {\ttfamily True},  }\item[{}]{by = {\ttfamily \char`\"{}entropy\char`\"{}},  }\item[{}]{normalized = {\ttfamily False} }\end{DoxyParamCaption})}
+
+
+
+go trought all full genome fasta files in the ftp server of ensemblgenomes and 
+
+download then parse them to get the full entropy of the genome. usefull for futher comparison steps. will populate the fullentropy, fullvarentropy, full\+G\+Ccount, var\+G\+Ccount of each species where the full sequence is known
+
+
+\begin{DoxyParams}{Parameters}
+{\em kingdom} & str flags the relevant kingdom of you current session \mbox{[}fungi,plants,bacteria, animals\mbox{]} \\
+\hline
+{\em seq} & str flags the type of sequence you consider the full genome is (coding or non coding or full) \mbox{[}cds, all, cda\mbox{]} \\
+\hline
+{\em avg} & bool to true if we average over each gene or get the full dna in one go. \\
+\hline
+{\em by} & str flags what type of computation should be done \mbox{[}entropy,frequency\mbox{]} \\
+\hline
+{\em normalized} & should we normalize the entorpy by length\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Memory\+Error} & \char`\"{}this sequence is too long to be computed ($>$ 1 billion bp)\char`\"{} \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+subset().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ae561ba39b9c3919a83b51944f155e4a4}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ae561ba39b9c3919a83b51944f155e4a4}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!get\+\_\+metadata\+\_\+\+Ensembl@{get\+\_\+metadata\+\_\+\+Ensembl}}
+\index{get\+\_\+metadata\+\_\+\+Ensembl@{get\+\_\+metadata\+\_\+\+Ensembl}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{get\+\_\+metadata\+\_\+\+Ensembl()}{get\_metadata\_Ensembl()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+metadata\+\_\+\+Ensembl (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{kingdoms }\end{DoxyParamCaption})}
+
+
+
+download it and put it where it belongs in the Espece object 
+
+parse the server \href{https://fungi.ensembl.org/info/website/ftp/index.html}{\tt https\+://fungi.\+ensembl.\+org/info/website/ftp/index.\+html} will also get the metadata from the kingdoms that you are analysing
+
+
+\begin{DoxyParams}{Parameters}
+{\em kingdoms} & str flag the type of kingdoms you wanna have \textquotesingle{}fungi\textquotesingle{} \textquotesingle{}bacteria\textquotesingle{} \textquotesingle{}plants\textquotesingle{} \textquotesingle{}animals\textquotesingle{} \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+data().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a1ff011ae5b64518d60bedcf1b98314ef}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a1ff011ae5b64518d60bedcf1b98314ef}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!get\+\_\+mymetadata@{get\+\_\+mymetadata}}
+\index{get\+\_\+mymetadata@{get\+\_\+mymetadata}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{get\+\_\+mymetadata()}{get\_mymetadata()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+mymetadata (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{From = {\ttfamily \textquotesingle{}jerem\textquotesingle{}},  }\item[{}]{inpar = {\ttfamily True} }\end{DoxyParamCaption})}
+
+
+
+Go ahead and design your own metadata retrieval here. 
+
+obviously you woud need to change some other functions. for me it is mean protein abundances in cerevisiae cells.
+
+
+\begin{DoxyParams}{Parameters}
+{\em From} & str flag designer of the function to load metadatas \\
+\hline
+{\em inpar} & bool for parallel processing \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+metadata\+\_\+\+Ensembl().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a9fab964d44e03b46d330b3754f5c39fb}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a9fab964d44e03b46d330b3754f5c39fb}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!get\+\_\+subset@{get\+\_\+subset}}
+\index{get\+\_\+subset@{get\+\_\+subset}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{get\+\_\+subset()}{get\_subset()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+subset (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{homoset,  }\item[{}]{withcopy = {\ttfamily False},  }\item[{}]{clusternb = {\ttfamily None},  }\item[{}]{species = {\ttfamily None},  }\item[{}]{homologies = {\ttfamily None} }\end{DoxyParamCaption})}
+
+
+
+either changes or returns a subset of the provided homoset 
+
+To use once if you want to further refine a set of homologies
+
+
+\begin{DoxyParams}{Parameters}
+{\em homoset} & Py\+C\+U\+B.\+homoset to get a subset from \\
+\hline
+{\em withcopy} & bool to true if we don\textquotesingle{}t want to change the homoset object but create a copy from it \\
+\hline
+{\em clusternb} & int set the cluster of the group you want to get need to be between 1 and homogroupnb \\
+\hline
+{\em homologies} & list\mbox{[}str\mbox{]} the subset as a list or a tuple of int \\
+\hline
+{\em species} & list\mbox{[}the subset as a list, or a list of int\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a Homo\+Set object (see homoset.\+py) 
+\end{DoxyReturn}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+working\+\_\+homoset().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a4e9a2d43aacfc8d2fb1610140f2439f2}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a4e9a2d43aacfc8d2fb1610140f2439f2}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!get\+\_\+taxons@{get\+\_\+taxons}}
+\index{get\+\_\+taxons@{get\+\_\+taxons}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{get\+\_\+taxons()}{get\_taxons()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+taxons (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+find the taxons of each referenced species (see Py\+C\+U\+B.\+Espece.\+gettaxons()) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+full\+\_\+genomes().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a1916ef696d74af1028a2aeff643727db}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a1916ef696d74af1028a2aeff643727db}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!get\+\_\+working\+\_\+homoset@{get\+\_\+working\+\_\+homoset}}
+\index{get\+\_\+working\+\_\+homoset@{get\+\_\+working\+\_\+homoset}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{get\+\_\+working\+\_\+homoset()}{get\_working\_homoset()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+working\+\_\+homoset (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{clusternb = {\ttfamily None},  }\item[{}]{species = {\ttfamily None},  }\item[{}]{homologies = {\ttfamily None},  }\item[{}]{cleanhomo = {\ttfamily None} }\end{DoxyParamCaption})}
+
+
+
+create a subset of all\+\_\+homoset on which you would like to do further computation 
+
+To use once you have clustered homology groups, else takes everything. Can also be used just to get a subset of the all homosets.
+
+
+\begin{DoxyParams}{Parameters}
+{\em clusternb} & int set the cluster of the group you want to get need to be between 1 and homogroupnb \\
+\hline
+{\em homologies} & list\mbox{[}str\mbox{]} the subset as a list you want to get from all\+\_\+homoset (can be additional to a clusternb) \\
+\hline
+{\em species} & list\mbox{[}str\mbox{]} the subset as a list you want to get from all\+\_\+homoset (can be additional to a clusternb) \\
+\hline
+{\em cleanhomo} & float if the homology is only shared by less than this amount amongst the species present in this homoset, removes them.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a Homo\+Set object (see homoset.\+py)
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Unbound\+Local\+Error} & \char`\"{}you have not clusterized you \textquotesingle{}all\+\_\+homoset\textquotesingle{}. you want to just use \textquotesingle{}order\+\_\+from\+\_\+matrix\textquotesingle{} on it.\char`\"{} \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+save().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ae06a2843c0718f86396ee255dfc6ae6f}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ae06a2843c0718f86396ee255dfc6ae6f}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!get\+Homologylist@{get\+Homologylist}}
+\index{get\+Homologylist@{get\+Homologylist}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{get\+Homologylist()}{getHomologylist()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+Homologylist (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{species = {\ttfamily \textquotesingle{}saccharomyces\+\_\+cerevisiae\textquotesingle{}},  }\item[{}]{kingdom = {\ttfamily \textquotesingle{}fungi\textquotesingle{}} }\end{DoxyParamCaption})}
+
+
+
+A function to retrieve the homologies directly from a given species. 
+
+(it is better to use one of the key species for the different kingdoms (sacharomyces, HS, Arabidopsis..))
+
+
+\begin{DoxyParams}{Parameters}
+{\em specie} & str the name of the specie to get the homology from \\
+\hline
+{\em kingdom} & str the kingdom where we can find this specie \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+\_\+\+\_\+init\+\_\+\+\_\+().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a06d83a29ac506b4a9422ef7e64eef0b0}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a06d83a29ac506b4a9422ef7e64eef0b0}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!get\+Relation2\+G3\+DD@{get\+Relation2\+G3\+DD}}
+\index{get\+Relation2\+G3\+DD@{get\+Relation2\+G3\+DD}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{get\+Relation2\+G3\+D\+D()}{getRelation2G3DD()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+Relation2\+G3\+DD (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{species\+\_\+name = {\ttfamily \textquotesingle{}saccharomyces\+\_\+cerevisiae\textquotesingle{}},  }\item[{}]{kingdom = {\ttfamily \textquotesingle{}fungi\textquotesingle{}},  }\item[{}]{intrachromosome = {\ttfamily \char`\"{}utils/meta/3Dmodel/interactions\+\_\+HindIII\+\_\+fdr0.01\+\_\+intra\+\_\+cerevisiae.csv\char`\"{}},  }\item[{}]{interchromose = {\ttfamily \mbox{[}\char`\"{}utils/meta/3Dmodel/cerevisiae\+\_\+inter1.csv\char`\"{}},  }\item[{}]{utils,  }\item[{}]{meta,  }\item[{}]{Dmodel,  }\item[{}]{cerevisiae\+\_\+inter2,  }\item[{}]{csv,  }\item[{}]{utils,  }\item[{}]{meta,  }\item[{}]{Dmodel,  }\item[{}]{cerevisiae\+\_\+inter3,  }\item[{}]{csv,  }\item[{}]{utils,  }\item[{}]{meta,  }\item[{}]{Dmodel,  }\item[{}]{cerevisiae\+\_\+inter4,  }\item[{}]{csv,  }\item[{}]{utils,  }\item[{}]{meta,  }\item[{}]{Dmodel,  }\item[{}]{cerevisiae\+\_\+inter5,  }\item[{}]{csv,  }\item[{}]{bins = {\ttfamily 2000},  }\item[{}]{seq = {\ttfamily \textquotesingle{}cds\textquotesingle{}},  }\item[{}]{use = {\ttfamily \textquotesingle{}diament2\textquotesingle{}} }\end{DoxyParamCaption})}
+
+
+
+\href{https://www.nature.com/articles/ncomms6876}{\tt https\+://www.\+nature.\+com/articles/ncomms6876} 
+
+retrieve the data for the species sacharomyces cerevisiae and Schizosaccharomyces pombe and find if similarity distances of C\+UB using entropy between genes of this species is predictive of closeness of genes in the nucleus.
+
+Used to confirm a work on nature and see if we can have some similar results by only looking at the C\+UB
+
+
+\begin{DoxyParams}{Parameters}
+{\em species\+\_\+name} & str the name of the species to look for \\
+\hline
+{\em kingdom} & str the kingdom in which to find the species \\
+\hline
+{\em intrachromosome} & str the location of the csv interaction data for intrachromosome respecting the format of the default file \\
+\hline
+{\em interchromose} & str the location of the csv interaction data for interchromose respecting the format of the default file \\
+\hline
+{\em bins} & int, the number of bin to use (a power of 2) \\
+\hline
+{\em seq} & the type of sequence to compare to. (to compute the C\+UB from) \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+regress\+\_\+on\+\_\+genes().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_acd80f084f6671584c42542813874cd02}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_acd80f084f6671584c42542813874cd02}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!import\+\_\+metadata\+Tobias@{import\+\_\+metadata\+Tobias}}
+\index{import\+\_\+metadata\+Tobias@{import\+\_\+metadata\+Tobias}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{import\+\_\+metadata\+Tobias()}{import\_metadataTobias()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+import\+\_\+metadata\+Tobias (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+will import the metadata obtained from tobias for the fungi species affiliated to cerevisiae to each species for further diagnostics. 
+
+Populates metadata\mbox{[}num\+\_\+genes, plant\+\_\+pathogen, animal\+\_\+pathogen, genome\+\_\+size, plant\+\_\+symbiotic, brown\+\_\+rot, white\+\_\+rot\mbox{]} for each species and weight, m\+R\+N\+A\+\_\+abundance, is\+\_\+secreted, protein\+\_\+abundance, cys\+\_\+elements, decay\+\_\+rate for each homology
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+mymetadata().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ab471e823b0eba23af5a5322008ec09da}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ab471e823b0eba23af5a5322008ec09da}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!load@{load}}
+\index{load@{load}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{load()}{load()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+load (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{session = {\ttfamily None},  }\item[{}]{All = {\ttfamily False},  }\item[{}]{filename = {\ttfamily \textquotesingle{}first500\textquotesingle{}},  }\item[{}]{From = {\ttfamily None},  }\item[{}]{by = {\ttfamily \textquotesingle{}entropy\textquotesingle{}},  }\item[{}]{t\+R\+NA = {\ttfamily True},  }\item[{}]{inpar = {\ttfamily True} }\end{DoxyParamCaption})}
+
+
+
+Get the data that is already present on a filename. 
+
+Either load from Yun\textquotesingle{}s datasets or from an already saved session. Is being called by get\+\_\+data. But you can call it to just use one of Yun\textquotesingle{}s files as well
+
+
+\begin{DoxyParams}{Parameters}
+{\em From} & str if this flag is set to \textquotesingle{}yun\textquotesingle{} it means that the filename is made of Yundata in which case we will create directly the homology map in the same time as the rest of the \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b}{Py\+C\+UB}} object. \\
+\hline
+{\em All} & bool set to true if load everything from Yun \\
+\hline
+{\em by} & str same flag as get\+\_\+data (for Yun\textquotesingle{}s files here). \\
+\hline
+{\em filename} & str the particular filename when not loading them all \\
+\hline
+{\em session} & str if a session name is provided, then will load a zip file from this session\textquotesingle{}s folder\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+May return additionals if loading from a session where one decided to save more than the two All/working homologies. to be handled separately 
+\end{DoxyReturn}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+data(), and Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+import\+\_\+metadata\+Tobias().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a16a1ab6be5dddcedf94852088936c1f2}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a16a1ab6be5dddcedf94852088936c1f2}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!loadmore@{loadmore}}
+\index{loadmore@{loadmore}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{loadmore()}{loadmore()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+loadmore (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{filename = {\ttfamily \textquotesingle{}first500\textquotesingle{}},  }\item[{}]{by = {\ttfamily \textquotesingle{}entropyLocation\textquotesingle{}} }\end{DoxyParamCaption})}
+
+
+
+Get the data that is already present on a filename when you already have data. 
+
+is usefull to load more of Yun\textquotesingle{}s datasets. is called when load is set to All
+
+
+\begin{DoxyParams}{Parameters}
+{\em From} & if this flag is set to \textquotesingle{}yun\textquotesingle{} it means that the filename is made of Yundata in which case we will create directly the homology map in the same time as the rest of the \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b}{Py\+C\+UB}} object. Here it is the only available option. \\
+\hline
+{\em filename} & str the filename to additionaly load \\
+\hline
+{\em by} & flag same as before\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Unbound\+Local\+Error} & \char`\"{}\+You should try load first, this object is empty\char`\"{} \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+load().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ac37364050a4ec9a7ddf3d6c1562e49a5}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_ac37364050a4ec9a7ddf3d6c1562e49a5}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!loadspeciestable@{loadspeciestable}}
+\index{loadspeciestable@{loadspeciestable}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{loadspeciestable()}{loadspeciestable()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+loadspeciestable (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+short function to retrieve the speciestable from Disk 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em I\+O\+Error} & \char`\"{}no speciestable file\char`\"{} \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+\_\+undictify().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a2ea40ac1dd5b4ad8847ec12c867d457f}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a2ea40ac1dd5b4ad8847ec12c867d457f}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!phylo\+\_\+distances@{phylo\+\_\+distances}}
+\index{phylo\+\_\+distances@{phylo\+\_\+distances}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{phylo\+\_\+distances()}{phylo\_distances()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+phylo\+\_\+distances (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+a copy of the phylodistances dataframe see (\mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_af0d7bed125f4437bea6b8051f9922c1d}{get\+\_\+evolutionary\+\_\+distance()}}) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a copy of the phylodistances dataframe see (\mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_af0d7bed125f4437bea6b8051f9922c1d}{get\+\_\+evolutionary\+\_\+distance()}}) 
+\end{DoxyReturn}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+compare\+\_\+species(), and Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+create\+Ref\+C\+A\+I().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a4e13b55153bbe774e9203818f2b7f690}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a4e13b55153bbe774e9203818f2b7f690}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!plot\+\_\+distances@{plot\+\_\+distances}}
+\index{plot\+\_\+distances@{plot\+\_\+distances}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{plot\+\_\+distances()}{plot\_distances()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+plot\+\_\+distances (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{size = {\ttfamily 40} }\end{DoxyParamCaption})}
+
+
+
+plot the phylogenetic distance matrix 
+
+
+\begin{DoxyParams}{Parameters}
+{\em size} & int the x size of the plot\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Unbound\+Local\+Error} & \char`\"{}compute the phylo distance matrix first (look at the doc)\char`\"{} \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+\_\+evolutionary\+\_\+distance(), and Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+get\+Relation2\+G3\+D\+D().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a1b65efe7deb4ba5f65203c8be6fc7af2}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a1b65efe7deb4ba5f65203c8be6fc7af2}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!regress\+\_\+on\+\_\+genes@{regress\+\_\+on\+\_\+genes}}
+\index{regress\+\_\+on\+\_\+genes@{regress\+\_\+on\+\_\+genes}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{regress\+\_\+on\+\_\+genes()}{regress\_on\_genes()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+regress\+\_\+on\+\_\+genes (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{homoset,  }\item[{}]{full = {\ttfamily True},  }\item[{}]{without = {\ttfamily \mbox{[}\textquotesingle{}meanecai\textquotesingle{}},  }\item[{}]{meancai,  }\item[{}]{perctrain = {\ttfamily 0.8},  }\item[{}]{algo = {\ttfamily \char`\"{}lasso\char`\"{}},  }\item[{}]{eps = {\ttfamily 0.001},  }\item[{}]{n\+\_\+alphas = {\ttfamily 100} }\end{DoxyParamCaption})}
+
+
+
+Will fit a regression curve on the C\+UB values of the different homologies according to the metadatas available for each of them. 
+
+It will try to see if there is enough information in the metadata to retrieve C\+UB values. and if there is, how much for each metadata (if we constraint the number of regressors) is it better for entropy values, mean entropy or E\+C\+AI values or raw frequency, should we remove some data
+
+
+\begin{DoxyParams}{Parameters}
+{\em without} & list\mbox{[}str\mbox{]} of flags \mbox{[}similarity\+\_\+scores, Ka\+Ks\+\_\+\+Scores, nans, lenmat, G\+Ccount, weight, 
+\begin{DoxyCode}
+protein\_abundance, mRNA\_abundance, decay\_rate, cys\_elements, tot\_volume, mean\_hydrophobicity,
+\end{DoxyCode}
+ glucose\+\_\+cost, synthesis\+\_\+steps, is\+\_\+recent, meanecai\mbox{]} \\
+\hline
+{\em full} & bool flags to true to use full C\+UB values or mean\+C\+UB values, as regressee \\
+\hline
+{\em homoset} & Py\+C\+U\+B.\+homoset the homoset to use \\
+\hline
+{\em perctrain} & the percentage of training set to total set ( the rest is used as test set) \\
+\hline
+{\em algo} & str flag to lasso or nn to use either Lasso with Cross Validation, or a 2 layer neural net \\
+\hline
+{\em eps} & the eps value for the Lasso \\
+\hline
+{\em n\+\_\+alphas} & the number of alphas for the lasso\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+
+scoregenes float, the score of the regression performed 
+
+coeffgenes the coefficient applied to each category (for each C\+UB value if using full) 
+
+attrlist the corresponding list\mbox{[}str\mbox{]} of attribute used
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Unbound\+Local\+Error} & \char`\"{}wrong params\char`\"{} \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+compare\+\_\+homologies().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_af37319783148fc8864d894b3e2f89078}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_af37319783148fc8864d894b3e2f89078}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!regress\+\_\+on\+\_\+species@{regress\+\_\+on\+\_\+species}}
+\index{regress\+\_\+on\+\_\+species@{regress\+\_\+on\+\_\+species}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{regress\+\_\+on\+\_\+species()}{regress\_on\_species()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+regress\+\_\+on\+\_\+species (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{without = {\ttfamily \mbox{[}\char`\"{}\char`\"{}\mbox{]}},  }\item[{}]{full = {\ttfamily True},  }\item[{}]{onlyhomo = {\ttfamily False},  }\item[{}]{perctrain = {\ttfamily 0.8},  }\item[{}]{algo = {\ttfamily \char`\"{}lasso\char`\"{}},  }\item[{}]{eps = {\ttfamily 0.001},  }\item[{}]{n\+\_\+alphas = {\ttfamily 100} }\end{DoxyParamCaption})}
+
+
+
+Will fit a regression curve on the C\+UB values of the different species according to the metadatas available for each of them. 
+
+It will try to see if there is enough information in the metadata to retrieve C\+UB values. and if there is, how much for each metadata (if we constraint the number of regressors) is it better for mean homology C\+UB or full genome C\+UB ? or raw frequency, should we remove some data?
+
+
+\begin{DoxyParams}{Parameters}
+{\em without} & list\mbox{[}str\mbox{]} of flags \mbox{[}similarity\+\_\+scores, Ka\+Ks\+\_\+\+Scores, nans, lenmat, G\+Ccount, weight, 
+\begin{DoxyCode}
+protein\_abundance, mRNA\_abundance, decay\_rate, cys\_elements, tot\_volume, mean\_hydrophobicity,
+\end{DoxyCode}
+ glucose\+\_\+cost, synthesis\+\_\+steps, is\+\_\+recent, meanecai\mbox{]} \\
+\hline
+{\em full} & bool flags to true to use full C\+UB values or mean\+C\+UB values, as regressee \\
+\hline
+{\em homoset} & Py\+C\+U\+B.\+homoset the homoset to use \\
+\hline
+{\em perctrain} & the percentage of training set to total set ( the rest is used as test set) \\
+\hline
+{\em algo} & str flag to lasso or nn to use either Lasso with Cross Validation, or a 2 layer neural net \\
+\hline
+{\em eps} & the eps value for the Lasso \\
+\hline
+{\em n\+\_\+alphas} & the number of alphas for the lasso\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+
+scoregenes float, the score of the regression performed 
+
+coeffgenes the coefficient applied to each category (for each C\+UB value if using full) 
+
+attrlist the corresponding list\mbox{[}str\mbox{]} of attribute used
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Unbound\+Local\+Error} & \char`\"{}wrong params\char`\"{} \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+compare\+\_\+species().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a477c55065989b10bce8389c5edaf3322}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a477c55065989b10bce8389c5edaf3322}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!save@{save}}
+\index{save@{save}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{save()}{save()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+save (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{name,  }\item[{}]{save\+\_\+workspace = {\ttfamily True},  }\item[{}]{save\+\_\+homo = {\ttfamily True},  }\item[{}]{add\+\_\+homosets = {\ttfamily \{\}},  }\item[{}]{cmdlinetozip = {\ttfamily \char`\"{}gzip\char`\"{}} }\end{DoxyParamCaption})}
+
+
+
+call to save your work. 
+
+you should call save on specific data structure if this is what you want to save. \begin{DoxyVerb}   Will call other object's save, will transform all the variable into dict and save the dicts
+   as json files. will save the df also as json files. PyCUB and homoset have
+   their own json file.
+   adding some params because else the object may be too big
+\end{DoxyVerb}
+
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & str the name of the particular save on this session \\
+\hline
+{\em save\+\_\+workspace} & bool to fale not to save working\+\_\+homoset \\
+\hline
+{\em save\+\_\+homo} & bool to false not to save all\+\_\+homoset \\
+\hline
+{\em cmdlinetozip} & str you need to tell the platform how to zip on your system uses gzip by default but it needs to be installed \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+compare\+\_\+homologies(), Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+compare\+\_\+species(), and Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+loadmore().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a8249834e1d2f7d061ae06ffa5a1adc32}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_a8249834e1d2f7d061ae06ffa5a1adc32}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!savespeciestable@{savespeciestable}}
+\index{savespeciestable@{savespeciestable}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{savespeciestable()}{savespeciestable()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+savespeciestable (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+short function to put the speciestable on Disk 
+
+This is done since there may be some memory leakage, probably due to some autoreloading behavior of the global data stored on utils.
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+\_\+undictify().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_af3e280c265200f13946e4bdcb4cd9dd0}\label{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b_af3e280c265200f13946e4bdcb4cd9dd0}} 
+\index{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}!speciestable@{speciestable}}
+\index{speciestable@{speciestable}!Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB@{Py\+C\+U\+B\+::py\+C\+U\+B\+::\+Py\+C\+UB}}
+\subsubsection{\texorpdfstring{speciestable()}{speciestable()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+speciestable (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+a copy of the utils.\+speciestable 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a copy of the utils.\+speciestable (dict\mbox{[}int,str\mbox{]} of species to their \mbox{\hyperlink{class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b}{Py\+C\+UB}} coded value 
+\end{DoxyReturn}
+
+
+Referenced by Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+create\+Ref\+C\+A\+I().
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Py\+C\+U\+B/py\+C\+U\+B.\+py\end{DoxyCompactItemize}

@@ -1,0 +1,498 @@
+\hypertarget{class_py_c_u_b_1_1homology_1_1homology}{}\section{Py\+C\+U\+B.\+homology.\+homology Class Reference}
+\label{class_py_c_u_b_1_1homology_1_1homology}\index{Py\+C\+U\+B.\+homology.\+homology@{Py\+C\+U\+B.\+homology.\+homology}}
+
+
+in homology we store an homology with all its related data,  
+
+
+Inheritance diagram for Py\+C\+U\+B.\+homology.\+homology\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_py_c_u_b_1_1homology_1_1homology}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a441a70cdc5814708841f5d3c29548203}\label{class_py_c_u_b_1_1homology_1_1homology_a441a70cdc5814708841f5d3c29548203}} 
+def {\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self, kwargs)
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_af27d98c4ced0023053744c7ba038b33a}\label{class_py_c_u_b_1_1homology_1_1homology_af27d98c4ced0023053744c7ba038b33a}} 
+def {\bfseries \+\_\+\+\_\+str\+\_\+\+\_\+} (self)
+\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homology_1_1homology_a32017c483bad9a5c4498640279a79634}{remove}} (self, species)
+\begin{DoxyCompactList}\small\item\em removes the list of species from this homology if it exists there \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homology_1_1homology_ad430899a462da76cdd6e1fc6ee73e0ec}{nb\+\_\+unique\+\_\+species}} (self)
+\begin{DoxyCompactList}\small\item\em compute the number of unique species in this homologies \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homology_1_1homology_a513d82c775ba47678304c97572eaf932}{order}} (self, withtaxons=False)
+\begin{DoxyCompactList}\small\item\em order the names by numerical increasing order \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homology_1_1homology_aaeb164cd217a4746ff0082da1a92fc5e}{compute\+\_\+averages}} (self)
+\begin{DoxyCompactList}\small\item\em Computes the mean, var and mean of the homology. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homology_1_1homology_a3db21ba20b7720362cc19cc5b204eeab}{reduce\+\_\+dim}} (self, alg=\textquotesingle{}tsne\textquotesingle{}, n=2, perplexity=40)
+\begin{DoxyCompactList}\small\item\em reduce the dimensionality of your gene dataset to a defined dimension using the t-\/\+S\+NE algorithm \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homology_1_1homology_a1a3802095c2ea6f426e803b055a2aea9}{plot}} (self, reducer=\char`\"{}tsne\char`\"{}, per=40, interactive=True, D=2, size=20)
+\begin{DoxyCompactList}\small\item\em plot the dimensionality reduced datapoint of the homology matrix \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homology_1_1homology_a7e7748ba85bf571bb04df7a26e2c682c}{clusterize\+\_\+}} (self, clustering=\textquotesingle{}gaussian\textquotesingle{}, eps=0.\+8, homogroupnb=None, assess=True, verbose=True)
+\begin{DoxyCompactList}\small\item\em will clusterize the homology using gaussian mixture clustering or D\+B\+S\+C\+AN \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_ad0fa49f698ad9e7ae29f624d45462c4d}\label{class_py_c_u_b_1_1homology_1_1homology_ad0fa49f698ad9e7ae29f624d45462c4d}} 
+{\bfseries metrics}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a1eb731bc0f1f864f9bdc1b00e2038dc6}\label{class_py_c_u_b_1_1homology_1_1homology_a1eb731bc0f1f864f9bdc1b00e2038dc6}} 
+{\bfseries homocode}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a74a80cf95e01b8ac1f8547507481ab46}\label{class_py_c_u_b_1_1homology_1_1homology_a74a80cf95e01b8ac1f8547507481ab46}} 
+{\bfseries proteinids}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a0438db8bca39f5964292ea3e5f3ae519}\label{class_py_c_u_b_1_1homology_1_1homology_a0438db8bca39f5964292ea3e5f3ae519}} 
+{\bfseries protein\+\_\+abundance}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_ae230e5a5e755ffeb7166ceef23cfaa90}\label{class_py_c_u_b_1_1homology_1_1homology_ae230e5a5e755ffeb7166ceef23cfaa90}} 
+{\bfseries weight}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a0290845a014043ef7cef5994da0ea14f}\label{class_py_c_u_b_1_1homology_1_1homology_a0290845a014043ef7cef5994da0ea14f}} 
+{\bfseries m\+R\+N\+A\+\_\+abundance}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a41ea8ca7536b4e7db86d9481f14c4c89}\label{class_py_c_u_b_1_1homology_1_1homology_a41ea8ca7536b4e7db86d9481f14c4c89}} 
+{\bfseries cys\+\_\+elements}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a6318ac761caa41be6b784340bc3e9d7c}\label{class_py_c_u_b_1_1homology_1_1homology_a6318ac761caa41be6b784340bc3e9d7c}} 
+{\bfseries is\+\_\+secreted}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a6bfbe5b4868039efca584fb13e3e17b4}\label{class_py_c_u_b_1_1homology_1_1homology_a6bfbe5b4868039efca584fb13e3e17b4}} 
+{\bfseries decay\+\_\+rate}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_ab5b1b81d50e5bca0eac0f6bee539c4d7}\label{class_py_c_u_b_1_1homology_1_1homology_ab5b1b81d50e5bca0eac0f6bee539c4d7}} 
+{\bfseries cluster}
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a5220c03b38deb65d0e682bd1ad85802b}\label{class_py_c_u_b_1_1homology_1_1homology_a5220c03b38deb65d0e682bd1ad85802b}} 
+{\bfseries full} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_af6fbc0a12aaec1fd2c4e2231d8de5520}\label{class_py_c_u_b_1_1homology_1_1homology_af6fbc0a12aaec1fd2c4e2231d8de5520}} 
+{\bfseries var} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_aabb8f64472865c658c9089b6d5ff51fd}\label{class_py_c_u_b_1_1homology_1_1homology_aabb8f64472865c658c9089b6d5ff51fd}} 
+{\bfseries mean} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_acf7c487a7f77ef947afc193d36becd61}\label{class_py_c_u_b_1_1homology_1_1homology_acf7c487a7f77ef947afc193d36becd61}} 
+{\bfseries clusters} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a7553f27ba7af2b61b973688bf1c72a7b}\label{class_py_c_u_b_1_1homology_1_1homology_a7553f27ba7af2b61b973688bf1c72a7b}} 
+{\bfseries centroids} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_aae3f58df1a8aa3032b3bb648b5f9788a}\label{class_py_c_u_b_1_1homology_1_1homology_aae3f58df1a8aa3032b3bb648b5f9788a}} 
+dictionary {\bfseries metrics} = \{\}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_af59d023da4ec847ead6845216b1c02f0}\label{class_py_c_u_b_1_1homology_1_1homology_af59d023da4ec847ead6845216b1c02f0}} 
+string {\bfseries homocode} = \textquotesingle{}None\textquotesingle{}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_acbb6a5d373b79e9a783eb9efaaaecb97}\label{class_py_c_u_b_1_1homology_1_1homology_acbb6a5d373b79e9a783eb9efaaaecb97}} 
+{\bfseries nans} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a56a1f0e4e56e373d69c3d39712937278}\label{class_py_c_u_b_1_1homology_1_1homology_a56a1f0e4e56e373d69c3d39712937278}} 
+{\bfseries lenmat} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_ae8979e24b36f8ca79963aa1f03db1718}\label{class_py_c_u_b_1_1homology_1_1homology_ae8979e24b36f8ca79963aa1f03db1718}} 
+{\bfseries names} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_adb1c7c9de932faa407921b746fea951d}\label{class_py_c_u_b_1_1homology_1_1homology_adb1c7c9de932faa407921b746fea951d}} 
+{\bfseries doub} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a862b28ceb170090b9c9959d0ec234ecf}\label{class_py_c_u_b_1_1homology_1_1homology_a862b28ceb170090b9c9959d0ec234ecf}} 
+{\bfseries G\+Ccount} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_af5cc9c64f61bf6154788e601e68ac56f}\label{class_py_c_u_b_1_1homology_1_1homology_af5cc9c64f61bf6154788e601e68ac56f}} 
+{\bfseries reduced} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a1332a6816c31c207bcf9b950b9befdd2}\label{class_py_c_u_b_1_1homology_1_1homology_a1332a6816c31c207bcf9b950b9befdd2}} 
+{\bfseries reduced\+\_\+algo} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a3d898f87bb402fff974e77a3813c91b9}\label{class_py_c_u_b_1_1homology_1_1homology_a3d898f87bb402fff974e77a3813c91b9}} 
+{\bfseries Ka\+Ks\+\_\+\+Scores} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a456033ba31e423f2844163b02441f253}\label{class_py_c_u_b_1_1homology_1_1homology_a456033ba31e423f2844163b02441f253}} 
+{\bfseries similarity\+\_\+scores} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a8d77dcd1deecff3b3114e89d50bd08d7}\label{class_py_c_u_b_1_1homology_1_1homology_a8d77dcd1deecff3b3114e89d50bd08d7}} 
+list {\bfseries proteinids} = \mbox{[}$\,$\mbox{]}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a25b698233f4fb598400fb725c00e2c99}\label{class_py_c_u_b_1_1homology_1_1homology_a25b698233f4fb598400fb725c00e2c99}} 
+{\bfseries isrecent} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_af0f123770c60d2444ffb139acaaf5442}\label{class_py_c_u_b_1_1homology_1_1homology_af0f123770c60d2444ffb139acaaf5442}} 
+{\bfseries ishighpreserved} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_add9343a07f66053ea6ee9dd5ebc275dc}\label{class_py_c_u_b_1_1homology_1_1homology_add9343a07f66053ea6ee9dd5ebc275dc}} 
+{\bfseries geneids} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_aa710cdd07ec15477bb995f17f14f0ac5}\label{class_py_c_u_b_1_1homology_1_1homology_aa710cdd07ec15477bb995f17f14f0ac5}} 
+{\bfseries ref} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a3aeac1174f5e74f3291d35bfbeb0ae56}\label{class_py_c_u_b_1_1homology_1_1homology_a3aeac1174f5e74f3291d35bfbeb0ae56}} 
+{\bfseries refprot} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a549fd390f70453a9676ee4d26c84fe04}\label{class_py_c_u_b_1_1homology_1_1homology_a549fd390f70453a9676ee4d26c84fe04}} 
+{\bfseries refgene} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a7f37b98057afffafaeae13285490b229}\label{class_py_c_u_b_1_1homology_1_1homology_a7f37b98057afffafaeae13285490b229}} 
+{\bfseries ecai} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a42eb34bc6c1e774b237e479f83cd6bf7}\label{class_py_c_u_b_1_1homology_1_1homology_a42eb34bc6c1e774b237e479f83cd6bf7}} 
+{\bfseries meanecai} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a9dea84f934449466e561988ea1d2031d}\label{class_py_c_u_b_1_1homology_1_1homology_a9dea84f934449466e561988ea1d2031d}} 
+{\bfseries cai} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a97977b754401226826b71af612e6d33e}\label{class_py_c_u_b_1_1homology_1_1homology_a97977b754401226826b71af612e6d33e}} 
+{\bfseries meancai} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a5a3df5b52429c04c5bed49bd5e4a3b20}\label{class_py_c_u_b_1_1homology_1_1homology_a5a3df5b52429c04c5bed49bd5e4a3b20}} 
+int {\bfseries protein\+\_\+abundance} = 0.
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_aeb597a006a4b74e0c4332079191fddc9}\label{class_py_c_u_b_1_1homology_1_1homology_aeb597a006a4b74e0c4332079191fddc9}} 
+int {\bfseries weight} = 0
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_aa51ccde91bb3ca90cb11ae263627665a}\label{class_py_c_u_b_1_1homology_1_1homology_aa51ccde91bb3ca90cb11ae263627665a}} 
+{\bfseries conservation} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a62e7776334a677b8634faede236529de}\label{class_py_c_u_b_1_1homology_1_1homology_a62e7776334a677b8634faede236529de}} 
+int {\bfseries m\+R\+N\+A\+\_\+abundance} = 0.
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a5492c796d1e811df903eb6ac5e6c5873}\label{class_py_c_u_b_1_1homology_1_1homology_a5492c796d1e811df903eb6ac5e6c5873}} 
+int {\bfseries cys\+\_\+elements} = 0
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a0db815d3136df0d8057d6aa207e3a9d7}\label{class_py_c_u_b_1_1homology_1_1homology_a0db815d3136df0d8057d6aa207e3a9d7}} 
+bool {\bfseries is\+\_\+secreted} = False
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a86cb7804faa6ffae20b7155897d88971}\label{class_py_c_u_b_1_1homology_1_1homology_a86cb7804faa6ffae20b7155897d88971}} 
+int {\bfseries decay\+\_\+rate} = 0.
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a7b73b4cd404f7432302ce682970c04c1}\label{class_py_c_u_b_1_1homology_1_1homology_a7b73b4cd404f7432302ce682970c04c1}} 
+{\bfseries tot\+\_\+volume} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a2fcdeaac4c8dcda15c2faaa26d565c2b}\label{class_py_c_u_b_1_1homology_1_1homology_a2fcdeaac4c8dcda15c2faaa26d565c2b}} 
+{\bfseries mean\+\_\+hydrophobicity} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a3935ee71c6588e71ed71ca843dabb275}\label{class_py_c_u_b_1_1homology_1_1homology_a3935ee71c6588e71ed71ca843dabb275}} 
+{\bfseries glucose\+\_\+cost} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_af6987d4b9223fb55cfe60e0456478b71}\label{class_py_c_u_b_1_1homology_1_1homology_af6987d4b9223fb55cfe60e0456478b71}} 
+{\bfseries synthesis\+\_\+steps} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_ab3cc7d820ffac1600aea6dbc58995364}\label{class_py_c_u_b_1_1homology_1_1homology_ab3cc7d820ffac1600aea6dbc58995364}} 
+{\bfseries isoelectricpoint} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a0fee75b305ed6adb93ed111cce23218a}\label{class_py_c_u_b_1_1homology_1_1homology_a0fee75b305ed6adb93ed111cce23218a}} 
+{\bfseries othercods} = None
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homology_1_1homology_af7f186d30cb3469d73782da85f9d06bc}{\+\_\+dictify}} (self)
+\begin{DoxyCompactList}\small\item\em Used by the saving function. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+in homology we store an homology with all its related data, 
+
+it reduced matrix with dim reduction and its clusters for example it is supposed to be store in a dictionary of homologies an homology is a set of genes from different species related by a common ancester gene and generally a common function. the unique metadatas are generally from the reference species/genome
+
+
+\begin{DoxyParams}{Parameters}
+{\em names} & list of int corresponding to names in utils.\+speciestable \\
+\hline
+{\em full} & np.\+array\mbox{[}float\mbox{]} (species, amino) of one homology with entropy value vector per species \\
+\hline
+{\em reduced} & np.\+array\mbox{[}float\mbox{]} (species, x$\ast$y) of one homology dimensionality reduced \\
+\hline
+{\em clusters} & list\mbox{[}int\mbox{]} of cluster val for each species \\
+\hline
+{\em centroids} & np.\+array\mbox{[}float\mbox{]} the position in aminoacid\# Dimension of each centroids (number of centroid == number of cluster), dimension is reduced when plotted \\
+\hline
+{\em metrics} & a dict of metrics names and values for the cluster of this homology \\
+\hline
+{\em nans} & np.\+array\mbox{[}bool\mbox{]} wether or not this position is a nan \\
+\hline
+{\em lenmat} & a np.\+array\mbox{[}int\mbox{]} species amino of int of length of each amino acids (number) \\
+\hline
+{\em doub} & np.\+array\mbox{[}bool\mbox{]} of wether or not this position is a doublon ( a copy number of the gene for the species) \\
+\hline
+{\em reduced\+\_\+algo} & str dimensionality reduction algorithm used on this homology \\
+\hline
+{\em var} & np.\+array of the variance in the C\+UB value for each datapoint \\
+\hline
+{\em mean} & np.\+array\mbox{[}float\mbox{]} of the mean C\+UB for each datapoint \\
+\hline
+{\em homocode} & str the code of the homology \\
+\hline
+{\em G\+Ccount} & np.\+array\mbox{[}float\mbox{]} GC bias for each datapoint \\
+\hline
+{\em Ka\+Ks\+\_\+\+Scores} & np.\+array\mbox{[}float\mbox{]} a form of similarity score between genes/datapoints \\
+\hline
+{\em similarity\+\_\+scores} & np.\+array\mbox{[}float\mbox{]} similarity score between genes/datapoints \\
+\hline
+{\em proteinids} & list\mbox{[}str\mbox{]} the protein names for each datapoints \\
+\hline
+{\em isrecent} & float a proxy for wether or not this homology has appeated recently \\
+\hline
+{\em ishighpreserved} & bool a proxy for wether or not this homology is conserved throughout evolution \\
+\hline
+{\em geneids} & list\mbox{[}str\mbox{]} the name of the genes \\
+\hline
+{\em ref} & np.\+array\mbox{[}float\mbox{]} the reference C\+UB value of cerevisiae gene \\
+\hline
+{\em refprot} & str the reference protein name of cerevisiae gene \\
+\hline
+{\em refgene} & str the reference gene name of cerevisiae gene \\
+\hline
+{\em ecai} & np.\+array\mbox{[}float\mbox{]} the codon adaptation index of each gene \\
+\hline
+{\em meanecai} & float the mean ecai of the ecai \\
+\hline
+{\em protein\+\_\+abundance} & float the average abundance of the protein enoded by this gene in cerevisiae cells \\
+\hline
+{\em weight} & int the molecular weight of this protein \\
+\hline
+{\em m\+R\+N\+A\+\_\+abundance} & float the average abundance of the messenger R\+NA of this coding gene in cerevisiae cells \\
+\hline
+{\em cys\+\_\+elements} & int the number of cys regulatory elements known for cerevisiae on this gene (the value is only referenced for secreted genes) \\
+\hline
+{\em is\+\_\+secreted} & bool wether or not this protein is secreted out of the cell \\
+\hline
+{\em decay\+\_\+rate} & float the half life in minute of this protein \\
+\hline
+{\em tot\+\_\+volume} & int a proxy of the molecular volume of this protein \\
+\hline
+{\em mean\+\_\+hydrophobicity} & a very distant proxy of the hydrophobicity of this protein \\
+\hline
+{\em glucose\+\_\+cost} & the glucose cost of creating the amino acids required to build up this protein \\
+\hline
+{\em synthesis\+\_\+steps} & the number of steps required by the cell to build up the amino acids of this protein \\
+\hline
+{\em isoelectricpoint} & float, a proxy of the Pi of this protein. \\
+\hline
+{\em conservation} & float, the total conservation of each amino of the corresponding protein \\
+\hline
+{\em othercods} & float, the average number of codons other than the ones of the 18 amino acids we are looking at per species on the homology \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_af7f186d30cb3469d73782da85f9d06bc}\label{class_py_c_u_b_1_1homology_1_1homology_af7f186d30cb3469d73782da85f9d06bc}} 
+\index{Py\+C\+U\+B\+::homology\+::homology@{Py\+C\+U\+B\+::homology\+::homology}!\+\_\+dictify@{\+\_\+dictify}}
+\index{\+\_\+dictify@{\+\_\+dictify}!Py\+C\+U\+B\+::homology\+::homology@{Py\+C\+U\+B\+::homology\+::homology}}
+\subsubsection{\texorpdfstring{\+\_\+dictify()}{\_dictify()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homology.\+homology.\+\_\+dictify (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Used by the saving function. 
+
+transform the object into a dictionary that can be json serializable
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A dict holding every element to be jsonized 
+\end{DoxyReturn}
+
+
+Referenced by Py\+C\+U\+B.\+homology.\+homology.\+clusterize\+\_\+(), and Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+save().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a7e7748ba85bf571bb04df7a26e2c682c}\label{class_py_c_u_b_1_1homology_1_1homology_a7e7748ba85bf571bb04df7a26e2c682c}} 
+\index{Py\+C\+U\+B\+::homology\+::homology@{Py\+C\+U\+B\+::homology\+::homology}!clusterize\+\_\+@{clusterize\+\_\+}}
+\index{clusterize\+\_\+@{clusterize\+\_\+}!Py\+C\+U\+B\+::homology\+::homology@{Py\+C\+U\+B\+::homology\+::homology}}
+\subsubsection{\texorpdfstring{clusterize\+\_\+()}{clusterize\_()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homology.\+homology.\+clusterize\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{clustering = {\ttfamily \textquotesingle{}gaussian\textquotesingle{}},  }\item[{}]{eps = {\ttfamily 0.8},  }\item[{}]{homogroupnb = {\ttfamily None},  }\item[{}]{assess = {\ttfamily True},  }\item[{}]{verbose = {\ttfamily True} }\end{DoxyParamCaption})}
+
+
+
+will clusterize the homology using gaussian mixture clustering or D\+B\+S\+C\+AN 
+
+and order them according to the density of each cluster (we are interested in the dense ones) and assess the quality using 3 criterion\+: B\+IC, A\+IC ,silhouette, cal\+\_\+hara, phylodistance.
+
+
+\begin{DoxyParams}{Parameters}
+{\em clustering} & str flag the clustering algorithm \mbox{[}gaussian, dbscan\mbox{]} \\
+\hline
+{\em eps} & float, hyperparam of the max size of the nsphere of each cluster \\
+\hline
+{\em homogroupnb} & int hyperparam of gaussian for the number of clusters \\
+\hline
+{\em assess} & wether or not to assess the quality of the clustering \\
+\hline
+{\em verbose} & wether or not to show clustering quality information\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The clusters for each datapoint of the homology as a list\mbox{[}int\mbox{]}
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Attribute\+Error} & \char`\"{}\+Hey, please use gaussian or dbscan\char`\"{} \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+homology.\+homology.\+plot().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_aaeb164cd217a4746ff0082da1a92fc5e}\label{class_py_c_u_b_1_1homology_1_1homology_aaeb164cd217a4746ff0082da1a92fc5e}} 
+\index{Py\+C\+U\+B\+::homology\+::homology@{Py\+C\+U\+B\+::homology\+::homology}!compute\+\_\+averages@{compute\+\_\+averages}}
+\index{compute\+\_\+averages@{compute\+\_\+averages}!Py\+C\+U\+B\+::homology\+::homology@{Py\+C\+U\+B\+::homology\+::homology}}
+\subsubsection{\texorpdfstring{compute\+\_\+averages()}{compute\_averages()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homology.\+homology.\+compute\+\_\+averages (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Computes the mean, var and mean of the homology. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+homology.\+homology.\+order().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_ad430899a462da76cdd6e1fc6ee73e0ec}\label{class_py_c_u_b_1_1homology_1_1homology_ad430899a462da76cdd6e1fc6ee73e0ec}} 
+\index{Py\+C\+U\+B\+::homology\+::homology@{Py\+C\+U\+B\+::homology\+::homology}!nb\+\_\+unique\+\_\+species@{nb\+\_\+unique\+\_\+species}}
+\index{nb\+\_\+unique\+\_\+species@{nb\+\_\+unique\+\_\+species}!Py\+C\+U\+B\+::homology\+::homology@{Py\+C\+U\+B\+::homology\+::homology}}
+\subsubsection{\texorpdfstring{nb\+\_\+unique\+\_\+species()}{nb\_unique\_species()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homology.\+homology.\+nb\+\_\+unique\+\_\+species (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+compute the number of unique species in this homologies 
+
+(basically count the number of doub)
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The number of unique species in this homology 
+\end{DoxyReturn}
+
+
+Referenced by Py\+C\+U\+B.\+homology.\+homology.\+remove().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a513d82c775ba47678304c97572eaf932}\label{class_py_c_u_b_1_1homology_1_1homology_a513d82c775ba47678304c97572eaf932}} 
+\index{Py\+C\+U\+B\+::homology\+::homology@{Py\+C\+U\+B\+::homology\+::homology}!order@{order}}
+\index{order@{order}!Py\+C\+U\+B\+::homology\+::homology@{Py\+C\+U\+B\+::homology\+::homology}}
+\subsubsection{\texorpdfstring{order()}{order()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homology.\+homology.\+order (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{withtaxons = {\ttfamily False} }\end{DoxyParamCaption})}
+
+
+
+order the names by numerical increasing order 
+
+and sorts every representations as well according to this ordering
+
+
+\begin{DoxyParams}{Parameters}
+{\em withtaxons} & bool to true if there is taxonomic data (present before preprocessing) \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+homology.\+homology.\+nb\+\_\+unique\+\_\+species().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a1a3802095c2ea6f426e803b055a2aea9}\label{class_py_c_u_b_1_1homology_1_1homology_a1a3802095c2ea6f426e803b055a2aea9}} 
+\index{Py\+C\+U\+B\+::homology\+::homology@{Py\+C\+U\+B\+::homology\+::homology}!plot@{plot}}
+\index{plot@{plot}!Py\+C\+U\+B\+::homology\+::homology@{Py\+C\+U\+B\+::homology\+::homology}}
+\subsubsection{\texorpdfstring{plot()}{plot()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homology.\+homology.\+plot (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{reducer = {\ttfamily \char`\"{}tsne\char`\"{}},  }\item[{}]{per = {\ttfamily 40},  }\item[{}]{interactive = {\ttfamily True},  }\item[{}]{D = {\ttfamily 2},  }\item[{}]{size = {\ttfamily 20} }\end{DoxyParamCaption})}
+
+
+
+plot the dimensionality reduced datapoint of the homology matrix 
+
+colors represents the different clusters you can set the interactivity to gain deeper knowledge of the dataset. It can dim reduce the data and will also save the figure in utils/save. Moreover, it will print some interesting data about the homology
+
+
+\begin{DoxyParams}{Parameters}
+{\em reducer} & str flag the algorithm to reduce the matrix of utils.\+cubD to D D \\
+\hline
+{\em per} & int he perplexity when using tsne algorithm \\
+\hline
+{\em size} & int the size of the plot \\
+\hline
+{\em interactive} & (recommended) wether to use bokeh or not to represend the data will show name of the species when hovering over datapoint will show a gradient of evolutionary distance of the species of the datapoint currently hovered to each other species \\
+\hline
+{\em D} & int the goal dimension (2-\/3-\/4) when using matplotlib\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The plot interactive or not and some informations (as prints)
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Unbound\+Local\+Error} & \char`\"{}you need to have dimensionality reduced to 2\+D to have a right plotting of the centroids\char`\"{} \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+homology.\+homology.\+reduce\+\_\+dim().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a3db21ba20b7720362cc19cc5b204eeab}\label{class_py_c_u_b_1_1homology_1_1homology_a3db21ba20b7720362cc19cc5b204eeab}} 
+\index{Py\+C\+U\+B\+::homology\+::homology@{Py\+C\+U\+B\+::homology\+::homology}!reduce\+\_\+dim@{reduce\+\_\+dim}}
+\index{reduce\+\_\+dim@{reduce\+\_\+dim}!Py\+C\+U\+B\+::homology\+::homology@{Py\+C\+U\+B\+::homology\+::homology}}
+\subsubsection{\texorpdfstring{reduce\+\_\+dim()}{reduce\_dim()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homology.\+homology.\+reduce\+\_\+dim (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{alg = {\ttfamily \textquotesingle{}tsne\textquotesingle{}},  }\item[{}]{n = {\ttfamily 2},  }\item[{}]{perplexity = {\ttfamily 40} }\end{DoxyParamCaption})}
+
+
+
+reduce the dimensionality of your gene dataset to a defined dimension using the t-\/\+S\+NE algorithm 
+
+
+\begin{DoxyParams}{Parameters}
+{\em alg} & a matrix of gene codon usage per species \\
+\hline
+{\em n} & the desired dimension \\
+\hline
+{\em perplexity} & an optional value when you know about tsne\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The reduced dataset 
+\end{DoxyReturn}
+
+
+Referenced by Py\+C\+U\+B.\+homology.\+homology.\+compute\+\_\+averages(), and Py\+C\+U\+B.\+homology.\+homology.\+plot().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homology_1_1homology_a32017c483bad9a5c4498640279a79634}\label{class_py_c_u_b_1_1homology_1_1homology_a32017c483bad9a5c4498640279a79634}} 
+\index{Py\+C\+U\+B\+::homology\+::homology@{Py\+C\+U\+B\+::homology\+::homology}!remove@{remove}}
+\index{remove@{remove}!Py\+C\+U\+B\+::homology\+::homology@{Py\+C\+U\+B\+::homology\+::homology}}
+\subsubsection{\texorpdfstring{remove()}{remove()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homology.\+homology.\+remove (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{species }\end{DoxyParamCaption})}
+
+
+
+removes the list of species from this homology if it exists there 
+
+
+\begin{DoxyParams}{Parameters}
+{\em species} & list\mbox{[}str\mbox{]} of species to remove \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+clean\+\_\+species().
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Py\+C\+U\+B/homology.\+py\end{DoxyCompactItemize}
