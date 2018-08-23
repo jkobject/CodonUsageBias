@@ -47,7 +47,7 @@ class HomoSet(collections.MutableMapping):
         Be aware that even if you use str, the keys will be stored as unicode as jsonized dict will
         output unicode in python < 3
 
-        Args:
+        Attributes:
             hashomo_matrix : a np.array[boolean] (species, homologies)
                 that store the matrix of gene presence in species
             homo_matrix : np.array[float] (homologies*species(inthehomologies),aminoacids)

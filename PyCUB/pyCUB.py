@@ -86,14 +86,14 @@ class PyCUB(object):
         When using it, please follow the documentation and examples on notebooks thought you can
         still use it as you please and use some of the nice tricks provided here and in python
 
-        Args:
+        Attributes:
             species: dictionary of Espece objects from the name of the species.
                 (see espece.py)
             working_homoset: PyCUB.homoset object that stores a subset of the homologies
                 you want to work on
             all_homoset PyCUB.homoset that stores the all the homologies
             session: str the session name you want to use (will appear in the savings for example
-            _is_saved : bool trivial system only boolean
+            _is_saved: bool trivial system only boolean
             links: dict of all the links readily available in PyCUB.
                 for the project of Jeremie KALFON please use whatever datasets you may find usefull
                 (you can also download from Ensembl)
@@ -102,6 +102,12 @@ class PyCUB(object):
             scoregenes: the score of the regressor
             scorespecies: the score of the regressor
             coeffspecies: np.array regressing values for each attributes
+            rho_ent: float from the scoring of spearman's rho for entropy
+            pent: float from the scoring of spearman's rho for entropy
+            rho_cub: float from the scoring of spearman's rho for CUB
+            pcub: float from the scoring of spearman's rho for CUB
+            rho_cuf: float from the scoring of spearman's rho for CUF
+            pcuf: float from the scoring of spearman's rho for CUF
 
     """
 
@@ -365,8 +371,6 @@ class PyCUB(object):
         for each species
         and weight, mRNA_abundance, is_secreted, protein_abundance, cys_elements, decay_rate for each homology
 
-        Args:
-            None
         """
         # species metadata
         data = pd.read_csv("utils/meta/Yun_Species_Context.csv")
@@ -556,9 +560,6 @@ class PyCUB(object):
 
 
         Args:
-            From: if this flag is set to 'yun' it means that the filename is made of Yundata
-                in which case we will create directly the homology map in the same time as the rest
-                of the PyCUB object. Here it is the only available option.
             filename: str the filename to additionaly load
             by: flag same as before
 
@@ -913,8 +914,6 @@ class PyCUB(object):
         """
         find the taxons of each referenced species (see PyCUB.Espece.gettaxons())
 
-        Args:
-            None
         """
         for key, val in self.species.iteritems():
             try:
@@ -1042,9 +1041,6 @@ class PyCUB(object):
         """
         a copy of the utils.speciestable
 
-        Args:
-            None
-
         Returns:
             a copy of the utils.speciestable (dict[int,str] of species to their PyCUB coded value
         """
@@ -1053,9 +1049,6 @@ class PyCUB(object):
     def phylo_distances(self):
         """
         a copy of the phylodistances dataframe see (get_evolutionary_distance())
-
-        Args:
-            None
 
         Returns:
             a copy of the phylodistances dataframe see (get_evolutionary_distance())
@@ -1127,7 +1120,6 @@ class PyCUB(object):
             size: the average size of the datapoints in the pointcloud representation of this dataset
             showvar: bool to true, show the mean variance in CUB values accros this homology as a variation in dot sizes
             eps: float the hyperparamter of the clustering algorithm applied to this dataset
-            homoset: PyCUB.homoset the homoset to use
             reducer: str the reducer to use 'tsne' or 'PCA'
             perplexity: int the perplexity hyperparam for tSNE
 
@@ -1269,7 +1261,6 @@ class PyCUB(object):
                 protein_abundance, mRNA_abundance, decay_rate, cys_elements, tot_volume, mean_hydrophobicity,
                 glucose_cost, synthesis_steps, is_recent, meanecai]
             full: bool flags to true to use full CUB values or meanCUB values,  as regressee
-            homoset: PyCUB.homoset the homoset to use
             perctrain: the percentage of training set to total set ( the rest is used as test set)
             algo: str flag to lasso or nn to use either Lasso with Cross Validation, or a 2 layer  neural net
             eps: the eps value for the Lasso
@@ -1564,6 +1555,9 @@ class PyCUB(object):
                 of the default file
             bins: int, the number of bin to use (a power of 2)
             seq: the type of sequence to compare to. (to compute the CUB from)
+            use: str flag different types of algorithm I have made trying to understand the thing
+            compute: str flag to different computation available 
+            euclidean: bool flag to true to compute euclidean instead of Endres Shcidelin metrics
         """
         # get gene distance matrix from entropy value distance or Andres Schindelin metrics
         # compare to see how much the distance between one can explain the distance between another by
@@ -2038,7 +2032,7 @@ class PyCUB(object):
         Args:
             save_workspace: bool to save working_homoset
             save_homo: bool to save all_homoset
-            ass_homosets: PyCUB.homoset instances to add to this dict
+            add_homosets: PyCUB.homoset instances to add to this dict
 
         Return:
             A dict holding every element to be jsonized

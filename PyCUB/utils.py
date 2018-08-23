@@ -1868,12 +1868,12 @@ def kl(a, b):
     return (np.log(a / b) * a).sum()
 
 
-class dotdict(dict):
-    """
-    dot.notation access to dictionary attributes
+# class dotdict(dict):
+#     """
+#     dot.notation access to dictionary attributes
 
-    May be used to pass a dict within it and access it by ".value" instead of "[value]"
-    """
-    __getattr__ = dict.get
-    __setattr__ = dict.__setitem__
-    __delattr__ = dict.__delitem__
+#     May be used to pass a dict within it and access it by ".value" instead of "[value]"
+#     """
+#     __getattr__ = dict.get
+#     __setattr__ = dict.__setitem__
+#     __delattr__ = dict.__delitem__
