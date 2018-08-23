@@ -1,8 +1,10 @@
 """
+@package PyCUB
 Created by Jeremie KALFON
 Date : 21 FEV 2018
 University of Kent, ECE paris
 jkobject.com
+
 
 PyCUB is a Project which goal is to understand the particular dynamics of the codon usage
 bias.
@@ -81,7 +83,7 @@ import pdb
 
 
 class PyCUB(object):
-    """PyCUB is the main object of the project that allows the user to access most of the functions
+    """ @package PyCUB is the main object of the project that allows the user to access most of the functions
 
         When using it, please follow the documentation and examples on notebooks thought you can
         still use it as you please and use some of the nice tricks provided here and in python
@@ -428,6 +430,8 @@ class PyCUB(object):
             filename: str the particular filename when not loading them all
             session: str if a session name is provided, then will load a zip file from
                 this session's folder
+            tRNA: bool to true to compute the tRNA values
+            inpar: int to set the number of processor (as in scikit)
 
         Returns:
             May return additionals if loading from a session where one decided to save more than the two All/working
@@ -637,6 +641,7 @@ class PyCUB(object):
             name: str the name of the particular save on this session
             save_workspace: bool to fale not to save working_homoset
             save_homo: bool to false not to save all_homoset
+            add_homosets= PyCUB.homoset homoset to add in addition to the regular ones
             cmdlinetozip: str you need to tell the platform how to zip on your system uses gzip by default
                 but it needs to be installed
 
@@ -1259,6 +1264,7 @@ class PyCUB(object):
             without: list[str] of flags [similarity_scores, KaKs_Scores, nans, lenmat, GCcount, weight,
                 protein_abundance, mRNA_abundance, decay_rate, cys_elements, tot_volume, mean_hydrophobicity,
                 glucose_cost, synthesis_steps, is_recent, meanecai]
+            onlyhomo: bool to true if want to use only CUB from homologies
             full: bool flags to true to use full CUB values or meanCUB values,  as regressee
             perctrain: the percentage of training set to total set ( the rest is used as test set)
             algo: str flag to lasso or nn to use either Lasso with Cross Validation, or a 2 layer  neural net
@@ -1325,7 +1331,6 @@ class PyCUB(object):
                                  early_stopping=False, validation_fraction=0.1, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
         else:
             raise UnboundLocalError("wrong params")
-        pdb.set_trace()
         params = np.vstack(params).T
         model.fit(params[:int(len(self.species) * perctrain)], dataset[:int(len(self.species) * perctrain)])
         self.scorespecies = model.score(params[int(len(self.species) * perctrain):],
@@ -1488,7 +1493,6 @@ class PyCUB(object):
                     arr = arr / arr.max()
                     params.append(arr)
                     attrlist.append(val)
-        pdb.set_trace()
         for val in values[5:]:
             if val not in without:
                 if getattr(homoset[0], val) is not None:
@@ -2108,8 +2112,6 @@ class PyCUB(object):
         """
         short function to retrieve the speciestable from Disk
 
-        Args:
-            None
         Raises:
             IOError: "no speciestable file"
         """
@@ -2130,8 +2132,6 @@ class PyCUB(object):
         This is done since there may be some memory leakage, probably due to some autoreloading behavior
         of the global data stored on utils.
 
-        Args:
-            None
         """
         filename = "utils/meta/savings/speciestable.json"
         data = json.dumps(dict(utils.speciestable), indent=4, separators=(',', ': '))

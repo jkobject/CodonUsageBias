@@ -1,8 +1,5 @@
 var hierarchy =
 [
-    [ "dict", null, [
-      [ "PyCUB.utils.dotdict", "class_py_c_u_b_1_1utils_1_1dotdict.html", null ]
-    ] ],
     [ "MutableMapping", null, [
       [ "PyCUB.homoset.HomoSet", "class_py_c_u_b_1_1homoset_1_1_homo_set.html", null ]
     ] ],

@@ -4,30 +4,11 @@ Date : 21 FEV 2018
 University of Kent, ECE paris
 jkobject.com
 
-"""
-import pandas as pd
-from scipy.stats import multinomial
-from scipy.stats import multivariate_normal
-from numpy.random import randint
-import math
-import glob
-import numpy as np
-import requests
-import os
-from math import sqrt
-import json
-try:
-    from urllib2 import urlopen as urlopen
-except:
-    from urllib.request import urlopen as urlopen
+@package pyCUB
+@file utils.py
+the utils is where utilitary functions are stored (in particular preprocessing functions here)
 
-import homology as h
-import pdb
-"""
-    the utils is where utilitary functions are stored (in particular preprocessing functions here)
-
-    Values:
-    ------
+Args:
     speciestable: dict[int] will be used by all other objects to make numbers corresponds to species
     indexcai: a dict[amino: value] to known what is the frequency of this amino acid in a gene X of the reference species for the
         reference_index() and computeCAI() function
@@ -70,7 +51,27 @@ import pdb
     callback_allgenes: 
     callback_allhomo: str the callback used in the PyCUB interactive plot (used to change colors of dots according to what data
         is selected)
+
 """
+import pandas as pd
+from scipy.stats import multinomial
+from scipy.stats import multivariate_normal
+from numpy.random import randint
+import math
+import glob
+import numpy as np
+import requests
+import os
+from math import sqrt
+import json
+try:
+    from urllib2 import urlopen as urlopen
+except:
+    from urllib.request import urlopen as urlopen
+
+import homology as h
+import pdb
+
 speciestable = {}
 indexecai = {}
 

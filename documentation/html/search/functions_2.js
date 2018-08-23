@@ -9,5 +9,8 @@ var searchData=
   ['compute_5fages',['compute_ages',['../class_py_c_u_b_1_1homoset_1_1_homo_set.html#a59a0c4c70f6dbd2dd156e2b2c9b00421',1,'PyCUB::homoset::HomoSet']]],
   ['compute_5faverages',['compute_averages',['../class_py_c_u_b_1_1homology_1_1homology.html#aaeb164cd217a4746ff0082da1a92fc5e',1,'PyCUB.homology.homology.compute_averages()'],['../class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b.html#a9526c0d10381daf5abc8ea120454e701',1,'PyCUB.pyCUB.PyCUB.compute_averages()']]],
   ['compute_5fentropyloc',['compute_entropyloc',['../class_py_c_u_b_1_1homoset_1_1_homo_set.html#a78ab39ddfa288661f5e809ea0a455187',1,'PyCUB::homoset::HomoSet']]],
+  ['computecai',['computeCAI',['../utils_8py.html#a9528a1a7aa3096fde14d3f6332c33132',1,'PyCUB::utils']]],
+  ['computeecai',['computeECAI',['../utils_8py.html#a256c8d04f880e14f6197df0bb70af667',1,'PyCUB::utils']]],
+  ['computeyun',['computeyun',['../utils_8py.html#a8d76f68733c2febcfc7e92c8f0e13d28',1,'PyCUB::utils']]],
   ['createrefcai',['createRefCAI',['../class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b.html#a40a742a1a05fc21c7bced2c75fb93fc6',1,'PyCUB::pyCUB::PyCUB']]]
 ];

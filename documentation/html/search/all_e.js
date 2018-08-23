@@ -1,7 +1,24 @@
 var searchData=
 [
-  ['save',['save',['../class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b.html#a477c55065989b10bce8389c5edaf3322',1,'PyCUB::pyCUB::PyCUB']]],
-  ['savespeciestable',['savespeciestable',['../class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b.html#a8249834e1d2f7d061ae06ffa5a1adc32',1,'PyCUB::pyCUB::PyCUB']]],
-  ['size',['size',['../class_py_c_u_b_1_1homoset_1_1_homo_set.html#a000511647e3f85d8abadcdddaddfb04d',1,'PyCUB::homoset::HomoSet']]],
-  ['speciestable',['speciestable',['../class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b.html#af3e280c265200f13946e4bdcb4cd9dd0',1,'PyCUB::pyCUB::PyCUB']]]
+  ['pcub',['pcub',['../class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b.html#a9f1b34d59aff65055117cde8a174a474',1,'PyCUB::pyCUB::PyCUB']]],
+  ['pcuf',['pcuf',['../class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b.html#a0081f01dedc28de7864a2424c6760546',1,'PyCUB::pyCUB::PyCUB']]],
+  ['pent',['pent',['../class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b.html#ab2fcbabe6d3870dbbaa0cfd11605b004',1,'PyCUB::pyCUB::PyCUB']]],
+  ['permute',['permute',['../utils_8py.html#a0da6a68255820d7cbb1342b5de61f567',1,'PyCUB::utils']]],
+  ['phylo_5fdistances',['phylo_distances',['../class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b.html#a2ea40ac1dd5b4ad8847ec12c867d457f',1,'PyCUB::pyCUB::PyCUB']]],
+  ['plot',['plot',['../class_py_c_u_b_1_1homology_1_1homology.html#a1a3802095c2ea6f426e803b055a2aea9',1,'PyCUB::homology::homology']]],
+  ['plot_5fall',['plot_all',['../class_py_c_u_b_1_1homoset_1_1_homo_set.html#af57de86adab3635645d684b89636cd5c',1,'PyCUB::homoset::HomoSet']]],
+  ['plot_5fdistances',['plot_distances',['../class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b.html#a4e13b55153bbe774e9203818f2b7f690',1,'PyCUB::pyCUB::PyCUB']]],
+  ['plot_5fdistcub',['plot_distcub',['../class_py_c_u_b_1_1homoset_1_1_homo_set.html#aa385d8acea32381efae12c219c24a331',1,'PyCUB::homoset::HomoSet']]],
+  ['plot_5fhashomo',['plot_hashomo',['../class_py_c_u_b_1_1homoset_1_1_homo_set.html#a8ab62bae7be17abf4b13ad37d5c881eb',1,'PyCUB::homoset::HomoSet']]],
+  ['plot_5fhomoperspecies',['plot_homoperspecies',['../class_py_c_u_b_1_1homoset_1_1_homo_set.html#a2b4bf6cef1b2545373be7ef11c329796',1,'PyCUB::homoset::HomoSet']]],
+  ['plot_5fsimiclust',['plot_simiclust',['../class_py_c_u_b_1_1homoset_1_1_homo_set.html#a87fcd4602c943c98543e2bc552502663',1,'PyCUB::homoset::HomoSet']]],
+  ['plot_5fspeciesperhomo',['plot_speciesperhomo',['../class_py_c_u_b_1_1homoset_1_1_homo_set.html#a2cd71ff76ae8cd4ed1bdc206346942d4',1,'PyCUB::homoset::HomoSet']]],
+  ['preprocessing',['preprocessing',['../class_py_c_u_b_1_1homoset_1_1_homo_set.html#a3f689e03251e7b4fe262a86d08946998',1,'PyCUB::homoset::HomoSet']]],
+  ['preprocessing_5fnamelist',['preprocessing_namelist',['../class_py_c_u_b_1_1homoset_1_1_homo_set.html#a4060c440127aa861c17b6157c81e2d27',1,'PyCUB::homoset::HomoSet']]],
+  ['preprocessing_5fnames',['preprocessing_names',['../class_py_c_u_b_1_1homoset_1_1_homo_set.html#a36cf71a7bc24b788c4d526591a8ec376',1,'PyCUB::homoset::HomoSet']]],
+  ['preprocessing_5ftaxons',['preprocessing_taxons',['../class_py_c_u_b_1_1homoset_1_1_homo_set.html#aa39455620288b4912e5540491913e792',1,'PyCUB::homoset::HomoSet']]],
+  ['process',['process',['../utils_8py.html#a176a739d53ff6646242f3866d9d8d149',1,'PyCUB::utils']]],
+  ['protein_5fabundance',['protein_abundance',['../class_py_c_u_b_1_1homology_1_1homology.html#a0438db8bca39f5964292ea3e5f3ae519',1,'PyCUB::homology::homology']]],
+  ['proteinids',['proteinids',['../class_py_c_u_b_1_1homology_1_1homology.html#a74a80cf95e01b8ac1f8547507481ab46',1,'PyCUB::homology::homology']]],
+  ['pycub',['PyCUB',['../class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b.html',1,'PyCUB.pyCUB.PyCUB'],['../namespacepy_c_u_b.html',1,'pyCUB'],['../namespace_py_c_u_b.html',1,'PyCUB']]]
 ];

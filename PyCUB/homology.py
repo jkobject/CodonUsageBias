@@ -34,7 +34,7 @@ class homology(object):
     gene and generally a common function.
     the unique metadatas are generally from the reference species/genome
 
-    Args:
+    Attributes:
         names: list of int corresponding to names in utils.speciestable
         full: np.array[float] (species, amino) of one homology
             with entropy value vector per species
@@ -128,8 +128,7 @@ class homology(object):
 
     def __init__(self, **kwargs):
         """
-        can intialize the file from kwargs as a raw dictionnary for json format (output of dictify) or
-        from regular args.
+        can intialize the file from kwargs as a raw dictionnary for json format (output of dictify) or from regular args.
         """
         data = kwargs.get("data", None)
         if data is not None:
@@ -285,9 +284,6 @@ class homology(object):
 
         (basically count the number of doub)
 
-        Args:
-            None
-
         Returns:
             The number of unique species in this homology
         """
@@ -352,8 +348,6 @@ class homology(object):
         """
         Computes the mean, var and mean of the homology
 
-        Args:
-            None
         """
         self.mean = self.full.mean(0)
         self.var = self.full.var(0)**(0.5)
@@ -558,6 +552,7 @@ class homology(object):
 
         Returns:
             The clusters for each datapoint of the homology as a list[int]
+        
         Raises:
             AttributeError: "Hey, please use gaussian or dbscan"
         """
@@ -644,9 +639,6 @@ class homology(object):
     def _dictify(self):
         """
         Used by the saving function. transform the object into a dictionary that can be json serializable
-
-        Args:
-            None
 
         Returns:
             A dict holding every element to be jsonized

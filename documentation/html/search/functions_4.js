@@ -12,6 +12,7 @@ var searchData=
   ['get_5ftrnacopy',['get_tRNAcopy',['../class_py_c_u_b_1_1espece_1_1_espece.html#afa35655bb969cbc02456aa74228a1b8d',1,'PyCUB::espece::Espece']]],
   ['get_5fworking_5fhomoset',['get_working_homoset',['../class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b.html#a1916ef696d74af1028a2aeff643727db',1,'PyCUB::pyCUB::PyCUB']]],
   ['gethomologylist',['getHomologylist',['../class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b.html#ae06a2843c0718f86396ee255dfc6ae6f',1,'PyCUB::pyCUB::PyCUB']]],
-  ['getrelation2g3dd',['getRelation2G3DD',['../class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b.html#a5e869542b553c1541018263c5386acde',1,'PyCUB::pyCUB::PyCUB']]],
-  ['gettaxons',['gettaxons',['../class_py_c_u_b_1_1espece_1_1_espece.html#af716fcd7e7e34e12cd7786469d695422',1,'PyCUB::espece::Espece']]]
+  ['getrelation2g3dd',['getRelation2G3DD',['../class_py_c_u_b_1_1py_c_u_b_1_1_py_c_u_b.html#a2745e82c660b71220578130e74e32add',1,'PyCUB::pyCUB::PyCUB']]],
+  ['gettaxons',['gettaxons',['../class_py_c_u_b_1_1espece_1_1_espece.html#af716fcd7e7e34e12cd7786469d695422',1,'PyCUB::espece::Espece']]],
+  ['getyun',['getyun',['../utils_8py.html#a50fdd2d3367b583693a97f0619c9d1a2',1,'PyCUB::utils']]]
 ];

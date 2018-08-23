@@ -634,7 +634,6 @@ class HomoSet(collections.MutableMapping):
         Raises:
             UnboundLocalError: "you need to have your CUB values as entropy"
         """
-        pdb.set_trace()
         if self.datatype == 'entropy':
             if self.homo_matrix is None:
                 self.loadfullhomo()
@@ -989,7 +988,6 @@ class HomoSet(collections.MutableMapping):
                     i += 1
                 j += 1
             simimatrix = simimatrix / simimatrix.max()
-            pdb.set_trace()
             self.cub_similarity = 1 - simimatrix
             self.cub_similarity = np.nan_to_num(self.cub_similarity)
             if plot:
