@@ -584,7 +584,7 @@ class HomoSet(collections.MutableMapping):
                         # we can't decide ...
                         continue
                     dist = float(phylo_distances[species].loc[species].sum().sum()) / (len(species)**2 - len(species))
-                    if dist < utils.meandist:
+                    if dist < utils.meandist * minsimi:
                         # print "found a homology with mean " + str(dist)
                         homo.isrecent = dist / utils.meandist
         else:

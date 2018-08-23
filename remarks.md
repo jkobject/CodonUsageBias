@@ -42,9 +42,36 @@
 
 ## homoset
 
-- I found very usefull to use heatmaps and datashaders to plot point clouds that are too big to be displayed with regular plots
+- I found very usefull to use heatmaps and datashaders to plot point clouds that are too big to be displayed with regular plots, using real cloud of points.
+heatmaps with binning can be very usefull as well
+
+- I added random homologies to see if the plot would make the same kind of sense and it did not.
 
 - I often use displaying where the computation is is really usefull to take decisions about the computation and the code being performed. 
+
+## homology
+
+- I was abl to plot 4 dimensions using 3d plot+ size. works ok.
+
+AIC and BIC measures or silhouette/CH scores are not really usefull in the context I am in. I don't really know what a good cluster is and what a good amount of parameters are, and this might change accross homologies 
+
+## pycub
+
+parallelizing to a high extent (up to 16 processes when doing parallel loading of the data.) It is very efficient and increases the speed almost linearly as long as there is internet speed.
+
+- using 3 different ways to load datas from internet 
+
+- the data is almost always not formated, very hard to process. need to use techniques to solve problems of namespaces and references..
+
+- using R within python with Rpy2, 
+
+- 4 big functions to finally compares species and homologies together with all the data, using 2 distinct techniques, a visual one with plottings and interactive color gradients and another with a regression. both together should be enough to investigate the explanation power of different variables to the codon usage bias.
+
+- always being carefull for both to use different methods one with a more simple/consistent/used approach and another more  to investigate 
+
+- it has been very difficult to reproduce diament work as it has just been explained orally throught a few number of line without any availability of pseudo code or other in the supplementary material or the supplementary documents, very hard to find the data as well as it was not lined and some of the cited work which should have corresponded to the data did not linked the data they had either. I have used 4 different versions for the code and runned it for a week before seeing similar results Moreover, each dataset is different so hard to generalize code. used masked arrays to allow fast computation over arrays.
+
+- I have found a search method that is very pythonic and related to what I was looking for.
 
 #assumptions
 - the codons are supposed to be geometrically randomly distributed,

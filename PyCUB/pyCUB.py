@@ -1544,7 +1544,7 @@ class PyCUB(object):
                                         "utils/meta/3Dmodel/cerevisiae_inter2.csv",
                                         "utils/meta/3Dmodel/cerevisiae_inter3.csv",
                                         "utils/meta/3Dmodel/cerevisiae_inter4.csv",
-                                        "utils/meta/3Dmodel/cerevisiae_inter5.csv"], bins=2000, seq='cds', use='diament2'):
+                                        "utils/meta/3Dmodel/cerevisiae_inter5.csv"], bins=2000, seq='cds', use='diament2', compute="jerem"):
         """
         https://www.nature.com/articles/ncomms6876
 
@@ -1682,72 +1682,140 @@ class PyCUB(object):
                 tempchrom = 0
                 tempind = 0
                 tempdf = df.loc[df['chr1'] == 1]
-                gene2pos = {}
-                pos2gene = {}
-                dists = np.zeros(len(positions))
-                tempdist = 1000000
-                for n, val in enumerate(positions):
-                    if val[0] >= tempchrom + 1:
-                        tempdf = df.loc[df['chr1'] == val[0]]
-                        tempchrom = val[0]
-                        tempind = tempdf.index[0]
-                        maxind = tempdf.index[-1]
-                    # Here we could use a modified binar search instead
-                    while abs(tempdf['locus1'][tempind] - val[1]) <= tempdist:
-                        tempdist = abs(tempdf['locus1'][tempind] - val[1])
-                        tempind += 1
-                        if tempind >= maxind:
-                            break
-                    dists[n] = tempdist
-                    tempind -= 1
-                    # we found a position
-                    tempdist = 10000000
-                    gene2pos.update({n: [tempchrom, tempdf['locus1'][tempind]]})
-                    if pos2gene.get((tempchrom, tempdf['locus1'][tempind]), False):
-                        pos2gene[(tempchrom, tempdf['locus1'][tempind])].append(n)
-                    else:
-                        pos2gene.update({(tempchrom, tempdf['locus1'][tempind]): [n]})
-                # for each gene positions we look at the closest point in the contact map (list of positison)
-                # we create a mapping dict for that.
-                tempchrom = 0
-                print "average distance is" + str(dists.mean())
-                missedrelation = 0
-                tempdf = df.loc[df['chr1'] == 1]
-                dist3D = np.zeros((len(positions), len(positions)), dtype=int)
-                dist3D += 1000000
-                np.fill_diagonal(dist3D, 0)
-                # Doing the first one for efficiency
-                tempdf = df.loc[df['chr1'] == 1]
-                relatedto = tempdf.loc[tempdf['locus1'] == gene2pos[0][1]]
-                chro = list(relatedto["chr2"])
-                loc = list(relatedto["locus2"])
-                for i in range(len(chro)):
-                    pos = pos2gene.get((chro[i], int(loc[i])), False)
-                    if pos:
-                        for p in pos:
-                            dist3D[p, 0] = 1
-                            dist3D[0, p] = 1
-                    else:
-                        missedrelation += 1
-                n = 1
-                for val in positions[1:]:
-                    dist3D[n, n - 1] = 1
-                    dist3D[n - 1, n] = 1
-                    if val[0] >= tempchrom + 1:
-                        tempdf = df.loc[df['chr1'] == val[0]]
-                    relatedto = tempdf.loc[tempdf['locus1'] == gene2pos[n][1]]
+                if compute == 'jerem':
+                    gene2pos = {}
+                    pos2gene = {}
+                    dists = np.zeros(len(positions))
+                    tempdist = 1000000
+                    for n, val in enumerate(positions):
+                        if val[0] >= tempchrom + 1:
+                            tempdf = df.loc[df['chr1'] == val[0]]
+                            tempchrom = val[0]
+                            tempind = tempdf.index[0]
+                            maxind = tempdf.index[-1]
+                        # Here we could use a modified binar search instead
+                        while abs(tempdf['locus1'][tempind] - val[1]) <= tempdist:
+                            tempdist = abs(tempdf['locus1'][tempind] - val[1])
+                            tempind += 1
+                            if tempind >= maxind:
+                                break
+                        dists[n] = tempdist
+                        tempind -= 1
+                        # we found a position
+                        tempdist = 10000000
+                        gene2pos.update({n: [tempchrom, tempdf['locus1'][tempind]]})
+                        if pos2gene.get((tempchrom, tempdf['locus1'][tempind]), False):
+                            pos2gene[(tempchrom, tempdf['locus1'][tempind])].append(n)
+                        else:
+                            pos2gene.update({(tempchrom, tempdf['locus1'][tempind]): [n]})
+                    # for each gene positions we look at the closest point in the contact map (list of positison)
+                    # we create a mapping dict for that.
+                    tempchrom = 0
+                    print "average distance is" + str(dists.mean())
+                    missedrelation = 0
+                    tempdf = df.loc[df['chr1'] == 1]
+                    dist3D = np.zeros((len(positions), len(positions)), dtype=int)
+                    dist3D += 1000000
+                    np.fill_diagonal(dist3D, 0)
+                    # Doing the first one for efficiency
+                    tempdf = df.loc[df['chr1'] == 1]
+                    relatedto = tempdf.loc[tempdf['locus1'] == gene2pos[0][1]]
                     chro = list(relatedto["chr2"])
                     loc = list(relatedto["locus2"])
                     for i in range(len(chro)):
                         pos = pos2gene.get((chro[i], int(loc[i])), False)
                         if pos:
                             for p in pos:
-                                dist3D[p, n] = 1
-                                dist3D[n, p] = 1
+                                dist3D[p, 0] = 1
+                                dist3D[0, p] = 1
                         else:
                             missedrelation += 1
-                    n += 1
-                print "got " + str(missedrelation) + " missed relation"
+                    n = 1
+                    for val in positions[1:]:
+                        dist3D[n, n - 1] = 1
+                        dist3D[n - 1, n] = 1
+                        if val[0] >= tempchrom + 1:
+                            tempdf = df.loc[df['chr1'] == val[0]]
+                        relatedto = tempdf.loc[tempdf['locus1'] == gene2pos[n][1]]
+                        chro = list(relatedto["chr2"])
+                        loc = list(relatedto["locus2"])
+                        for i in range(len(chro)):
+                            pos = pos2gene.get((chro[i], int(loc[i])), False)
+                            if pos:
+                                for p in pos:
+                                    dist3D[p, n] = 1
+                                    dist3D[n, p] = 1
+                            else:
+                                missedrelation += 1
+                        n += 1
+                    print "got " + str(missedrelation) + " missed relation"
+                else:
+                    gene2pos = {}
+                    pos2gene = {}
+                    dists = np.zeros(len(positions))
+                    tempdist = 1000000
+                    for n, val in enumerate(positions):
+                        if val[0] >= tempchrom + 1:
+                            tempdf = df.loc[df['chr1'] == val[0]]
+                            tempchrom = val[0]
+                            tempind = tempdf.index[0]
+                            maxind = tempdf.index[-1]
+                        # Here we could use a modified binar search instead
+                        while abs(tempdf['locus1'][tempind] - val[1]) <= tempdist:
+                            tempdist = abs(tempdf['locus1'][tempind] - val[1])
+                            tempind += 1
+                            if tempind >= maxind:
+                                break
+                        dists[n] = tempdist
+                        tempind -= 1
+                        # we found a position
+                        tempdist = 10000000
+                        gene2pos.update({n: [tempchrom, tempdf['locus1'][tempind]]})
+                        if pos2gene.get((tempchrom, tempdf['locus1'][tempind]), False):
+                            pos2gene[(tempchrom, tempdf['locus1'][tempind])].append(n)
+                        else:
+                            pos2gene.update({(tempchrom, tempdf['locus1'][tempind]): [n]})
+                    # for each gene positions we look at the closest point in the contact map (list of positison)
+                    # we create a mapping dict for that.
+                    tempchrom = 0
+                    print "average distance is" + str(dists.mean())
+                    missedrelation = 0
+                    tempdf = df.loc[df['chr1'] == 1]
+                    dist3D = np.zeros((len(positions), len(positions)), dtype=int)
+                    dist3D += 1000000
+                    np.fill_diagonal(dist3D, 0)
+                    # Doing the first one for efficiency
+                    tempdf = df.loc[df['chr1'] == 1]
+                    relatedto = tempdf.loc[tempdf['locus1'] == gene2pos[0][1]]
+                    chro = list(relatedto["chr2"])
+                    loc = list(relatedto["locus2"])
+                    for i in range(len(chro)):
+                        pos = pos2gene.get((chro[i], int(loc[i])), False)
+                        if pos:
+                            for p in pos:
+                                dist3D[p, 0] = 1
+                                dist3D[0, p] = 1
+                        else:
+                            missedrelation += 1
+                    n = 1
+                    for val in positions[1:]:
+                        dist3D[n, n - 1] = 1
+                        dist3D[n - 1, n] = 1
+                        if val[0] >= tempchrom + 1:
+                            tempdf = df.loc[df['chr1'] == val[0]]
+                        relatedto = tempdf.loc[tempdf['locus1'] == gene2pos[n][1]]
+                        chro = list(relatedto["chr2"])
+                        loc = list(relatedto["locus2"])
+                        for i in range(len(chro)):
+                            pos = pos2gene.get((chro[i], int(loc[i])), False)
+                            if pos:
+                                for p in pos:
+                                    dist3D[p, n] = 1
+                                    dist3D[n, p] = 1
+                            else:
+                                missedrelation += 1
+                        n += 1
+                    print "got " + str(missedrelation) + " missed relation"
                 shortestpath = dijkstra(dist3D, directed=False)  # to set shortest as 1
 
                 # for each genes, we look if there is a contact gene in the contact map with the mapping
@@ -1794,7 +1862,6 @@ class PyCUB(object):
                         X[:int(i)] = np.ceil(div) + 1
                         X[int(i):] = np.floor(div)
                         start = 0
-                        pdb.set_trace()
                         for num, val in enumerate(X):
                             star = 0
                             for nu, va in enumerate(X):

@@ -131,10 +131,7 @@ class Espece(object):
             self.meanGChomo = kwargs.get("meanGChomo", None)
             self.meanecai = kwargs.get("meanecai", None)
 
-# CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
-# GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
-
-    def plot(self):
+    def __str__(self):
         """
         will present some interesting info about this species.
         """
@@ -169,10 +166,13 @@ class Espece(object):
         if self.meanecai is not None:
             print "mean ECAI: " + str(self.meanecai)
 
+# CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
+# GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
+
     def get_tRNAcopy(self, by="entropy", setnans=False, kingdom='fungi', baseCNvalue=2):
         """
         Retrieves tRNA copy numbers from ensembl DB
-       
+
         will print the number of tRNAs and the number of tRNAs with
         a knwon codons ( the usefull ones)
         will stop and set a trace for the user to inspect the data

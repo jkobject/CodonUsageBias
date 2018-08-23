@@ -484,7 +484,7 @@ class homology(object):
             elif D == 4:
                 ax = fig.add_subplot(111, projection='3d')
                 ax.scatter(self.reduced[:, 0], self.reduced[:, 1],
-                           self.reduced[:, 2], s=self.reduced[:, 3] * 200, c=colors)
+                           self.reduced[:, 2], s=self.reduced[:, 3] * 20, c=colors)
             else:
                 raise AttributeError("please choose a D between 2 and 4")
             plt.show()
