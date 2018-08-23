@@ -111,3 +111,7 @@ github pages for the website
  os, json, zipfile, shutil, ftplib, gzip, copy, requests, sklearn, urllib2, joblib, functools32, rpy2, ete2, pandas, numpy, scipy, bokeh
 matplotlib, Bio, pdb, glob
 math, holoviews, kmodes, MulticoreTSNE, collections, mpl_toolkits
+
+# Diament plots 
+2.5million contacts retrieved on dist3D
+500Mb matrices
