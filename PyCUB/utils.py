@@ -345,8 +345,9 @@ callback = """
             }
             if(b === 4){ //similarity_scores
                 max = Math.max(...data.similarity_scores)
+                min = Math.min(...data.similarity_scores)
                 for(i=0;i<len;++i) {
-                    temp =  Math.floor(255 * (1 - (data.similarity_scores[i] / max)));
+                    temp =  Math.floor(255 * ((data.similarity_scores[i] - min) / (max-min)));
                     col.push(fullColorHex(temp,temp,76))
                 }
                 data.color = col;

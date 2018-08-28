@@ -112,6 +112,28 @@ github pages for the website
 matplotlib, Bio, pdb, glob
 math, holoviews, kmodes, MulticoreTSNE, collections, mpl_toolkits
 
+8 functions over 25 are parallel
+
 # Diament plots 
 2.5million contacts retrieved on dist3D
 500Mb matrices
+
+endresdistance
+DIAMENT2 (0.038297713917720327,
+ 0.086844486492188941, CUB ENT
+ 0.71438053837945337,
+ 4.0047867171581658e-312, CUF
+ 0.84295299789908806,
+ 0.0) SYNCUF
+
+euclidean distance
+
+DiAMENT2(-0.13840943669212902,
+ 5.1022318884020248e-10,
+ 0.59963739504768032,
+ 1.386413533191727e-195,
+ 0.75864680930450634,
+ 0.0)
+
+ correlatio between endres and euclidean (correlation=0.96924282826462216, pvalue=0.0) better with 98%=cub > cuf > entropy = 94%
+

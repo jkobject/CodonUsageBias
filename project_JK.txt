@@ -15,5 +15,7 @@ after the 5th trial for upload and most of my day spent trying to upload the fil
 --- 
 EDIT 3 
 
-Will keep this document as is as I still have difficulties to upload the full document and think it is not possible. 
+Will keep this document as is as I still have difficulties to upload the full document and think it is not possible. As I will make modification to the github repository up until mid september, I have pushed a timestamp version representing the code as it was on the 23 of august.
+
+
 Best, 
