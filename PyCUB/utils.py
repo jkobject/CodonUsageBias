@@ -255,29 +255,33 @@ amino2meta = {'ALA': [1, 0.5, 1.8, 88.6, 6.11, 5],  # synthsteps, glucosecost, h
               'ILE': [11, 1.21, 4.5, 166.7, 6.04, 7.8],
               'LEU': [7, 1.21, 3.8, 166.7, 6.04, 7.3],
               'LYS': [10, 1.31, -3.9, 168.6, 9.47, 4.4],
-              'PHE': [9, 1.84, 2.8, 162.9, 5.91, 4.2],
-              'PRO': [4, 0.99, -1.6, 189.9, 6.3, 5.6],
-              'SER': [3, 0.49, -0.8, 112.7, 5.68, 3.8],
-              'THR': [6, 0.69, -0.7, 89, 5.6, 3.8],
+              'PHE': [9, 1.84, 2.8, 189.9, 5.91, 4.2],
+              'PRO': [4, 0.99, -1.6, 112.7, 6.3, 5.6],
+              'SER': [3, 0.49, -0.8, 89, 5.68, 3.8],
+              'THR': [6, 0.69, -0.7, 116.1, 5.6, 3.8],
               'TYR': [9, 1.77, -1.3, 193.6, 5.63, 3.2],
-              'VAL': [4, 0.96, 4.2, 140, 6.02, 6.5]
+              'VAL': [4, 0.96, 4.2, 140, 6.02, 6.5],
+              'MET': [9, 1.25, 1.9, 162.9, 5.74, 3.6],
+              'TRP': [12, 2.39, -0.9, 227.8, 5.88, 3.9]
               }
+
 synthsteps = [1, 10, 1, 1, 9, 2, 1, 4, 1, 11,
-              7, 10, 9, 4, 3, 6, 9, 4]
+              7, 10, 9, 9, 4, 3, 6, 12, 9, 4]
 
 glucosecost = [0.5, 1.39, 0.79, 0.61, 0.75, 0.92, 0.86,
-               0.31, 1.46, 1.21, 1.21, 1.31, 1.84, 0.99, 0.49, 0.69, 1.77, 0.96]
+               0.31, 1.46, 1.21, 1.21, 1.31, 1.25, 1.84, 0.99, 0.49, 0.69, 2.39, 1.77, 0.96]
 
 hydrophob = [1.8, -4.5, -3.5, -3.5, 2.5, -3.5, -3.5, -0.4, -3.2, 4.5,
-             3.8, -3.9, 2.8, -1.6, -0.8, -0.7, -1.3, 4.2]
+             3.8, -3.9, 1.9, 2.8, -1.6, -0.8, -0.7, -0.9, -1.3, 4.2]
 
 volume = [88.6, 173.4, 114.1, 111.1, 108.5, 143.8, 138.4, 60.1, 153.2,
-          166.7, 166.7, 168.6, 162.9, 189.9, 112.7, 89, 193.6, 140]
+          166.7, 166.7, 168.6, 162.9, 189.9, 112.7, 89, 116.1 227.8, 193.6, 140]
 
 isoelectricpoint = [6.11, 10.76, 10.76, 2.98, 5.02, 5.65, 3.08, 6.06, 7.64,
-                    6.04, 6.04, 9.47, 5.91, 6.3, 5.68, 5.6, 5.63, 6.02]
+                    6.04, 6.04, 9.47, 5.74, 5.91, 6.3, 5.68, 5.6, 5.88, 5.63, 6.02]
 
-conservation = [5, 5.2, 4, 5.3, 4.4, 3.4, 4.4, 6.6, 3.1, 7.8, 7.3, 4.4, 4.2, 5.6, 3.8, 3.8, 3.2, 6.5]
+conservation = [5, 5.2, 4, 5.3, 4.4, 3.4, 4.4, 6.6, 3.1, 7.8, 7.3,
+                4.4, 3.6, 4.2, 5.6, 3.8, 3.8, 3.9, 3.2, 6.5]
 
 colormap = ['#f39c12', "#1abc9c", "#3498db", "#2ecc71", "#9b59b6", '#34495e', '#f1c40f', '#e67e22', '#e74c3c', '#7f8c8d']
 callback = """
@@ -346,6 +350,7 @@ callback = """
             if(b === 4){ //similarity_scores
                 max = Math.max(...data.similarity_scores)
                 min = Math.min(...data.similarity_scores)
+                console.log(min)
                 for(i=0;i<len;++i) {
                     temp =  Math.floor(255 * ((data.similarity_scores[i] - min) / (max-min)));
                     col.push(fullColorHex(temp,temp,76))
@@ -1078,7 +1083,7 @@ def compute_meta(data):
     vol, cost, hydrophob, synthcost, conservation, i = 0, 0, 0, 0, 0, 0
     iso = []
     for cod in data:
-        if cod not in ['ATG', 'TGG', 'TAA', 'TAG', 'TGA']:
+        if cod not in ['TGA', 'TAA', 'TAG']:
             synthsteps, glucosecost, hydrophoby, volume, isoepoint, conservat = amino2meta[codamino[cod]]
             vol += volume
             cost += glucosecost
@@ -1270,7 +1275,7 @@ def computeyun(data, setnans=False, normalized=False, by='entropy'):
         return valH, len_i, nans
 
 
-def getloc(valH, geneleng, using='computejerem'):
+def getloc(valH, geneleng, probavector=None, using='computejerem'):
     """
     the function to compute the entropy location (adpated from Yun Deng's code University of Kent 2018)
     need the entropy values from the genes an homology and the length values as well.
@@ -1328,7 +1333,7 @@ def getloc(valH, geneleng, using='computejerem'):
                 if Eg == 0:
                     valHloc[y] = 0
                     continue
-                ref = computepartition(nbcod, leng, using=using)
+                ref = computepartition(nbcod, leng, probavector=probavector, using=using)
                 try:
                     ref = np.divide(np.log(np.divide(Eg, ref)), leng)
                     hist, edges = np.histogram(ref, int((ref.max() - ref.min()) * 10000))
@@ -1372,7 +1377,7 @@ def getloc(valH, geneleng, using='computejerem'):
 # GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
 
 
-def computepartition(nbcod, leng, using='computejerem'):
+def computepartition(nbcod, leng, probavector=None using='computejerem'):
     """
     according to a 'using' parameter, will select the partition function algorithm to use
         jeremcompute: bool to true if use a jeremie twist to this function
@@ -1397,9 +1402,9 @@ def computepartition(nbcod, leng, using='computejerem'):
     elif using == 'permutation':
         return computepartition_without_permutation(nbcod, leng)
     elif using == 'full':
-        return computepartition_sorted_full(nbcod, leng)
-    elif using == 'normal':
-        return computepartition_normal_approximation(nbcod, leng)
+        return computepartition_sorted_full(nbcod, leng, probavector)
+    elif using == 'normal' and probavector is not None:
+        return computepartition_normal_approximation(nbcod, leng, probavector)
     else:
         raise AttributeError(" give a Using from [permutation, random, normal, full]")
 
@@ -1435,7 +1440,7 @@ def randomdraw(nbcod, leng):
                 prevect[i] = prevect[i + 1] - prevect[i]
             prevect[-1] = leng - prevect[-1]
             listvect[ind] = prevect
-    elif nbcod != listvect.shape[1]:
+    elif nbcod != listvect.shape[1] or leng - listvect[0].sum() > 10:
         listvect = np.zeros((MAXITR, nbcod))
         for ind in xrange(MAXITR):
             prevect = np.zeros(nbcod)
@@ -1453,7 +1458,7 @@ def randomdraw(nbcod, leng):
     return multinomial(leng, np.ones(nbcod) / nbcod).pmf(listvect)
 
 
-def computepartition_sorted_full(nbcod, leng):
+def computepartition_sorted_full(nbcod, leng, mn=None):
     """
     one of the four partition functions algorithms
     Basically works by computing every possible codon presence for a defined amino acid (and it number of
@@ -1467,7 +1472,7 @@ def computepartition_sorted_full(nbcod, leng):
     Returns:
         the partition array
     """
-    mn = np.ones(nbcod) / nbcod
+    mn = np.ones(nbcod) / nbcod if mn is None else mn
     if mlen(leng, nbcod) == 'full':
         # if we are ok to do full method
         a = 0
@@ -1736,43 +1741,37 @@ def computepartition_normal_approximation(nbcod, leng, probavector):
         the partition array
     """
     # TODO: debug the singular matrix problem
-    pdb.set_trace()
-    mean = probavector * leng
-    ker = np.kron(probavector, probavector).reshape(nbcod, nbcod) * (-leng)
-    np.fill_diagonal(ker, (probavector * (1 - probavector)) * leng)
-    if leng**nbcod < MAXITR:
+    probavector = np.array(probavector)
+    mean = probavector[:-1] * leng
+    ker = np.kron(probavector[:-1], probavector[:-1]).reshape(nbcod - 1, nbcod - 1) * (-leng)
+    np.fill_diagonal(ker, (probavector[:-1] * (1 - probavector[:-1])) * leng)
+    if leng**(nbcod - 1) < MAXITR:
         if nbcod == 2:
-            x, y = np.mgrid[0:leng, 0:leng]
-            pos = np.empty(x.shape + (nbcod,))
+            x = np.mgrid[0:leng + 1]
+            pos = np.empty(x.shape + (nbcod - 1,))
+            pos[:, 0] = x
+        elif nbcod == 3:
+            x, y = np.mgrid[0:leng + 1, 0:leng + 1]
+            pos = np.empty(x.shape + (nbcod - 1,))
             pos[:, :, 0] = x
             pos[:, :, 1] = y
-        elif nbcod == 3:
-            x, y, z = np.mgrid[0:leng, 0:leng, 0:leng]
-            pos = np.empty(x.shape + (nbcod,))
+        elif nbcod == 4:
+            x, y, z = np.mgrid[0:leng + 1, 0:leng + 1, 0:leng + 1]
+            pos = np.empty(x.shape + (nbcod - 1,))
             pos[:, :, :, 0] = x
             pos[:, :, :, 1] = y
             pos[:, :, :, 2] = z
-        elif nbcod == 4:
-            x, y, z, v = np.mgrid[0:leng, 0:leng, 0:leng, 0:leng]
-            pos = np.empty(x.shape + (nbcod,))
-            pos[:, :, :, :, 0] = x
-            pos[:, :, :, :, 1] = y
-            pos[:, :, :, :, 2] = z
-            pos[:, :, :, :, 3] = v
         elif nbcod == 6:
-            x, y, z, v, w, o = np.mgrid[0:leng, 0:leng, 0:leng, 0:leng, 0:leng, 0:leng]
-            pos = np.empty(x.shape + (nbcod,))
-            pos[:, :, :, :, :, :, 0] = x
-            pos[:, :, :, :, :, :, 1] = y
-            pos[:, :, :, :, :, :, 2] = z
-            pos[:, :, :, :, :, :, 3] = v
-            pos[:, :, :, :, :, :, 4] = w
-            pos[:, :, :, :, :, :, 5] = o
+            x, y, z, v, w = np.mgrid[0:leng + 1, 0:leng + 1, 0:leng + 1, 0:leng + 1, 0:leng + 1]
+            pos = np.empty(x.shape + (nbcod - 1,))
+            pos[:, :, :, :, :, 0] = x
+            pos[:, :, :, :, :, 1] = y
+            pos[:, :, :, :, :, 2] = z
+            pos[:, :, :, :, :, 3] = v
+            pos[:, :, :, :, :, 4] = w
     else:
-        pos = np.random.randint(leng, size=(nbcod, MAXITR))
-    F = multivariate_normal(mean, ker)
-    Z = F.pdf(pos).flatten()
-    return Z
+        return randomdraw(nbcod, leng)
+    return multivariate_normal(mean, ker).pdf(pos).flatten()
 
 # CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
 # GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb

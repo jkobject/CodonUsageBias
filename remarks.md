@@ -137,3 +137,13 @@ DiAMENT2(-0.13840943669212902,
 
  correlatio between endres and euclidean (correlation=0.96924282826462216, pvalue=0.0) better with 98%=cub > cuf > entropy = 94%
 
+## intriguing stuff
+
+- no shared homologies accross each species: 
+- some strange forming in plot all homologies with tsne
+- some homologies with really clear cut clusters
+- some homologies with secondary clusters bigger than primary cluster 
+- Diament plot
+- one species with most of its values as outliers
+- very high level of entropy for som
+
