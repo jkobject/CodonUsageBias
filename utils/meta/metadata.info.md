@@ -61,6 +61,9 @@ rel_glucose; relative synthesis cost in terms of glucose equivalents (A_glucose 
 
 synthesis_steps, number of steps required between central metabolism and fully formed amino acid
 
+Received from Tobias Van Der Harr 
+
+
 ##ENSEMBLMETA
 
 JSON format file containing full details of the analyses available for each genome as an array named "genome". Each element of the array contains the following keys:
@@ -104,16 +107,34 @@ JSON format file containing full details of the analyses available for each geno
 
 ## protdata/PDI_substrates
 
+general protein informations used to generate more metadata 
+contains protein abundances 
+Received from Tobias Van Der Harr 
+
 ## Metaphylo
+
+some data about the phylogenetic distances ( should be created automatically by PyCUB) using NCBI datas
 
 ## homolist.json
 
+A list of homologies from Yun (pyCUB can generate a more complete one)
+
 ## short Homolist.json
+
+A small subset of the list for debugging
 
 ## 3Dmodels
 
-## names_with_links
-
-## order_name461
+Data gathered from Diament's paper which contains csv of binary links between different parts of the yeast genome already preprocessed according to the Paper (see thesis)
 
 ## Yun_Species_Context
+
+A set of interesting metadata about a subset of species gathered by TObias von der Harr such as their pathogenecity and other basic fungal activity
+
+## savings 
+
+where pyCUB saves some metadata such as phylodistances and code-name for species
+
+## names / order names
+
+some species names used by Yun's pipeline for the goal of knowing their distances to one another and their ftp link in ensembl

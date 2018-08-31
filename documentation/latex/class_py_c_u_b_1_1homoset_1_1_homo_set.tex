@@ -1,0 +1,965 @@
+\hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set}{}\section{Py\+C\+U\+B.\+homoset.\+Homo\+Set Class Reference}
+\label{class_py_c_u_b_1_1homoset_1_1_homo_set}\index{Py\+C\+U\+B.\+homoset.\+Homo\+Set@{Py\+C\+U\+B.\+homoset.\+Homo\+Set}}
+
+
+\mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set}{Homo\+Set}} is the object containing evrey homology as a dictionnary according to thie rhomology code.  
+
+
+Inheritance diagram for Py\+C\+U\+B.\+homoset.\+Homo\+Set\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_py_c_u_b_1_1homoset_1_1_homo_set}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_adbe4d9e4087fe5b53d861476c011329d}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, kwargs)
+\begin{DoxyCompactList}\small\item\em will initialize the object with the different values you might have from another project use the data dictionnary to add any type of data \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_ab7ac33ea3033b440816e179cb4a5e3c0}{\+\_\+\+\_\+getitem\+\_\+\+\_\+}} (self, key)
+\begin{DoxyCompactList}\small\item\em get the homology at the corresponding key \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a42a7e7dc7ddb4b5717084cb093f90774}{\+\_\+\+\_\+setitem\+\_\+\+\_\+}} (self, key, value)
+\begin{DoxyCompactList}\small\item\em add an item at the corresponding key \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a5211ffec9061ca49c771d070048524a1}{\+\_\+\+\_\+delitem\+\_\+\+\_\+}} (self, key)
+\begin{DoxyCompactList}\small\item\em same as in dict() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a2d35b1436a2bbdaea69454ffbf648bf0}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a2d35b1436a2bbdaea69454ffbf648bf0}} 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a2d35b1436a2bbdaea69454ffbf648bf0}{\+\_\+\+\_\+iter\+\_\+\+\_\+}} (self)
+\begin{DoxyCompactList}\small\item\em same as in dict() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_aefca94ad0e64bcad582edcc163bc21ad}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_aefca94ad0e64bcad582edcc163bc21ad}} 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_aefca94ad0e64bcad582edcc163bc21ad}{iteritems}} (self)
+\begin{DoxyCompactList}\small\item\em same as in dict() \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_ada72dc2741d84a8c617dc23449154fc2}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_ada72dc2741d84a8c617dc23449154fc2}} 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_ada72dc2741d84a8c617dc23449154fc2}{\+\_\+\+\_\+len\+\_\+\+\_\+}} (self)
+\begin{DoxyCompactList}\small\item\em gives you the length of the homoset ( number of homologies) \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a8cf76800f047841bf63d507fb1b54048}{update}} (self, val)
+\begin{DoxyCompactList}\small\item\em a function to update the dictionnary that homoset is \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_af57de86adab3635645d684b89636cd5c}{plot\+\_\+all}} (self, With=\textquotesingle{}tsne\textquotesingle{}, perplexity=60, interactive=False, bins=100, offset=20, iteration=400, redo=False, bypasstsne=False, dotsize=7, inpar=True)
+\begin{DoxyCompactList}\small\item\em will plot all the homologies in the full\+\_\+homo\+\_\+matrix (and compute it) \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a5029dbdf4e7f61bd38b6273f4fde9ead}{loadfullhomo}} (self)
+\begin{DoxyCompactList}\small\item\em function to concatenate all the homologies in one big array(practicle for certain computations) \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a5a56a99b5bf87afb418a1bbc5ec1c10b}{loadhashomo}} (self, withnames=False)
+\begin{DoxyCompactList}\small\item\em function to compute the matrix of bool saying wether species X has a gene or more in homology Y \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a000511647e3f85d8abadcdddaddfb04d}{size}} (self)
+\begin{DoxyCompactList}\small\item\em the size of the homoset (number of genes) \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a05935a3f03f2e2b61b2f3e7e0222e2a9}{add\+\_\+random\+\_\+homology}} (self)
+\begin{DoxyCompactList}\small\item\em a function to populate a homology with random values \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a3f689e03251e7b4fe262a86d08946998}{preprocessing}} (self, withtaxons=False, withnames=True)
+\begin{DoxyCompactList}\small\item\em will compute the full list of names, \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_aa39455620288b4912e5540491913e792}{preprocessing\+\_\+taxons}} (self)
+\begin{DoxyCompactList}\small\item\em preprocess the data by computing the names as ints \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a36cf71a7bc24b788c4d526591a8ec376}{preprocessing\+\_\+names}} (self)
+\begin{DoxyCompactList}\small\item\em same as \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_aa39455620288b4912e5540491913e792}{preprocessing\+\_\+taxons()}} but admiting there is no taxon information (Yun\textquotesingle{}s data for example) \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a4060c440127aa861c17b6157c81e2d27}{preprocessing\+\_\+namelist}} (self)
+\begin{DoxyCompactList}\small\item\em same as \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a36cf71a7bc24b788c4d526591a8ec376}{preprocessing\+\_\+names()}} but without preprocessing the names of each homologies only updating the species\+\_\+namelist \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a59a0c4c70f6dbd2dd156e2b2c9b00421}{compute\+\_\+ages}} (self, preserved=True, minpreserv=0.\+9, minsimi=0.\+85)
+\begin{DoxyCompactList}\small\item\em will compute whether or not a coding gene is highly preserved and if not how recent it is \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a78ab39ddfa288661f5e809ea0a455187}{compute\+\_\+entropyloc}} (self, using=\textquotesingle{}computejerem\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em called if need entropy location and used ensembl data. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_af19ffd1cceb4b222e642713456b300a1}{remove}} (self, species)
+\begin{DoxyCompactList}\small\item\em remove this list of species from the homologies \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a2062c7f9c3c956d43172e1688504826a}{clean\+\_\+species}} (self, thresh=0.\+3)
+\begin{DoxyCompactList}\small\item\em will remove a species from all the homologies of this homoset \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a2b4bf6cef1b2545373be7ef11c329796}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a2b4bf6cef1b2545373be7ef11c329796}} 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a2b4bf6cef1b2545373be7ef11c329796}{plot\+\_\+homoperspecies}} (self)
+\begin{DoxyCompactList}\small\item\em will plot the number of homology per spcies in this homology group \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a2cd71ff76ae8cd4ed1bdc206346942d4}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a2cd71ff76ae8cd4ed1bdc206346942d4}} 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a2cd71ff76ae8cd4ed1bdc206346942d4}{plot\+\_\+speciesperhomo}} (self)
+\begin{DoxyCompactList}\small\item\em will plot the number of species per homologies in this homology group \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a2d543ce742d6a4e968e14b1471319287}{cluster\+\_\+homologies}} (self, clustering=\textquotesingle{}kmeans\textquotesingle{}, byspecie=False, order=True, plot\+\_\+ordering=True, \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a7e0bb4c43fb89bb5165f509048a5025b}{homogroupnb}}=2, findnb=False)
+\begin{DoxyCompactList}\small\item\em Compute an homology group \+: \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_abebd6a9804b73a10fc726974630e5d26}{orderfromclust}} (self, \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a7e0bb4c43fb89bb5165f509048a5025b}{homogroupnb}}, clust, byspecie=False, plot\+\_\+ordering=True)
+\begin{DoxyCompactList}\small\item\em creates an ordering of every elements \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_aa41e2430673cf29f96a522e03040ca1d}{get\+\_\+clusterstats}} (self, sort=True, interactive=True, redo=False)
+\begin{DoxyCompactList}\small\item\em will find the number of cluster i per homologies and per species \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_ae429c30197127c5d6248c94dbb6dfc46}{compare\+\_\+clusters}} (self, cubdistance\+\_\+matrix=True, plot=True, interactive=True, \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a000511647e3f85d8abadcdddaddfb04d}{size}}=40)
+\begin{DoxyCompactList}\small\item\em for each clusters in homologies, will compare them with a similarity matrix and a distance matrix \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a81b40822ff0d1d3e0cfccd6c3c54cdd6}{find\+\_\+clusters}} (self, clustering=\textquotesingle{}dbscan\textquotesingle{}, \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a7e0bb4c43fb89bb5165f509048a5025b}{homogroupnb}}=None, assess=True, eps=0.\+8, best\+\_\+eps=True, trainingset=30, epoch=20, ranges=\mbox{[}0.\+2, \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a000511647e3f85d8abadcdddaddfb04d}{size}}=10, redo=False)
+\begin{DoxyCompactList}\small\item\em Finds, for each homologies in the working homoset, groups that are part of compact clusters. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a36e6e64142f4cc63425f145a1754d1d6}{findbest\+\_\+eps}} (self, trainingset=400, clustering=\char`\"{}dbscan\char`\"{}, epoch=20, ranges=\mbox{[}0.\+2, \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a000511647e3f85d8abadcdddaddfb04d}{size}}=10, redo=False)
+\begin{DoxyCompactList}\small\item\em will find the best eps hyperparameter (the one that minimizes the evolutionary distance within its clusters) \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a8ab62bae7be17abf4b13ad37d5c881eb}{plot\+\_\+hashomo}} (self, invert=False, \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a000511647e3f85d8abadcdddaddfb04d}{size}}=40, interactive=False, rangeto=None)
+\begin{DoxyCompactList}\small\item\em plot the has homo matrix \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a87fcd4602c943c98543e2bc552502663}{plot\+\_\+simiclust}} (self, interactive=True, \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a000511647e3f85d8abadcdddaddfb04d}{size}}=40)
+\begin{DoxyCompactList}\small\item\em plot the similarity matrix of each homologies from its clusters \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_aa385d8acea32381efae12c219c24a331}{plot\+\_\+distcub}} (self, interactive=False, \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a000511647e3f85d8abadcdddaddfb04d}{size}}=40)
+\begin{DoxyCompactList}\small\item\em plot the distance matrix of each homologies from the average of their C\+UB distances \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_acbfe58dd06d4c6ca61a528ddfabee3d6}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_acbfe58dd06d4c6ca61a528ddfabee3d6}} 
+{\bfseries homo\+\_\+namelist}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a141708f3582bf009ec08b111124589b1}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a141708f3582bf009ec08b111124589b1}} 
+{\bfseries species\+\_\+namelist}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a7e0bb4c43fb89bb5165f509048a5025b}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a7e0bb4c43fb89bb5165f509048a5025b}} 
+{\bfseries homogroupnb}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a1e216b6dd586b4d71d48db2bd9e82fd1}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a1e216b6dd586b4d71d48db2bd9e82fd1}} 
+{\bfseries clusters}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a7b5672c7d4faf1bec55d7afffc13ff2a}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a7b5672c7d4faf1bec55d7afffc13ff2a}} 
+{\bfseries datatype}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a28336c404d04628639692b2254c4c7f4}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a28336c404d04628639692b2254c4c7f4}} 
+{\bfseries phylo\+\_\+distances}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a5835f6f6921772dd599c4deee9e01b35}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a5835f6f6921772dd599c4deee9e01b35}} 
+{\bfseries best\+\_\+eps}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_ade27fdf472815f4fb2eb1d1ef552ad42}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_ade27fdf472815f4fb2eb1d1ef552ad42}} 
+{\bfseries wasclusterized}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a25c653d5b412d60a7c3663e327b222cf}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a25c653d5b412d60a7c3663e327b222cf}} 
+{\bfseries stats}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_ad09211d828ad602a1e3806829eb96f04}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_ad09211d828ad602a1e3806829eb96f04}} 
+{\bfseries homodict}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_ae0885604920c67cd0bf29e93a7cf4a5a}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_ae0885604920c67cd0bf29e93a7cf4a5a}} 
+{\bfseries cluster\+\_\+similarity}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a66fe1cab79f6c84cd93ba95a9b233f0e}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a66fe1cab79f6c84cd93ba95a9b233f0e}} 
+{\bfseries cub\+\_\+similarity}
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a7c35df6a1db3f4b64a91be2417610c9e}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a7c35df6a1db3f4b64a91be2417610c9e}} 
+\mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a7c35df6a1db3f4b64a91be2417610c9e}{hashomo\+\_\+matrix}} = None
+\begin{DoxyCompactList}\small\item\em a np.\+array\mbox{[}boolean\mbox{]} (species, homologies) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a092f90e457bce969aa9c012cd971fbb4}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a092f90e457bce969aa9c012cd971fbb4}} 
+\mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a092f90e457bce969aa9c012cd971fbb4}{homo\+\_\+matrix}} = None
+\begin{DoxyCompactList}\small\item\em np.\+array\mbox{[}float\mbox{]} (homologies$\ast$species(inthehomologies),aminoacids) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_afb5e078e3db98fc9e1383a5f542fc9af}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_afb5e078e3db98fc9e1383a5f542fc9af}} 
+\mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_afb5e078e3db98fc9e1383a5f542fc9af}{homo\+\_\+matrixnames}} = None
+\begin{DoxyCompactList}\small\item\em np.\+array\mbox{[}int\mbox{]} corresponding to names in Py\+C\+U\+B.\+utils.\+speciestable \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a44e879b2c7395a60f106e22e1df04d69}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a44e879b2c7395a60f106e22e1df04d69}} 
+\mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a44e879b2c7395a60f106e22e1df04d69}{fulleng}} = None
+\begin{DoxyCompactList}\small\item\em np.\+array\mbox{[}int\mbox{]} number of coding for each amino for each gene for each homology \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_ad09211d828ad602a1e3806829eb96f04}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_ad09211d828ad602a1e3806829eb96f04}} 
+dictionary \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_ad09211d828ad602a1e3806829eb96f04}{homodict}} = \{\}
+\begin{DoxyCompactList}\small\item\em dictionnary of homology object containing codon usage per species \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_acbfe58dd06d4c6ca61a528ddfabee3d6}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_acbfe58dd06d4c6ca61a528ddfabee3d6}} 
+list \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_acbfe58dd06d4c6ca61a528ddfabee3d6}{homo\+\_\+namelist}} = \mbox{[}$\,$\mbox{]}
+\begin{DoxyCompactList}\small\item\em list\mbox{[}str\mbox{]} of all the homology names \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a141708f3582bf009ec08b111124589b1}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a141708f3582bf009ec08b111124589b1}} 
+list \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a141708f3582bf009ec08b111124589b1}{species\+\_\+namelist}} = \mbox{[}$\,$\mbox{]}
+\begin{DoxyCompactList}\small\item\em list\mbox{[}str\mbox{]} of all the species names \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a1e216b6dd586b4d71d48db2bd9e82fd1}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a1e216b6dd586b4d71d48db2bd9e82fd1}} 
+list \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a1e216b6dd586b4d71d48db2bd9e82fd1}{clusters}} = \mbox{[}$\,$\mbox{]}
+\begin{DoxyCompactList}\small\item\em list\mbox{[}int\mbox{]} of clusters for the homoset clustering can be of size of nb of species \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a7e0bb4c43fb89bb5165f509048a5025b}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a7e0bb4c43fb89bb5165f509048a5025b}} 
+int \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a7e0bb4c43fb89bb5165f509048a5025b}{homogroupnb}} = 2
+\begin{DoxyCompactList}\small\item\em int of group for the homology clustering \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_abead19765d92567bdc6d8d2892b72436}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_abead19765d92567bdc6d8d2892b72436}} 
+\mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_abead19765d92567bdc6d8d2892b72436}{red\+\_\+homomatrix}} = None
+\begin{DoxyCompactList}\small\item\em np.\+array\mbox{[}float\mbox{]} (homologies$\ast$species(inthehomologies),x$\ast$y)the reduced 2D version \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_ade27fdf472815f4fb2eb1d1ef552ad42}{wasclusterized}} = False
+\begin{DoxyCompactList}\small\item\em bool if the homologies have been clustered or not. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a5e37288c128509ca765ac3dfa40d24bc}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a5e37288c128509ca765ac3dfa40d24bc}} 
+{\bfseries homo\+\_\+clusters} = None
+\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a7b5672c7d4faf1bec55d7afffc13ff2a}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a7b5672c7d4faf1bec55d7afffc13ff2a}} 
+string \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a7b5672c7d4faf1bec55d7afffc13ff2a}{datatype}} = \textquotesingle{}\textquotesingle{}
+\begin{DoxyCompactList}\small\item\em str of the C\+UB value type \mbox{[}entropy, A\+\_\+value(entropy\+Location), frequency\mbox{]} \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a8cb746f5ac4c3fb02bdfa1d7dc996727}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a8cb746f5ac4c3fb02bdfa1d7dc996727}} 
+\mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a8cb746f5ac4c3fb02bdfa1d7dc996727}{averagehomo\+\_\+matrix}} = None
+\begin{DoxyCompactList}\small\item\em np.\+array\mbox{[}float\mbox{]} of the avg C\+UB values per homologies \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a25c653d5b412d60a7c3663e327b222cf}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a25c653d5b412d60a7c3663e327b222cf}} 
+dictionary \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a25c653d5b412d60a7c3663e327b222cf}{stats}} = \{\}
+\begin{DoxyCompactList}\small\item\em dict of statistics on the clusterings (see \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_aa41e2430673cf29f96a522e03040ca1d}{get\+\_\+clusterstats()}}) \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_af6e8927ae33e2785ab21293a59628946}{\+\_\+barplot}} (self, interactive=True)
+\begin{DoxyCompactList}\small\item\em called by statistics function to plot a barplot of the proportion of different cluster per homologies and per species \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_afd51ea6276ecae41960d426ce72755b0}{\+\_\+dictify}} (self, savehomos=False)
+\begin{DoxyCompactList}\small\item\em Used by the saving function. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a795cfd3187026bde3c065aab9fe09642}{\+\_\+plot\+\_\+clust}} (self, mat, orderedmat)
+\begin{DoxyCompactList}\small\item\em will plot the correlation matrix of the has\+\_\+homomatrix before and after ordering allowing one to show its effect \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set}{Homo\+Set}} is the object containing evrey homology as a dictionnary according to thie rhomology code. 
+
+from Homoset you can do much computation that requires the set of homologies Object where we store an homology group basically where we do our entire Computation from. Be aware that even if you use str, the keys will be stored as unicode as jsonized dict will output unicode in python $<$ 3 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_adbe4d9e4087fe5b53d861476c011329d}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_adbe4d9e4087fe5b53d861476c011329d}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!\+\_\+\+\_\+init\+\_\+\+\_\+@{\+\_\+\+\_\+init\+\_\+\+\_\+}}
+\index{\+\_\+\+\_\+init\+\_\+\+\_\+@{\+\_\+\+\_\+init\+\_\+\+\_\+}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{\+\_\+\+\_\+init\+\_\+\+\_\+()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{kwargs }\end{DoxyParamCaption})}
+
+
+
+will initialize the object with the different values you might have from another project use the data dictionnary to add any type of data 
+
+a dictionary to any values present in the homoset 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a5211ffec9061ca49c771d070048524a1}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a5211ffec9061ca49c771d070048524a1}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!\+\_\+\+\_\+delitem\+\_\+\+\_\+@{\+\_\+\+\_\+delitem\+\_\+\+\_\+}}
+\index{\+\_\+\+\_\+delitem\+\_\+\+\_\+@{\+\_\+\+\_\+delitem\+\_\+\+\_\+}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{\+\_\+\+\_\+delitem\+\_\+\+\_\+()}{\_\_delitem\_\_()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+\_\+\+\_\+delitem\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{key }\end{DoxyParamCaption})}
+
+
+
+same as in dict() 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & str, unicode the key at which to add\\
+\hline
+\end{DoxyParams}
+\begin{DoxyVerb}        TypeError "the type you should enter is int or unicode or str"
+\end{DoxyVerb}
+ 
+\begin{DoxyExceptions}{Exceptions}
+{\em Key\+Error} & \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+\_\+\+\_\+init\+\_\+\+\_\+().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_ab7ac33ea3033b440816e179cb4a5e3c0}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_ab7ac33ea3033b440816e179cb4a5e3c0}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!\+\_\+\+\_\+getitem\+\_\+\+\_\+@{\+\_\+\+\_\+getitem\+\_\+\+\_\+}}
+\index{\+\_\+\+\_\+getitem\+\_\+\+\_\+@{\+\_\+\+\_\+getitem\+\_\+\+\_\+}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{\+\_\+\+\_\+getitem\+\_\+\+\_\+()}{\_\_getitem\_\_()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+\_\+\+\_\+getitem\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{key }\end{DoxyParamCaption})}
+
+
+
+get the homology at the corresponding key 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & str, unicode the key at which to get the homology\\
+\hline
+\end{DoxyParams}
+\begin{DoxyVerb}        TypeError "the type you should enter is int or unicode or str"
+\end{DoxyVerb}
+ 
+\begin{DoxyExceptions}{Exceptions}
+{\em Key\+Error} & \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+\_\+\+\_\+init\+\_\+\+\_\+().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a42a7e7dc7ddb4b5717084cb093f90774}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a42a7e7dc7ddb4b5717084cb093f90774}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!\+\_\+\+\_\+setitem\+\_\+\+\_\+@{\+\_\+\+\_\+setitem\+\_\+\+\_\+}}
+\index{\+\_\+\+\_\+setitem\+\_\+\+\_\+@{\+\_\+\+\_\+setitem\+\_\+\+\_\+}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{\+\_\+\+\_\+setitem\+\_\+\+\_\+()}{\_\_setitem\_\_()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+\_\+\+\_\+setitem\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{key,  }\item[{}]{value }\end{DoxyParamCaption})}
+
+
+
+add an item at the corresponding key 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & str, unicode the key at which to add \\
+\hline
+{\em val} & Py\+C\+U\+B.\+homology to add at this key\\
+\hline
+\end{DoxyParams}
+\begin{DoxyVerb}        TypeError "the type you should enter is int or unicode or str"
+\end{DoxyVerb}
+ 
+\begin{DoxyExceptions}{Exceptions}
+{\em Key\+Error} & \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+\_\+\+\_\+init\+\_\+\+\_\+().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_af6e8927ae33e2785ab21293a59628946}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_af6e8927ae33e2785ab21293a59628946}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!\+\_\+barplot@{\+\_\+barplot}}
+\index{\+\_\+barplot@{\+\_\+barplot}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{\+\_\+barplot()}{\_barplot()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+\_\+barplot (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{interactive = {\ttfamily True} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+called by statistics function to plot a barplot of the proportion of different cluster per homologies and per species 
+
+
+\begin{DoxyParams}{Parameters}
+{\em interactive} & bool to true if you want to use the bokeh interactive version \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the barplot holoviews object (will directly render if in a notebook) 
+\end{DoxyReturn}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+findbest\+\_\+eps(), and Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+get\+\_\+clusterstats().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_afd51ea6276ecae41960d426ce72755b0}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_afd51ea6276ecae41960d426ce72755b0}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!\+\_\+dictify@{\+\_\+dictify}}
+\index{\+\_\+dictify@{\+\_\+dictify}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{\+\_\+dictify()}{\_dictify()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+\_\+dictify (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{savehomos = {\ttfamily False} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Used by the saving function. 
+
+transform the object into a dictionary that can be json serializable
+
+
+\begin{DoxyParams}{Parameters}
+{\em savehomos} & bool to true if you consider this homology as containing all the information (the other ones only have references to a subset of the data of this one)\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the dictionnary of all the data in this Object in the correct format to be jsonized 
+\end{DoxyReturn}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+findbest\+\_\+eps(), and Py\+C\+U\+B.\+py\+C\+U\+B.\+Py\+C\+U\+B.\+loadmore().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a795cfd3187026bde3c065aab9fe09642}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a795cfd3187026bde3c065aab9fe09642}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!\+\_\+plot\+\_\+clust@{\+\_\+plot\+\_\+clust}}
+\index{\+\_\+plot\+\_\+clust@{\+\_\+plot\+\_\+clust}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{\+\_\+plot\+\_\+clust()}{\_plot\_clust()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+\_\+plot\+\_\+clust (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{mat,  }\item[{}]{orderedmat }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+will plot the correlation matrix of the has\+\_\+homomatrix before and after ordering allowing one to show its effect 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mat} & np.\+array\mbox{[}bool\mbox{]} the current homology matrix \\
+\hline
+{\em orderedmat} & np.\+array\mbox{[}bool\mbox{]} the ordered homology matrix \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+cluster\+\_\+homologies(), and Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+plot\+\_\+distcub().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a05935a3f03f2e2b61b2f3e7e0222e2a9}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a05935a3f03f2e2b61b2f3e7e0222e2a9}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!add\+\_\+random\+\_\+homology@{add\+\_\+random\+\_\+homology}}
+\index{add\+\_\+random\+\_\+homology@{add\+\_\+random\+\_\+homology}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{add\+\_\+random\+\_\+homology()}{add\_random\_homology()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+add\+\_\+random\+\_\+homology (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+a function to populate a homology with random values 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the name of the random homology (str) 
+\end{DoxyReturn}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+loadfullhomo().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a2062c7f9c3c956d43172e1688504826a}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a2062c7f9c3c956d43172e1688504826a}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!clean\+\_\+species@{clean\+\_\+species}}
+\index{clean\+\_\+species@{clean\+\_\+species}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{clean\+\_\+species()}{clean\_species()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+clean\+\_\+species (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{thresh = {\ttfamily 0.3} }\end{DoxyParamCaption})}
+
+
+
+will remove a species from all the homologies of this homoset 
+
+Warning, as the all/working homosets share the ref to homologies, deleting some species in working\+\_\+homoset will result in removing some species in some homologies of all\+\_\+homoset
+
+
+\begin{DoxyParams}{Parameters}
+{\em thresh} & float the threshold of avg presence in homologies below which the species are remove \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+compute\+\_\+ages().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a2d543ce742d6a4e968e14b1471319287}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a2d543ce742d6a4e968e14b1471319287}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!cluster\+\_\+homologies@{cluster\+\_\+homologies}}
+\index{cluster\+\_\+homologies@{cluster\+\_\+homologies}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{cluster\+\_\+homologies()}{cluster\_homologies()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+cluster\+\_\+homologies (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{clustering = {\ttfamily \textquotesingle{}kmeans\textquotesingle{}},  }\item[{}]{byspecie = {\ttfamily False},  }\item[{}]{order = {\ttfamily True},  }\item[{}]{plot\+\_\+ordering = {\ttfamily True},  }\item[{}]{homogroupnb = {\ttfamily 2},  }\item[{}]{findnb = {\ttfamily False} }\end{DoxyParamCaption})}
+
+
+
+Compute an homology group \+: 
+
+from matrix computation using the homo\+\_\+matrix (or from network computation in homologize\+\_\+from\+\_\+network) Can be computed many times and will updata homoset with the most recent homoset found if homoset exists, it will save it.
+
+
+\begin{DoxyParams}{Parameters}
+{\em clustering} & str flags to \textquotesingle{}kmeans\textquotesingle{}, \textquotesingle{}kmodes\textquotesingle{}, \textquotesingle{}fast\textquotesingle{} to use different sk-\/learn algorithms \\
+\hline
+{\em plot} & bool flags to true for the function to output ploting of the affinity matrix with and without the clusters \\
+\hline
+{\em homogroupnb} & int nb of groups you want to extract \\
+\hline
+{\em byspecie} & bool to true if we cluster by species instead of homologies \\
+\hline
+{\em order} & bool whether or not to order \\
+\hline
+{\em plot\+\_\+ordering} & bool to true to plot this ordering \\
+\hline
+{\em findnb} & bool to true to find the right number of clusters (homogroupnb)\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+if findnb, will return the clusters for each homogroupnb up to 9
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Attribute\+Error} & \char`\"{}you entered a wrong clustering algorithm\char`\"{} \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+remove().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_ae429c30197127c5d6248c94dbb6dfc46}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_ae429c30197127c5d6248c94dbb6dfc46}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!compare\+\_\+clusters@{compare\+\_\+clusters}}
+\index{compare\+\_\+clusters@{compare\+\_\+clusters}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{compare\+\_\+clusters()}{compare\_clusters()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+compare\+\_\+clusters (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{cubdistance\+\_\+matrix = {\ttfamily True},  }\item[{}]{plot = {\ttfamily True},  }\item[{}]{interactive = {\ttfamily True},  }\item[{}]{size = {\ttfamily 40} }\end{DoxyParamCaption})}
+
+
+
+for each clusters in homologies, will compare them with a similarity matrix and a distance matrix 
+
+compare amongst the working homoset homologies, the clusters together, by what species they contains by creating a new vector of species presence in each cluster and plotting the similarity matrix of each of those vectors. --$>$ create a compare function in homoset of homologies clusters similarity matrix and ordering. basically the distance should be nan if it has not the species, -\/1 if outlier to other and 1 if one cluster to another and zeros if the same to the same
+
+
+\begin{DoxyParams}{Parameters}
+{\em cubdistance\+\_\+matrix} & bool to true if want to compute the matrix of the average\+C\+UB value distances summed for each cluster amongst the homologies \\
+\hline
+{\em plot} & bool to true to plot \\
+\hline
+{\em size} & int the size of the plot \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+get\+\_\+clusterstats().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a59a0c4c70f6dbd2dd156e2b2c9b00421}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a59a0c4c70f6dbd2dd156e2b2c9b00421}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!compute\+\_\+ages@{compute\+\_\+ages}}
+\index{compute\+\_\+ages@{compute\+\_\+ages}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{compute\+\_\+ages()}{compute\_ages()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+compute\+\_\+ages (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{preserved = {\ttfamily True},  }\item[{}]{minpreserv = {\ttfamily 0.9},  }\item[{}]{minsimi = {\ttfamily 0.85} }\end{DoxyParamCaption})}
+
+
+
+will compute whether or not a coding gene is highly preserved and if not how recent it is 
+
+it uses the phylogenetic distances and the similarities amongst homlogies to try to find a good proxy
+
+
+\begin{DoxyParams}{Parameters}
+{\em preserved} & bool to true if we should find highly preserved genes or not \\
+\hline
+{\em minpreserv} & float minimal percentage of homologous species that have this homology \\
+\hline
+{\em minsimi} & float minimal avg similarity between genes to consider them highly preserved\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Unbound\+Local\+Error} & \char`\"{}you need to have the similarity\+\_\+scores\char`\"{} \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+preprocessing\+\_\+names().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a78ab39ddfa288661f5e809ea0a455187}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a78ab39ddfa288661f5e809ea0a455187}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!compute\+\_\+entropyloc@{compute\+\_\+entropyloc}}
+\index{compute\+\_\+entropyloc@{compute\+\_\+entropyloc}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{compute\+\_\+entropyloc()}{compute\_entropyloc()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+compute\+\_\+entropyloc (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{using = {\ttfamily \textquotesingle{}computejerem\textquotesingle{}} }\end{DoxyParamCaption})}
+
+
+
+called if need entropy location and used ensembl data. 
+
+you can always compute entropy location from entropy data. \begin{DoxyVerb}   Will be much faster than doing it directly when calling
+   ensembl's data as it computes the partition function
+   only one for each lengths
+\end{DoxyVerb}
+
+
+
+\begin{DoxyParams}{Parameters}
+{\em using} & str flags the partition algorithm to use\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Unbound\+Local\+Error} & \char`\"{}you need to have your C\+U\+B values as entropy\char`\"{} \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+preprocessing\+\_\+namelist().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a81b40822ff0d1d3e0cfccd6c3c54cdd6}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a81b40822ff0d1d3e0cfccd6c3c54cdd6}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!find\+\_\+clusters@{find\+\_\+clusters}}
+\index{find\+\_\+clusters@{find\+\_\+clusters}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{find\+\_\+clusters()}{find\_clusters()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+find\+\_\+clusters (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{clustering = {\ttfamily \textquotesingle{}dbscan\textquotesingle{}},  }\item[{}]{homogroupnb = {\ttfamily None},  }\item[{}]{assess = {\ttfamily True},  }\item[{}]{eps = {\ttfamily 0.8},  }\item[{}]{best\+\_\+eps = {\ttfamily True},  }\item[{}]{trainingset = {\ttfamily 30},  }\item[{}]{epoch = {\ttfamily 20},  }\item[{}]{ranges = {\ttfamily \mbox{[}0.2},  }\item[{}]{size = {\ttfamily 10},  }\item[{}]{redo = {\ttfamily False} }\end{DoxyParamCaption})}
+
+
+
+Finds, for each homologies in the working homoset, groups that are part of compact clusters. 
+
+it will be using gaussian mixture clustering or D\+B\+S\+C\+AN and order them according to the density of each cluster (we are interested in the densest ones) and assess the quality using 3 criterion\+:B\+IC, number of outliers, also find if we are close to ancestry tree, here we need to represent a comparison of the closeness in a phylogenetic tree to a cluster of species --$>$ given a grouping of phylogenetic tree, what cluster is the most similar to it
+
+
+\begin{DoxyParams}{Parameters}
+{\em clustering} & method (D\+B\+S\+C\+AN, gaussian mixture) \\
+\hline
+{\em homogroupnb} & the number of groups can be a number or else will look for the better number of cluster according to assessments. \\
+\hline
+{\em assess} & plot or not the assessments \\
+\hline
+{\em eps} & the hyperparams \\
+\hline
+{\em best\+\_\+eps} & bool to true wether or not to do an hyperparam greedy search \\
+\hline
+{\em trainingset} & int if best\+\_\+eps, the size of the training ser \\
+\hline
+{\em epoch} & int the number of increasing trials \\
+\hline
+{\em ranges} & tuple\mbox{[}float\mbox{]} the two min and max values to use \\
+\hline
+{\em size} & int the x size of the plot \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+compare\+\_\+clusters().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a36e6e64142f4cc63425f145a1754d1d6}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a36e6e64142f4cc63425f145a1754d1d6}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!findbest\+\_\+eps@{findbest\+\_\+eps}}
+\index{findbest\+\_\+eps@{findbest\+\_\+eps}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{findbest\+\_\+eps()}{findbest\_eps()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+findbest\+\_\+eps (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{trainingset = {\ttfamily 400},  }\item[{}]{clustering = {\ttfamily \char`\"{}dbscan\char`\"{}},  }\item[{}]{epoch = {\ttfamily 20},  }\item[{}]{ranges = {\ttfamily \mbox{[}0.2},  }\item[{}]{size = {\ttfamily 10},  }\item[{}]{redo = {\ttfamily False} }\end{DoxyParamCaption})}
+
+
+
+will find the best eps hyperparameter (the one that minimizes the evolutionary distance within its clusters) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em trainingset} & int the number of homologies in your training set (should be 20\% of the total) \\
+\hline
+{\em clustering} & str flags the clustering algorithm from which to find the best hyperparam \\
+\hline
+{\em epoch} & int the number of increasing trials \\
+\hline
+{\em ranges} & tuple\mbox{[}float\mbox{]} the two min and max values to use \\
+\hline
+{\em size} & int the x size of the plot \\
+\hline
+{\em redo} & wether or not to recompute everyhting if it has already been computed once\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}
+Returns;
+\end{DoxyCode}
+ the best value (often a float)
+
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Lookup\+Error} & \char`\"{}you need to compute the phylogenetic distances first to have some form of labels\char`\"{} \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+compare\+\_\+clusters().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_aa41e2430673cf29f96a522e03040ca1d}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_aa41e2430673cf29f96a522e03040ca1d}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!get\+\_\+clusterstats@{get\+\_\+clusterstats}}
+\index{get\+\_\+clusterstats@{get\+\_\+clusterstats}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{get\+\_\+clusterstats()}{get\_clusterstats()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+get\+\_\+clusterstats (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{sort = {\ttfamily True},  }\item[{}]{interactive = {\ttfamily True},  }\item[{}]{redo = {\ttfamily False} }\end{DoxyParamCaption})}
+
+
+
+will find the number of cluster i per homologies and per species 
+
+plot for each species, how much its genes are outliers, how much are belonging to a secondary cluster and how much are belonging to the principal cluster. --$>$ create a long stacked bar plot with these values
+
+
+\begin{DoxyParams}{Parameters}
+{\em sort} & bool to true to sort everyhting according to the statistics differences \\
+\hline
+{\em interactive} & bool to true to have an interactive barplot \\
+\hline
+{\em redo} & bool to true not to reused cached data\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Unbound\+Local\+Error} & \char`\"{}you need to find clusters first\char`\"{} \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+cluster\+\_\+homologies().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a5029dbdf4e7f61bd38b6273f4fde9ead}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a5029dbdf4e7f61bd38b6273f4fde9ead}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!loadfullhomo@{loadfullhomo}}
+\index{loadfullhomo@{loadfullhomo}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{loadfullhomo()}{loadfullhomo()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+loadfullhomo (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+function to concatenate all the homologies in one big array(practicle for certain computations) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+\_\+\+\_\+len\+\_\+\+\_\+(), Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+compute\+\_\+ages(), and Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+plot\+\_\+all().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a5a56a99b5bf87afb418a1bbc5ec1c10b}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a5a56a99b5bf87afb418a1bbc5ec1c10b}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!loadhashomo@{loadhashomo}}
+\index{loadhashomo@{loadhashomo}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{loadhashomo()}{loadhashomo()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+loadhashomo (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{withnames = {\ttfamily False} }\end{DoxyParamCaption})}
+
+
+
+function to compute the matrix of bool saying wether species X has a gene or more in homology Y 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+loadfullhomo(), and Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+plot\+\_\+all().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_abebd6a9804b73a10fc726974630e5d26}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_abebd6a9804b73a10fc726974630e5d26}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!orderfromclust@{orderfromclust}}
+\index{orderfromclust@{orderfromclust}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{orderfromclust()}{orderfromclust()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+orderfromclust (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{homogroupnb,  }\item[{}]{clust,  }\item[{}]{byspecie = {\ttfamily False},  }\item[{}]{plot\+\_\+ordering = {\ttfamily True} }\end{DoxyParamCaption})}
+
+
+
+creates an ordering of every elements 
+
+(names, homologies according to the found clusters) from an ordered cluster of species or of homologies self.\+hashomomatrix should reflect this orientation as well
+
+
+\begin{DoxyParams}{Parameters}
+{\em homogroupnb} & int the number of clusters \\
+\hline
+{\em clust} & np.\+array(int) the clusters \\
+\hline
+{\em byspecie} & bool to true to order by species \\
+\hline
+{\em plot\+\_\+ordering} & bool to true to plot the ordering\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the ordered hashomomatrix (np.\+array\mbox{[}bool\mbox{]}) 
+\end{DoxyReturn}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+cluster\+\_\+homologies().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_af57de86adab3635645d684b89636cd5c}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_af57de86adab3635645d684b89636cd5c}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!plot\+\_\+all@{plot\+\_\+all}}
+\index{plot\+\_\+all@{plot\+\_\+all}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{plot\+\_\+all()}{plot\_all()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+plot\+\_\+all (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{With = {\ttfamily \textquotesingle{}tsne\textquotesingle{}},  }\item[{}]{perplexity = {\ttfamily 60},  }\item[{}]{interactive = {\ttfamily False},  }\item[{}]{bins = {\ttfamily 100},  }\item[{}]{offset = {\ttfamily 20},  }\item[{}]{iteration = {\ttfamily 400},  }\item[{}]{redo = {\ttfamily False},  }\item[{}]{bypasstsne = {\ttfamily False},  }\item[{}]{dotsize = {\ttfamily 7},  }\item[{}]{inpar = {\ttfamily True} }\end{DoxyParamCaption})}
+
+
+
+will plot all the homologies in the full\+\_\+homo\+\_\+matrix (and compute it) 
+
+(sometimes around 800 000 datapoints) to look at any kind of relationships as there is too much datapoints, the plots are density ones.
+
+
+\begin{DoxyParams}{Parameters}
+{\em With} & flag the dim reduction algorithm to use (tsne\+: need $>$16gigs of R\+AM,now use another version of tsne for large datasets )(P\+CA\+: works well)(lsta/hessian\+:untested) \\
+\hline
+{\em perplexity} & ints of basic tsne hyperparams \\
+\hline
+{\em interactive} & bool if true should use bokeh else matplotlib\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the desired plot if the size is high and we are interactive
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Attribute\+Error} & \char`\"{}not a good red algorithm\char`\"{} \\
+\hline
+\end{DoxyExceptions}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+\_\+\+\_\+delitem\+\_\+\+\_\+().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_aa385d8acea32381efae12c219c24a331}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_aa385d8acea32381efae12c219c24a331}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!plot\+\_\+distcub@{plot\+\_\+distcub}}
+\index{plot\+\_\+distcub@{plot\+\_\+distcub}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{plot\+\_\+distcub()}{plot\_distcub()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+plot\+\_\+distcub (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{interactive = {\ttfamily False},  }\item[{}]{size = {\ttfamily 40} }\end{DoxyParamCaption})}
+
+
+
+plot the distance matrix of each homologies from the average of their C\+UB distances 
+
+the interactive version allows you to see each particular datapoint with much more precision
+
+
+\begin{DoxyParams}{Parameters}
+{\em interactive} & bool to use the bokeh interactive version \\
+\hline
+{\em size} & size of the matrix \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+compare\+\_\+clusters(), and Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+plot\+\_\+hashomo().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a8ab62bae7be17abf4b13ad37d5c881eb}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a8ab62bae7be17abf4b13ad37d5c881eb}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!plot\+\_\+hashomo@{plot\+\_\+hashomo}}
+\index{plot\+\_\+hashomo@{plot\+\_\+hashomo}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{plot\+\_\+hashomo()}{plot\_hashomo()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+plot\+\_\+hashomo (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{invert = {\ttfamily False},  }\item[{}]{size = {\ttfamily 40},  }\item[{}]{interactive = {\ttfamily False},  }\item[{}]{rangeto = {\ttfamily None} }\end{DoxyParamCaption})}
+
+
+
+plot the has homo matrix 
+
+the interactive version allows you to see each particular datapoint with much more precision
+
+
+\begin{DoxyParams}{Parameters}
+{\em interactive} & bool to use the bokeh interactive version \\
+\hline
+{\em size} & int size of the matrix \\
+\hline
+{\em invert} & bool flag to true to invert the plot \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+\_\+barplot().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a87fcd4602c943c98543e2bc552502663}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a87fcd4602c943c98543e2bc552502663}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!plot\+\_\+simiclust@{plot\+\_\+simiclust}}
+\index{plot\+\_\+simiclust@{plot\+\_\+simiclust}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{plot\+\_\+simiclust()}{plot\_simiclust()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+plot\+\_\+simiclust (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{interactive = {\ttfamily True},  }\item[{}]{size = {\ttfamily 40} }\end{DoxyParamCaption})}
+
+
+
+plot the similarity matrix of each homologies from its clusters 
+
+the interactive version allows you to see each particular datapoint with much more precision
+
+
+\begin{DoxyParams}{Parameters}
+{\em interactive} & bool to use the bokeh interactive version \\
+\hline
+{\em size} & size of the matrix \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+get\+\_\+clusterstats(), and Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+plot\+\_\+hashomo().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a3f689e03251e7b4fe262a86d08946998}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a3f689e03251e7b4fe262a86d08946998}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!preprocessing@{preprocessing}}
+\index{preprocessing@{preprocessing}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{preprocessing()}{preprocessing()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+preprocessing (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{withtaxons = {\ttfamily False},  }\item[{}]{withnames = {\ttfamily True} }\end{DoxyParamCaption})}
+
+
+
+will compute the full list of names, 
+
+find doublons, and set the names to ints instead of strings. called after loading from ensembl and associate namelist in each homologies to a number in utils.\+speciestable
+
+
+\begin{DoxyParams}{Parameters}
+{\em withtaxons} & bool to true calls \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_aa39455620288b4912e5540491913e792}{preprocessing\+\_\+taxons()}} else one of the other two \\
+\hline
+{\em withnames} & bool to true to call \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a36cf71a7bc24b788c4d526591a8ec376}{preprocessing\+\_\+names()}} else calls \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a4060c440127aa861c17b6157c81e2d27}{preprocessing\+\_\+namelist()}}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+
+taxons list, if the names contains an additional list of taxon ids. and the corresponding species in the same order only if withtaxons 
+\end{DoxyReturn}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+loadhashomo().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a4060c440127aa861c17b6157c81e2d27}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a4060c440127aa861c17b6157c81e2d27}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!preprocessing\+\_\+namelist@{preprocessing\+\_\+namelist}}
+\index{preprocessing\+\_\+namelist@{preprocessing\+\_\+namelist}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{preprocessing\+\_\+namelist()}{preprocessing\_namelist()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+preprocessing\+\_\+namelist (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+same as \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_a36cf71a7bc24b788c4d526591a8ec376}{preprocessing\+\_\+names()}} but without preprocessing the names of each homologies only updating the species\+\_\+namelist 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+add\+\_\+random\+\_\+homology(), and Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+preprocessing\+\_\+taxons().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a36cf71a7bc24b788c4d526591a8ec376}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a36cf71a7bc24b788c4d526591a8ec376}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!preprocessing\+\_\+names@{preprocessing\+\_\+names}}
+\index{preprocessing\+\_\+names@{preprocessing\+\_\+names}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{preprocessing\+\_\+names()}{preprocessing\_names()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+preprocessing\+\_\+names (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+same as \mbox{\hyperlink{class_py_c_u_b_1_1homoset_1_1_homo_set_aa39455620288b4912e5540491913e792}{preprocessing\+\_\+taxons()}} but admiting there is no taxon information (Yun\textquotesingle{}s data for example) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+add\+\_\+random\+\_\+homology(), and Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+preprocessing().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_aa39455620288b4912e5540491913e792}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_aa39455620288b4912e5540491913e792}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!preprocessing\+\_\+taxons@{preprocessing\+\_\+taxons}}
+\index{preprocessing\+\_\+taxons@{preprocessing\+\_\+taxons}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{preprocessing\+\_\+taxons()}{preprocessing\_taxons()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+preprocessing\+\_\+taxons (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+preprocess the data by computing the names as ints 
+
+creates a speciestable to find the corresponding names computes the doublons and compute the species\+\_\+namelist of this homoset will returns the species and the corresponding taxons extracted from the homology.\+names
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+add\+\_\+random\+\_\+homology().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_af19ffd1cceb4b222e642713456b300a1}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_af19ffd1cceb4b222e642713456b300a1}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!remove@{remove}}
+\index{remove@{remove}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{remove()}{remove()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+remove (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{species }\end{DoxyParamCaption})}
+
+
+
+remove this list of species from the homologies 
+
+
+\begin{DoxyParams}{Parameters}
+{\em species} & list\mbox{[}str\mbox{]} the species to remove from all homologies \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+compute\+\_\+ages(), and Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+compute\+\_\+entropyloc().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a000511647e3f85d8abadcdddaddfb04d}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a000511647e3f85d8abadcdddaddfb04d}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!size@{size}}
+\index{size@{size}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{size()}{size()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+size (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+the size of the homoset (number of genes) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int the number of genes 
+\end{DoxyReturn}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+loadfullhomo().
+
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_a8cf76800f047841bf63d507fb1b54048}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_a8cf76800f047841bf63d507fb1b54048}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!update@{update}}
+\index{update@{update}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{update()}{update()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+update (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{val }\end{DoxyParamCaption})}
+
+
+
+a function to update the dictionnary that homoset is 
+
+
+\begin{DoxyParams}{Parameters}
+{\em val} & the dict to append tot this one \\
+\hline
+\end{DoxyParams}
+
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+\_\+\+\_\+delitem\+\_\+\+\_\+(), Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+\_\+\+\_\+init\+\_\+\+\_\+(), Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+\_\+\+\_\+setitem\+\_\+\+\_\+(), and Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+loadhashomo().
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{class_py_c_u_b_1_1homoset_1_1_homo_set_ade27fdf472815f4fb2eb1d1ef552ad42}\label{class_py_c_u_b_1_1homoset_1_1_homo_set_ade27fdf472815f4fb2eb1d1ef552ad42}} 
+\index{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}!wasclusterized@{wasclusterized}}
+\index{wasclusterized@{wasclusterized}!Py\+C\+U\+B\+::homoset\+::\+Homo\+Set@{Py\+C\+U\+B\+::homoset\+::\+Homo\+Set}}
+\subsubsection{\texorpdfstring{wasclusterized}{wasclusterized}}
+{\footnotesize\ttfamily Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+wasclusterized = False\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+bool if the homologies have been clustered or not. 
+
+usefull for processing requiring clusters 
+
+Referenced by Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+\_\+\+\_\+init\+\_\+\+\_\+(), Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+\_\+barplot(), Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+compare\+\_\+clusters(), and Py\+C\+U\+B.\+homoset.\+Homo\+Set.\+orderfromclust().
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Py\+C\+U\+B/homoset.\+py\end{DoxyCompactItemize}

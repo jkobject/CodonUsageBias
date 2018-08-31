@@ -16,13 +16,13 @@ except:
 
 
 class Espece(object):
-    """docstring for Espece
+    """ docstring for Espece
 
     This is an object that contains all required information of a species for PyCUB and some nice functions
     to interact for each species
 
 
-    Args:
+    Attributes:
         code: a dict from gene_name to dna_seq string (deprecated)
         metadata: a dict containing different metadata information that one can gather, preferentially boolean
             flags to classify the species for plottings and comparings
@@ -167,6 +167,9 @@ class Espece(object):
         if self.meanecai is not None:
             toret += "\nmean ECAI: " + str(self.meanecai)
         return toret
+
+# CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
+# GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
 
 # CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
 # GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb

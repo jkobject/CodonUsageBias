@@ -1,0 +1,657 @@
+\hypertarget{utils_8py}{}\section{Py\+C\+U\+B/utils.py File Reference}
+\label{utils_8py}\index{Py\+C\+U\+B/utils.\+py@{Py\+C\+U\+B/utils.\+py}}
+
+
+the utils is where utilitary functions are stored (in particular preprocessing functions here)  
+
+
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacepy_c_u_b}{py\+C\+UB}}
+\begin{DoxyCompactList}\small\item\em " Created by Jeremie K\+A\+L\+F\+ON Date 21 F\+EV 2018 University of Kent, E\+CE paris jkobject.\+com \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{utils_8py_a0c55bef2a4d848b403e4baff81a9d058}{Py\+C\+U\+B.\+utils.\+homoyun}} (separation, folder=\char`\"{}first500\char`\"{}, homo\+\_\+name=\char`\"{}Y\+A\+L019W\char`\"{}, by=\textquotesingle{}entropy\+Location\textquotesingle{}, aminolist=None)
+\begin{DoxyCompactList}\small\item\em read the all the files for one homology and returns everything inside (Yun) \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{utils_8py_a50fdd2d3367b583693a97f0619c9d1a2}{Py\+C\+U\+B.\+utils.\+getyun}} (key, val)
+\begin{DoxyCompactList}\small\item\em function to get data from an url \textquotesingle{}val\textquotesingle{} and save it under a file \textquotesingle{}key\textquotesingle{} \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{utils_8py_a5514bfef19cc1ce1349e45454e3570e3}{Py\+C\+U\+B.\+utils.\+mymeta}} (key, val)
+\begin{DoxyCompactList}\small\item\em same as getyun but saves under meta \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{utils_8py_a0dde2285cbaca13936764eab00aa3ac0}{Py\+C\+U\+B.\+utils.\+retrievenames}} ()
+\begin{DoxyCompactList}\small\item\em returns the dfs for yun\textquotesingle{}s data (names of the species alphabetically ordered and their links) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{utils_8py_a096e25468db59d197897fae5561952fa}\label{utils_8py_a096e25468db59d197897fae5561952fa}} 
+def {\bfseries Py\+C\+U\+B.\+utils.\+loadfromensembl} (homology, kingdom=\textquotesingle{}fungi\textquotesingle{}, sequence=\textquotesingle{}cdna\textquotesingle{}, additional=\textquotesingle{}type=orthologues\textquotesingle{}, saveonfiles=False, normalized=False, setnans=False, number=0, by=\char`\"{}entropy\char`\"{}, using=\char`\"{}normal\char`\"{}, get\+C\+AI=None)
+\item 
+def \mbox{\hyperlink{utils_8py_a176a739d53ff6646242f3866d9d8d149}{Py\+C\+U\+B.\+utils.\+process}} (data, normalized=False, setnans=False, by=\textquotesingle{}entropy\textquotesingle{}, get\+C\+AI=None)
+\begin{DoxyCompactList}\small\item\em function used by loadfromensembl() to process the retrieved data \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{utils_8py_a9c14f0ab3bf3497f0197c632210fe341}\label{utils_8py_a9c14f0ab3bf3497f0197c632210fe341}} 
+def {\bfseries Py\+C\+U\+B.\+utils.\+compute\+\_\+meta} (data)
+\item 
+def \mbox{\hyperlink{utils_8py_a21fe257ad4a7db39e7c244c1fca2a8fd}{Py\+C\+U\+B.\+utils.\+reference\+\_\+index}} (data, forcai=False)
+\begin{DoxyCompactList}\small\item\em compute he R\+C\+SU value of this gene \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{utils_8py_a9528a1a7aa3096fde14d3f6332c33132}{Py\+C\+U\+B.\+utils.\+compute\+C\+AI}} (data, cai)
+\begin{DoxyCompactList}\small\item\em compute the C\+AI according to the reference index W\+H\+I\+CH N\+E\+E\+DS TO BE P\+R\+E\+V\+I\+O\+U\+S\+LY C\+O\+M\+P\+U\+T\+ED \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{utils_8py_a256c8d04f880e14f6197df0bb70af667}{Py\+C\+U\+B.\+utils.\+compute\+E\+C\+AI}} (data)
+\begin{DoxyCompactList}\small\item\em compute the Evolutionary C\+AI according to the reference index W\+H\+I\+CH N\+E\+E\+DS TO BE P\+R\+E\+V\+I\+O\+U\+S\+LY C\+O\+M\+P\+U\+T\+ED \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{utils_8py_a8d76f68733c2febcfc7e92c8f0e13d28}{Py\+C\+U\+B.\+utils.\+computeyun}} (data, setnans=False, normalized=False, by=\textquotesingle{}entropy\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em function used by process to compte the \textquotesingle{}entropy\textquotesingle{} or \textquotesingle{}frequency\textquotesingle{} of the processed data \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{utils_8py_acfd83ed619fddd4f2e3339edf9f56612}\label{utils_8py_acfd83ed619fddd4f2e3339edf9f56612}} 
+def {\bfseries Py\+C\+U\+B.\+utils.\+getloc} (valH, geneleng, using=\textquotesingle{}computejerem\textquotesingle{})
+\item 
+\mbox{\Hypertarget{utils_8py_a2b523f6546ade5fea03362af7ebca34a}\label{utils_8py_a2b523f6546ade5fea03362af7ebca34a}} 
+def {\bfseries Py\+C\+U\+B.\+utils.\+computepartition} (nbcod, leng, using=\textquotesingle{}computejerem\textquotesingle{})
+\item 
+\mbox{\Hypertarget{utils_8py_a1a9c7e6dbaad8646f35a48c1eeb4acfe}\label{utils_8py_a1a9c7e6dbaad8646f35a48c1eeb4acfe}} 
+def {\bfseries Py\+C\+U\+B.\+utils.\+randomdraw} (nbcod, leng)
+\item 
+\mbox{\Hypertarget{utils_8py_a9967fa1762db3a3ffed78e56dd0bd630}\label{utils_8py_a9967fa1762db3a3ffed78e56dd0bd630}} 
+def {\bfseries Py\+C\+U\+B.\+utils.\+computepartition\+\_\+sorted\+\_\+full} (nbcod, leng)
+\item 
+\mbox{\Hypertarget{utils_8py_afd2583955f91cbfcffa0d99af217f2e9}\label{utils_8py_afd2583955f91cbfcffa0d99af217f2e9}} 
+def {\bfseries Py\+C\+U\+B.\+utils.\+computepartition\+\_\+without\+\_\+permutation} (nbcod, leng)
+\item 
+\mbox{\Hypertarget{utils_8py_a3d14c744657d490b0bd14ce2e02a1086}\label{utils_8py_a3d14c744657d490b0bd14ce2e02a1086}} 
+def {\bfseries Py\+C\+U\+B.\+utils.\+computejerem} (nbcod, leng)
+\item 
+\mbox{\Hypertarget{utils_8py_a865fca46cc4e10fa106cd3e3cc6b3d79}\label{utils_8py_a865fca46cc4e10fa106cd3e3cc6b3d79}} 
+def {\bfseries Py\+C\+U\+B.\+utils.\+computepartition\+\_\+normal\+\_\+approximation} (nbcod, leng, probavector)
+\item 
+\mbox{\Hypertarget{utils_8py_a646f6850a1b5737facc43c3464ea44dd}\label{utils_8py_a646f6850a1b5737facc43c3464ea44dd}} 
+def {\bfseries Py\+C\+U\+B.\+utils.\+mlen} (leng, nb)
+\item 
+\mbox{\Hypertarget{utils_8py_a0da6a68255820d7cbb1342b5de61f567}\label{utils_8py_a0da6a68255820d7cbb1342b5de61f567}} 
+def \mbox{\hyperlink{utils_8py_a0da6a68255820d7cbb1342b5de61f567}{Py\+C\+U\+B.\+utils.\+permute}} (vect, start, end)
+\begin{DoxyCompactList}\small\item\em compute all possible permutations of the set vect \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{utils_8py_a775ea26412197e48261d609c10cf5053}\label{utils_8py_a775ea26412197e48261d609c10cf5053}} 
+def {\bfseries Py\+C\+U\+B.\+utils.\+last\+\_\+match\+\_\+index} (a, value)
+\item 
+def \mbox{\hyperlink{utils_8py_acb6009780f9a197a46c2b11f97fdc3fc}{Py\+C\+U\+B.\+utils.\+rgb2hex}} (rgb)
+\begin{DoxyCompactList}\small\item\em compute the hex str from an rgd triplet \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{utils_8py_a5bd9df8f540177805d8f39eb0d9f006c}\label{utils_8py_a5bd9df8f540177805d8f39eb0d9f006c}} 
+def {\bfseries Py\+C\+U\+B.\+utils.\+endresdistance} (a, b)
+\item 
+\mbox{\Hypertarget{utils_8py_a7a8d6de6bf8d3d1758aa06b36efe3c68}\label{utils_8py_a7a8d6de6bf8d3d1758aa06b36efe3c68}} 
+def \mbox{\hyperlink{utils_8py_a7a8d6de6bf8d3d1758aa06b36efe3c68}{Py\+C\+U\+B.\+utils.\+kl}} (a, b)
+\begin{DoxyCompactList}\small\item\em kulback-\/leiber distance computation \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{utils_8py_ac3352241fdb016960581842c7bc3112c}\label{utils_8py_ac3352241fdb016960581842c7bc3112c}} 
+dictionary {\bfseries Py\+C\+U\+B.\+utils.\+speciestable} = \{\}
+\item 
+\mbox{\Hypertarget{utils_8py_a74bc894763f21a3bd0f57594f0d8f94a}\label{utils_8py_a74bc894763f21a3bd0f57594f0d8f94a}} 
+dictionary {\bfseries Py\+C\+U\+B.\+utils.\+indexecai} = \{\}
+\item 
+\mbox{\Hypertarget{utils_8py_a41bf6e7a32e61f61f3bd98008ce1258e}\label{utils_8py_a41bf6e7a32e61f61f3bd98008ce1258e}} 
+{\bfseries Py\+C\+U\+B.\+utils.\+listvect} = None
+\item 
+\mbox{\Hypertarget{utils_8py_aee6c6c9a40d9c8998542549ef165b397}\label{utils_8py_aee6c6c9a40d9c8998542549ef165b397}} 
+{\bfseries Py\+C\+U\+B.\+utils.\+phylo\+\_\+distances} = None
+\item 
+\mbox{\Hypertarget{utils_8py_afbd0907aa46335f0422cf2390ebd74b3}\label{utils_8py_afbd0907aa46335f0422cf2390ebd74b3}} 
+dictionary {\bfseries Py\+C\+U\+B.\+utils.\+codamino}
+\item 
+dictionary {\bfseries Py\+C\+U\+B.\+utils.\+codons}
+\item 
+dictionary {\bfseries Py\+C\+U\+B.\+utils.\+anticodons}
+\item 
+dictionary {\bfseries Py\+C\+U\+B.\+utils.\+amino2reduce}
+\item 
+list {\bfseries Py\+C\+U\+B.\+utils.\+amino}
+\item 
+list {\bfseries Py\+C\+U\+B.\+utils.\+aminosort}
+\item 
+\mbox{\Hypertarget{utils_8py_aaa57e71ed47e91430620dcfe50b5c720}\label{utils_8py_aaa57e71ed47e91430620dcfe50b5c720}} 
+int {\bfseries Py\+C\+U\+B.\+utils.\+L\+M\+AX} = 2500
+\item 
+\mbox{\Hypertarget{utils_8py_aa0d76d1917582df379a397e2b672b606}\label{utils_8py_aa0d76d1917582df379a397e2b672b606}} 
+int {\bfseries Py\+C\+U\+B.\+utils.\+M\+A\+X\+I\+TR} = 5000000
+\item 
+\mbox{\Hypertarget{utils_8py_a5cffe7e316e25a2294f46a61aa73f7c7}\label{utils_8py_a5cffe7e316e25a2294f46a61aa73f7c7}} 
+list {\bfseries Py\+C\+U\+B.\+utils.\+smax} = \mbox{[}0, 0, L\+M\+AX, 1414, 100, 0, 35\mbox{]}
+\item 
+\mbox{\Hypertarget{utils_8py_ad2c82c7b38ec9fe8622841fc25356fc4}\label{utils_8py_ad2c82c7b38ec9fe8622841fc25356fc4}} 
+list {\bfseries Py\+C\+U\+B.\+utils.\+smax2} = \mbox{[}0, 0, L\+M\+AX, L\+M\+AX, 520, 0, 145\mbox{]}
+\item 
+\mbox{\Hypertarget{utils_8py_a3d80c26746d7a6bea10aa8b383281c5e}\label{utils_8py_a3d80c26746d7a6bea10aa8b383281c5e}} 
+int {\bfseries Py\+C\+U\+B.\+utils.\+C\+U\+BD} = 18
+\item 
+\mbox{\Hypertarget{utils_8py_a58ddda2ea7a22b675df191b31f3600b7}\label{utils_8py_a58ddda2ea7a22b675df191b31f3600b7}} 
+int {\bfseries Py\+C\+U\+B.\+utils.\+M\+AX} = 20
+\item 
+dictionary {\bfseries Py\+C\+U\+B.\+utils.\+amino2meta}
+\item 
+list {\bfseries Py\+C\+U\+B.\+utils.\+synthsteps}
+\item 
+list {\bfseries Py\+C\+U\+B.\+utils.\+glucosecost}
+\item 
+list {\bfseries Py\+C\+U\+B.\+utils.\+hydrophob}
+\item 
+list {\bfseries Py\+C\+U\+B.\+utils.\+volume}
+\item 
+list {\bfseries Py\+C\+U\+B.\+utils.\+isoelectricpoint}
+\item 
+\mbox{\Hypertarget{utils_8py_a005e0b8d660439d98a1820d96a76af5d}\label{utils_8py_a005e0b8d660439d98a1820d96a76af5d}} 
+list {\bfseries Py\+C\+U\+B.\+utils.\+conservation} = \mbox{[}5, 5.\+2, 4, 5.\+3, 4.\+4, 3.\+4, 4.\+4, 6.\+6, 3.\+1, 7.\+8, 7.\+3, 4.\+4, 4.\+2, 5.\+6, 3.\+8, 3.\+8, 3.\+2, 6.\+5\mbox{]}
+\item 
+\mbox{\Hypertarget{utils_8py_af5e3fe8ce8251c8dcd0226f760676db8}\label{utils_8py_af5e3fe8ce8251c8dcd0226f760676db8}} 
+list {\bfseries Py\+C\+U\+B.\+utils.\+colormap} = \mbox{[}\textquotesingle{}\#f39c12\textquotesingle{}, \char`\"{}\#1abc9c\char`\"{}, \char`\"{}\#3498db\char`\"{}, \char`\"{}\#2ecc71\char`\"{}, \char`\"{}\#9b59b6\char`\"{}, \textquotesingle{}\#34495e\textquotesingle{}, \textquotesingle{}\#f1c40f\textquotesingle{}, \textquotesingle{}\#e67e22\textquotesingle{}, \textquotesingle{}\#e74c3c\textquotesingle{}, \textquotesingle{}\#7f8c8d\textquotesingle{}\mbox{]}
+\item 
+\mbox{\Hypertarget{utils_8py_ad5dda8cbd733b952b3dd7170c5457029}\label{utils_8py_ad5dda8cbd733b952b3dd7170c5457029}} 
+string {\bfseries Py\+C\+U\+B.\+utils.\+callback}
+\item 
+\mbox{\Hypertarget{utils_8py_a769af995c851ac791cf6380c071112b6}\label{utils_8py_a769af995c851ac791cf6380c071112b6}} 
+string {\bfseries Py\+C\+U\+B.\+utils.\+callback\+\_\+allgenes}
+\item 
+\mbox{\Hypertarget{utils_8py_a5f3db83985c25b62f36abce955084f7b}\label{utils_8py_a5f3db83985c25b62f36abce955084f7b}} 
+string {\bfseries Py\+C\+U\+B.\+utils.\+callback\+\_\+allhomo}
+\item 
+\mbox{\Hypertarget{utils_8py_a9913a1de1e3e008fc63adf4adda91a90}\label{utils_8py_a9913a1de1e3e008fc63adf4adda91a90}} 
+string {\bfseries Py\+C\+U\+B.\+utils.\+callback\+\_\+plotall}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+the utils is where utilitary functions are stored (in particular preprocessing functions here) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em speciestable} & dict\mbox{[}int\mbox{]} will be used by all other objects to make numbers corresponds to species \\
+\hline
+{\em indexcai} & a dict\mbox{[}amino\+: value\mbox{]} to known what is the frequency of this amino acid in a gene X of the reference species for the \mbox{\hyperlink{utils_8py_a21fe257ad4a7db39e7c244c1fca2a8fd}{reference\+\_\+index()}} and \mbox{\hyperlink{utils_8py_a9528a1a7aa3096fde14d3f6332c33132}{compute\+C\+A\+I()}} function \\
+\hline
+{\em indexecai} & a dict\mbox{[}amino\+: value\mbox{]} to known what is the frequency of this amino acid in a gene X of the reference species for the \mbox{\hyperlink{utils_8py_a21fe257ad4a7db39e7c244c1fca2a8fd}{reference\+\_\+index()}} and \mbox{\hyperlink{utils_8py_a256c8d04f880e14f6197df0bb70af667}{compute\+E\+C\+A\+I()}} function it is different to the C\+AI ones as it does not contains the references for a set of highly expressed genes but the ones for each homologies \\
+\hline
+{\em listvect} & used by the fast partition compute function \\
+\hline
+{\em phylo\+\_\+distances} & df where the phylodistance df is stored (see Py\+C\+U\+B.\+py\+C\+U\+B.\+get\+\_\+evolutionnary\+\_\+distance()) \\
+\hline
+{\em codons} & dictionaary\mbox{[}list\mbox{[}str\mbox{]}\mbox{]} making codons corresponds to amino acids, \\
+\hline
+{\em amino} & list\mbox{[}str\mbox{]} amino acids in their alphabetical ordering \\
+\hline
+{\em aminosort} & list\mbox{[}str\mbox{]} amino acids sorted by the number of their codons and the alphabetical orderings of their codons. \\
+\hline
+{\em M\+A\+X\+I\+TR} & for computational purposes when you reach a certain number of iteration in computing partition functions in entropy locations, you stop as you have a good enough partition function \\
+\hline
+{\em L\+M\+AX} & int the maximal length of amino acid in some functions, it will do a full partition function computation if lower than this value. all the values here are choosen for a max amount of computation in full partition function of M\+A\+X\+I\+TR \\
+\hline
+{\em smax} & list\mbox{[}int\mbox{]} other values to reach 1 million iterations for each codon number \\
+\hline
+{\em smax2} & list\mbox{[}int\mbox{]} other values to reach 1 million iterations for each codon number when similarity is not counted when computing the partition function.\\
+\hline
+{\em anticodons} & dict the anticodons (usefull sometimes see t\+R\+N\+A\+\_\+copynumbers) \\
+\hline
+{\em amino2reduce} & dict the mapping of amino acid values to their correponding char \\
+\hline
+{\em codamino} & dict the map from codons to aminoacids \\
+\hline
+{\em C\+U\+BD} & int the dimension of the C\+UB values (either 18 or 49) \\
+\hline
+{\em M\+AX} & int a max value of leng for the computepartition function above which the size is so big that it overflows python arbitrary sized values are not present in python funtions that are optimized \\
+\hline
+{\em amino2meta} & dict mapping of amino acids to some of their chemical characteristics displayed below \\
+\hline
+{\em synthsteps} & list the number of step to synthetize this amino acid \\
+\hline
+{\em glucosecost} & list the number of glucode to synth this amino acid \\
+\hline
+{\em hydrophob} & list a value of how hydrophobic this amino acid is \\
+\hline
+{\em volume} & list the volume of this molecule ( in Ang$^\wedge$3) \\
+\hline
+{\em isoelectricpoint} & list the Pi value of this amino \\
+\hline
+{\em conservation} & list how much this amino acid is conserved (deprecated) \\
+\hline
+{\em colormap} & list the colormap used in \mbox{\hyperlink{namespace_py_c_u_b}{Py\+C\+UB}} \\
+\hline
+{\em callback} & str the callback used in the homology interactive plot (used to change colors of dots according to what data is selected) callback\+\_\+allgenes\+: \\
+\hline
+{\em callback\+\_\+allhomo} & str the callback used in the \mbox{\hyperlink{namespace_py_c_u_b}{Py\+C\+UB}} interactive plot (used to change colors of dots according to what data is selected) \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{utils_8py_file_a9528a1a7aa3096fde14d3f6332c33132}\label{utils_8py_file_a9528a1a7aa3096fde14d3f6332c33132}} 
+\index{utils.\+py@{utils.\+py}!compute\+C\+AI@{compute\+C\+AI}}
+\index{compute\+C\+AI@{compute\+C\+AI}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{compute\+C\+A\+I()}{computeCAI()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+utils.\+compute\+C\+AI (\begin{DoxyParamCaption}\item[{}]{data,  }\item[{}]{cai }\end{DoxyParamCaption})}
+
+
+
+compute the C\+AI according to the reference index W\+H\+I\+CH N\+E\+E\+DS TO BE P\+R\+E\+V\+I\+O\+U\+S\+LY C\+O\+M\+P\+U\+T\+ED 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & list\mbox{[}str\mbox{]} the list of codons in this sequence\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the C\+AI 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8py_file_a256c8d04f880e14f6197df0bb70af667}\label{utils_8py_file_a256c8d04f880e14f6197df0bb70af667}} 
+\index{utils.\+py@{utils.\+py}!compute\+E\+C\+AI@{compute\+E\+C\+AI}}
+\index{compute\+E\+C\+AI@{compute\+E\+C\+AI}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{compute\+E\+C\+A\+I()}{computeECAI()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+utils.\+compute\+E\+C\+AI (\begin{DoxyParamCaption}\item[{}]{data }\end{DoxyParamCaption})}
+
+
+
+compute the Evolutionary C\+AI according to the reference index W\+H\+I\+CH N\+E\+E\+DS TO BE P\+R\+E\+V\+I\+O\+U\+S\+LY C\+O\+M\+P\+U\+T\+ED 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & list\mbox{[}str\mbox{]} the list of codons in this sequence\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the E\+C\+AI, the amount of codons that were in \mbox{[}\textquotesingle{}A\+TG\textquotesingle{}, \textquotesingle{}T\+GG\textquotesingle{}, \textquotesingle{}T\+AA\textquotesingle{}, \textquotesingle{}T\+AG\textquotesingle{}, \textquotesingle{}T\+GA\textquotesingle{}\mbox{]} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8py_file_a8d76f68733c2febcfc7e92c8f0e13d28}\label{utils_8py_file_a8d76f68733c2febcfc7e92c8f0e13d28}} 
+\index{utils.\+py@{utils.\+py}!computeyun@{computeyun}}
+\index{computeyun@{computeyun}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{computeyun()}{computeyun()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+utils.\+computeyun (\begin{DoxyParamCaption}\item[{}]{data,  }\item[{}]{setnans = {\ttfamily False},  }\item[{}]{normalized = {\ttfamily False},  }\item[{}]{by = {\ttfamily \textquotesingle{}entropy\textquotesingle{}} }\end{DoxyParamCaption})}
+
+
+
+function used by process to compte the \textquotesingle{}entropy\textquotesingle{} or \textquotesingle{}frequency\textquotesingle{} of the processed data 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & list\mbox{[}str\mbox{]} the list of codons in this sequence \\
+\hline
+{\em by} & str flags what type of computation should be done \mbox{[}entropy,frequency\mbox{]} \\
+\hline
+{\em normalized} & bool to true if should we normalize the entorpy by length \\
+\hline
+{\em setnans} & bool to true if nans should be set to NaN instead of an avg value\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the valH (C\+UB values array)list\mbox{[}float\mbox{]}, the length of each amino acid codon set len\+\_\+i (list\mbox{[}int\mbox{]}), the number of nans(int), the G\+Ccount (float) 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8py_file_a50fdd2d3367b583693a97f0619c9d1a2}\label{utils_8py_file_a50fdd2d3367b583693a97f0619c9d1a2}} 
+\index{utils.\+py@{utils.\+py}!getyun@{getyun}}
+\index{getyun@{getyun}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{getyun()}{getyun()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+utils.\+getyun (\begin{DoxyParamCaption}\item[{}]{key,  }\item[{}]{val }\end{DoxyParamCaption})}
+
+
+
+function to get data from an url \textquotesingle{}val\textquotesingle{} and save it under a file \textquotesingle{}key\textquotesingle{} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & str name of file \\
+\hline
+{\em val} & str url of file \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{utils_8py_file_a0c55bef2a4d848b403e4baff81a9d058}\label{utils_8py_file_a0c55bef2a4d848b403e4baff81a9d058}} 
+\index{utils.\+py@{utils.\+py}!homoyun@{homoyun}}
+\index{homoyun@{homoyun}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{homoyun()}{homoyun()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+utils.\+homoyun (\begin{DoxyParamCaption}\item[{}]{separation,  }\item[{}]{folder = {\ttfamily \char`\"{}first500\char`\"{}},  }\item[{}]{homo\+\_\+name = {\ttfamily \char`\"{}YAL019W\char`\"{}},  }\item[{}]{by = {\ttfamily \textquotesingle{}entropyLocation\textquotesingle{}},  }\item[{}]{aminolist = {\ttfamily None} }\end{DoxyParamCaption})}
+
+
+
+read the all the files for one homology and returns everything inside (Yun) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em folder} & str the folder you wanan look onto \\
+\hline
+{\em homo\+\_\+name} & str the type of homology you are looking for \\
+\hline
+{\em by} & str flag which of entropy value or Avalue (entropy\+Location) you want \\
+\hline
+{\em aminolist} & list\mbox{[}str\mbox{]} the amino acids you are interested in. None to say All\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+
+list the list of df of \textquotesingle{}by\textquotesingle{} values, df of species, df of places where there is nan values, df of lengths of genes, location where there is doublons is yun\textquotesingle{}s data (copy number of the gene) 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8py_file_a5514bfef19cc1ce1349e45454e3570e3}\label{utils_8py_file_a5514bfef19cc1ce1349e45454e3570e3}} 
+\index{utils.\+py@{utils.\+py}!mymeta@{mymeta}}
+\index{mymeta@{mymeta}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{mymeta()}{mymeta()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+utils.\+mymeta (\begin{DoxyParamCaption}\item[{}]{key,  }\item[{}]{val }\end{DoxyParamCaption})}
+
+
+
+same as getyun but saves under meta 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & str name of file \\
+\hline
+{\em val} & str url of file \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{utils_8py_file_a176a739d53ff6646242f3866d9d8d149}\label{utils_8py_file_a176a739d53ff6646242f3866d9d8d149}} 
+\index{utils.\+py@{utils.\+py}!process@{process}}
+\index{process@{process}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{process()}{process()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+utils.\+process (\begin{DoxyParamCaption}\item[{}]{data,  }\item[{}]{normalized = {\ttfamily False},  }\item[{}]{setnans = {\ttfamily False},  }\item[{}]{by = {\ttfamily \textquotesingle{}entropy\textquotesingle{}},  }\item[{}]{get\+C\+AI = {\ttfamily None} }\end{DoxyParamCaption})}
+
+
+
+function used by loadfromensembl() to process the retrieved data 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & list\mbox{[}str\mbox{]} the list of codons in this sequence \\
+\hline
+{\em normalized} & to normalize of not the data (entropy) \\
+\hline
+{\em setnans} & to show Nans or replace them \\
+\hline
+{\em by} & \textquotesingle{}entropy\textquotesingle{} the C\+UB metric to use \\
+\hline
+{\em get\+C\+AI} & wether or not to compute C\+AI !! need to have called the corresponding function on Pycub before hand !!\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+
+species list\mbox{[}str\mbox{]} the name of each homologous species 
+
+G\+Ccounts np.\+array\mbox{[}float\mbox{]} the GC count for each homologous genes 
+
+lenmat np.\+array\mbox{[}int\mbox{]} the number of codons encoding each amino acids 
+
+H np.\+array\mbox{[}float\mbox{]} the C\+UB value for each homologous gene 
+
+nans np.\+array\mbox{[}int\mbox{]} the number of unexistant amino acid in the sequence 
+
+Ka\+Ks\+\_\+\+Scores np.\+array\mbox{[}float\mbox{]} a proxy of the similarity of the homologous genes to the reference one 
+
+similarities np.\+array\mbox{[}float\mbox{]} the similarity of the homologous genes to the reference one 
+
+taxons list\mbox{[}str\mbox{]} the taxons of each species 
+
+proteinids list\mbox{[}str\mbox{]} the id of each homologous protein 
+
+geneid list\mbox{[}str\mbox{]} the id of each homologous gene 
+
+ref np.\+array\mbox{[}float\mbox{]} the reference gene\textquotesingle{}s C\+UB value 
+
+ecai np.\+array\mbox{[}float\mbox{]} the ecai of each homologous gene 
+
+cai np.\+arrau\mbox{[}float\mbox{]} the cai of each homologous genes 
+
+conservation str the total amino acid conservation of the protein 
+
+uncounted float frequency of uncounted elements 
+
+id str the source gene id 
+
+protid str the source protein id 
+
+vol int, the volume of the corresponding protein 
+
+cost float the glucose cost to synthetize the corresponding protein 
+
+hydrophob float the hydrophobicity of the corresponding protein 
+
+synthcost int the timesteps to synthetize the corresponding protein 
+
+isoepoint float the Pi value of the corresponding protein if any of them does not exist, will return None instead 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8py_file_a21fe257ad4a7db39e7c244c1fca2a8fd}\label{utils_8py_file_a21fe257ad4a7db39e7c244c1fca2a8fd}} 
+\index{utils.\+py@{utils.\+py}!reference\+\_\+index@{reference\+\_\+index}}
+\index{reference\+\_\+index@{reference\+\_\+index}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{reference\+\_\+index()}{reference\_index()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+utils.\+reference\+\_\+index (\begin{DoxyParamCaption}\item[{}]{data,  }\item[{}]{forcai = {\ttfamily False} }\end{DoxyParamCaption})}
+
+
+
+compute he R\+C\+SU value of this gene 
+
+this gene will be the reference gene from which we will compute the C\+AI of other genes can be used both for C\+AI and E\+C\+AI
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & list\mbox{[}str\mbox{]} the list of codons in this sequence \\
+\hline
+{\em forcai} & set to true if it is to compute the indexcai which is used to compute the cai values \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{utils_8py_file_a0dde2285cbaca13936764eab00aa3ac0}\label{utils_8py_file_a0dde2285cbaca13936764eab00aa3ac0}} 
+\index{utils.\+py@{utils.\+py}!retrievenames@{retrievenames}}
+\index{retrievenames@{retrievenames}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{retrievenames()}{retrievenames()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+utils.\+retrievenames (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+returns the dfs for yun\textquotesingle{}s data (names of the species alphabetically ordered and their links) 
+
+\begin{DoxyReturn}{Returns}
+pd dfs of the ordered names and the names with links 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8py_file_acb6009780f9a197a46c2b11f97fdc3fc}\label{utils_8py_file_acb6009780f9a197a46c2b11f97fdc3fc}} 
+\index{utils.\+py@{utils.\+py}!rgb2hex@{rgb2hex}}
+\index{rgb2hex@{rgb2hex}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{rgb2hex()}{rgb2hex()}}
+{\footnotesize\ttfamily def Py\+C\+U\+B.\+utils.\+rgb2hex (\begin{DoxyParamCaption}\item[{}]{rgb }\end{DoxyParamCaption})}
+
+
+
+compute the hex str from an rgd triplet 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rgb} & triplet of ints between 0-\/255\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the corresponding hex str 
+\end{DoxyReturn}
+
+
+\subsection{Variable Documentation}
+\mbox{\Hypertarget{utils_8py_file_aa5e1c6d91f9e1655b899904a03248df6}\label{utils_8py_file_aa5e1c6d91f9e1655b899904a03248df6}} 
+\index{utils.\+py@{utils.\+py}!amino@{amino}}
+\index{amino@{amino}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{amino}{amino}}
+{\footnotesize\ttfamily list Py\+C\+U\+B.\+utils.\+amino}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+1 =  [\textcolor{stringliteral}{'ALA'}, \textcolor{stringliteral}{'ARG'}, \textcolor{stringliteral}{'ASN'}, \textcolor{stringliteral}{'ASP'}, \textcolor{stringliteral}{'CYS'}, \textcolor{stringliteral}{'GLN'}, \textcolor{stringliteral}{'GLU'}, \textcolor{stringliteral}{'GLY'}, \textcolor{stringliteral}{'HIS'},
+2          \textcolor{stringliteral}{'ILE'}, \textcolor{stringliteral}{'LEU'}, \textcolor{stringliteral}{'LYS'}, \textcolor{stringliteral}{'PHE'}, \textcolor{stringliteral}{'PRO'}, \textcolor{stringliteral}{'SER'}, \textcolor{stringliteral}{'THR'}, \textcolor{stringliteral}{'TYR'}, \textcolor{stringliteral}{'VAL'}]
+\end{DoxyCode}
+\mbox{\Hypertarget{utils_8py_file_abd914a968400ba51623d46fff61caa2e}\label{utils_8py_file_abd914a968400ba51623d46fff61caa2e}} 
+\index{utils.\+py@{utils.\+py}!amino2meta@{amino2meta}}
+\index{amino2meta@{amino2meta}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{amino2meta}{amino2meta}}
+{\footnotesize\ttfamily dictionary Py\+C\+U\+B.\+utils.\+amino2meta}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+1 =  \{\textcolor{stringliteral}{'ALA'}: [1, 0.5, 1.8, 88.6, 6.11, 5],  \textcolor{comment}{# synthsteps, glucosecost, hydrophob, volume, isoelectricpoint}
+2               \textcolor{stringliteral}{'ARG'}: [10, 1.39, -4.5, 173.4, 10.76, 5.2],
+3               \textcolor{stringliteral}{'ASN'}: [1, 0.79, -3.5, 114.1, 10.76, 4],
+4               \textcolor{stringliteral}{'ASP'}: [1, 0.61, -3.5, 111.1, 2.98, 5.3],
+5               \textcolor{stringliteral}{'CYS'}: [9, 0.75, 2.5, 108.5, 5.02, 4.4],
+6               \textcolor{stringliteral}{'GLN'}: [2, 0.92, -3.5, 143.8, 5.65, 3.4],
+7               \textcolor{stringliteral}{'GLU'}: [1, 0.86, -3.5, 138.4, 3.08, 4.4],
+8               \textcolor{stringliteral}{'GLY'}: [4, 0.31, -0.4, 60.1, 6.06, 6.6],
+9               \textcolor{stringliteral}{'HIS'}: [1, 1.46, -3.2, 153.2, 7.64, 3.1],
+10               \textcolor{stringliteral}{'ILE'}: [11, 1.21, 4.5, 166.7, 6.04, 7.8],
+11               \textcolor{stringliteral}{'LEU'}: [7, 1.21, 3.8, 166.7, 6.04, 7.3],
+12               \textcolor{stringliteral}{'LYS'}: [10, 1.31, -3.9, 168.6, 9.47, 4.4],
+13               \textcolor{stringliteral}{'PHE'}: [9, 1.84, 2.8, 162.9, 5.91, 4.2],
+14               \textcolor{stringliteral}{'PRO'}: [4, 0.99, -1.6, 189.9, 6.3, 5.6],
+15               \textcolor{stringliteral}{'SER'}: [3, 0.49, -0.8, 112.7, 5.68, 3.8],
+16               \textcolor{stringliteral}{'THR'}: [6, 0.69, -0.7, 89, 5.6, 3.8],
+17               \textcolor{stringliteral}{'TYR'}: [9, 1.77, -1.3, 193.6, 5.63, 3.2],
+18               \textcolor{stringliteral}{'VAL'}: [4, 0.96, 4.2, 140, 6.02, 6.5]
+19               \}
+\end{DoxyCode}
+\mbox{\Hypertarget{utils_8py_file_a4f556f44502bf1d73bf3925a94bc999c}\label{utils_8py_file_a4f556f44502bf1d73bf3925a94bc999c}} 
+\index{utils.\+py@{utils.\+py}!amino2reduce@{amino2reduce}}
+\index{amino2reduce@{amino2reduce}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{amino2reduce}{amino2reduce}}
+{\footnotesize\ttfamily dictionary Py\+C\+U\+B.\+utils.\+amino2reduce}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+1 =  \{\textcolor{stringliteral}{"A"}: \textcolor{stringliteral}{'ALA'},
+2                 \textcolor{stringliteral}{"R": 'ARG',}
+3 \textcolor{stringliteral}{                "N"}: \textcolor{stringliteral}{'ASN'},
+4                 \textcolor{stringliteral}{"D"}: \textcolor{stringliteral}{'ASP'},
+5                 \textcolor{stringliteral}{"C"}: \textcolor{stringliteral}{'CYS'},
+6                 \textcolor{stringliteral}{"Q"}: \textcolor{stringliteral}{'GLN'},
+7                 \textcolor{stringliteral}{"E"}: \textcolor{stringliteral}{'GLU'},
+8                 \textcolor{stringliteral}{"G"}: \textcolor{stringliteral}{'GLY'},
+9                 \textcolor{stringliteral}{"H"}: \textcolor{stringliteral}{'HIS'},
+10                 \textcolor{stringliteral}{"I"}: \textcolor{stringliteral}{'ILE'},
+11                 \textcolor{stringliteral}{"L"}: \textcolor{stringliteral}{'LEU'},
+12                 \textcolor{stringliteral}{"K"}: \textcolor{stringliteral}{'LYS'},
+13                 \textcolor{stringliteral}{"M"}: \textcolor{stringliteral}{'MET'},
+14                 \textcolor{stringliteral}{"F"}: \textcolor{stringliteral}{'PHE'},
+15                 \textcolor{stringliteral}{"P"}: \textcolor{stringliteral}{'PRO'},
+16                 \textcolor{stringliteral}{"S"}: \textcolor{stringliteral}{'SER'},
+17                 \textcolor{stringliteral}{"T"}: \textcolor{stringliteral}{'THR'},
+18                 \textcolor{stringliteral}{"W"}: \textcolor{stringliteral}{'TRP'},
+19                 \textcolor{stringliteral}{"Y"}: \textcolor{stringliteral}{'TYR'},
+20                 \textcolor{stringliteral}{"V"}: \textcolor{stringliteral}{'VAL'}\}
+\end{DoxyCode}
+\mbox{\Hypertarget{utils_8py_file_a2dc1f237cac19296cfdfb52743d4fcd6}\label{utils_8py_file_a2dc1f237cac19296cfdfb52743d4fcd6}} 
+\index{utils.\+py@{utils.\+py}!aminosort@{aminosort}}
+\index{aminosort@{aminosort}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{aminosort}{aminosort}}
+{\footnotesize\ttfamily list Py\+C\+U\+B.\+utils.\+aminosort}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+1 =  [\textcolor{stringliteral}{'LYS'}, \textcolor{stringliteral}{'ANS'}, \textcolor{stringliteral}{'THR'}, \textcolor{stringliteral}{'ILE'}, \textcolor{stringliteral}{'ARG'}, \textcolor{stringliteral}{'GLN'}, \textcolor{stringliteral}{'HIS'}, \textcolor{stringliteral}{'PRO'}, \textcolor{stringliteral}{'GLU'}, \textcolor{stringliteral}{'ASP'},
+2              \textcolor{stringliteral}{'ALA'}, \textcolor{stringliteral}{'GLY'}, \textcolor{stringliteral}{'VAL'}, \textcolor{stringliteral}{'TYR'}, \textcolor{stringliteral}{'SER'}, \textcolor{stringliteral}{'LEU'}, \textcolor{stringliteral}{'CYS'}, \textcolor{stringliteral}{'PHE'}]
+\end{DoxyCode}
+\mbox{\Hypertarget{utils_8py_file_a4c8ea5119ca386c24667a78f45622f56}\label{utils_8py_file_a4c8ea5119ca386c24667a78f45622f56}} 
+\index{utils.\+py@{utils.\+py}!anticodons@{anticodons}}
+\index{anticodons@{anticodons}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{anticodons}{anticodons}}
+{\footnotesize\ttfamily dictionary Py\+C\+U\+B.\+utils.\+anticodons}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+1 =  \{
+2     \textcolor{stringliteral}{'ALA'}: [\textcolor{stringliteral}{"CGA"}, \textcolor{stringliteral}{"CGG"}, \textcolor{stringliteral}{"CGT"}, \textcolor{stringliteral}{"CGC"}],
+3     \textcolor{stringliteral}{'ARG'}: [\textcolor{stringliteral}{"GCA"}, \textcolor{stringliteral}{"GCG"}, \textcolor{stringliteral}{"GCT"}, \textcolor{stringliteral}{"GCC"}, \textcolor{stringliteral}{"TCT"}, \textcolor{stringliteral}{"TCC"}],
+4     \textcolor{stringliteral}{'ASN'}: [\textcolor{stringliteral}{"TTA"}, \textcolor{stringliteral}{"TTG"}],
+5     \textcolor{stringliteral}{'ASP'}: [\textcolor{stringliteral}{"CTA"}, \textcolor{stringliteral}{"CTG"}],
+6     \textcolor{stringliteral}{'CYS'}: [\textcolor{stringliteral}{"ACA"}, \textcolor{stringliteral}{"ACG"}],
+7     \textcolor{stringliteral}{'GLN'}: [\textcolor{stringliteral}{"GTT"}, \textcolor{stringliteral}{"GTC"}],
+8     \textcolor{stringliteral}{'GLU'}: [\textcolor{stringliteral}{"CTT"}, \textcolor{stringliteral}{"CTC"}],
+9     \textcolor{stringliteral}{'GLY'}: [\textcolor{stringliteral}{"CCA"}, \textcolor{stringliteral}{"CCG"}, \textcolor{stringliteral}{"CCT"}, \textcolor{stringliteral}{"CCC"}],
+10     \textcolor{stringliteral}{'HIS'}: [\textcolor{stringliteral}{"GTA"}, \textcolor{stringliteral}{"GTG"}],
+11     \textcolor{stringliteral}{'ILE'}: [\textcolor{stringliteral}{"TAA"}, \textcolor{stringliteral}{"TAG"}, \textcolor{stringliteral}{"TAT"}],
+12     \textcolor{stringliteral}{'LEU'}: [\textcolor{stringliteral}{"AAT"}, \textcolor{stringliteral}{"AAC"}, \textcolor{stringliteral}{"GAA"}, \textcolor{stringliteral}{"GAG"}, \textcolor{stringliteral}{"GAT"}, \textcolor{stringliteral}{"GAC"}],
+13     \textcolor{stringliteral}{'LYS'}: [\textcolor{stringliteral}{"TTT"}, \textcolor{stringliteral}{"TTC"}],
+14     \textcolor{comment}{# 'MET': ['ATG'],}
+15     \textcolor{stringliteral}{'PHE'}: [\textcolor{stringliteral}{"AAA"}, \textcolor{stringliteral}{"AAG"}],
+16     \textcolor{stringliteral}{'PRO'}: [\textcolor{stringliteral}{"GGA"}, \textcolor{stringliteral}{"GGG"}, \textcolor{stringliteral}{"GGT"}, \textcolor{stringliteral}{"GGC"}],
+17     \textcolor{stringliteral}{'SER'}: [\textcolor{stringliteral}{"AGA"}, \textcolor{stringliteral}{"AGG"}, \textcolor{stringliteral}{"AGT"}, \textcolor{stringliteral}{"AGC"}, \textcolor{stringliteral}{"TCA"}, \textcolor{stringliteral}{"TCG"}],
+18     \textcolor{comment}{# 'STOP': ['TAG', 'TGA', 'TAA'],}
+19     \textcolor{stringliteral}{'THR'}: [\textcolor{stringliteral}{"TGA"}, \textcolor{stringliteral}{"TGG"}, \textcolor{stringliteral}{"TGT"}, \textcolor{stringliteral}{"TGC"}],
+20     \textcolor{comment}{# 'TRP': ['TGG'],}
+21     \textcolor{stringliteral}{'TYR'}: [\textcolor{stringliteral}{"ATA"}, \textcolor{stringliteral}{"ATG"}],
+22     \textcolor{stringliteral}{'VAL'}: [\textcolor{stringliteral}{"CAA"}, \textcolor{stringliteral}{"CAG"}, \textcolor{stringliteral}{"CAT"}, \textcolor{stringliteral}{"CAC"}]\}
+\end{DoxyCode}
+\mbox{\Hypertarget{utils_8py_file_a45700224a204e85ed22fca919264a174}\label{utils_8py_file_a45700224a204e85ed22fca919264a174}} 
+\index{utils.\+py@{utils.\+py}!codons@{codons}}
+\index{codons@{codons}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{codons}{codons}}
+{\footnotesize\ttfamily dictionary Py\+C\+U\+B.\+utils.\+codons}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+1 =  \{
+2     \textcolor{stringliteral}{'ALA'}: [\textcolor{stringliteral}{'GCA'}, \textcolor{stringliteral}{'GCC'}, \textcolor{stringliteral}{'GCG'}, \textcolor{stringliteral}{'GCT'}],  \textcolor{comment}{# GC}
+3     \textcolor{stringliteral}{'ARG'}: [\textcolor{stringliteral}{'CGA'}, \textcolor{stringliteral}{'CGC'}, \textcolor{stringliteral}{'CGG'}, \textcolor{stringliteral}{'CGT'}, \textcolor{stringliteral}{'AGG'}, \textcolor{stringliteral}{'AGA'}],  \textcolor{comment}{# CG}
+4     \textcolor{stringliteral}{'ASN'}: [\textcolor{stringliteral}{'AAC'}, \textcolor{stringliteral}{'AAT'}],  \textcolor{comment}{# ASN - LYS}
+5     \textcolor{stringliteral}{'ASP'}: [\textcolor{stringliteral}{'GAT'}, \textcolor{stringliteral}{'GAC'}],  \textcolor{comment}{# ASP - GLU}
+6     \textcolor{stringliteral}{'CYS'}: [\textcolor{stringliteral}{'TGT'}, \textcolor{stringliteral}{'TGC'}],  \textcolor{comment}{# ~}
+7     \textcolor{stringliteral}{'GLN'}: [\textcolor{stringliteral}{'CAA'}, \textcolor{stringliteral}{'CAG'}],  \textcolor{comment}{# GLN - HIS}
+8     \textcolor{stringliteral}{'GLU'}: [\textcolor{stringliteral}{'GAG'}, \textcolor{stringliteral}{'GAA'}],
+9     \textcolor{stringliteral}{'GLY'}: [\textcolor{stringliteral}{'GGT'}, \textcolor{stringliteral}{'GGG'}, \textcolor{stringliteral}{'GGA'}, \textcolor{stringliteral}{'GGC'}],  \textcolor{comment}{# GG}
+10     \textcolor{stringliteral}{'HIS'}: [\textcolor{stringliteral}{'CAT'}, \textcolor{stringliteral}{'CAC'}],
+11     \textcolor{stringliteral}{'ILE'}: [\textcolor{stringliteral}{'ATC'}, \textcolor{stringliteral}{'ATA'}, \textcolor{stringliteral}{'ATT'}],  \textcolor{comment}{# ILE -- MET}
+12     \textcolor{stringliteral}{'LEU'}: [\textcolor{stringliteral}{'TTA'}, \textcolor{stringliteral}{'TTG'}, \textcolor{stringliteral}{'CTC'}, \textcolor{stringliteral}{'CTT'}, \textcolor{stringliteral}{'CTG'}, \textcolor{stringliteral}{'CTA'}],  \textcolor{comment}{# CT}
+13     \textcolor{stringliteral}{'LYS'}: [\textcolor{stringliteral}{'AAA'}, \textcolor{stringliteral}{'AAG'}],
+14     \textcolor{comment}{# 'MET': ['ATG'],}
+15     \textcolor{stringliteral}{'PHE'}: [\textcolor{stringliteral}{'TTT'}, \textcolor{stringliteral}{'TTC'}],  \textcolor{comment}{# PHE - LEU}
+16     \textcolor{stringliteral}{'PRO'}: [\textcolor{stringliteral}{'CCT'}, \textcolor{stringliteral}{'CCG'}, \textcolor{stringliteral}{'CCA'}, \textcolor{stringliteral}{'CCC'}],  \textcolor{comment}{# CC}
+17     \textcolor{stringliteral}{'SER'}: [\textcolor{stringliteral}{'TCT'}, \textcolor{stringliteral}{'TCG'}, \textcolor{stringliteral}{'TCA'}, \textcolor{stringliteral}{'TCC'}, \textcolor{stringliteral}{'AGC'}, \textcolor{stringliteral}{'AGT'}],  \textcolor{comment}{# TC}
+18     \textcolor{comment}{# 'STOP': ['TAG', 'TGA', 'TAA'],}
+19     \textcolor{stringliteral}{'THR'}: [\textcolor{stringliteral}{'ACC'}, \textcolor{stringliteral}{'ACA'}, \textcolor{stringliteral}{'ACG'}, \textcolor{stringliteral}{'ACT'}],  \textcolor{comment}{# AC}
+20     \textcolor{comment}{# 'TRP': ['TGG'],}
+21     \textcolor{stringliteral}{'TYR'}: [\textcolor{stringliteral}{'TAT'}, \textcolor{stringliteral}{'TAC'}],
+22     \textcolor{stringliteral}{'VAL'}: [\textcolor{stringliteral}{'GTA'}, \textcolor{stringliteral}{'GTC'}, \textcolor{stringliteral}{'GTG'}, \textcolor{stringliteral}{'GTT'}]\}
+\end{DoxyCode}
+\mbox{\Hypertarget{utils_8py_file_aba4e21fe1c94124bd2ad02624b73e69f}\label{utils_8py_file_aba4e21fe1c94124bd2ad02624b73e69f}} 
+\index{utils.\+py@{utils.\+py}!glucosecost@{glucosecost}}
+\index{glucosecost@{glucosecost}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{glucosecost}{glucosecost}}
+{\footnotesize\ttfamily list Py\+C\+U\+B.\+utils.\+glucosecost}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+1 =  [0.5, 1.39, 0.79, 0.61, 0.75, 0.92, 0.86,
+2                0.31, 1.46, 1.21, 1.21, 1.31, 1.84, 0.99, 0.49, 0.69, 1.77, 0.96]
+\end{DoxyCode}
+\mbox{\Hypertarget{utils_8py_file_adb4d39d149c9fbcb5af6e19e121d0a36}\label{utils_8py_file_adb4d39d149c9fbcb5af6e19e121d0a36}} 
+\index{utils.\+py@{utils.\+py}!hydrophob@{hydrophob}}
+\index{hydrophob@{hydrophob}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{hydrophob}{hydrophob}}
+{\footnotesize\ttfamily list Py\+C\+U\+B.\+utils.\+hydrophob}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+1 =  [1.8, -4.5, -3.5, -3.5, 2.5, -3.5, -3.5, -0.4, -3.2, 4.5,
+2              3.8, -3.9, 2.8, -1.6, -0.8, -0.7, -1.3, 4.2]
+\end{DoxyCode}
+\mbox{\Hypertarget{utils_8py_file_a4a2265699046af84aa4342a94ae30ce3}\label{utils_8py_file_a4a2265699046af84aa4342a94ae30ce3}} 
+\index{utils.\+py@{utils.\+py}!isoelectricpoint@{isoelectricpoint}}
+\index{isoelectricpoint@{isoelectricpoint}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{isoelectricpoint}{isoelectricpoint}}
+{\footnotesize\ttfamily list Py\+C\+U\+B.\+utils.\+isoelectricpoint}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+1 =  [6.11, 10.76, 10.76, 2.98, 5.02, 5.65, 3.08, 6.06, 7.64,
+2                     6.04, 6.04, 9.47, 5.91, 6.3, 5.68, 5.6, 5.63, 6.02]
+\end{DoxyCode}
+\mbox{\Hypertarget{utils_8py_file_a10522f76beefce64f95701527b3b512c}\label{utils_8py_file_a10522f76beefce64f95701527b3b512c}} 
+\index{utils.\+py@{utils.\+py}!synthsteps@{synthsteps}}
+\index{synthsteps@{synthsteps}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{synthsteps}{synthsteps}}
+{\footnotesize\ttfamily list Py\+C\+U\+B.\+utils.\+synthsteps}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+1 =  [1, 10, 1, 1, 9, 2, 1, 4, 1, 11,
+2               7, 10, 9, 4, 3, 6, 9, 4]
+\end{DoxyCode}
+\mbox{\Hypertarget{utils_8py_file_ae202c55eb1f4e553f66d3377710b5315}\label{utils_8py_file_ae202c55eb1f4e553f66d3377710b5315}} 
+\index{utils.\+py@{utils.\+py}!volume@{volume}}
+\index{volume@{volume}!utils.\+py@{utils.\+py}}
+\subsubsection{\texorpdfstring{volume}{volume}}
+{\footnotesize\ttfamily list Py\+C\+U\+B.\+utils.\+volume}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+1 =  [88.6, 173.4, 114.1, 111.1, 108.5, 143.8, 138.4, 60.1, 153.2,
+2           166.7, 166.7, 168.6, 162.9, 189.9, 112.7, 89, 193.6, 140]
+\end{DoxyCode}

@@ -432,12 +432,12 @@ class homology(object):
                         species=[str(spetable[n]) for n in self.names],
                         meanentropy=["%.2f" % self.full[i].mean() for i in range(len(self.names))],
                         color=colors)
+            # TODO: show the ref gene
             if self.doub is not None:
                 data.update({'doub': self.doub})
             if self.clusters is not None:
                 data.update({'clusters': self.clusters})
-            # TODO: totest simiscore, kaks,ids,phylodist, protid,geneid,ecai
-            # TODO addphylodists
+             # TODO addphylodists
             if self.similarity_scores is not None:
                 data.update({'similarity_scores': self.similarity_scores})
             if self.KaKs_Scores is not None:

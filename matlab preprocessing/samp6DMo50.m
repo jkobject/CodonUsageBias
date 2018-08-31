@@ -1,1 +1,0 @@
-sampEntropyMean6DM(6,50,10000000);

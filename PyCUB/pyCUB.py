@@ -1,8 +1,10 @@
 """
+@package PyCUB
 Created by Jeremie KALFON
 Date : 21 FEV 2018
 University of Kent, ECE paris
 jkobject.com
+
 
 PyCUB is a Project which goal is to understand the particular dynamics of the codon usage
 bias.
@@ -81,19 +83,19 @@ import pdb
 
 
 class PyCUB(object):
-    """PyCUB is the main object of the project that allows the user to access most of the functions
+    """ @package PyCUB is the main object of the project that allows the user to access most of the functions
 
         When using it, please follow the documentation and examples on notebooks thought you can
         still use it as you please and use some of the nice tricks provided here and in python
 
-        Args:
+        Attributes:
             species: dictionary of Espece objects from the name of the species.
                 (see espece.py)
             working_homoset: PyCUB.homoset object that stores a subset of the homologies
                 you want to work on
             all_homoset PyCUB.homoset that stores the all the homologies
             session: str the session name you want to use (will appear in the savings for example
-            _is_saved : bool trivial system only boolean
+            _is_saved: bool trivial system only boolean
             links: dict of all the links readily available in PyCUB.
                 for the project of Jeremie KALFON please use whatever datasets you may find usefull
                 (you can also download from Ensembl)
@@ -102,6 +104,12 @@ class PyCUB(object):
             scoregenes: the score of the regressor
             scorespecies: the score of the regressor
             coeffspecies: np.array regressing values for each attributes
+            rho_ent: float from the scoring of spearman's rho for entropy
+            pent: float from the scoring of spearman's rho for entropy
+            rho_cub: float from the scoring of spearman's rho for CUB
+            pcub: float from the scoring of spearman's rho for CUB
+            rho_cuf: float from the scoring of spearman's rho for CUF
+            pcuf: float from the scoring of spearman's rho for CUF
 
     """
 
@@ -365,8 +373,6 @@ class PyCUB(object):
         for each species
         and weight, mRNA_abundance, is_secreted, protein_abundance, cys_elements, decay_rate for each homology
 
-        Args:
-            None
         """
         # species metadata
         data = pd.read_csv("utils/meta/Yun_Species_Context.csv")
@@ -424,6 +430,8 @@ class PyCUB(object):
             filename: str the particular filename when not loading them all
             session: str if a session name is provided, then will load a zip file from
                 this session's folder
+            tRNA: bool to true to compute the tRNA values
+            inpar: int to set the number of processor (as in scikit)
 
         Returns:
             May return additionals if loading from a session where one decided to save more than the two All/working
@@ -556,9 +564,6 @@ class PyCUB(object):
 
 
         Args:
-            From: if this flag is set to 'yun' it means that the filename is made of Yundata
-                in which case we will create directly the homology map in the same time as the rest
-                of the PyCUB object. Here it is the only available option.
             filename: str the filename to additionaly load
             by: flag same as before
 
@@ -636,6 +641,7 @@ class PyCUB(object):
             name: str the name of the particular save on this session
             save_workspace: bool to fale not to save working_homoset
             save_homo: bool to false not to save all_homoset
+            add_homosets= PyCUB.homoset homoset to add in addition to the regular ones
             cmdlinetozip: str you need to tell the platform how to zip on your system uses gzip by default
                 but it needs to be installed
 
@@ -912,8 +918,6 @@ class PyCUB(object):
         """
         find the taxons of each referenced species (see PyCUB.Espece.gettaxons())
 
-        Args:
-            None
         """
         for key, val in self.species.iteritems():
             try:
@@ -1041,9 +1045,6 @@ class PyCUB(object):
         """
         a copy of the utils.speciestable
 
-        Args:
-            None
-
         Returns:
             a copy of the utils.speciestable (dict[int,str] of species to their PyCUB coded value
         """
@@ -1052,9 +1053,6 @@ class PyCUB(object):
     def phylo_distances(self):
         """
         a copy of the phylodistances dataframe see (get_evolutionary_distance())
-
-        Args:
-            None
 
         Returns:
             a copy of the phylodistances dataframe see (get_evolutionary_distance())
@@ -1126,7 +1124,6 @@ class PyCUB(object):
             size: the average size of the datapoints in the pointcloud representation of this dataset
             showvar: bool to true, show the mean variance in CUB values accros this homology as a variation in dot sizes
             eps: float the hyperparamter of the clustering algorithm applied to this dataset
-            homoset: PyCUB.homoset the homoset to use
             reducer: str the reducer to use 'tsne' or 'PCA'
             perplexity: int the perplexity hyperparam for tSNE
 
@@ -1267,8 +1264,8 @@ class PyCUB(object):
             without: list[str] of flags [similarity_scores, KaKs_Scores, nans, lenmat, GCcount, weight,
                 protein_abundance, mRNA_abundance, decay_rate, cys_elements, tot_volume, mean_hydrophobicity,
                 glucose_cost, synthesis_steps, is_recent, meanecai]
+            onlyhomo: bool to true if want to use only CUB from homologies
             full: bool flags to true to use full CUB values or meanCUB values,  as regressee
-            homoset: PyCUB.homoset the homoset to use
             perctrain: the percentage of training set to total set ( the rest is used as test set)
             algo: str flag to lasso or nn to use either Lasso with Cross Validation, or a 2 layer  neural net
             eps: the eps value for the Lasso
@@ -1334,7 +1331,6 @@ class PyCUB(object):
                                  early_stopping=False, validation_fraction=0.1, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
         else:
             raise UnboundLocalError("wrong params")
-        pdb.set_trace()
         params = np.vstack(params).T
         model.fit(params[:int(len(self.species) * perctrain)], dataset[:int(len(self.species) * perctrain)])
         self.scorespecies = model.score(params[int(len(self.species) * perctrain):],
@@ -1497,7 +1493,6 @@ class PyCUB(object):
                     arr = arr / arr.max()
                     params.append(arr)
                     attrlist.append(val)
-        pdb.set_trace()
         for val in values[5:]:
             if val not in without:
                 if getattr(homoset[0], val) is not None:
@@ -1564,6 +1559,9 @@ class PyCUB(object):
                 of the default file
             bins: int, the number of bin to use (a power of 2)
             seq: the type of sequence to compare to. (to compute the CUB from)
+            use: str flag different types of algorithm I have made trying to understand the thing
+            compute: str flag to different computation available 
+            euclidean: bool flag to true to compute euclidean instead of Endres Shcidelin metrics
         """
         # get gene distance matrix from entropy value distance or Andres Schindelin metrics
         # compare to see how much the distance between one can explain the distance between another by
@@ -1752,8 +1750,92 @@ class PyCUB(object):
                                     dist3D[p_, p] = 1
                         else:
                             missedrelation += 1
-                    n += 1
-                print "got " + str(missedrelation) + " missed relation"
+                    n = 1
+                    for val in positions[1:]:
+                        dist3D[n, n - 1] = 1
+                        dist3D[n - 1, n] = 1
+                        if val[0] >= tempchrom + 1:
+                            tempdf = df.loc[df['chr1'] == val[0]]
+                        relatedto = tempdf.loc[tempdf['locus1'] == gene2pos[n][1]]
+                        chro = list(relatedto["chr2"])
+                        loc = list(relatedto["locus2"])
+                        for i in range(len(chro)):
+                            pos = pos2gene.get((chro[i], int(loc[i])), False)
+                            if pos:
+                                for p in pos:
+                                    dist3D[p, n] = 1
+                                    dist3D[n, p] = 1
+                            else:
+                                missedrelation += 1
+                        n += 1
+                    print "got " + str(missedrelation) + " missed relation"
+                else:
+                    gene2pos = {}
+                    pos2gene = {}
+                    dists = np.zeros(len(positions))
+                    tempdist = 1000000
+                    for n, val in enumerate(positions):
+                        if val[0] >= tempchrom + 1:
+                            tempdf = df.loc[df['chr1'] == val[0]]
+                            tempchrom = val[0]
+                            tempind = tempdf.index[0]
+                            maxind = tempdf.index[-1]
+                        # Here we could use a modified binar search instead
+                        while abs(tempdf['locus1'][tempind] - val[1]) <= tempdist:
+                            tempdist = abs(tempdf['locus1'][tempind] - val[1])
+                            tempind += 1
+                            if tempind >= maxind:
+                                break
+                        dists[n] = tempdist
+                        tempind -= 1
+                        # we found a position
+                        tempdist = 10000000
+                        gene2pos.update({n: [tempchrom, tempdf['locus1'][tempind]]})
+                        if pos2gene.get((tempchrom, tempdf['locus1'][tempind]), False):
+                            pos2gene[(tempchrom, tempdf['locus1'][tempind])].append(n)
+                        else:
+                            pos2gene.update({(tempchrom, tempdf['locus1'][tempind]): [n]})
+                    # for each gene positions we look at the closest point in the contact map (list of positison)
+                    # we create a mapping dict for that.
+                    tempchrom = 0
+                    print "average distance is" + str(dists.mean())
+                    missedrelation = 0
+                    tempdf = df.loc[df['chr1'] == 1]
+                    dist3D = np.zeros((len(positions), len(positions)), dtype=int)
+                    dist3D += 1000000
+                    np.fill_diagonal(dist3D, 0)
+                    # Doing the first one for efficiency
+                    tempdf = df.loc[df['chr1'] == 1]
+                    relatedto = tempdf.loc[tempdf['locus1'] == gene2pos[0][1]]
+                    chro = list(relatedto["chr2"])
+                    loc = list(relatedto["locus2"])
+                    for i in range(len(chro)):
+                        pos = pos2gene.get((chro[i], int(loc[i])), False)
+                        if pos:
+                            for p in pos:
+                                dist3D[p, 0] = 1
+                                dist3D[0, p] = 1
+                        else:
+                            missedrelation += 1
+                    n = 1
+                    for val in positions[1:]:
+                        dist3D[n, n - 1] = 1
+                        dist3D[n - 1, n] = 1
+                        if val[0] >= tempchrom + 1:
+                            tempdf = df.loc[df['chr1'] == val[0]]
+                        relatedto = tempdf.loc[tempdf['locus1'] == gene2pos[n][1]]
+                        chro = list(relatedto["chr2"])
+                        loc = list(relatedto["locus2"])
+                        for i in range(len(chro)):
+                            pos = pos2gene.get((chro[i], int(loc[i])), False)
+                            if pos:
+                                for p in pos:
+                                    dist3D[p, n] = 1
+                                    dist3D[n, p] = 1
+                            else:
+                                missedrelation += 1
+                        n += 1
+                    print "got " + str(missedrelation) + " missed relation"
                 shortestpath = dijkstra(dist3D, directed=False)  # to set shortest as 1
 
                 # for each genes, we look if there is a contact gene in the contact map with the mapping
@@ -1974,7 +2056,7 @@ class PyCUB(object):
         Args:
             save_workspace: bool to save working_homoset
             save_homo: bool to save all_homoset
-            ass_homosets: PyCUB.homoset instances to add to this dict
+            add_homosets: PyCUB.homoset instances to add to this dict
 
         Return:
             A dict holding every element to be jsonized
@@ -2029,8 +2111,6 @@ class PyCUB(object):
         """
         short function to retrieve the speciestable from Disk
 
-        Args:
-            None
         Raises:
             IOError: "no speciestable file"
         """
@@ -2051,8 +2131,6 @@ class PyCUB(object):
         This is done since there may be some memory leakage, probably due to some autoreloading behavior
         of the global data stored on utils.
 
-        Args:
-            None
         """
         filename = "utils/meta/savings/speciestable.json"
         data = json.dumps(dict(utils.speciestable), indent=4, separators=(',', ': '))

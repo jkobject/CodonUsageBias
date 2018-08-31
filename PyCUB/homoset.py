@@ -47,7 +47,7 @@ class HomoSet(collections.MutableMapping):
         Be aware that even if you use str, the keys will be stored as unicode as jsonized dict will
         output unicode in python < 3
 
-        Args:
+        Attributes:
             hashomo_matrix : a np.array[boolean] (species, homologies)
                 that store the matrix of gene presence in species
             homo_matrix : np.array[float] (homologies*species(inthehomologies),aminoacids)
@@ -614,7 +614,7 @@ class HomoSet(collections.MutableMapping):
                         # we can't decide ...
                         continue
                     dist = float(phylo_distances[species].loc[species].sum().sum()) / (len(species)**2 - len(species))
-                    if dist < utils.meandist:
+                    if dist < utils.meandist * minsimi:
                         # print "found a homology with mean " + str(dist)
                         homo.isrecent = dist / utils.meandist
         else:
@@ -634,7 +634,6 @@ class HomoSet(collections.MutableMapping):
         Raises:
             UnboundLocalError: "you need to have your CUB values as entropy"
         """
-        pdb.set_trace()
         if self.datatype == 'entropy':
             if self.homo_matrix is None:
                 self.loadfullhomo()
@@ -989,7 +988,6 @@ class HomoSet(collections.MutableMapping):
                     i += 1
                 j += 1
             simimatrix = simimatrix / simimatrix.max()
-            pdb.set_trace()
             self.cub_similarity = 1 - simimatrix
             self.cub_similarity = np.nan_to_num(self.cub_similarity)
             if plot:

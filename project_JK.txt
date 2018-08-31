@@ -1,0 +1,21 @@
+https://github.com/jkobject/Pycub
+
+----
+EDIT 1
+Submitting the project Here, after many difficulties from uploading the zip file to moodle. the project as well as its full temporal creation etc is available at this url link to a github repository as deemed acceptable on the document "Project Information for Student" available on moodle Project & dissertation 2017-2018
+
+Delay due to a lot of stress trying to upload the document from Greece with power shortages and extremelly slow upload speed.
+the full document zipped will be available in less than an hour
+
+---- 
+EDIT 2
+
+after the 5th trial for upload and most of my day spent trying to upload the file, I have decided to try to upload it once again tonight. 
+
+--- 
+EDIT 3 
+
+Will keep this document as is as I still have difficulties to upload the full document and think it is not possible. As I will make modification to the github repository up until mid september, I have pushed a timestamp version representing the code as it was on the 23 of august.
+
+
+Best, 

@@ -9,6 +9,7 @@
 
 Make sure to have anaconda installed https://anaconda.org/anaconda/python  
 Then follow the step to create an environment.
+install jupyter the same way
 
 Once this is done you will have to get this project:   
 `git clone https://github.com/jkobject/CodonUsageBias.git`
@@ -21,6 +22,15 @@ Then you have to run the requirements to download the required packages:
 
 Make sure to have `gzip` and `R` installed and up to date.
 
+You should install also:
+```
+git clone https://github.com/DmitryUlyanov/Multicore-TSNE.git
+cd Multicore-TSNE/
+pip install .
+```
+
+_if you run into some problems you might have a look at installationec2.sh which contains further informations when installing remotly from an ec2 instance for more compute power_
+
 Once this is done you can:   
 `jupyter notebook pipeline.ipynb`
 
@@ -31,7 +41,7 @@ And run it to test it yourself !
 
 ## Goals 
 
-The goals of this project is to try to infer relations in the codon usage of different genes from different species using machine learning and to let researchers use it and improve it as they please.
+The goals of this project is to try to infer relations in the codon usage of different genes from different species using machine learning and to let researchers use it and improve it as they please. It is also to demonstrate the use of entropy as a convenient measure of CUB and to reflect on reusability and scalability in ML and bioinformatics.
 
 >A goal for me at this point is to have a the pipeline running.
 
@@ -65,7 +75,7 @@ Each amino acid’s entropy location values for one homology defines a dimension
 
 3/ Using each highly similar groups I am taking the homologies one by one and apply it another clustering algorithm on the entropy location vector to group species with similar entropy features. *
 
-_Clusters for particular homologies can be visualized using T-sne Hinton. 
+_Clusters for particular homologies can be visualized using [T-sne](http://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html) from Hinton et. al.. 
 http://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html 
  To display them on a two dimensional surface (dimensionality reduction). This plot can be made interactive to see species corresponding to each dots_
 

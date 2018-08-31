@@ -20,11 +20,16 @@ utils/templot
 .idea/
 *.ipynb_checkpoints/
 utils/data/*.zip
+utils/data/*.gzip
+utils/data/*.gz
 utils/save/*
+utils/savedplots/*
+utils/templot/*
 utils/meta/ensemblmeta/plants.json
 utils/meta/ensemblmeta/fungi.json
 other/*
 !utils/meta/templot/*.md
+!utils/templot/*.md
 
 # Thumbnails
 ._*

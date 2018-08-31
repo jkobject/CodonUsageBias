@@ -8,23 +8,24 @@
 
 
 ------> see if possible to just go throught the ftp site and get whatever is available until reaching to the right 
-species else finish looking at ensemblgenomes
--------> for tRNA also get the value when tRNA as a name is tRNAX X being one of the letters describing th epossible aminoacid values
+species else finish looking at ensemblgenomes __done__
+-------> for tRNA also get the value when tRNA as a name is tRNAX X being one of the letters describing th epossible aminoacid values __done__
 
 --> set documentation for each functions and objects __done__
 --> ask Yun for the phylogenetic distance if she has it and the function to compute the phylogenetic distance matrix from a pseudo half life of genes with the gamma function. __done__
+
 >I have thought to create a pseudo evolution distance matrix based on phylogenetic tree classification by way of calculating ‘half-life’ (using gamma distribution) of real amino acid or gene which I read on book 'molecular evolution'
 
 
-- plot for each species, how much its genes are outliers, how much are belonging to a secondary cluster and how much are belonging to the principal cluster.
---> create a long stacked bar plot with these values
+- plot for each species, how much its genes are outliers, how much are belonging to a secondary cluster and how much are belonging to the principal cluster. 
+--> create a long stacked bar plot with these values __done__
 
 - compare amongst the working homoset homologies, the clusters together, by what species they contains by creating a new vector of species presence in each cluster and plotting the similarity matrix of each of those vectors. 
      --> look at similarity matrix within genes of 1 species and get some statistics over this matrix. full rank, etc ? 
 	---> look at similarity matrix between species of their genes pertaining to same cluster (cluster matrix species A === cluster Matrix of species B for all B and A) then sum of the bools and divide by total number of homologies
 	or by total number of common genes (or just cosine similarity of their has homo matrix.)
     --> create a compare function in homoset of homologies clusters similarity matrix and ordering. 
-
+ __done__
 - find if we are close to ancestry tree, here we need to represent a comparison of the closeness in a phylogenetic tree to a cluster of species
 	--> can create an interactive plot showing a gradient of color intensity on the points computed on the phylogenetic distance to the point currently hovered. 
 or	--> given a grouping of phylogenetic tree, what cluster is the most similar to it
@@ -34,13 +35,13 @@ or	--> given a grouping of phylogenetic tree, what cluster is the most similar t
 then 	--> how does it behaves on the full set 
 
 -> use gaussian clustering and look at the variance of the kernels (requested by dominique to maybe have some ideas of variance
-as it is not well displayed by eps) add this as another information when plotting and make gaussian clustering work well, then work using the values found by eps. 
+as it is not well displayed by eps) add this as another information when plotting and make gaussian clustering work well, then work using the values found by eps.  __done__
 
 other idea:
 	--> given the distance between each two data points (weighted) averaged by each homologies. find the difference with the pseudo phylogenetic distance, how much does it explains this distance. what are the weights that better helps explaining it. what are those weights exactly for each homology and what can they tell us (if they can) on the importance and role of each homology. is it similar for each two species? (try for a group of distant ones and of closer ones)
 
 - ensembl might think that it means they are not related and are not part of the same homology as they are not using similarity of the transcribed protein function but only similarity of the DNA strings (this is also normal since two individuals could have gained the same functions from two different events) 
---> so, one should look at the mean variance in CUB value and mean range for each homology (add this when plotting)
+--> so, one should look at the mean variance in CUB value and mean range for each homology (add this when plotting) __done__
 
 - use a mean sequence values and compare it to all sequences values for one species and one homology
 --> variance in data (for full species) can be explained by a value in tRNA copy number.
@@ -51,7 +52,7 @@ entropy location from entropy in homoset
 -->Use entropy, entropy location, codon frequency, (normalized and unormalized ones.), use random values as well (random values can be created from the same thing as the partition functions for entropy location. 
 --> average over sequences/species/homologies
 
----> download or find more meta datasets and see what can be done with them http://ensemblgenomes.org/info/data/protein_features and http://ensemblgenomes.org/info/data/repeat_features ( protein features and repeat features)
+---> download or find more meta datasets and see what can be done with them http://ensemblgenomes.org/info/data/protein_features and http://ensemblgenomes.org/info/data/repeat_features ( protein features and repeat features) __done__
 	 
 - look at similarity distance in sequences and compare it to the CUB values I have whether similarity 
 (is entropy)
@@ -72,15 +73,9 @@ entropy location from entropy in homoset
 
 ## ideas 
 
-- see if there is a similarity in the cluster position of each of their genes, compare it and find relationships
-- compare the similarities between the species for each types of related genes between the species
-- find a relationship between 
+
 - plot entropy location values similarity between genes of one particular individual
 - look for philogenetic similarity using ncbi taxonomy information/website or the information for Tobias
-
-* To find Metadata 
-	* from ensembl :  http://ensemblgenomes.org/info/data/protein_features and http://ensemblgenomes.org/info/data/repeat_features ( protein features and repeat features)
-	* look for other websites 
 
 
 - look for the trna genomic content using the metadata and then use it as a discriminatory factor (following paper by Mario dos Reis et. al.)
@@ -100,7 +95,7 @@ send an email to tobias for the name of the comparer species.
 ask for the philogenetic list amongs the 461 species
 the species present here are all the same ones. 
 
-- find how to replace Nans as they convey info and couldnot be replaced by 0 or 1 (maybe 0.5 ?)
+- find how to replace Nans as they convey info and couldnot be replaced by 0 or 1 (maybe 0.5 ?)--> should be replaced by 0 as we are talking about information entropy
 `http://scikit-learn.org/stable/modules/preprocessing.html`
 
 - look at the equations on the thesis. 
@@ -293,7 +288,7 @@ analysis of 4 different datasets under 4 different measures
 - writing - 21-30
 - post-writing 30-2
 - correction - 3-6
-- latexing - 7-9
+- latexing - 8-9
 - preparing logbook - 10
 
 Different factors have been proposed to be related to codon usage bias, including gene expression level (reflecting selection for optimizing translation process by tRNA abundance), %G+C composition (reflecting horizontal gene transfer or mutational bias), GC skew (reflecting strand-specific mutational bias), amino acid conservation, protein hydropathy, transcriptional selection, RNA stability, optimal growth temperature, hypersaline adaptation and dietary nitrogen
