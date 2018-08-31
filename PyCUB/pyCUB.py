@@ -1615,7 +1615,6 @@ class PyCUB(object):
         data = []
         print 'change'
         ftp.retrlines('NLST', data.append)
-        pdb.set_trace()
         for d in data:
             if d in species_name:
                 ftp.cwd(d)
