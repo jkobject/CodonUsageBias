@@ -576,7 +576,7 @@ class HomoSet(collections.MutableMapping):
                 species_namelist.add(speciestable[name])
         return list(species_namelist)
 
-    def compute_ages(self, preserved=True, minpreserv=0.9, minsimi=0.85):
+    def compute_ages(self, preserved=True, minpreserv=0.9, minsimi=0.85, redo=False):
         """
         will compute whether or not a coding gene is highly preserved and if not how recent it is
 
@@ -593,7 +593,7 @@ class HomoSet(collections.MutableMapping):
         """
         if self.homodict[self.keys()[-1]].similarity_scores is None:
             raise UnboundLocalError("you need to have the similarity_scores")
-        if self.homodict[self.keys()[-1]].isrecent is None:
+        if self.homodict[self.keys()[-1]].isrecent is None or redo:
             phylo_distances = utils.phylo_distances.copy()
             allowed = phylo_distances.index.tolist()
             speciestable = dict(utils.speciestable)
@@ -620,7 +620,7 @@ class HomoSet(collections.MutableMapping):
         else:
             print "it was already loaded"
 
-    def compute_entropyloc(self, using='computejerem'):
+    def compute_entropyloc(self, using='computejerem', normalized=False):
         """
         called if need entropy location and used ensembl data. you can always compute entropy location from entropy data.
 
@@ -637,7 +637,7 @@ class HomoSet(collections.MutableMapping):
         if self.datatype == 'entropy':
             if self.homo_matrix is None:
                 self.loadfullhomo()
-            self.homo_matrix = utils.getloc(self.homo_matrix, self.fulleng, using=using)
+            self.homo_matrix = utils.getloc(self.homo_matrix, self.fulleng, using=using, normalized=normalized)
             self.red_homomatrix = None
             self.homo_clusters = None
             self.datatype = 'entropyloc'
@@ -897,7 +897,7 @@ class HomoSet(collections.MutableMapping):
                         if val not in self.species_namelist:
                             self.species_namelist.append(val)
                     self.stats["species"].sort()
-                    print "beware, species_namelist does not represent speciesdict/loadhashomo/loadfullhomo/etc"
+                    print "beware, species_namelist does not represent speciesdict/loadhashomo/loadfullhomo/etc anymore."
                     print "just do homoset.species_namelist = cub.speciesdict().values() to retrieve the correspondance"
             else:
                 print "using cached data to save computation"
@@ -954,6 +954,7 @@ class HomoSet(collections.MutableMapping):
         self.cluster_similarity = simimatrix.copy()
         if plot:
             simiclust = self.plot_simiclust(interactive=interactive, size=size)
+        pdb.set_trace()
         if cubdistance_matrix:
             j = 0
             simimatrix = np.zeros((len(self.homodict), len(self.homodict)))
@@ -1280,7 +1281,7 @@ class HomoSet(collections.MutableMapping):
                 plt.figure(figsize=(size, 200))
                 plt.title('the homologies similarity of their clusters')
                 plt.imshow(self.cluster_similarity)
-                plt.savefig("utils/templot/simiclust.pdf")
+                plt.savefig("utils/templot/simicluster.pdf")
                 plt.show()
 
     def plot_distcub(self, interactive=False, size=40):

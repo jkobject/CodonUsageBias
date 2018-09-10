@@ -15,6 +15,8 @@ from sklearn import metrics
 from mpl_toolkits.mplot3d import Axes3D
 import utils
 
+from scipy.stats import spearmanr
+
 from bokeh.plotting import *
 from bokeh.io import save, show
 from bokeh.models import *
@@ -375,22 +377,22 @@ class homology(object):
             The reduced dataset
         """
         full = self.full if self.centroids is None else np.vstack((self.full, self.centroids))
-
+        full = full if self.ref is None else np.vstack((full, self.ref))
         if alg == 'tsne':
             red = man.TSNE(n_components=n, perplexity=perplexity).fit_transform(full)
         elif alg == 'pca':
             red = PCA(n_components=n).fit_transform(full)
         else:
             raise AttributeError("wrong algo my friend choose pca or tsne")
-        if self.centroids is None:
-            self.reduced = red
-        else:
-            self.reduced = red[:len(self.full)]
-            self.centroids = red[len(self.full):]
+        self.reduced = red[:len(self.full)]
+        if self.centroids is not None:
+            self.centroids = red[len(self.full):len(self.full) + len(self.centroids)]
+        if self.ref is not None:
+            self.ref = red[-1]
         self.reduced_algo = alg
         return red
 
-    def plot(self, reducer="tsne", per=40, interactive=True, D=2, size=20):
+    def plot(self, reducer="tsne", per=40, interactive=True, D=2, size=20, correlation=False):
         """
         plot the dimensionality reduced datapoint of the homology matrix
 
@@ -422,6 +424,16 @@ class homology(object):
             colors = [colormap[x + 1] for x in self.clusters]
         else:
             colors = [colormap[0]] * len(self.names)
+        if correlation:
+            if utils.CUBD != 18:
+                if len(self.ref)==59:
+                    tocomp = np.zeros(len(self.full))
+                    for i, val in enumerate(self.full):
+                        tocomp[i] = utils.endresdistance(val, self.ref)
+                else:
+                    correlation = False
+            else:
+                tocomp = self.full.mean(1)
         if self.reduced is None or self.reduced_algo != reducer:
             self.reduce_dim(alg=reducer, n=D, perplexity=per)
         elif self.reduced.shape[1] != D:
@@ -439,19 +451,31 @@ class homology(object):
                 data.update({'clusters': self.clusters})
              # TODO addphylodists
             if self.similarity_scores is not None:
+                if correlation:
+                    print 'similarity_scores: ' + str(spearmanr(self.similarity_scores, tocomp, axis=None))
                 data.update({'similarity_scores': self.similarity_scores})
             if self.KaKs_Scores is not None:
                 data.update({'KaKs_Scores': self.KaKs_Scores})
             if self.nans is not None:
+                if correlation:
+                    print 'nans: ' + str(spearmanr(self.nans, tocomp, axis=None))
                 data.update({'nans': self.nans})
                 # here use wether or not it is a new protein
             if self.ecai is not None:
+                if correlation:
+                    print 'ecai: ' + str(spearmanr(self.ecai, tocomp, axis=None))
                 data.update({'ecai': self.ecai})
             if self.cai is not None:
+                if correlation:
+                    print 'cai: ' + str(spearmanr(self.cai, tocomp, axis=None))
                 data.update({'cai': self.cai})
             if self.lenmat is not None:
+                if correlation:
+                    print 'lenmat: ' + str(spearmanr(self.lenmat.mean(1), tocomp, axis=None))
                 data.update({'lengths': self.lenmat.sum(1)})
             if self.GCcount is not None:
+                if correlation:
+                    print 'GCcount: ' + str(spearmanr(self.GCcount, tocomp, axis=None))
                 data.update({'gc': self.GCcount})
             source = ColumnDataSource(data=data)
             output_notebook()
@@ -471,7 +495,9 @@ class homology(object):
                     raise UnboundLocalError("you need to have dimensionality reduced to 2D \
                         to have a right plotting of the centroids")
                 p.square(self.centroids[:, 0], self.centroids[:, 1], size=12, color="olive", alpha=0.3)
-            save(column(radio_button_group, p), "utils/templot/homoplot_interactive_.html")
+            if self.ref is not None:
+                p.square(self.ref[0], self.ref[1], size=12, color="blue", alpha=0.4)
+            save(column(radio_button_group, p), "utils/templot/homoplot_interactive_" + self.homocode + ".html")
             show(column(radio_button_group, p))
         else:
             fig = plt.figure(figsize=(40, size))
@@ -488,7 +514,7 @@ class homology(object):
             else:
                 raise AttributeError("please choose a D between 2 and 4")
             plt.show()
-            plt.savefig("utils/templot/homoplot_matplotlib_.pdf")
+            plt.savefig("utils/templot/homoplot_matplotlib_" + self.homocode + ".pdf")
         print "homology: " + self.homocode
         print "------------------------------------"
         for key, val in self.metrics.iteritems():
