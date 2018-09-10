@@ -160,6 +160,8 @@ class Espece(object):
             toret += "\naverage entropy: " + str(self.average_entropy)
         if self.var_entropy is not None:
             toret += "\nvariance of entropy: " + str(self.var_entropy)
+        if self.fullentropy is not None:
+            toret += "\nfull entropy: " + str(self.fullentropy) 
         if self.fullvarentropy is not None:
             toret += "\nfull variance of entropy: " + str(self.fullvarentropy)
         if self.varGCcount is not None:
@@ -367,7 +369,7 @@ class Espece(object):
                 "meanGChomo": self.meanGChomo,
                 "meanecai": self.meanecai,
                 "is_stored": self.is_stored,
-                "average_entropy": self.average_entropy.tolist() if self.fullentropy is not None else None,
+                "average_entropy": self.average_entropy.tolist() if self.average_entropy is not None else None,
                 "average_size": self.average_size,
                 "var_entropy": self.var_entropy,
                 "fullentropy": self.fullentropy.tolist() if self.fullentropy is not None else None,

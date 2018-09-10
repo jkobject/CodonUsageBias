@@ -1,4 +1,4 @@
-"""
+r"""
 @package PyCUB
 Created by Jeremie KALFON
 Date : 21 FEV 2018
@@ -191,7 +191,7 @@ class PyCUB(object):
 
     def getHomologylist(self, species='saccharomyces_cerevisiae', kingdom='fungi'):
         """
-        A function to retrieve the homologies directly from a given species 
+        A function to retrieve the homologies directly from a given species
 
         (it is better to use
         one of the key species for the different kingdoms (sacharomyces, HS, Arabidopsis..))
@@ -346,7 +346,7 @@ class PyCUB(object):
 
     def get_mymetadata(self, From='jerem', inpar=True):
         """
-        Go ahead and design your own metadata retrieval here. 
+        Go ahead and design your own metadata retrieval here.
 
         obviously you woud need to change some other functions.
         for me it is mean protein abundances in cerevisiae cells.
@@ -760,7 +760,7 @@ class PyCUB(object):
         if withcopy:
             homo = copy.deepcopy(homoset)
         else:
-            homo = homoset
+            homo = homoset.copy()
         if homologies is not None:
             homo.homodict = {k: homoset[k] for k in homologies} if type(homologies[0]) is str else \
                 {homoset.homo_namelist[k]: homoset[k] for k in homologies}
@@ -813,7 +813,10 @@ class PyCUB(object):
                     valH, _, _ = utils.computeyun(codseq, setnans=setnans, normalized=normalized, by=by)
                     val.append(valH)
                     GCcount.append(float(record.seq._data.count('G') + record.seq._data.count('C')) / len(record.seq._data))
-                return np.array(val), np.array(GCcount)
+                va = np.zeros((len(val), utils.CUBD))
+                for i, v in enumerate(val):
+                    va[i] = v
+                return va, np.array(GCcount)
             else:
                 print "not working, overflow ..."
                 """
@@ -863,7 +866,7 @@ class PyCUB(object):
                 """
         location = 'ftp.ensemblgenomes.org' if kingdom != 'vertebrate' else 'ftp.ensembl.org'
         release = 'release-40/' if kingdom != 'vertebrate' else 'release-93'
-        ftp = FTP(location)
+        ftp = FTP(location, timeout=3000)
         ftp.login()
         if kingdom == 'vertebrate':
             kingdom = ''
@@ -871,13 +874,14 @@ class PyCUB(object):
         data = []
         ftp.retrlines('NLST', data.append)
         species_namelist = self.species.keys()
-        for d in data:
+        for i, d in enumerate(data):
+            print "\rparsed " + str(i) + " over " + str(len(data)),
             ftp.cwd(d)
             if d[-10:] == 'collection':
                 subdata = []
                 ftp.retrlines('NLST', subdata.append)
                 for sub in subdata:
-                    if sub in species_namelist:
+                    if sub in species_namelist and self.species[sub].fullentropy is None:
                         link = []
                         ftp.cwd(sub + '/' + seq)
                         ftp.retrlines('NLST', link.append)
@@ -887,15 +891,16 @@ class PyCUB(object):
                                     ftp.retrbinary("RETR " + i, file.write)
                         with gzip.open("utils/data/temp.fa.gz", "rt") as handle:
                             val, gccount = _compute_full_entropy(handle, by, avg)
-                        self.species[sub].fullentropy = val.mean(1) if avg else val
-                        self.species[sub].fullvarentropy = (val.var(1)**(0.5)).mean() if avg else None
+                        self.species[sub].fullentropy = val.mean(0) if avg else val
+                        self.species[sub].fullvarentropy = (val.var(0)**(0.5)).mean() if avg else None
                         self.species[sub].fullGCcount = gccount.mean() if avg else gccount
                         self.species[sub].varGCcount = gccount.var()**(0.5) if avg else None
+                        print "done " + sub
                         ftp.cwd('../..')
                         os.remove("utils/data/temp.fa.gz")
 
             else:
-                if d in species_namelist:
+                if d in species_namelist and self.species[d].fullentropy is None:
                     link = []
                     ftp.cwd(seq)
                     ftp.retrlines('NLST', link.append)
@@ -906,10 +911,11 @@ class PyCUB(object):
                                 break
                     with gzip.open("utils/data/temp.fa.gz", "rt") as handle:
                         val, gccount = _compute_full_entropy(handle, by, avg)
-                    self.species[d].fullentropy = val.mean(1) if avg else val
-                    self.species[d].fullvarentropy = (val.var(1)**(0.5)).mean() if avg else None
+                    self.species[d].fullentropy = val.mean(0) if avg else val
+                    self.species[d].fullvarentropy = (val.var(0)**(0.5)).mean() if avg else None
                     self.species[d].fullGCcount = gccount.mean() if avg else gccount
                     self.species[d].varGCcount = gccount.var()**(0.5) if avg else None
+                    print "done " + d
                     ftp.cwd('..')
                     os.remove("utils/data/temp.fa.gz")
             ftp.cwd('..')
@@ -1076,7 +1082,7 @@ class PyCUB(object):
             homoset.loadhashomo()
         # we get all CUB values pertaining to one specific species from
         # the homoset with the full homo matrix
-        _, counts = np.unique(homoset.homo_matrixnames, return_counts=True)
+        ind, counts = np.unique(homoset.homo_matrixnames, return_counts=True)
         ind = homoset.homo_matrixnames.argsort()
         GCmat = np.zeros((len(homoset.homo_namelist), len(homoset.species_namelist)))
         for i, val in enumerate(homoset.homo_namelist):
@@ -1089,13 +1095,13 @@ class PyCUB(object):
         for i, un in enumerate(counts):
             aslicetoavg = homoset.homo_matrix[ind[pos:pos + un]]
             bslicetoavg = homoset.fulleng[ind[pos:pos + un]]
-
             self.species[speciestable[i]].average_entropy = aslicetoavg.mean(axis=0)
             self.species[speciestable[i]].average_size = bslicetoavg.sum(1).mean()
             # variances are mean variances over all values
             self.species[speciestable[i]].var_entropy = (aslicetoavg.var(axis=0)**(0.5)).mean()
             pos += un
             self.species[speciestable[i]].tot_homologies = un
+        print str(float(i) / len(speciestable)) + "% have entropy"
         print "homology averages : " + str(homoset.homo_matrix.mean(axis=0))
         homoset.averagehomo_matrix = np.array([homoset[homo].mean for homo in homoset.homo_namelist])
         for _, val in homoset.iteritems():
@@ -1104,7 +1110,7 @@ class PyCUB(object):
 # CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
 # GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
 
-    def compare_species(self, showvar=True, reducer='tsne', perplexity=40, eps=0.3, size=10):
+    def compare_species(self, to="full", showvar=True, reducer='tsne', perplexity=40, eps=0.3, size=10, varmult=1):
         """
         compare the species according to their mean CUB,
 
@@ -1147,28 +1153,31 @@ class PyCUB(object):
         meanGChomo = np.zeros((len(self.species), 1))
         suff = 0
         phylo_distances = self.phylo_distances()
+        if self.species.values()[0].average_entropy is None:
+            raise UnboundLocalError("you have to compute averages, use PyCUB.compute_averages(homoset)")
         for i, (name, specie) in enumerate(self.species.iteritems()):
             if specie.average_entropy is not None:
+                if np.isnan(specie.average_entropy).any():
+                    specie.average_entropy[np.isnan(specie.average_entropy)] = 0
                 e_subspecies[i] = specie.average_entropy
                 vare_subspecies[i] = specie.var_entropy
                 meanGChomo[i] = specie.meanGChomo
-            else:
-                raise UnboundLocalError("you have to compute averages, use PyCUB.compute_averages(homoset)")
             if specie.fullentropy is not None:
-                efulldiff[i] = euclidean(specie.average_entropy, specie.fullentropy)
-                gcfulldiff[i] = euclidean(specie.meanGChomo, specie.fullGCcount)
-
-            if specie.fullvarentropy is not None:
+                if np.isnan(specie.fullentropy).any():
+                    specie.fullentropy[np.isnan(specie.fullentropy)] = 0
+                if np.isinf(specie.fullentropy).any():
+                    specie.average_entropy[np.isinf(specie.average_entropy)] = 0
+                if specie.average_entropy is not None:
+                    efulldiff[i] = euclidean(specie.average_entropy, specie.fullentropy)
+                    gcfulldiff[i] = euclidean(specie.meanGChomo, specie.fullGCcount)
                 varGCcount[i] = specie.varGCcount
                 fullvarentropy[i] = specie.fullvarentropy
             if specie.copynumbers is not None:
                 if specie.tRNAentropy is not None:
                     if to == 'full' and specie.fullentropy is not None:
                         tRNAentropydist[i] = euclidean(specie.tRNAentropy, specie.fullentropy)
-                    elif to == 'avg' or specie.fullentropy is None:
+                    elif to == 'avg' and specie.average_entropy is not None:
                         tRNAentropydist[i] = euclidean(specie.tRNAentropy, specie.average_entropy)
-                    else:
-                        raise AttributeError("try avg or full")
                     suff += 1
                     # if is zero, will be black colored
                 if specie.copynumbers.get("datapoints", False):
@@ -1190,15 +1199,15 @@ class PyCUB(object):
         clusters = alg.fit_predict(e_subspecies).tolist()
         colormap = list(utils.colormap)
         colors = [colormap[0] if not dist else
-                  utils.rgb2hex((26, 188, 10 + np.floor(246 * dist))) for dist in tRNAentropydist]
+                  utils.rgb2hex((126, 8, 10 + np.floor(246 * dist / tRNAentropydist.max()))) for dist in np.log(np.ma.masked_equal(tRNAentropydist, 0))]
         data = dict(x=red[:, 0], y=red[:, 1],
                     species=self.species.keys(),
                     meanentropy=["%.2f" % i.mean() for i in e_subspecies],
                     color=colors,
                     vare_subspecies=vare_subspecies,
-                    tRNA_number=tRNA_number,
+                    tRNA_number=np.log(tRNA_number),
                     recent=colors,
-                    tRNAentropydist=tRNAentropydist,
+                    tRNAentropydist=np.log(np.ma.masked_equal(tRNAentropydist, 0) * 1000),
                     genome_size=genome_size,
                     num_genes=num_genes,
                     efulldiff=efulldiff,
@@ -1207,7 +1216,7 @@ class PyCUB(object):
                     varGCcount=varGCcount,
                     fullvarentropy=fullvarentropy,
                     clusters=clusters,
-                    size=[(size / 2) + (size * 25 * (val.var_entropy))
+                    size=[(size / 2) + (varmult * (val.var_entropy)) if val.var_entropy != 0 else size
                           for _, val in self.species.iteritems()] if showvar else size)
         # compare it to the phylogenetic distance matrix and the sizes
         if phylo_distances is not None:
@@ -1217,6 +1226,8 @@ class PyCUB(object):
                 if val in names:
                     distances[i] = phylo_distances[val].values.mean()
             data.update({'distances': distances})
+        else:
+            print "no phylo distances"
         labe = ["show clusters", "show num_genes", "show genome_size",
                 "show full/mean CUB diff", "show GCcount", "show full/mean GC diff",
                 "show GC variance", "show distance to tRNA UB", "show tRNA number", "show avg phylodistance",
@@ -1244,11 +1255,11 @@ class PyCUB(object):
                    tools=[hover, WheelZoomTool(), PanTool(), SaveTool(), ResetTool()],
                    plot_width=800, plot_height=600)
         p.circle(x='x', y='y', source=source, color='color', size='size')
-        save(column(radio_button_group, p), "utils/templot/homology_compare.html")
+        save(column(radio_button_group, p), "utils/templot/species_compare.html")
         show(column(radio_button_group, p))
 
-    def compute_ages(self, homoset, preserved=True, minpreserv=0.9, minsimi=0.85):
-        homoset.compute_ages(preserved=preserved, minpreserv=minpreserv, minsimi=minsimi)
+    def compute_ages(self, homoset, preserved=True, minpreserv=0.9, minsimi=0.85, redo=False):
+        homoset.compute_ages(preserved=preserved, minpreserv=minpreserv, minsimi=minsimi, redo=redo)
 
     def regress_on_species(self, without=[""], full=True, onlyhomo=False, perctrain=0.8, algo="lasso",
                            eps=0.001, n_alphas=100):
@@ -1282,23 +1293,28 @@ class PyCUB(object):
         params = []
         phylo_distances = self.phylo_distances()
         espece = self.species.values()[0]
-        attrlist = ["average_size", "num_genes", "genome_size", "average_size", "fullGCcount",
+        attrlist = ["average_size", "num_genes", "genome_size", "fullGCcount",
                     "varGCcount", "tot_homologies"]
+        dataset = np.zeros((len(self.species), utils.CUBD))
+        for i, (_, v) in enumerate(self.species.iteritems()):
+            if onlyhomo or v.fullentropy is None:
+                if v.average_entropy is not None:
+                    dataset[i] = v.average_entropy
+            else:
+                dataset[i] = v.fullentropy
+        if not full:
+            dataset = dataset.mean(1)
         for attr in attrlist:
             if getattr(espece, attr) is not None and attr not in without:
                 arr = np.array([getattr(spece, attr) for spece in self.species.values()]).astype(float)
                 arr = arr / arr.max()
+                if not full:
+                    print attr + ': ' + str(spearmanr(np.ma.masked_equal(arr, 0), np.ma.masked_equal(dataset, 0), axis=None))
                 params.append(arr)
-
-        if espece.copynumbers is not None and "copynumbers" not in without:
-            attrlist.append("copynumbers")
-            arr = np.array([spece.copynumbers.get('datapoints', 0) for spece in self.species.values()]).astype(float)
-            arr = arr / arr.max()
-            params.append(arr)
-        for key, val in espece.metadata.iteritems():
+        for key in self.species.values()[0].metadata.keys():
             if str(key) not in without:
                 attrlist.append(key)
-                params.append(np.array([spece.metadata[key] if spece.metadata is not None else False
+                params.append(np.array([spece.metadata.get(key, 0) if spece.metadata is not None else False
                                         for spece in self.species.values()]).astype(int))
         if phylo_distances is not None and "phylo_distances" not in without:
             attrlist.append("phylo_distances")
@@ -1306,12 +1322,8 @@ class PyCUB(object):
             arr = np.array([phylo_distances[val].values.mean() if val in names else 0 for val in self.species.keys()])
             arr = arr / arr.max()
             params.append(arr)
-        dataset = np.zeros((len(self.species), utils.CUBD))
-        for i, (_, v) in enumerate(self.species.iteritems()):
-            dataset[i] = v.average_entropy if onlyhomo else v.fullentropy
-        if not full:
-            dataset = dataset.mean(1)
-
+            if not full:
+                print 'phylogenetic distances: ' + str(spearmanr(np.ma.masked_equal(arr, 0), np.ma.masked_equal(dataset, 0), axis=None))
         if algo == "lasso":
             # http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LassoCV.html
             model = MultiTaskLassoCV(eps=eps, n_alphas=n_alphas,
@@ -1338,14 +1350,14 @@ class PyCUB(object):
         self.coeffspecies = model.coef_.tolist() if algo == "lasso" else model.coefs_
         print "the R^2 score is of: " + str(self.scorespecies)
         print "-------------------------------"
-        if model == "lasso":
+        if algo == "lasso":
             for i, val in enumerate(attrlist):
                 print val + ": " + str(self.coeffspecies[i])
         return self.scorespecies, self.coeffspecies, attrlist
 
     # TODO: create a model that can say if the species has a high  CUB or low, given data on the species and on the protein
 
-    def compare_homologies(self, homoset, homosapiens=False, mindistance=10, preserved=True, size=10,
+    def compare_homologies(self, homoset, homosapiens=False, mindistance=10, preserved=True, size=6, varsize=2,
                            minpreserv=0.9, minsimi=0.9, showvar=True, eps=0.28, reducer='tsne', perplexity=40):
         """
         finds for species with a common ancester separated by a pseudo phylogenetic distance X,
@@ -1386,30 +1398,33 @@ class PyCUB(object):
             # and better inference metrics
 
         # display the differences between recent homologies and older ones
-        if homoset.averagehomo_matrix is None:
-            raise UnboundLocalError("you need to compute the averages of homoset. use PyCUB.compute_averages(homoset)")
+        pdb.set_trace()
+        averagehomo_matrix = np.zeros((len(homoset), utils.CUBD))
+        for i, homo in enumerate(homoset.homo_namelist):
+            averagehomo_matrix[i] = homoset[homo].mean
         if reducer == 'tsne':
-            red = man.TSNE(n_components=2, perplexity=perplexity).fit_transform(homoset.averagehomo_matrix)
+            red = man.TSNE(n_components=2, perplexity=perplexity).fit_transform(averagehomo_matrix)
         elif reducer == 'pca':
-            red = PCA(n_components=2).fit_transform(homoset.averagehomo_matrix)
+            red = PCA(n_components=2).fit_transform(averagehomo_matrix)
         else:
             raise AttributeError("wrong algorithm")
         alg = cluster.DBSCAN(eps=eps, min_samples=7, algorithm='auto', n_jobs=-1)
-        clusters = alg.fit_predict(homoset.averagehomo_matrix).tolist()
+        clusters = alg.fit_predict(averagehomo_matrix).tolist()
         n_clusters_ = len(set(clusters))
         if n_clusters_ > 10:
             print "ooups you have more than 10 clusters"
         colormap = list(utils.colormap)
-        colors = [colormap[0] if not homoset[homo].isrecent else
-                  utils.rgb2hex((26, 188, np.floor(156 * homoset[homo].isrecent))) for homo in homoset.homo_namelist]
+        colors = [colormap[int(homoset[homo].ishighpreserved)] if not homoset[homo].isrecent else
+                  utils.rgb2hex((126, 88, np.floor(156 * homoset[homo].isrecent))) for homo in homoset.homo_namelist]
         data = dict(x=red[:, 0], y=red[:, 1],
                     homologies=homoset.homo_namelist,
-                    meanentropy=["%.2f" % homoset.averagehomo_matrix[i].mean()
-                                 for i in range(len(homoset.averagehomo_matrix))],
+                    meanentropy=["%.2f" % averagehomo_matrix[i].mean()
+                                 for i in range(len(averagehomo_matrix))],
                     color=colors,
                     recent=colors,
                     clusters=clusters,
-                    size=[(size / 2) + (size * 25 * self.all_homoset[homo].var.mean()) if showvar else size for homo in self.all_homoset.homo_namelist])
+                    size=[size + (varsize * self.all_homoset[homo].var.mean()) if self.all_homoset[homo].var is not None
+                          else size for homo in self.all_homoset.homo_namelist] if showvar else size)
         # add average of similar protein name
         values = ["similarity_scores", "KaKs_Scores", "nans", "lenmat", "GCcount", "weight",
                   "protein_abundance", "mRNA_abundance", "decay_rate", "is_secreted", "cys_elements",
@@ -1423,18 +1438,20 @@ class PyCUB(object):
         i = 2
         for val in values[:5]:
             if getattr(homoset[0], val) is not None:
-                data.update({val: [getattr(homoset[homo], val).mean() for homo in homoset.homo_namelist]})
+                data.update({val: np.array([getattr(homoset[homo], val).mean() for homo in homoset.homo_namelist])})
                 templabe.append(labe[i])
             else:
                 templabe.append(" ")
             i += 1
         for val in values[5:]:
-            if getattr(homoset[0], val) is not None:
-                data.update({val: [getattr(homoset[homo], val) for homo in homoset.homo_namelist]})
-                templabe.append(labe[i])
-            else:
-                templabe.append(" ")
+            data.update({val: np.nan_to_num(np.array([getattr(homoset[homo], val) if getattr(homoset[homo], val) is not None else 0 for homo in homoset.homo_namelist]))})
+            templabe.append(labe[i])
             i += 1
+        for k, v in data.iteritems():
+            if k == "conservation":
+                v = v - v.min()
+            elif k == "mRNA_abundance" or k == "protein_abundance":
+                v = np.log(1 + v)
 
         source = ColumnDataSource(data=data)
         output_notebook()
@@ -1481,16 +1498,20 @@ class PyCUB(object):
             UnboundLocalError: "wrong params"
         """
         params = []
+        dataset = np.nan_to_num(homoset.averagehomo_matrix) if full else np.nan_to_num(homoset.averagehomo_matrix).mean(1)
         values = ["similarity_scores", "KaKs_Scores", "nans", "lenmat", "GCcount", "weight",
                   "protein_abundance", "mRNA_abundance", "decay_rate", "is_secreted", "cys_elements",
                   "tot_volume", "mean_hydrophobicity", "glucose_cost", "synthesis_steps",
                   "isoelectricpoint", "meanecai", "meancai", "conservation"]
         attrlist = []
+        pdb.set_trace()
         for val in values[:5]:
             if val not in without:
                 if getattr(homoset[0], val) is not None:
                     arr = np.nan_to_num(np.array([getattr(homoset[homo], val).mean() for homo in homoset.homo_namelist])).astype(float)
                     arr = arr / arr.max()
+                    if not full:
+                        print val + ': ' + str(spearmanr(np.ma.masked_equal(arr, 0), np.ma.masked_equal(dataset,0), axis=None))
                     params.append(arr)
                     attrlist.append(val)
         for val in values[5:]:
@@ -1498,17 +1519,19 @@ class PyCUB(object):
                 if getattr(homoset[0], val) is not None:
                     arr = np.nan_to_num(np.array([getattr(homoset[homo], val) for homo in homoset.homo_namelist])).astype(float)
                     arr = arr / arr.max()
+                    if not full:
+                        print val + ': ' + str(spearmanr(np.ma.masked_equal(arr, 0), np.ma.masked_equal(dataset,0), axis=None))
                     params.append(arr)
                     attrlist.append(val)
-        dataset = homoset.averagehomo_matrix if full else homoset.averagehomo_matrix.mean(1)
         if algo == "lasso":
             # http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LassoCV.html
+            print "change"
             model = MultiTaskLassoCV(eps=eps, n_alphas=n_alphas,
-                                     alphas=None, fit_intercept=True, normalize=False,
+                                     alphas=None, fit_intercept=True, normalize=True,
                                      max_iter=1000, tol=0.0001, copy_X=False, cv=None,
                                      verbose=False, n_jobs=1, random_state=None, selection='cyclic')\
                 if full else LassoCV(eps=eps, n_alphas=n_alphas,
-                                     alphas=None, fit_intercept=True, normalize=False, precompute='auto',
+                                     alphas=None, fit_intercept=True, normalize=True, precompute='auto',
                                      max_iter=1000, tol=0.0001, copy_X=False, cv=None, verbose=False, n_jobs=-1,
                                      positive=False, random_state=None, selection='cyclic')
         elif algo == "nn" and not full:
@@ -1539,7 +1562,7 @@ class PyCUB(object):
                                         "utils/meta/3Dmodel/cerevisiae_inter3.csv",
                                         "utils/meta/3Dmodel/cerevisiae_inter4.csv",
                                         "utils/meta/3Dmodel/cerevisiae_inter5.csv"], bins=2000, seq='cds', use='diament2',
-                         euclide=False):
+                         euclide=False, homomean=False):
         """
         https://www.nature.com/articles/ncomms6876
 
@@ -1560,7 +1583,7 @@ class PyCUB(object):
             bins: int, the number of bin to use (a power of 2)
             seq: the type of sequence to compare to. (to compute the CUB from)
             use: str flag different types of algorithm I have made trying to understand the thing
-            compute: str flag to different computation available 
+            compute: str flag to different computation available
             euclidean: bool flag to true to compute euclidean instead of Endres Shcidelin metrics
         """
         # get gene distance matrix from entropy value distance or Andres Schindelin metrics
@@ -1611,12 +1634,12 @@ class PyCUB(object):
             kingdom = ''
         ftp.cwd('pub/' + release + kingdom + '/fasta/')
         data = []
-        print 'change'
         ftp.retrlines('NLST', data.append)
         for d in data:
             if d in species_name:
                 ftp.cwd(d)
-                link = []
+                pdb.set_trace()
+		link = []
                 ftp.cwd(seq)
                 ftp.retrlines('NLST', link.append)
                 with open("utils/data/temp.fa.gz", "wb") as file:
@@ -1641,19 +1664,30 @@ class PyCUB(object):
                                 .replace("H", "T").replace("V", "G").replace("N", "C")
                         else:
                             codseq = record.seq._data
+
                         codseq = [codseq[i:i + 3] for i in range(0, len(codseq), 3)]
                         leng = len(codseq)
                         CuF = np.zeros(64)
                         for i, val in enumerate(codons):
                             CuF[i] = codseq.count(val)
-                        nb += 1
-                        valH, CuB, _, _ = utils.computeyun(codseq, setnans=False, normalized=False,
+                        valH, CuB, len_i, _ = utils.computeyun(codseq, setnans=False, normalized=False,
                                                            by="entropy" + "frequency")
-                        server = "http://rest.ensemblgenomes.org" if kingdom != 'vertebrate' else "http://rest.ensembl.org"
-                        names.append(record.id)
-                        vals.append(valH)
+                        if self.all_homoset.datatype=="entropylocation":
+                                valH = utils.getloc(valH, len_i)
+                        if homomean:
+                            if self.all_homoset.datatype!="frequency":
+                                other = valH
+                            else:
+                                other = CuB
+                            vals.append(self.all_homoset[record.id].mean if self.all_homoset.get(record.id, False) else other)
+                        else:
+                            vals.append(valH)
                         cufs.append((CuF / leng).tolist())
                         cubs.append(CuB)
+                        nb += 1
+                        server = "http://rest.ensemblgenomes.org" if kingdom != 'vertebrate' else "http://rest.ensembl.org"
+                        names.append(record.id)
+
                         ext = "/lookup/id/" + record.id + "?expand=1"
                         r = requests.get(server + ext, headers={"Content-Type": "application/json"})
                         if not r.ok:
@@ -1676,7 +1710,7 @@ class PyCUB(object):
                 cubs = np.array(cubs)[ind]
                 positions = np.array(positions)[ind]
                 names = [names[i] for i in ind]
-
+                pdb.set_trace()
                 tempchrom = 0
                 tempind = 0
                 tempdf = df.loc[df['chr1'] == 1]
@@ -1854,19 +1888,19 @@ class PyCUB(object):
                     distcuf = np.zeros((len(positions), len(positions)), dtype=float)
                     distcub = np.zeros((len(positions), len(positions)), dtype=float)
                     distent = np.zeros((len(positions), len(positions)), dtype=float)
-                    #cubs = np.ma.masked_equal(cubs, 0)
+                    # cubs = np.ma.masked_equal(cubs, 0)
                     j = 0
                     for val in vals:
                         i = 0
                         for comp in vals:
                             if i < j:
                                 distent[j, i] = distent[i, j]
-                                distcub[j, i] = distcub[i, j]
-                                distcuf[j, i] = distcuf[i, j]
+                         #      distcub[j, i] = distcub[i, j]
+                         #      distcuf[j, i] = distcuf[i, j]
                             elif i > j:
                                 distent[j, i] = euclidean(val, comp) if euclide else utils.endresdistance(val, comp)
-                                distcub[j, i] = euclidean(cubs[j], cubs[i]) if euclide else utils.endresdistance(cubs[j], cubs[i])
-                                distcuf[j, i] = euclidean(cufs[j], cufs[i]) if euclide else utils.endresdistance(cufs[j], cufs[i])
+                          #     distcub[j, i] = euclidean(cubs[j], cubs[i]) if euclide else utils.endresdistance(cubs[j], cubs[i])
+                          #     distcuf[j, i] = euclidean(cufs[j], cufs[i]) if euclide else utils.endresdistance(cufs[j], cufs[i])
                             i += 1
                         j += 1
                         print '\rdistcomputation ' + str(j) + ' over ' + str(len(vals)),
@@ -1910,9 +1944,10 @@ class PyCUB(object):
 
                         distent = np.ravel(distent)
                         shortestpath = np.ravel(shortestpath)
-                        distcub = np.ravel(distcub)
-                        distcuf = np.ravel(distcuf)
+                        #distcub = np.ravel(distcub)
+                        #distcuf = np.ravel(distcuf)
                         # for CUF
+                        
                         ind = np.argsort(distent)
                         distent = distent[ind]
                         sortshortestpath = shortestpath[ind]
@@ -1923,6 +1958,7 @@ class PyCUB(object):
                             start += int(val)
                         self.rho_ent, self.pent = spearmanr(ent, dist3D)
                         # for CUB
+                        """
                         ind = np.argsort(distcuf)
                         distcuf = distcuf[ind]
                         sortshortestpath = shortestpath[ind]
@@ -1942,7 +1978,7 @@ class PyCUB(object):
                             cub[i] = distcub[start:start + int(val)].mean()
                             start += int(val)
                         self.rho_cub, self.pcub = spearmanr(cub, dist3D)
-
+                        """
                 else:
                     # computation jerem 1st
                     div, i = divmod(len(names), bins)
@@ -2163,7 +2199,6 @@ class PyCUB(object):
             filename = "utils/save/" + self.session + '/' + species + ".json"
             print "writing in " + name
             dictify = self._dictify(save_workspace, save_homo)
-            data = json.dumps(dictify, indent=4, separators=(',', ': '))
             dirname = os.path.dirname(filename)
             if not os.path.exists(dirname):
                 os.makedirs(dirname)

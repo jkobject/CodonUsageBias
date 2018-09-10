@@ -275,7 +275,7 @@ hydrophob = [1.8, -4.5, -3.5, -3.5, 2.5, -3.5, -3.5, -0.4, -3.2, 4.5,
              3.8, -3.9, 1.9, 2.8, -1.6, -0.8, -0.7, -0.9, -1.3, 4.2]
 
 volume = [88.6, 173.4, 114.1, 111.1, 108.5, 143.8, 138.4, 60.1, 153.2,
-          166.7, 166.7, 168.6, 162.9, 189.9, 112.7, 89, 116.1 227.8, 193.6, 140]
+          166.7, 166.7, 168.6, 162.9, 189.9, 112.7, 89, 116.1, 227.8, 193.6, 140]
 
 isoelectricpoint = [6.11, 10.76, 10.76, 2.98, 5.02, 5.65, 3.08, 6.06, 7.64,
                     6.04, 6.04, 9.47, 5.74, 5.91, 6.3, 5.68, 5.6, 5.88, 5.63, 6.02]
@@ -283,12 +283,15 @@ isoelectricpoint = [6.11, 10.76, 10.76, 2.98, 5.02, 5.65, 3.08, 6.06, 7.64,
 conservation = [5, 5.2, 4, 5.3, 4.4, 3.4, 4.4, 6.6, 3.1, 7.8, 7.3,
                 4.4, 3.6, 4.2, 5.6, 3.8, 3.8, 3.9, 3.2, 6.5]
 
-colormap = ['#f39c12', "#1abc9c", "#3498db", "#2ecc71", "#9b59b6", '#34495e', '#f1c40f', '#e67e22', '#e74c3c', '#7f8c8d']
+probavector = [0, 0, 0, 0, 0, 0, 0]
+
+colormap = ['#f39c12', "#1abc9c", "#3498db", "#2ecc71", "#9b59b6", '#34495e', '#492000', '#960019',
+'#043927', '#8F9779', '#f1c40f', '#e67e22', '#e74c3c', '#7f8c8d']
 callback = """
             // JavaScript code goes here
             console.log("callback-------callback");
-            var colors = ['#f39c12', "#1abc9c", "#3498db", "#2ecc71",
-                        "#9b59b6", '#34495e', '#f1c40f','#e67e22', '#e74c3c', '#7f8c8d'];
+            var colors = ['#f39c12', "#1abc9c", "#3498db", "#2ecc71", "#9b59b6", '#34495e', '#492000', '#960019',
+'#043927', '#8F9779', '#f1c40f', '#e67e22', '#e74c3c', '#7f8c8d'];
             // the model that triggered the callback is cb_obj:
             var b = cb_obj.get("active");
             var rgbToHex = function(rgb){
@@ -381,7 +384,7 @@ callback = """
                     }
                 source.data.color = col;
             }
-            if(b===9){ //CAI
+            if(b===8){ //CAI
                 var temp = 0
                 for(i=0;i<len;++i){
                     temp =  Math.floor(255 * data.cai[i]);
@@ -396,8 +399,8 @@ callback = """
 callback_allgenes = """
             // JavaScript code goes here
             console.log("callback-------callback");
-            var colors = ['#f39c12', "#1abc9c", "#3498db", "#2ecc71",
-                        "#9b59b6", '#34495e', '#f1c40f','#e67e22', '#e74c3c', '#7f8c8d'];
+            var colors = ['#f39c12', "#1abc9c", "#3498db", "#2ecc71", "#9b59b6", '#34495e', '#492000', '#960019',
+'#043927', '#8F9779', '#f1c40f', '#e67e22', '#e74c3c', '#7f8c8d'];
             // the model that triggered the callback is cb_obj:
             var b = cb_obj.get("active");
             var rgbToHex = function(rgb){
@@ -485,17 +488,17 @@ callback_allgenes = """
                 var temp = 0
                 max = Math.max(...data.tRNA_number)
                 for(i=0;i<len;++i){
-                    temp =  Math.floor(54 + (200 * data.tRNA_number[i]/max));
-                    col.push(fullColorHex(52, 73, temp));
+                    temp =  Math.floor(14 + (240 * data.tRNA_number[i]/max));
+                    col.push(fullColorHex(152, 23, temp));
                     }
                 source.data.color = col;
             }
             if(b === 9){ //  show avgphilodistance
                 var temp = 0
-                max = Math.max(...data.distances)
-                min = Math.min(...data.distances)
+                max = Math.max(...data.distances);
+                min = Math.min(...data.distances);
                 for(i=0;i<len;++i){
-                    temp =  Math.floor(54 + (254 * data.distances[i]/max));
+                    temp =  Math.floor(254 * (data.distances[i]-min)/(max-min));
                     col.push(fullColorHex(52, 73, temp));
                     }
                 source.data.color = col;
@@ -509,7 +512,7 @@ callback_allgenes = """
                     }
                 source.data.color = col;
             }*/
-            if(b > 10){ //  show avgphilodistance
+            if(b > 10){ 
                 for(i=0;i<len;++i){
                     if(data[String(b)][i]){
                         col.push(colors[2])
@@ -524,8 +527,8 @@ callback_allgenes = """
 callback_allhomo = """
             // JavaScript code goes here
         console.log("callback-------callback");
-        var colors = ['#f39c12', "#1abc9c", "#3498db", "#2ecc71",
-                    "#9b59b6", '#34495e', '#f1c40f','#e67e22', '#e74c3c', '#7f8c8d'];
+        var colors = ['#f39c12', "#1abc9c", "#3498db", "#2ecc71", "#9b59b6", '#34495e', '#492000', '#960019',
+'#043927', '#8F9779', '#f1c40f', '#e67e22', '#e74c3c', '#7f8c8d'];
         // the model that triggered the callback is cb_obj:
         var b = cb_obj.get("active");
         var rgbToHex = function(rgb){
@@ -641,9 +644,8 @@ callback_allhomo = """
         }
         if(b === 11){ //is_secreted
             var temp = 0
-            max = Math.max(...data.is_secreted)
             for(i=0;i<len;++i){
-                temp =  Math.floor(200 * data.is_secreted[i]/max);
+                temp =  Math.floor(200 * data.is_secreted[i]);
                 col.push(fullColorHex(temp, 113, temp));
             }
             source.data.color = col;
@@ -670,7 +672,7 @@ callback_allhomo = """
             var temp = 0
             max = Math.max(...data.mean_hydrophobicity)
             for(i=0;i<len;++i){
-                temp =  Math.floor(200 * data.mean_hydrophobicity[i]/max);
+                temp =  10 - Math.floor(100 * data.mean_hydrophobicity[i]/max);
                 col.push(fullColorHex(52, temp, 113));
             }
             source.data.color = col;
@@ -693,23 +695,32 @@ callback_allhomo = """
             }
             source.data.color = col;
         }
-        if(b === 17){ //meanecai
+        if(b === 17){ //Show Pi
+            var temp = 0
+            max = Math.max(...data.isoelectricpoint)
+            for(i=0;i<len;++i){
+                temp =  Math.floor(200 * data.isoelectricpoint[i]/max);
+                col.push(fullColorHex(temp, temp, 76));
+            }
+            source.data.color = col;
+        }                     
+        if(b === 18){ //meanecai
             var temp = 0
             for(i=0;i<len;++i) {
-                temp =  Math.floor(455 * data.meanecai[i]);
+                temp =  Math.floor(255 * data.meanecai[i]);
                 col.push(fullColorHex(temp, temp, 113));
             }
             source.data.color = col;
         }
-        if(b === 18){ //meancai
+        if(b === 19){ //meancai
             var temp = 0
             for(i=0;i<len;++i) {
-                temp =  Math.floor(455 * data.meancai[i]);
+                temp =  Math.floor(255 * data.meancai[i]);
                 col.push(fullColorHex(temp, temp, 113));
             }
             source.data.color = col;
         }
-        if(b === 19){ //conservation
+        if(b === 20){ //conservation
             var temp = 0
             max = Math.max(...data.conservation)
             for(i=0;i<len;++i){
@@ -940,7 +951,7 @@ def loadfromensembl(homology, kingdom='fungi', sequence='cdna',
     # application fo preprocessing in homoset.
     homo = h.homology(names=[species, taxons], full=H, lenmat=lenmat, homocode=homology,
                       nans=nans, KaKs_Scores=KaKs_Scores, similarity_scores=similarities,
-                      proteinids=proteinids, GCcount=GCcount, geneids=geneid, refs=ref, ecai=ecai, cai=cai, refgene=refgene,
+                      proteinids=proteinids, GCcount=GCcount, geneids=geneid, ref=ref, ecai=ecai, cai=cai, refgene=refgene,
                       refprot=refprot, tot_volume=vol, mean_hydrophobicity=hydrophob, glucose_cost=cost,
                       synthesis_steps=synthcost, isoelectricpoint=isoepoint, conservation=conservation, othercods=others)
     homo.order(withtaxons=True)  # a first ordering of the data, usefull afterward in the preprocessing
@@ -1210,6 +1221,7 @@ def computeyun(data, setnans=False, normalized=False, by='entropy'):
 
     """
     global CUBD
+    global probavector
     if by != 'frequency':
         valH = np.zeros(len(amino))
     if by != 'entropy':  # the number of codons usefull
@@ -1223,7 +1235,7 @@ def computeyun(data, setnans=False, normalized=False, by='entropy'):
         nbcod = len(subcodons)  # replace Cleng
         count = np.zeros(nbcod)
         X = np.zeros(nbcod)
-        mn = np.ones(nbcod) / nbcod
+        mn = np.ones(nbcod) / nbcod if probavector[nbcod] is 0 else probavector[nbcod]
         for i, cod in enumerate(subcodons):
             count[i] = data.count(cod)
         """
@@ -1261,18 +1273,16 @@ def computeyun(data, setnans=False, normalized=False, by='entropy'):
                 Eg = multinomial.pmf(x=X, n=lengsubseq, p=mn)
                 # end here
                 if Eg == 0:
-                    valH[k] = 20
+                    valH[k] = 0
                 valH[k] = -np.log(Yg / Eg) / lengsubseq if normalized else -np.log(Yg / Eg)
-    if by == 'frequency':
-        valH = CuF
-    elif by == 'entropy' + 'frequency':
+    if by == 'entropy' + 'frequency':
         if nans == k:
             return None, None, None, None
         return valH, CuF, len_i, nans / 2
     else:
         if nans == k:
             return None, None, None
-        return valH, len_i, nans
+        return CuF if by == 'frequency' else valH, len_i, nans
 
 
 def getloc(valH, geneleng, probavector=None, using='computejerem'):
@@ -1330,12 +1340,12 @@ def getloc(valH, geneleng, probavector=None, using='computejerem'):
                 X[div:] = np.floor(i)
                 Eg = multinomial.pmf(x=X, n=leng, p=mn)
                 # end
-                if Eg == 0:
+                if Eg == 0 or leng == 0:
                     valHloc[y] = 0
                     continue
                 ref = computepartition(nbcod, leng, probavector=probavector, using=using)
                 try:
-                    ref = np.divide(np.log(np.divide(Eg, ref)), leng)
+                    ref = np.divide(np.log(np.divide(Eg, np.ma.masked_equal(ref, 0))), leng)
                     hist, edges = np.histogram(ref, int((ref.max() - ref.min()) * 10000))
                 except:
                     pdb.set_trace()
@@ -1377,7 +1387,7 @@ def getloc(valH, geneleng, probavector=None, using='computejerem'):
 # GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
 
 
-def computepartition(nbcod, leng, probavector=None using='computejerem'):
+def computepartition(nbcod, leng, probavector=None, using='computejerem'):
     """
     according to a 'using' parameter, will select the partition function algorithm to use
         jeremcompute: bool to true if use a jeremie twist to this function
@@ -1403,8 +1413,8 @@ def computepartition(nbcod, leng, probavector=None using='computejerem'):
         return computepartition_without_permutation(nbcod, leng)
     elif using == 'full':
         return computepartition_sorted_full(nbcod, leng, probavector)
-    elif using == 'normal' and probavector is not None:
-        return computepartition_normal_approximation(nbcod, leng, probavector)
+    elif using == 'normal':
+        return computepartition_sorted_full(nbcod, leng, True, probavector)
     else:
         raise AttributeError(" give a Using from [permutation, random, normal, full]")
 
@@ -1458,7 +1468,7 @@ def randomdraw(nbcod, leng):
     return multinomial(leng, np.ones(nbcod) / nbcod).pmf(listvect)
 
 
-def computepartition_sorted_full(nbcod, leng, mn=None):
+def computepartition_sorted_full(nbcod, leng, normal_approx=False, mn=None):
     """
     one of the four partition functions algorithms
     Basically works by computing every possible codon presence for a defined amino acid (and it number of
@@ -1472,9 +1482,10 @@ def computepartition_sorted_full(nbcod, leng, mn=None):
     Returns:
         the partition array
     """
-    mn = np.ones(nbcod) / nbcod if mn is None else mn
     if mlen(leng, nbcod) == 'full':
         # if we are ok to do full method
+        if not normal_approx:
+            mn = np.ones(nbcod) / nbcod if mn is None else mn
         a = 0
         val = []
         for i in range(leng + 1):
@@ -1502,9 +1513,33 @@ def computepartition_sorted_full(nbcod, leng, mn=None):
                         val.append([i, j, b])
             else:
                 val.append([i, a])
-        return multinomial(leng, mn).pmf(val)
+        if normal_approx:
+            return computepartition_normal_approximation(nbcod - 1, leng, np.array(val).T[:-1].T, mn)
+        else:
+            return multinomial(leng, mn).pmf(val)
     else:
         return randomdraw(nbcod, leng)
+
+
+def computepartition_normal_approximation(nbcod, leng, values, probavector=None):
+    """
+    one of the 4 partition function algorithm, works by
+    approximates the binomial distribution with a multidimensional gaussian function
+    as a gaussian approximates a binomial under many trials and this is basically what we do.
+
+    Params:
+        leng: int length of sequence
+        nbcod: int number of codons
+        probavector: the probability vector of the codons for this amino acid
+
+    Returns:
+        the partition array
+    """
+    probavector = np.array(probavector) if probavector is not None else np.ones(nbcod + 1) / (nbcod + 1)
+    mean = probavector[:-1] * leng
+    ker = np.kron(probavector[:-1], probavector[:-1]).reshape(nbcod, nbcod) * (-leng)
+    np.fill_diagonal(ker, (probavector[:-1] * (1 - probavector[:-1])) * leng)
+    return multivariate_normal(mean, ker).pdf(values)
 
 
 def computepartition_without_permutation(nbcod, leng):
@@ -1726,53 +1761,6 @@ def computejerem(nbcod, leng):
         return randomdraw(nbcod, leng)
 
 
-def computepartition_normal_approximation(nbcod, leng, probavector):
-    """
-    one of the 4 partition function algorithm, works by
-    approximates the binomial distribution with a multidimensional gaussian function
-    as a gaussian approximates a binomial under many trials and this is basically what we do.
-
-    Params:
-        leng: int length of sequence
-        nbcod: int number of codons
-        probavector: the probability vector of the codons for this amino acid
-
-    Returns:
-        the partition array
-    """
-    # TODO: debug the singular matrix problem
-    probavector = np.array(probavector)
-    mean = probavector[:-1] * leng
-    ker = np.kron(probavector[:-1], probavector[:-1]).reshape(nbcod - 1, nbcod - 1) * (-leng)
-    np.fill_diagonal(ker, (probavector[:-1] * (1 - probavector[:-1])) * leng)
-    if leng**(nbcod - 1) < MAXITR:
-        if nbcod == 2:
-            x = np.mgrid[0:leng + 1]
-            pos = np.empty(x.shape + (nbcod - 1,))
-            pos[:, 0] = x
-        elif nbcod == 3:
-            x, y = np.mgrid[0:leng + 1, 0:leng + 1]
-            pos = np.empty(x.shape + (nbcod - 1,))
-            pos[:, :, 0] = x
-            pos[:, :, 1] = y
-        elif nbcod == 4:
-            x, y, z = np.mgrid[0:leng + 1, 0:leng + 1, 0:leng + 1]
-            pos = np.empty(x.shape + (nbcod - 1,))
-            pos[:, :, :, 0] = x
-            pos[:, :, :, 1] = y
-            pos[:, :, :, 2] = z
-        elif nbcod == 6:
-            x, y, z, v, w = np.mgrid[0:leng + 1, 0:leng + 1, 0:leng + 1, 0:leng + 1, 0:leng + 1]
-            pos = np.empty(x.shape + (nbcod - 1,))
-            pos[:, :, :, :, :, 0] = x
-            pos[:, :, :, :, :, 1] = y
-            pos[:, :, :, :, :, 2] = z
-            pos[:, :, :, :, :, 3] = v
-            pos[:, :, :, :, :, 4] = w
-    else:
-        return randomdraw(nbcod, leng)
-    return multivariate_normal(mean, ker).pdf(pos).flatten()
-
 # CpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpCpCpGpApApTpApTpApTpTpTpTpCpCpGpApApTpApTpApTpTp
 # GbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbGbGbCbTbTbAbTbAbTbAbAbAbGbGbCbTbTbAbTbAbTbAbAbAb
 
@@ -1856,7 +1844,7 @@ def endresdistance(a, b):
     Here we mask and don't compute zeros as it is how we should do 
     in KL for multinomially distributed data (better even would be to 
     have used a prior=> replacing the masked values by 1/59)
-    """
+q    """
     me = (a + b) / 2
     x = kl(a, me) + kl(b, me)
     return sqrt(x) if x > 0 else 0
