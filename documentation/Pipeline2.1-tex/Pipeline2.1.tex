@@ -1,0 +1,2539 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[11pt]{article}
+
+    
+    
+    \usepackage[T1]{fontenc}
+    % Nicer default font (+ math font) than Computer Modern for most use cases
+    \usepackage{mathpazo}
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % We will generate all images so they have a width \maxwidth. This means
+    % that they will get their normal width if they fit onto the page, but
+    % are scaled down if they would overflow the margins.
+    \makeatletter
+    \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+    \else\Gin@nat@width\fi}
+    \makeatother
+    \let\Oldincludegraphics\includegraphics
+    % Set max figure width to be 80% of text width, for now hardcoded.
+    \renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=.8\maxwidth]{#1}}
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionLabelFormat{nolabel}{}
+    \captionsetup{labelformat=nolabel}
+
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    
+
+    
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{Pipeline2.1}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@dl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@fm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sa\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}1}]:} \PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+        \PY{o}{\PYZpc{}}\PY{k}{reload\PYZus{}ext} autoreload
+        \PY{o}{\PYZpc{}}\PY{k}{autoreload} 2
+        \PY{k+kn}{from} \PY{n+nn}{PyCUB} \PY{k+kn}{import} \PY{n}{pyCUB} 
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}2}]:} \PY{n}{cub} \PY{o}{=} \PY{n}{pyCUB}\PY{o}{.}\PY{n}{PyCUB}\PY{p}{(}\PY{n}{session} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ensembl2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+working on session: ensembl2
+you already have a session here (just a warning)
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} \PY{n}{cub}\PY{o}{.}\PY{n}{get\PYZus{}mymetadata}\PY{p}{(}\PY{n}{From}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{jerem}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{inpar}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
+        \PY{n}{cub}\PY{o}{.}\PY{n}{getHomologylist}\PY{p}{(}\PY{n}{species}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{saccharomyces\PYZus{}cerevisiae}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{kingdom}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{fungi}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}4}]:} \PY{n+nb}{len}\PY{p}{(}\PY{n}{cub}\PY{o}{.}\PY{n}{homolist}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}4}]:} 6692
+\end{Verbatim}
+            
+    Here except using a secondary package called wurtalizer, the printouts
+will be on the console. this is due to the parallelism of the function.
+16 is good even for lower number CPU because we are solely doing
+database calls
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}13}]:} \PY{n}{cub}\PY{o}{.}\PY{n}{get\PYZus{}data}\PY{p}{(}\PY{n}{From}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ensembl}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{homonames}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{all}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{kingdom}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{fungi}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{sequence}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cdna}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                 \PY{n}{additional}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{type=orthologues}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{saveonfiles}\PY{o}{=}\PY{n+nb+bp}{False}\PY{p}{,} \PY{n}{normalized}\PY{o}{=}\PY{n+nb+bp}{False}\PY{p}{,} \PY{n}{setnans}\PY{o}{=}\PY{n+nb+bp}{False}\PY{p}{,}
+                 \PY{n}{by}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{frequency}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{tRNA}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{,} \PY{n}{inpar}\PY{o}{=}\PY{l+m+mi}{16}\PY{p}{,} \PY{n}{getCAI}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+you will have a larger dimensional matrix (59D)
+using the loaded homolist from ensembl
+doing all 6692 homologies
+ 
+preprocessing{\ldots}
+computing tRNA copy numbers
+species: \_candida\_glabrata
+we got 413 datapoints and managed to extract 345
+species: \_candida\_intermedia
+we got 200 datapoints and managed to extract 189
+species: \_candida\_tenuis\_atcc\_10573
+we got 112 datapoints and managed to extract 107
+species: absidia\_glauca
+we got 228 datapoints and managed to extract 186
+species: acidomyces\_richmondensis\_bfw
+we got 28 datapoints and managed to extract 28
+species: acremonium\_chrysogenum\_atcc\_11550
+we got 240 datapoints and managed to extract 107
+species: agaricus\_bisporus\_var\_burnettii\_jb137\_s8
+we got 385 datapoints and managed to extract 193
+species: allomyces\_macrogynus\_atcc\_38327
+we got 979 datapoints and managed to extract 431
+species: alternaria\_alternata
+we got 106 datapoints and managed to extract 1
+species: amanita\_muscaria\_koide\_bx008
+we got 101 datapoints and managed to extract 94
+species: amphiamblys\_sp\_wsbs2006
+we got 93 datapoints and managed to extract 43
+species: anthracocystis\_flocculosa\_pf\_1
+we got 172 datapoints and managed to extract 165
+species: arthrobotrys\_oligospora\_atcc\_24927
+we got 118 datapoints and managed to extract 108
+species: arthroderma\_otae\_cbs\_113480
+we got 168 datapoints and managed to extract 82
+species: aschersonia\_aleyrodis\_rcef\_2490
+we got 90 datapoints and managed to extract 86
+species: ascochyta\_rabiei
+we got 109 datapoints and managed to extract 101
+species: ascoidea\_rubescens\_dsm\_1968
+empty data
+we got 175 datapoints and managed to extract 0
+species: ascosphaera\_apis\_arsef\_7405
+we got 225 datapoints and managed to extract 211
+species: aspergillus\_aculeatus\_atcc\_16872
+empty data
+we got 320 datapoints and managed to extract 0
+species: aspergillus\_bombycis
+we got 241 datapoints and managed to extract 231
+species: aspergillus\_brasiliensis\_cbs\_101740
+we got 270 datapoints and managed to extract 2
+species: aspergillus\_calidoustus
+we got 157 datapoints and managed to extract 155
+species: aspergillus\_carbonarius\_item\_5010
+we got 258 datapoints and managed to extract 3
+species: aspergillus\_clavatus
+empty data
+we got 234 datapoints and managed to extract 0
+species: aspergillus\_cristatus
+we got 160 datapoints and managed to extract 153
+species: aspergillus\_flavus
+empty data
+we got 0 datapoints and managed to extract 0
+species: aspergillus\_fumigatus
+empty data
+we got 228 datapoints and managed to extract 0
+species: aspergillus\_glaucus\_cbs\_516\_65
+we got 173 datapoints and managed to extract 2
+species: aspergillus\_lentulus
+we got 207 datapoints and managed to extract 4
+species: aspergillus\_luchuensis
+we got 256 datapoints and managed to extract 246
+species: aspergillus\_niger\_atcc\_1015
+we got 261 datapoints and managed to extract 251
+species: aspergillus\_nomius\_nrrl\_13137
+we got 236 datapoints and managed to extract 228
+species: aspergillus\_ochraceoroseus
+we got 152 datapoints and managed to extract 143
+species: aspergillus\_oryzae
+empty data
+we got 285 datapoints and managed to extract 0
+species: aspergillus\_parasiticus\_su\_1
+we got 221 datapoints and managed to extract 214
+species: aspergillus\_rambellii
+we got 152 datapoints and managed to extract 143
+species: aspergillus\_ruber\_cbs\_135680
+we got 338 datapoints and managed to extract 158
+species: aspergillus\_sydowii\_cbs\_593\_65
+empty data
+we got 136 datapoints and managed to extract 0
+species: aspergillus\_terreus
+empty data
+we got 146 datapoints and managed to extract 0
+species: aspergillus\_tubingensis\_cbs\_134\_48
+empty data
+we got 267 datapoints and managed to extract 0
+species: aspergillus\_udagawae
+empty data
+we got 179 datapoints and managed to extract 0
+species: aspergillus\_versicolor\_cbs\_583\_65
+empty data
+we got 140 datapoints and managed to extract 0
+species: aspergillus\_wentii\_dto\_134e9
+empty data
+we got 220 datapoints and managed to extract 0
+species: aureobasidium\_melanogenum\_cbs\_110374
+we got 233 datapoints and managed to extract 219
+species: aureobasidium\_namibiae\_cbs\_147\_97
+we got 233 datapoints and managed to extract 208
+species: aureobasidium\_pullulans\_exf\_150
+we got 235 datapoints and managed to extract 220
+species: aureobasidium\_subglaciale\_exf\_2481
+we got 196 datapoints and managed to extract 187
+species: babjeviella\_inositovora\_nrrl\_y\_12698
+we got 398 datapoints and managed to extract 5
+species: batrachochytrium\_salamandrivorans
+we got 95 datapoints and managed to extract 40
+species: baudoinia\_panamericana\_uamh\_10762
+we got 68 datapoints and managed to extract 26
+species: beauveria\_bassiana
+we got 105 datapoints and managed to extract 100
+species: bipolaris\_maydis\_c5
+we got 229 datapoints and managed to extract 98
+species: bipolaris\_oryzae\_atcc\_44560
+we got 92 datapoints and managed to extract 86
+species: bipolaris\_sorokiniana\_nd90pr
+we got 183 datapoints and managed to extract 86
+species: bipolaris\_victoriae\_fi3
+we got 94 datapoints and managed to extract 90
+species: bipolaris\_zeicola\_26\_r\_13
+we got 100 datapoints and managed to extract 95
+species: blastomyces\_dermatitidis\_er\_3
+we got 216 datapoints and managed to extract 102
+species: blastomyces\_gilchristii\_slh14081
+we got 245 datapoints and managed to extract 111
+species: blastomyces\_percursus
+empty data
+we got 88 datapoints and managed to extract 0
+species: blumeria\_graminis
+we got 461 datapoints and managed to extract 449
+species: botryobasidium\_botryosum\_fd\_172\_ss1
+we got 300 datapoints and managed to extract 139
+species: botrytis\_cinerea
+we got 344 datapoints and managed to extract 128
+species: brettanomyces\_bruxellensis\_awri1499
+we got 100 datapoints and managed to extract 91
+species: byssochlamys\_spectabilis\_no\_5
+we got 147 datapoints and managed to extract 142
+species: calocera\_cornea\_hhb12733
+we got 106 datapoints and managed to extract 48
+species: calocera\_viscosa\_tufc12733
+we got 120 datapoints and managed to extract 57
+species: candida\_albicans\_sc5314
+we got 261 datapoints and managed to extract 124
+species: candida\_arabinofermentans\_nrrl\_yb\_2248
+empty data
+we got 118 datapoints and managed to extract 0
+species: candida\_dubliniensis\_cd36
+KeyError
+we got 241 datapoints and managed to extract 218
+species: candida\_maltosa\_xu316
+we got 46 datapoints and managed to extract 42
+species: candida\_orthopsilosis\_co\_90\_125
+we got 163 datapoints and managed to extract 77
+species: candida\_parapsilosis\_cdc317
+empty data
+we got 58 datapoints and managed to extract 0
+species: candida\_tanzawaensis\_nrrl\_y\_17324
+empty data
+we got 256 datapoints and managed to extract 0
+species: capronia\_coronata\_cbs\_617\_96
+we got 38 datapoints and managed to extract 37
+species: capronia\_epimyces\_cbs\_606\_96
+we got 40 datapoints and managed to extract 38
+species: ceraceosorus\_bombacis
+we got 46 datapoints and managed to extract 43
+species: ceratocystis\_platani
+we got 642 datapoints and managed to extract 351
+species: chaetomium\_globosum\_cbs\_148\_51
+we got 425 datapoints and managed to extract 226
+species: chaetomium\_thermophilum\_var\_thermophilum\_dsm\_1495
+we got 467 datapoints and managed to extract 217
+species: choanephora\_cucurbitarum
+empty data
+we got 0 datapoints and managed to extract 0
+species: cladophialophora\_bantiana\_cbs\_173\_52
+we got 60 datapoints and managed to extract 26
+species: cladophialophora\_carrionii
+we got 62 datapoints and managed to extract 2
+species: cladophialophora\_immunda
+we got 58 datapoints and managed to extract 27
+species: cladophialophora\_psammophila\_cbs\_110553
+we got 30 datapoints and managed to extract 29
+species: cladophialophora\_yegresii\_cbs\_114405
+we got 38 datapoints and managed to extract 33
+species: claviceps\_purpurea\_20\_1
+we got 219 datapoints and managed to extract 206
+species: coccidioides\_immitis\_h538\_4
+we got 118 datapoints and managed to extract 5
+species: coccidioides\_posadasii\_str\_silveira
+we got 233 datapoints and managed to extract 111
+species: colletotrichum\_fioriniae\_pj7
+we got 302 datapoints and managed to extract 282
+species: colletotrichum\_gloeosporioides
+we got 733 datapoints and managed to extract 665
+species: colletotrichum\_graminicola
+we got 306 datapoints and managed to extract 286
+species: colletotrichum\_incanum
+we got 355 datapoints and managed to extract 332
+species: colletotrichum\_nymphaeae\_sa\_01
+we got 325 datapoints and managed to extract 303
+species: colletotrichum\_orbiculare
+we got 856 datapoints and managed to extract 724
+species: colletotrichum\_orchidophilum
+we got 335 datapoints and managed to extract 313
+species: colletotrichum\_salicis
+we got 299 datapoints and managed to extract 278
+species: colletotrichum\_simmondsii
+we got 318 datapoints and managed to extract 298
+species: colletotrichum\_sublineola
+we got 284 datapoints and managed to extract 265
+species: colletotrichum\_tofieldiae
+we got 371 datapoints and managed to extract 347
+species: conidiobolus\_coronatus\_nrrl\_28638
+we got 1309 datapoints and managed to extract 619
+species: coniochaeta\_ligniaria\_nrrl\_30616
+we got 267 datapoints and managed to extract 12
+species: coniosporium\_apollinis\_cbs\_100218
+we got 83 datapoints and managed to extract 36
+species: coprinopsis\_cinerea\_okayama7\_130
+we got 546 datapoints and managed to extract 253
+species: cordyceps\_brongniartii\_rcef\_3172
+we got 123 datapoints and managed to extract 113
+species: cordyceps\_confragosa\_rcef\_1005
+we got 114 datapoints and managed to extract 110
+species: cordyceps\_militaris\_cm01
+we got 110 datapoints and managed to extract 104
+species: cryptococcus\_amylolentus\_cbs\_6039
+we got 393 datapoints and managed to extract 185
+species: cryptococcus\_depauperatus\_cbs\_7841
+we got 257 datapoints and managed to extract 120
+species: cryptococcus\_gattii\_ca1873
+we got 284 datapoints and managed to extract 133
+species: cryptococcus\_gattii\_vgii\_r265
+we got 308 datapoints and managed to extract 143
+species: cryptococcus\_gattii\_vgiv\_ind107
+we got 282 datapoints and managed to extract 132
+species: cryptococcus\_gattii\_wm276
+we got 140 datapoints and managed to extract 132
+species: cryptococcus\_neoformans
+empty data
+we got 226 datapoints and managed to extract 0
+species: cutaneotrichosporon\_oleaginosus
+we got 548 datapoints and managed to extract 252
+species: cyberlindnera\_fabianii
+we got 158 datapoints and managed to extract 147
+species: cyberlindnera\_jadinii
+we got 154 datapoints and managed to extract 146
+species: cylindrobasidium\_torrendii\_fp15055\_ss\_10
+we got 617 datapoints and managed to extract 287
+species: cyphellophora\_europaea\_cbs\_101466
+we got 82 datapoints and managed to extract 36
+species: dacryopinax\_primogenitus
+we got 114 datapoints and managed to extract 53
+species: dactylellina\_haptotyla\_cbs\_200\_50
+we got 120 datapoints and managed to extract 107
+species: daedalea\_quercina\_l\_15889
+we got 238 datapoints and managed to extract 112
+species: debaryomyces\_fabryi
+we got 104 datapoints and managed to extract 93
+species: debaryomyces\_hansenii\_cbs767
+we got 399 datapoints and managed to extract 189
+species: diaporthe\_ampelina
+we got 120 datapoints and managed to extract 116
+species: diaporthe\_helianthi
+we got 36 datapoints and managed to extract 34
+species: diplodia\_corticola
+we got 130 datapoints and managed to extract 125
+species: diplodia\_seriata
+we got 135 datapoints and managed to extract 130
+species: dothistroma\_septosporum
+we got 84 datapoints and managed to extract 45
+species: drechmeria\_coniospora
+we got 114 datapoints and managed to extract 1
+species: drechslerella\_stenobrocha\_248
+we got 51 datapoints and managed to extract 49
+species: emergomyces\_pasteuriana\_ep9510
+empty data
+we got 102 datapoints and managed to extract 0
+species: emmonsia\_crescens\_uamh\_3008
+we got 199 datapoints and managed to extract 94
+species: emmonsia\_parva\_uamh\_139
+we got 219 datapoints and managed to extract 104
+species: emmonsia\_sp\_cac\_2015a
+empty data
+we got 80 datapoints and managed to extract 0
+species: endocarpon\_pusillum\_z07020
+we got 47 datapoints and managed to extract 43
+species: eremothecium\_cymbalariae\_dbvpg\_7215
+we got 289 datapoints and managed to extract 136
+species: eremothecium\_gossypii\_fdag1
+we got 425 datapoints and managed to extract 193
+species: eremothecium\_sinecaudum
+we got 172 datapoints and managed to extract 3
+species: erysiphe\_necator
+we got 183 datapoints and managed to extract 172
+species: escovopsis\_weberi
+we got 213 datapoints and managed to extract 202
+species: eutypa\_lata\_ucrel1
+we got 125 datapoints and managed to extract 113
+species: exidia\_glandulosa\_hhb12029
+we got 300 datapoints and managed to extract 141
+species: exophiala\_aquamarina\_cbs\_119918
+we got 36 datapoints and managed to extract 35
+species: exophiala\_dermatitidis\_nih\_ut8656
+we got 114 datapoints and managed to extract 58
+species: exophiala\_mesophila
+we got 79 datapoints and managed to extract 37
+species: exophiala\_oligosperma
+we got 76 datapoints and managed to extract 34
+species: exophiala\_sideris
+we got 42 datapoints and managed to extract 19
+species: exophiala\_spinifera
+we got 79 datapoints and managed to extract 34
+species: exophiala\_xenobiotica
+we got 74 datapoints and managed to extract 35
+species: fibroporia\_radiculosa
+we got 124 datapoints and managed to extract 115
+species: fibulorhizoctonia\_sp\_cbs\_109695
+we got 359 datapoints and managed to extract 157
+species: fistulina\_hepatica\_atcc\_64428
+we got 252 datapoints and managed to extract 126
+species: fomitopsis\_pinicola\_fp\_58527\_ss1
+we got 276 datapoints and managed to extract 129
+species: fonsecaea\_erecta
+we got 56 datapoints and managed to extract 26
+species: fonsecaea\_multimorphosa\_cbs\_102226
+we got 58 datapoints and managed to extract 28
+species: fonsecaea\_nubica
+we got 58 datapoints and managed to extract 21
+species: fonsecaea\_pedrosoi\_cbs\_271\_37
+we got 53 datapoints and managed to extract 24
+species: fusarium\_culmorum
+we got 283 datapoints and managed to extract 273
+species: fusarium\_fujikuroi
+we got 490 datapoints and managed to extract 391
+species: fusarium\_graminearum
+we got 303 datapoints and managed to extract 294
+species: fusarium\_langsethiae
+we got 255 datapoints and managed to extract 248
+species: fusarium\_mangiferae
+empty data
+we got 289 datapoints and managed to extract 0
+species: fusarium\_oxysporum
+we got 568 datapoints and managed to extract 549
+species: fusarium\_poae
+we got 292 datapoints and managed to extract 284
+species: fusarium\_proliferatum\_et1
+empty data
+we got 310 datapoints and managed to extract 0
+species: fusarium\_pseudograminearum
+we got 605 datapoints and managed to extract 589
+species: fusarium\_solani
+we got 520 datapoints and managed to extract 495
+species: fusarium\_verticillioides
+we got 547 datapoints and managed to extract 521
+species: gaeumannomyces\_graminis
+empty data
+we got 197 datapoints and managed to extract 0
+species: galerina\_marginata\_cbs\_339\_88
+we got 292 datapoints and managed to extract 127
+species: gelatoporia\_subvermispora\_b
+we got 380 datapoints and managed to extract 179
+species: geotrichum\_candidum
+we got 353 datapoints and managed to extract 3
+species: gloeophyllum\_trabeum\_atcc\_11539
+we got 246 datapoints and managed to extract 110
+species: gonapodya\_prolifera\_jel478
+we got 189 datapoints and managed to extract 101
+species: grosmannia\_clavigera\_kw1407
+we got 184 datapoints and managed to extract 174
+species: hanseniaspora\_guilliermondii
+we got 131 datapoints and managed to extract 124
+species: hanseniaspora\_opuntiae
+we got 0 datapoints and managed to extract 1
+species: hanseniaspora\_osmophila
+we got 191 datapoints and managed to extract 179
+species: hanseniaspora\_valbyensis\_nrrl\_y\_1626
+we got 98 datapoints and managed to extract 2
+species: hebeloma\_cylindrosporum\_h7
+we got 279 datapoints and managed to extract 122
+species: heterobasidion\_irregulare\_tc\_32\_1
+we got 120 datapoints and managed to extract 114
+species: hirsutella\_minnesotensis\_3608
+we got 104 datapoints and managed to extract 97
+species: histoplasma\_capsulatum\_nam1
+we got 157 datapoints and managed to extract 76
+species: hypholoma\_sublateritium\_fd\_334\_ss\_4
+we got 447 datapoints and managed to extract 186
+species: hyphopichia\_burtonii\_nrrl\_y\_1933
+we got 175 datapoints and managed to extract 5
+species: hypsizygus\_marmoreus
+we got 237 datapoints and managed to extract 226
+species: jaapia\_argillacea\_mucl\_33604
+we got 307 datapoints and managed to extract 141
+species: kalmanozyma\_brasiliensis\_ghg001
+we got 228 datapoints and managed to extract 103
+species: kazachstania\_africana\_cbs\_2517
+we got 532 datapoints and managed to extract 251
+species: kazachstania\_naganishii\_cbs\_8797
+we got 317 datapoints and managed to extract 151
+species: kluyveromyces\_lactis
+we got 323 datapoints and managed to extract 152
+species: kluyveromyces\_marxianus\_dmku3\_1042
+we got 273 datapoints and managed to extract 67
+species: komagataella\_pastoris
+we got 242 datapoints and managed to extract 230
+species: kuraishia\_capsulata\_cbs\_1993
+we got 75 datapoints and managed to extract 70
+species: kwoniella\_bestiolae\_cbs\_10118
+we got 152 datapoints and managed to extract 71
+species: kwoniella\_dejecticola\_cbs\_10117
+we got 151 datapoints and managed to extract 71
+species: kwoniella\_heveanensis\_bcc8398
+we got 165 datapoints and managed to extract 77
+species: kwoniella\_mangroviensis\_cbs\_10435
+we got 163 datapoints and managed to extract 75
+species: kwoniella\_pini\_cbs\_10737
+we got 152 datapoints and managed to extract 72
+species: laccaria\_amethystina\_laam\_08\_1
+we got 183 datapoints and managed to extract 172
+species: laccaria\_bicolor\_s238n\_h82
+we got 225 datapoints and managed to extract 213
+species: lachancea\_dasiensis\_cbs\_10888
+empty data
+we got 203 datapoints and managed to extract 0
+species: lachancea\_fermentati
+empty data
+we got 202 datapoints and managed to extract 0
+species: lachancea\_lanzarotensis
+we got 398 datapoints and managed to extract 188
+species: lachancea\_meyersii\_cbs\_8951
+empty data
+we got 207 datapoints and managed to extract 0
+species: lachancea\_mirantina
+empty data
+we got 204 datapoints and managed to extract 0
+species: lachancea\_nothofagi\_cbs\_11611
+empty data
+we got 203 datapoints and managed to extract 0
+species: lachancea\_sp\_cbs\_6924
+empty data
+we got 200 datapoints and managed to extract 0
+species: lachancea\_thermotolerans\_cbs\_6340
+we got 456 datapoints and managed to extract 215
+species: laetiporus\_sulphureus\_93\_53
+we got 197 datapoints and managed to extract 91
+species: leptosphaeria\_maculans
+we got 139 datapoints and managed to extract 129
+species: lichtheimia\_ramosa
+empty data
+we got 0 datapoints and managed to extract 0
+species: lipomyces\_starkeyi\_nrrl\_y\_11557
+empty data
+we got 93 datapoints and managed to extract 0
+species: lodderomyces\_elongisporus\_nrrl\_yb\_4239
+we got 217 datapoints and managed to extract 106
+species: macrophomina\_phaseolina\_ms6
+we got 288 datapoints and managed to extract 136
+species: madurella\_mycetomatis
+we got 147 datapoints and managed to extract 137
+species: magnaporthe\_oryzae
+we got 190 datapoints and managed to extract 178
+species: magnaporthe\_poae
+we got 315 datapoints and managed to extract 294
+species: malassezia\_pachydermatis
+we got 82 datapoints and managed to extract 77
+species: malassezia\_sympodialis\_atcc\_42132
+we got 75 datapoints and managed to extract 71
+species: marssonina\_brunnea\_f\_sp\_multigermtubi\_mb\_m1
+we got 109 datapoints and managed to extract 101
+species: melampsora\_laricipopulina
+we got 439 datapoints and managed to extract 414
+species: metarhizium\_acridum\_cqma\_102
+we got 232 datapoints and managed to extract 106
+species: metarhizium\_album\_arsef\_1941
+we got 117 datapoints and managed to extract 110
+species: metarhizium\_anisopliae\_arsef\_23
+we got 134 datapoints and managed to extract 125
+species: metarhizium\_anisopliae\_brip\_53293
+we got 129 datapoints and managed to extract 123
+species: metarhizium\_brunneum\_arsef\_3297
+we got 143 datapoints and managed to extract 134
+species: metarhizium\_guizhouense\_arsef\_977
+we got 132 datapoints and managed to extract 126
+species: metarhizium\_majus\_arsef\_297
+we got 138 datapoints and managed to extract 134
+species: metarhizium\_rileyi\_rcef\_4871
+we got 108 datapoints and managed to extract 102
+species: metschnikowia\_bicuspidata\_var\_bicuspidata\_nrrl\_yb\_4993
+we got 252 datapoints and managed to extract 4
+species: meyerozyma\_guilliermondii\_atcc\_6260
+we got 269 datapoints and managed to extract 125
+species: microbotryum\_violaceum
+we got 226 datapoints and managed to extract 168
+species: microdochium\_bolleyi
+empty data
+we got 170 datapoints and managed to extract 0
+species: millerozyma\_farinosa\_cbs\_7064
+we got 575 datapoints and managed to extract 272
+species: mixia\_osmundae\_iam\_14324
+we got 41 datapoints and managed to extract 39
+species: moesziomyces\_antarcticus
+we got 207 datapoints and managed to extract 110
+species: moniliophthora\_perniciosa\_fa553
+we got 214 datapoints and managed to extract 96
+species: moniliophthora\_roreri\_mca\_2997
+we got 247 datapoints and managed to extract 226
+species: mortierella\_elongata\_ag\_77
+empty data
+we got 249 datapoints and managed to extract 0
+species: mucor\_ambiguus
+empty data
+we got 169 datapoints and managed to extract 0
+species: mucor\_circinelloides\_f\_circinelloides\_1006phl
+empty data
+we got 180 datapoints and managed to extract 0
+species: mycosphaerella\_eumusae
+we got 69 datapoints and managed to extract 66
+species: nadsonia\_fulvescens\_var\_elongata\_dsm\_6958
+we got 584 datapoints and managed to extract 1
+species: nannizzia\_gypsea\_cbs\_118893
+we got 174 datapoints and managed to extract 85
+species: naumovozyma\_castellii\_cbs\_4309
+we got 539 datapoints and managed to extract 254
+species: naumovozyma\_dairenensis\_cbs\_421
+we got 527 datapoints and managed to extract 250
+species: neofusicoccum\_parvum\_ucrnp2
+we got 103 datapoints and managed to extract 98
+species: neolecta\_irregularis\_dah\_3
+we got 76 datapoints and managed to extract 73
+species: neolentinus\_lepideus\_hhb14362\_ss\_1
+we got 278 datapoints and managed to extract 132
+species: neonectria\_ditissima
+we got 171 datapoints and managed to extract 166
+species: neosartorya\_fischeri
+empty data
+we got 256 datapoints and managed to extract 0
+species: neurospora\_crassa
+empty data
+we got 426 datapoints and managed to extract 0
+species: neurospora\_tetrasperma\_fgsc\_2509
+we got 393 datapoints and managed to extract 368
+species: ogataea\_parapolymorpha\_dl\_1
+we got 159 datapoints and managed to extract 74
+species: ogataea\_polymorpha
+empty data
+we got 79 datapoints and managed to extract 0
+species: oidiodendron\_maius\_zn
+we got 68 datapoints and managed to extract 26
+species: ophiocordyceps\_sinensis\_co18
+we got 87 datapoints and managed to extract 80
+species: ophiocordyceps\_unilateralis
+we got 73 datapoints and managed to extract 70
+species: ophiostoma\_piceae\_uamh\_11346
+we got 243 datapoints and managed to extract 230
+species: paracoccidioides\_brasiliensis\_pb18
+we got 202 datapoints and managed to extract 94
+species: paracoccidioides\_sp\_lutzii\_pb01
+we got 200 datapoints and managed to extract 92
+species: paraphaeosphaeria\_sporulosa
+we got 107 datapoints and managed to extract 4
+species: parasitella\_parasitica
+we got 141 datapoints and managed to extract 26
+species: paxillus\_rubicundulus\_ve08\_2h10
+we got 548 datapoints and managed to extract 255
+species: penicilliopsis\_zonata\_cbs\_506\_65
+we got 156 datapoints and managed to extract 2
+species: penicillium\_antarcticum
+we got 180 datapoints and managed to extract 171
+species: penicillium\_arizonense
+we got 173 datapoints and managed to extract 167
+species: penicillium\_brasilianum
+we got 177 datapoints and managed to extract 167
+species: penicillium\_camemberti\_fm\_013
+we got 182 datapoints and managed to extract 178
+species: penicillium\_chrysogenum
+empty data
+we got 213 datapoints and managed to extract 0
+species: penicillium\_coprophilum
+we got 206 datapoints and managed to extract 194
+species: penicillium\_decumbens
+we got 167 datapoints and managed to extract 158
+species: penicillium\_digitatum\_phi26
+we got 207 datapoints and managed to extract 196
+species: penicillium\_expansum
+we got 41 datapoints and managed to extract 41
+species: penicillium\_flavigenum
+we got 200 datapoints and managed to extract 195
+species: penicillium\_freii
+we got 174 datapoints and managed to extract 167
+species: penicillium\_griseofulvum
+we got 200 datapoints and managed to extract 195
+species: penicillium\_italicum
+we got 184 datapoints and managed to extract 181
+species: penicillium\_nalgiovense
+we got 192 datapoints and managed to extract 183
+species: penicillium\_nordicum
+we got 165 datapoints and managed to extract 158
+species: penicillium\_oxalicum\_114\_2
+we got 180 datapoints and managed to extract 169
+species: penicillium\_polonicum
+we got 198 datapoints and managed to extract 193
+species: penicillium\_roqueforti\_fm164
+we got 179 datapoints and managed to extract 174
+species: penicillium\_rubens\_wisconsin\_54\_1255
+we got 354 datapoints and managed to extract 343
+species: penicillium\_solitum
+we got 197 datapoints and managed to extract 193
+species: penicillium\_steckii
+we got 159 datapoints and managed to extract 155
+species: penicillium\_subrubescens
+we got 166 datapoints and managed to extract 9
+species: penicillium\_vulpinum
+we got 195 datapoints and managed to extract 186
+species: peniophora\_sp\_cont
+we got 472 datapoints and managed to extract 217
+species: pestalotiopsis\_fici\_w106\_1
+we got 227 datapoints and managed to extract 213
+species: phaeoacremonium\_minimum\_ucrpa7
+we got 79 datapoints and managed to extract 75
+species: phaeosphaeria\_nodorum
+we got 176 datapoints and managed to extract 136
+species: phanerochaete\_carnosa\_hhb\_10118\_sp
+we got 266 datapoints and managed to extract 123
+species: phialocephala\_scopiformis
+empty data
+we got 81 datapoints and managed to extract 0
+species: phialocephala\_subalpina
+we got 92 datapoints and managed to extract 2
+species: phialophora\_americana
+we got 59 datapoints and managed to extract 23
+species: phialophora\_attae
+we got 47 datapoints and managed to extract 44
+species: phlebia\_centrifuga
+we got 387 datapoints and managed to extract 180
+species: phlebiopsis\_gigantea\_11061\_1\_cr5\_6
+we got 314 datapoints and managed to extract 152
+species: phycomyces\_blakesleeanus\_nrrl\_1555\_
+empty data
+we got 307 datapoints and managed to extract 0
+species: pichia\_membranifaciens\_nrrl\_y\_2026
+empty data
+we got 158 datapoints and managed to extract 0
+species: piloderma\_croceum\_f\_1598
+we got 141 datapoints and managed to extract 62
+species: pisolithus\_microcarpus\_441
+we got 249 datapoints and managed to extract 112
+species: pisolithus\_tinctorius\_marx\_270
+we got 364 datapoints and managed to extract 172
+species: pleurotus\_ostreatus\_pc15
+we got 317 datapoints and managed to extract 148
+species: pneumocystis\_carinii\_b80
+empty data
+we got 44 datapoints and managed to extract 0
+species: pneumocystis\_jirovecii\_ru7
+empty data
+we got 45 datapoints and managed to extract 0
+species: pneumocystis\_murina\_b123
+we got 93 datapoints and managed to extract 45
+species: pochonia\_chlamydosporia\_170
+we got 112 datapoints and managed to extract 2
+species: podospora\_anserina\_s\_mat\_
+we got 705 datapoints and managed to extract 324
+species: pseudocercospora\_fijiensis\_cirad86
+we got 85 datapoints and managed to extract 37
+species: pseudocercospora\_musae
+we got 36 datapoints and managed to extract 36
+species: pseudogymnoascus\_destructans\_20631\_21
+we got 245 datapoints and managed to extract 115
+species: pseudogymnoascus\_sp\_03vt05
+we got 144 datapoints and managed to extract 5
+species: pseudogymnoascus\_sp\_05ny08
+we got 152 datapoints and managed to extract 4
+species: pseudogymnoascus\_sp\_23342\_1\_i1
+we got 153 datapoints and managed to extract 3
+species: pseudogymnoascus\_sp\_24mn13
+empty data
+we got 98 datapoints and managed to extract 0
+species: pseudogymnoascus\_sp\_vkm\_f\_103
+we got 142 datapoints and managed to extract 134
+species: pseudogymnoascus\_sp\_vkm\_f\_3557
+we got 141 datapoints and managed to extract 134
+species: pseudogymnoascus\_sp\_vkm\_f\_3775
+we got 131 datapoints and managed to extract 123
+species: pseudogymnoascus\_sp\_vkm\_f\_3808
+we got 132 datapoints and managed to extract 125
+species: pseudogymnoascus\_sp\_vkm\_f\_4246
+we got 117 datapoints and managed to extract 110
+species: pseudogymnoascus\_sp\_vkm\_f\_4281\_fw\_2241\_
+we got 112 datapoints and managed to extract 105
+species: pseudogymnoascus\_sp\_vkm\_f\_4513\_fw\_928\_
+we got 115 datapoints and managed to extract 107
+species: pseudogymnoascus\_sp\_vkm\_f\_4514\_fw\_929\_
+we got 142 datapoints and managed to extract 135
+species: pseudogymnoascus\_sp\_vkm\_f\_4515\_fw\_2607\_
+we got 122 datapoints and managed to extract 115
+species: pseudogymnoascus\_sp\_vkm\_f\_4516\_fw\_969\_
+we got 156 datapoints and managed to extract 147
+species: pseudogymnoascus\_sp\_vkm\_f\_4517\_fw\_2822\_
+we got 122 datapoints and managed to extract 116
+species: pseudogymnoascus\_sp\_vkm\_f\_4518\_fw\_2643\_
+we got 129 datapoints and managed to extract 121
+species: pseudogymnoascus\_sp\_vkm\_f\_4519\_fw\_2642\_
+we got 141 datapoints and managed to extract 131
+species: pseudogymnoascus\_sp\_vkm\_f\_4520\_fw\_2644\_
+we got 128 datapoints and managed to extract 119
+species: pseudogymnoascus\_sp\_wsf\_3629
+we got 151 datapoints and managed to extract 2
+species: pseudogymnoascus\_verrucosus
+we got 140 datapoints and managed to extract 5
+species: pseudozyma\_hubeiensis\_sy62
+we got 229 datapoints and managed to extract 103
+species: puccinia\_graminis
+we got 709 datapoints and managed to extract 658
+species: puccinia\_sorghi
+we got 676 datapoints and managed to extract 223
+species: puccinia\_striiformis
+we got 284 datapoints and managed to extract 256
+species: puccinia\_triticina
+we got 1981 datapoints and managed to extract 1857
+species: purpureocillium\_lilacinum
+we got 88 datapoints and managed to extract 2
+species: pyrenochaeta\_sp\_ds3say3a
+empty data
+we got 82 datapoints and managed to extract 0
+species: pyrenophora\_teres
+we got 155 datapoints and managed to extract 139
+species: pyrenophora\_triticirepentis
+empty data
+we got 103 datapoints and managed to extract 0
+species: pyronema\_omphalodes\_cbs\_100304
+we got 662 datapoints and managed to extract 42
+species: rachicladosporium\_antarcticum
+we got 107 datapoints and managed to extract 32
+species: rasamsonia\_emersonii\_cbs\_393\_64
+we got 98 datapoints and managed to extract 93
+species: rhinocladiella\_mackenziei\_cbs\_650\_93
+we got 46 datapoints and managed to extract 17
+species: rhizoctonia\_solani\_ag\_1\_ib
+we got 316 datapoints and managed to extract 150
+species: rhizophagus\_irregularis\_daom\_181602\_gca\_000439145
+empty data
+we got 86 datapoints and managed to extract 0
+species: rhizopogon\_vesiculosus
+we got 129 datapoints and managed to extract 119
+species: rhizopogon\_vinicolor\_am\_or11\_026
+we got 263 datapoints and managed to extract 119
+species: rhizopus\_delemar\_ra\_99\_880
+empty data
+we got 237 datapoints and managed to extract 0
+species: rhizopus\_microsporus
+empty data
+we got 49 datapoints and managed to extract 0
+species: rhodotorula\_graminis\_wp1
+we got 298 datapoints and managed to extract 140
+species: rhodotorula\_sp\_jg\_1b
+we got 220 datapoints and managed to extract 105
+species: rhodotorula\_toruloides\_np11
+we got 115 datapoints and managed to extract 111
+species: rhynchosporium\_agropyri
+we got 107 datapoints and managed to extract 1
+species: rhynchosporium\_commune
+we got 113 datapoints and managed to extract 1
+species: rhynchosporium\_secalis
+we got 89 datapoints and managed to extract 81
+species: rozella\_allomycis\_csf55
+we got 145 datapoints and managed to extract 139
+species: saccharomyces\_arboricola\_h\_6
+we got 362 datapoints and managed to extract 265
+species: saccharomyces\_cerevisiae\_x\_saccharomyces\_kudriavzevii\_vin7
+we got 547 datapoints and managed to extract 512
+species: saccharomyces\_eubayanus
+empty data
+we got 304 datapoints and managed to extract 0
+species: saccharomyces\_kudriavzevii\_ifo\_1802
+we got 263 datapoints and managed to extract 250
+species: saccharomyces\_sp\_boulardii\_
+we got 282 datapoints and managed to extract 266
+species: saccharomycetaceae\_sp\_ashbya\_aceri\_
+we got 401 datapoints and managed to extract 186
+species: scedosporium\_apiospermum
+we got 254 datapoints and managed to extract 238
+species: scheffersomyces\_stipitis\_cbs\_6054
+we got 168 datapoints and managed to extract 159
+species: schizophyllum\_commune\_h4\_8
+we got 275 datapoints and managed to extract 259
+species: schizopora\_paradoxa
+we got 160 datapoints and managed to extract 75
+species: schizosaccharomyces\_cryophilus
+we got 742 datapoints and managed to extract 461
+species: schizosaccharomyces\_japonicus
+we got 965 datapoints and managed to extract 566
+species: schizosaccharomyces\_octosporus
+we got 827 datapoints and managed to extract 517
+species: schizosaccharomyces\_pombe
+we got 378 datapoints and managed to extract 171
+species: scleroderma\_citrinum\_foug\_a
+we got 197 datapoints and managed to extract 179
+species: sclerotinia\_borealis\_f\_4128
+we got 358 datapoints and managed to extract 167
+species: serendipita\_indica\_dsm\_11827
+we got 106 datapoints and managed to extract 93
+species: serendipita\_vermifera\_maff\_305830
+we got 130 datapoints and managed to extract 54
+species: serpula\_lacrymans\_var\_lacrymans\_s7\_3
+we got 404 datapoints and managed to extract 397
+species: setosphaeria\_turcica\_et28a
+we got 236 datapoints and managed to extract 84
+species: sistotremastrum\_niveocremeum\_hhb9708
+we got 155 datapoints and managed to extract 74
+species: sistotremastrum\_suecicum\_hhb10207\_ss\_3
+we got 155 datapoints and managed to extract 74
+species: sordaria\_macrospora
+we got 862 datapoints and managed to extract 372
+species: spathaspora\_passalidarum\_nrrl\_y\_27907
+we got 165 datapoints and managed to extract 157
+species: sphaerobolus\_stellatus\_ss14
+we got 1289 datapoints and managed to extract 653
+species: sphaerulina\_musiva\_so2202
+we got 139 datapoints and managed to extract 61
+species: spizellomyces\_punctatus\_daom\_br117
+we got 411 datapoints and managed to extract 193
+species: sporidiobolus\_salmonicolor
+we got 329 datapoints and managed to extract 311
+species: sporisorium\_reilianum
+we got 209 datapoints and managed to extract 198
+species: sporisorium\_scitamineum
+we got 117 datapoints and managed to extract 111
+species: sporothrix\_brasiliensis\_5110
+we got 257 datapoints and managed to extract 109
+species: sporothrix\_insectorum\_rcef\_264
+we got 110 datapoints and managed to extract 102
+species: sporothrix\_schenckii\_atcc\_58251
+we got 217 datapoints and managed to extract 101
+species: stachybotrys\_chartarum\_ibt\_40288
+we got 104 datapoints and managed to extract 102
+species: stachybotrys\_chlorohalonata\_ibt\_40285
+we got 105 datapoints and managed to extract 103
+species: stagonospora\_sp\_src1lsm3a
+we got 90 datapoints and managed to extract 1
+species: stemphylium\_lycopersici
+we got 94 datapoints and managed to extract 8
+species: suillus\_luteus\_uh\_slu\_lm8\_n1
+we got 231 datapoints and managed to extract 108
+species: talaromyces\_islandicus
+we got 188 datapoints and managed to extract 82
+species: talaromyces\_marneffei\_atcc\_18224
+we got 244 datapoints and managed to extract 126
+species: talaromyces\_stipitatus\_atcc\_10500
+we got 226 datapoints and managed to extract 112
+species: termitomyces\_sp\_j132
+we got 332 datapoints and managed to extract 311
+species: tetrapisispora\_blattae\_cbs\_6284
+we got 656 datapoints and managed to extract 311
+species: tetrapisispora\_phaffii\_cbs\_4417
+we got 409 datapoints and managed to extract 193
+species: thermothelomyces\_thermophila\_atcc\_42464
+we got 383 datapoints and managed to extract 180
+species: thielavia\_terrestris\_nrrl\_8126
+we got 301 datapoints and managed to extract 141
+species: thielaviopsis\_punctulata
+we got 239 datapoints and managed to extract 225
+species: tilletia\_caries
+we got 92 datapoints and managed to extract 87
+species: tilletia\_controversa
+we got 93 datapoints and managed to extract 88
+species: tilletia\_indica
+we got 81 datapoints and managed to extract 77
+species: tilletia\_walkeri
+we got 80 datapoints and managed to extract 76
+species: tilletiaria\_anomala\_ubc\_951
+we got 124 datapoints and managed to extract 57
+species: tolypocladium\_ophioglossoides\_cbs\_100239
+we got 70 datapoints and managed to extract 70
+species: torrubiella\_hemipterigena
+we got 97 datapoints and managed to extract 91
+species: tortispora\_caseinolytica\_nrrl\_y\_17796
+empty data
+we got 53 datapoints and managed to extract 0
+species: torulaspora\_delbrueckii
+we got 384 datapoints and managed to extract 181
+species: trametes\_pubescens
+we got 566 datapoints and managed to extract 272
+species: tremella\_mesenterica\_dsm\_1558
+we got 41 datapoints and managed to extract 39
+species: trichoderma\_atroviride\_imi\_206040
+we got 215 datapoints and managed to extract 204
+species: trichoderma\_gamsii
+we got 215 datapoints and managed to extract 202
+species: trichoderma\_guizhouense
+we got 202 datapoints and managed to extract 191
+species: trichoderma\_harzianum
+we got 151 datapoints and managed to extract 144
+species: trichoderma\_reesei
+we got 385 datapoints and managed to extract 364
+species: trichoderma\_virens
+we got 393 datapoints and managed to extract 372
+species: trichophyton\_benhamiae\_cbs\_112371
+we got 123 datapoints and managed to extract 77
+species: trichophyton\_equinum\_cbs\_127\_97
+empty data
+we got 81 datapoints and managed to extract 0
+species: trichophyton\_interdigitale\_mr816
+we got 153 datapoints and managed to extract 71
+species: trichophyton\_rubrum\_cbs\_118892
+we got 170 datapoints and managed to extract 84
+species: trichophyton\_soudanense\_cbs\_452\_61
+we got 165 datapoints and managed to extract 77
+species: trichophyton\_tonsurans\_cbs\_112818
+we got 168 datapoints and managed to extract 82
+species: trichophyton\_verrucosum\_hki\_0517
+we got 121 datapoints and managed to extract 75
+species: trichophyton\_violaceum
+we got 80 datapoints and managed to extract 75
+species: trichosporon\_asahii\_var\_asahii\_cbs\_8904
+we got 1101 datapoints and managed to extract 513
+species: tsuchiyaea\_wingfieldii\_cbs\_7118
+we got 342 datapoints and managed to extract 162
+species: tuber\_melanosporum
+we got 281 datapoints and managed to extract 261
+species: tulasnella\_calospora\_mut\_4182
+we got 148 datapoints and managed to extract 69
+species: umbilicaria\_pustulata
+we got 93 datapoints and managed to extract 86
+species: uncinocarpus\_reesii\_1704
+we got 197 datapoints and managed to extract 96
+species: ustilaginoidea\_virens
+we got 107 datapoints and managed to extract 101
+species: ustilago\_bromivora
+we got 252 datapoints and managed to extract 114
+species: ustilago\_hordei
+we got 233 datapoints and managed to extract 217
+species: ustilago\_maydis
+we got 220 datapoints and managed to extract 104
+species: valsa\_mali\_var\_pyri
+we got 154 datapoints and managed to extract 146
+species: vanderwaltozyma\_polyspora\_dsm\_70294
+we got 463 datapoints and managed to extract 220
+species: verruconis\_gallopava
+we got 75 datapoints and managed to extract 34
+species: verticillium\_alfalfae\_vams\_102
+we got 470 datapoints and managed to extract 212
+species: verticillium\_dahliae
+we got 475 datapoints and managed to extract 235
+species: verticillium\_longisporum
+we got 462 datapoints and managed to extract 435
+species: wallemia\_ichthyophaga\_exf\_994
+we got 250 datapoints and managed to extract 119
+species: wallemia\_mellicola\_cbs\_633\_66
+we got 230 datapoints and managed to extract 109
+species: wickerhamomyces\_anomalus\_nrrl\_y\_366\_8
+we got 154 datapoints and managed to extract 1
+species: xanthophyllomyces\_dendrorhous
+we got 89 datapoints and managed to extract 83
+species: xylona\_heveae\_tc161
+empty data
+we got 144 datapoints and managed to extract 0
+species: yarrowia\_lipolytica
+we got 1519 datapoints and managed to extract 948
+species: zygosaccharomyces\_bailii\_isa1307
+we got 1022 datapoints and managed to extract 961
+species: zygosaccharomyces\_parabailii
+we got 517 datapoints and managed to extract 1
+species: zymoseptoria\_brevis
+we got 40 datapoints and managed to extract 40
+species: zymoseptoria\_tritici
+we got 157 datapoints and managed to extract 150
+species: \_candida\_auris
+we got 223 datapoints and managed to extract 122
+species: aspergillus\_nidulans
+empty data
+we got 151 datapoints and managed to extract 0
+species: candida\_tropicalis\_mya\_3404
+we got 384 datapoints and managed to extract 186
+species: clavispora\_lusitaniae\_atcc\_42720
+we got 415 datapoints and managed to extract 191
+species: colletotrichum\_chlorophyti
+we got 360 datapoints and managed to extract 339
+species: colletotrichum\_higginsianum
+we got 778 datapoints and managed to extract 395
+species: dichomitus\_squalens\_lyad\_421\_ss1
+we got 353 datapoints and managed to extract 196
+species: fonsecaea\_monophora
+we got 58 datapoints and managed to extract 20
+species: glarea\_lozoyensis\_74030
+we got 140 datapoints and managed to extract 101
+species: hanseniaspora\_uvarum\_dsm\_2768
+we got 233 datapoints and managed to extract 111
+species: hydnomerulius\_pinastri\_md\_312
+we got 191 datapoints and managed to extract 123
+species: lentinula\_edodes
+we got 245 datapoints and managed to extract 230
+species: lichtheimia\_corymbifera\_jmrc\_fsu\_9682
+empty data
+we got 0 datapoints and managed to extract 0
+species: paxillus\_involutus\_atcc\_200175
+we got 174 datapoints and managed to extract 111
+species: phaeomoniella\_chlamydospora
+we got 52 datapoints and managed to extract 50
+species: pichia\_kudriavzevii
+we got 258 datapoints and managed to extract 242
+species: saitoella\_complicata\_nrrl\_y\_17804
+we got 166 datapoints and managed to extract 158
+species: stereum\_hirsutum\_fp\_91666\_ss1
+we got 339 datapoints and managed to extract 233
+species: wickerhamomyces\_ciferrii
+we got 160 datapoints and managed to extract 149
+species: zygosaccharomyces\_rouxii
+we got 543 datapoints and managed to extract 257
+species: anncaliia\_algerae\_pra339
+we got 108 datapoints and managed to extract 52
+species: edhazardia\_aedis\_usnm\_41457
+we got 119 datapoints and managed to extract 56
+species: encephalitozoon\_cuniculi\_gb\_m1
+we got 90 datapoints and managed to extract 42
+species: encephalitozoon\_hellem\_atcc\_50504
+we got 90 datapoints and managed to extract 42
+species: encephalitozoon\_intestinalis\_atcc\_50506
+we got 90 datapoints and managed to extract 42
+species: encephalitozoon\_romaleae\_sj\_2008
+we got 90 datapoints and managed to extract 42
+species: grifola\_frondosa
+we got 199 datapoints and managed to extract 183
+species: isaria\_fumosorosea\_arsef\_2679
+we got 103 datapoints and managed to extract 96
+species: komagataella\_phaffii\_gs115
+empty data
+we got 122 datapoints and managed to extract 0
+species: mitosporidium\_daphniae
+we got 90 datapoints and managed to extract 85
+species: moesziomyces\_aphidis\_dsm\_70725
+we got 24 datapoints and managed to extract 23
+species: nematocida\_displodere
+we got 44 datapoints and managed to extract 42
+species: nematocida\_parisii\_ertm3
+we got 103 datapoints and managed to extract 49
+species: nematocida\_sp\_1\_ertm2
+we got 103 datapoints and managed to extract 49
+species: nematocida\_sp\_ertm5
+we got 50 datapoints and managed to extract 48
+species: nosema\_apis\_brl\_01
+we got 53 datapoints and managed to extract 52
+species: nosema\_bombycis\_cq1
+we got 158 datapoints and managed to extract 140
+species: nosema\_ceranae\_brl01
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+KeyError
+we got 127 datapoints and managed to extract 60
+species: ordospora\_colligata\_oc4
+we got 86 datapoints and managed to extract 40
+species: pseudoloma\_neurophilia
+we got 29 datapoints and managed to extract 29
+species: sclerotinia\_sclerotiorum
+we got 285 datapoints and managed to extract 273
+species: spraguea\_lophii\_42\_110
+we got 106 datapoints and managed to extract 51
+species: sugiyamaella\_lignohabitans
+empty data
+we got 225 datapoints and managed to extract 0
+species: trachipleistophora\_hominis
+we got 84 datapoints and managed to extract 42
+species: trametes\_cinnabarina
+we got 282 datapoints and managed to extract 264
+species: vavraia\_culicis\_subsp\_floridensis
+we got 99 datapoints and managed to extract 47
+species: vittaforma\_corneae\_atcc\_50505
+we got 93 datapoints and managed to extract 44
+species: gymnopus\_luxurians\_fd\_317\_m1
+we got 566 datapoints and managed to extract 296
+species: plicaturopsis\_crispa\_fd\_325\_ss\_3
+we got 122 datapoints and managed to extract 98
+species: postia\_placenta\_mad\_698\_r
+we got 263 datapoints and managed to extract 237
+species: mortierella\_verticillata\_nrrl\_6337
+empty data
+we got 56 datapoints and managed to extract 0
+species: punctularia\_strigosozonata\_hhb\_11173\_ss5
+we got 118 datapoints and managed to extract 98
+species: aspergillus\_ustus
+we got 160 datapoints and managed to extract 154
+species: coniophora\_puteana\_rwd\_64\_598\_ss2
+we got 144 datapoints and managed to extract 127
+species: batrachochytrium\_dendrobatidis\_jel423
+we got 101 datapoints and managed to extract 94
+species: trametes\_versicolor\_fp\_101664\_ss1
+we got 231 datapoints and managed to extract 212
+species: enterocytozoon\_bieneusi\_h348
+we got 147 datapoints and managed to extract 71
+species: enterocytozoon\_hepatopenaei
+we got 40 datapoints and managed to extract 38
+species: enterospora\_canceri
+we got 44 datapoints and managed to extract 42
+species: hepatospora\_eriocheir
+we got 57 datapoints and managed to extract 54
+species: talaromyces\_cellulolyticus
+we got 99 datapoints and managed to extract 87
+species: fomitiporia\_mediterranea\_mf3\_22
+we got 82 datapoints and managed to extract 77
+species: leucoagaricus\_sp\_symc\_cos
+we got 182 datapoints and managed to extract 167
+species: pachysolen\_tannophilus\_nrrl\_y\_2460
+we got 128 datapoints and managed to extract 1
+loaded
+
+    \end{Verbatim}
+
+    Here we can see that quite a few homologies were empty on the DB.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}14}]:} \PY{n+nb}{len}\PY{p}{(}\PY{n}{cub}\PY{o}{.}\PY{n}{homolist}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}14}]:} 6692
+\end{Verbatim}
+            
+    \hypertarget{remarks-about-the-run}{%
+\subsection{remarks about the run}\label{remarks-about-the-run}}
+
+\begin{itemize}
+\item
+  the load takes about 1h30 to run
+\item
+  memory leakage still
+\item
+  There seems to be islands of genes with a lot of recorded SNPs
+\item
+  saving the full data seems to take approx 5mn and require around 20gb
+  of RAM for 6700 homologies and 550 species, it takes 3.5Gb uncompress
+  and 0.3Gb compresssed
+\item
+  it takes 10mn and 16Gb of RAM to load the full homology matrix into
+  the homoset object
+\item
+  all the runs have been made on a c5d.xlarge Amazon Cloud compute
+  instance with 150Gb of storage, Intel Xeon Scalable 3,0 GHz turbo
+  boost 3,5 GHz materialy accelerated hypervisor of 4 vCPU,
+  \textgreater{}1gb internet connection, 8Gb of RAM and additional 50Gb
+  of slow Swap memory
+\end{itemize}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}17}]:} \PY{n}{cub}\PY{o}{.}\PY{n}{save}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{full\PYZus{}freq3sept}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+writing in full\_freq3sept
+it worked !
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}15}]:} \PY{n}{cub}\PY{o}{.}\PY{n}{speciestable}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}15}]:} \{0: u'\_candida\_glabrata',
+          1: u'\_candida\_intermedia',
+          2: u'\_candida\_tenuis\_atcc\_10573',
+          3: u'absidia\_glauca',
+          4: u'acidomyces\_richmondensis\_bfw',
+          5: u'acremonium\_chrysogenum\_atcc\_11550',
+          6: u'agaricus\_bisporus\_var\_burnettii\_jb137\_s8',
+          7: u'allomyces\_macrogynus\_atcc\_38327',
+          8: u'alternaria\_alternata',
+          9: u'amanita\_muscaria\_koide\_bx008',
+          10: u'amphiamblys\_sp\_wsbs2006',
+          11: u'anthracocystis\_flocculosa\_pf\_1',
+          12: u'arthrobotrys\_oligospora\_atcc\_24927',
+          13: u'arthroderma\_otae\_cbs\_113480',
+          14: u'aschersonia\_aleyrodis\_rcef\_2490',
+          15: u'ascochyta\_rabiei',
+          16: u'ascoidea\_rubescens\_dsm\_1968',
+          17: u'ascosphaera\_apis\_arsef\_7405',
+          18: u'aspergillus\_aculeatus\_atcc\_16872',
+          19: u'aspergillus\_bombycis',
+          20: u'aspergillus\_brasiliensis\_cbs\_101740',
+          21: u'aspergillus\_calidoustus',
+          22: u'aspergillus\_carbonarius\_item\_5010',
+          23: u'aspergillus\_clavatus',
+          24: u'aspergillus\_cristatus',
+          25: u'aspergillus\_flavus',
+          26: u'aspergillus\_fumigatus',
+          27: u'aspergillus\_glaucus\_cbs\_516\_65',
+          28: u'aspergillus\_lentulus',
+          29: u'aspergillus\_luchuensis',
+          30: u'aspergillus\_niger\_atcc\_1015',
+          31: u'aspergillus\_nomius\_nrrl\_13137',
+          32: u'aspergillus\_ochraceoroseus',
+          33: u'aspergillus\_oryzae',
+          34: u'aspergillus\_parasiticus\_su\_1',
+          35: u'aspergillus\_rambellii',
+          36: u'aspergillus\_ruber\_cbs\_135680',
+          37: u'aspergillus\_sydowii\_cbs\_593\_65',
+          38: u'aspergillus\_terreus',
+          39: u'aspergillus\_tubingensis\_cbs\_134\_48',
+          40: u'aspergillus\_udagawae',
+          41: u'aspergillus\_versicolor\_cbs\_583\_65',
+          42: u'aspergillus\_wentii\_dto\_134e9',
+          43: u'aureobasidium\_melanogenum\_cbs\_110374',
+          44: u'aureobasidium\_namibiae\_cbs\_147\_97',
+          45: u'aureobasidium\_pullulans\_exf\_150',
+          46: u'aureobasidium\_subglaciale\_exf\_2481',
+          47: u'babjeviella\_inositovora\_nrrl\_y\_12698',
+          48: u'batrachochytrium\_salamandrivorans',
+          49: u'baudoinia\_panamericana\_uamh\_10762',
+          50: u'beauveria\_bassiana',
+          51: u'bipolaris\_maydis\_c5',
+          52: u'bipolaris\_oryzae\_atcc\_44560',
+          53: u'bipolaris\_sorokiniana\_nd90pr',
+          54: u'bipolaris\_victoriae\_fi3',
+          55: u'bipolaris\_zeicola\_26\_r\_13',
+          56: u'blastomyces\_dermatitidis\_er\_3',
+          57: u'blastomyces\_gilchristii\_slh14081',
+          58: u'blastomyces\_percursus',
+          59: u'blumeria\_graminis',
+          60: u'botryobasidium\_botryosum\_fd\_172\_ss1',
+          61: u'botrytis\_cinerea',
+          62: u'brettanomyces\_bruxellensis\_awri1499',
+          63: u'byssochlamys\_spectabilis\_no\_5',
+          64: u'calocera\_cornea\_hhb12733',
+          65: u'calocera\_viscosa\_tufc12733',
+          66: u'candida\_albicans\_sc5314',
+          67: u'candida\_arabinofermentans\_nrrl\_yb\_2248',
+          68: u'candida\_dubliniensis\_cd36',
+          69: u'candida\_maltosa\_xu316',
+          70: u'candida\_orthopsilosis\_co\_90\_125',
+          71: u'candida\_parapsilosis\_cdc317',
+          72: u'candida\_tanzawaensis\_nrrl\_y\_17324',
+          73: u'capronia\_coronata\_cbs\_617\_96',
+          74: u'capronia\_epimyces\_cbs\_606\_96',
+          75: u'ceraceosorus\_bombacis',
+          76: u'ceratocystis\_platani',
+          77: u'chaetomium\_globosum\_cbs\_148\_51',
+          78: u'chaetomium\_thermophilum\_var\_thermophilum\_dsm\_1495',
+          79: u'choanephora\_cucurbitarum',
+          80: u'cladophialophora\_bantiana\_cbs\_173\_52',
+          81: u'cladophialophora\_carrionii',
+          82: u'cladophialophora\_immunda',
+          83: u'cladophialophora\_psammophila\_cbs\_110553',
+          84: u'cladophialophora\_yegresii\_cbs\_114405',
+          85: u'claviceps\_purpurea\_20\_1',
+          86: u'coccidioides\_immitis\_h538\_4',
+          87: u'coccidioides\_posadasii\_str\_silveira',
+          88: u'colletotrichum\_fioriniae\_pj7',
+          89: u'colletotrichum\_gloeosporioides',
+          90: u'colletotrichum\_graminicola',
+          91: u'colletotrichum\_incanum',
+          92: u'colletotrichum\_nymphaeae\_sa\_01',
+          93: u'colletotrichum\_orbiculare',
+          94: u'colletotrichum\_orchidophilum',
+          95: u'colletotrichum\_salicis',
+          96: u'colletotrichum\_simmondsii',
+          97: u'colletotrichum\_sublineola',
+          98: u'colletotrichum\_tofieldiae',
+          99: u'conidiobolus\_coronatus\_nrrl\_28638',
+          100: u'coniochaeta\_ligniaria\_nrrl\_30616',
+          101: u'coniosporium\_apollinis\_cbs\_100218',
+          102: u'coprinopsis\_cinerea\_okayama7\_130',
+          103: u'cordyceps\_brongniartii\_rcef\_3172',
+          104: u'cordyceps\_confragosa\_rcef\_1005',
+          105: u'cordyceps\_militaris\_cm01',
+          106: u'cryptococcus\_amylolentus\_cbs\_6039',
+          107: u'cryptococcus\_depauperatus\_cbs\_7841',
+          108: u'cryptococcus\_gattii\_ca1873',
+          109: u'cryptococcus\_gattii\_vgii\_r265',
+          110: u'cryptococcus\_gattii\_vgiv\_ind107',
+          111: u'cryptococcus\_gattii\_wm276',
+          112: u'cryptococcus\_neoformans',
+          113: u'cutaneotrichosporon\_oleaginosus',
+          114: u'cyberlindnera\_fabianii',
+          115: u'cyberlindnera\_jadinii',
+          116: u'cylindrobasidium\_torrendii\_fp15055\_ss\_10',
+          117: u'cyphellophora\_europaea\_cbs\_101466',
+          118: u'dacryopinax\_primogenitus',
+          119: u'dactylellina\_haptotyla\_cbs\_200\_50',
+          120: u'daedalea\_quercina\_l\_15889',
+          121: u'debaryomyces\_fabryi',
+          122: u'debaryomyces\_hansenii\_cbs767',
+          123: u'diaporthe\_ampelina',
+          124: u'diaporthe\_helianthi',
+          125: u'diplodia\_corticola',
+          126: u'diplodia\_seriata',
+          127: u'dothistroma\_septosporum',
+          128: u'drechmeria\_coniospora',
+          129: u'drechslerella\_stenobrocha\_248',
+          130: u'emergomyces\_pasteuriana\_ep9510',
+          131: u'emmonsia\_crescens\_uamh\_3008',
+          132: u'emmonsia\_parva\_uamh\_139',
+          133: u'emmonsia\_sp\_cac\_2015a',
+          134: u'endocarpon\_pusillum\_z07020',
+          135: u'eremothecium\_cymbalariae\_dbvpg\_7215',
+          136: u'eremothecium\_gossypii\_fdag1',
+          137: u'eremothecium\_sinecaudum',
+          138: u'erysiphe\_necator',
+          139: u'escovopsis\_weberi',
+          140: u'eutypa\_lata\_ucrel1',
+          141: u'exidia\_glandulosa\_hhb12029',
+          142: u'exophiala\_aquamarina\_cbs\_119918',
+          143: u'exophiala\_dermatitidis\_nih\_ut8656',
+          144: u'exophiala\_mesophila',
+          145: u'exophiala\_oligosperma',
+          146: u'exophiala\_sideris',
+          147: u'exophiala\_spinifera',
+          148: u'exophiala\_xenobiotica',
+          149: u'fibroporia\_radiculosa',
+          150: u'fibulorhizoctonia\_sp\_cbs\_109695',
+          151: u'fistulina\_hepatica\_atcc\_64428',
+          152: u'fomitopsis\_pinicola\_fp\_58527\_ss1',
+          153: u'fonsecaea\_erecta',
+          154: u'fonsecaea\_multimorphosa\_cbs\_102226',
+          155: u'fonsecaea\_nubica',
+          156: u'fonsecaea\_pedrosoi\_cbs\_271\_37',
+          157: u'fusarium\_culmorum',
+          158: u'fusarium\_fujikuroi',
+          159: u'fusarium\_graminearum',
+          160: u'fusarium\_langsethiae',
+          161: u'fusarium\_mangiferae',
+          162: u'fusarium\_oxysporum',
+          163: u'fusarium\_poae',
+          164: u'fusarium\_proliferatum\_et1',
+          165: u'fusarium\_pseudograminearum',
+          166: u'fusarium\_solani',
+          167: u'fusarium\_verticillioides',
+          168: u'gaeumannomyces\_graminis',
+          169: u'galerina\_marginata\_cbs\_339\_88',
+          170: u'gelatoporia\_subvermispora\_b',
+          171: u'geotrichum\_candidum',
+          172: u'gloeophyllum\_trabeum\_atcc\_11539',
+          173: u'gonapodya\_prolifera\_jel478',
+          174: u'grosmannia\_clavigera\_kw1407',
+          175: u'hanseniaspora\_guilliermondii',
+          176: u'hanseniaspora\_opuntiae',
+          177: u'hanseniaspora\_osmophila',
+          178: u'hanseniaspora\_valbyensis\_nrrl\_y\_1626',
+          179: u'hebeloma\_cylindrosporum\_h7',
+          180: u'heterobasidion\_irregulare\_tc\_32\_1',
+          181: u'hirsutella\_minnesotensis\_3608',
+          182: u'histoplasma\_capsulatum\_nam1',
+          183: u'hypholoma\_sublateritium\_fd\_334\_ss\_4',
+          184: u'hyphopichia\_burtonii\_nrrl\_y\_1933',
+          185: u'hypsizygus\_marmoreus',
+          186: u'jaapia\_argillacea\_mucl\_33604',
+          187: u'kalmanozyma\_brasiliensis\_ghg001',
+          188: u'kazachstania\_africana\_cbs\_2517',
+          189: u'kazachstania\_naganishii\_cbs\_8797',
+          190: u'kluyveromyces\_lactis',
+          191: u'kluyveromyces\_marxianus\_dmku3\_1042',
+          192: u'komagataella\_pastoris',
+          193: u'kuraishia\_capsulata\_cbs\_1993',
+          194: u'kwoniella\_bestiolae\_cbs\_10118',
+          195: u'kwoniella\_dejecticola\_cbs\_10117',
+          196: u'kwoniella\_heveanensis\_bcc8398',
+          197: u'kwoniella\_mangroviensis\_cbs\_10435',
+          198: u'kwoniella\_pini\_cbs\_10737',
+          199: u'laccaria\_amethystina\_laam\_08\_1',
+          200: u'laccaria\_bicolor\_s238n\_h82',
+          201: u'lachancea\_dasiensis\_cbs\_10888',
+          202: u'lachancea\_fermentati',
+          203: u'lachancea\_lanzarotensis',
+          204: u'lachancea\_meyersii\_cbs\_8951',
+          205: u'lachancea\_mirantina',
+          206: u'lachancea\_nothofagi\_cbs\_11611',
+          207: u'lachancea\_sp\_cbs\_6924',
+          208: u'lachancea\_thermotolerans\_cbs\_6340',
+          209: u'laetiporus\_sulphureus\_93\_53',
+          210: u'leptosphaeria\_maculans',
+          211: u'lichtheimia\_ramosa',
+          212: u'lipomyces\_starkeyi\_nrrl\_y\_11557',
+          213: u'lodderomyces\_elongisporus\_nrrl\_yb\_4239',
+          214: u'macrophomina\_phaseolina\_ms6',
+          215: u'madurella\_mycetomatis',
+          216: u'magnaporthe\_oryzae',
+          217: u'magnaporthe\_poae',
+          218: u'malassezia\_pachydermatis',
+          219: u'malassezia\_sympodialis\_atcc\_42132',
+          220: u'marssonina\_brunnea\_f\_sp\_multigermtubi\_mb\_m1',
+          221: u'melampsora\_laricipopulina',
+          222: u'metarhizium\_acridum\_cqma\_102',
+          223: u'metarhizium\_album\_arsef\_1941',
+          224: u'metarhizium\_anisopliae\_arsef\_23',
+          225: u'metarhizium\_anisopliae\_brip\_53293',
+          226: u'metarhizium\_brunneum\_arsef\_3297',
+          227: u'metarhizium\_guizhouense\_arsef\_977',
+          228: u'metarhizium\_majus\_arsef\_297',
+          229: u'metarhizium\_rileyi\_rcef\_4871',
+          230: u'metschnikowia\_bicuspidata\_var\_bicuspidata\_nrrl\_yb\_4993',
+          231: u'meyerozyma\_guilliermondii\_atcc\_6260',
+          232: u'microbotryum\_violaceum',
+          233: u'microdochium\_bolleyi',
+          234: u'millerozyma\_farinosa\_cbs\_7064',
+          235: u'mixia\_osmundae\_iam\_14324',
+          236: u'moesziomyces\_antarcticus',
+          237: u'moniliophthora\_perniciosa\_fa553',
+          238: u'moniliophthora\_roreri\_mca\_2997',
+          239: u'mortierella\_elongata\_ag\_77',
+          240: u'mucor\_ambiguus',
+          241: u'mucor\_circinelloides\_f\_circinelloides\_1006phl',
+          242: u'mycosphaerella\_eumusae',
+          243: u'nadsonia\_fulvescens\_var\_elongata\_dsm\_6958',
+          244: u'nannizzia\_gypsea\_cbs\_118893',
+          245: u'naumovozyma\_castellii\_cbs\_4309',
+          246: u'naumovozyma\_dairenensis\_cbs\_421',
+          247: u'neofusicoccum\_parvum\_ucrnp2',
+          248: u'neolecta\_irregularis\_dah\_3',
+          249: u'neolentinus\_lepideus\_hhb14362\_ss\_1',
+          250: u'neonectria\_ditissima',
+          251: u'neosartorya\_fischeri',
+          252: u'neurospora\_crassa',
+          253: u'neurospora\_tetrasperma\_fgsc\_2509',
+          254: u'ogataea\_parapolymorpha\_dl\_1',
+          255: u'ogataea\_polymorpha',
+          256: u'oidiodendron\_maius\_zn',
+          257: u'ophiocordyceps\_sinensis\_co18',
+          258: u'ophiocordyceps\_unilateralis',
+          259: u'ophiostoma\_piceae\_uamh\_11346',
+          260: u'paracoccidioides\_brasiliensis\_pb18',
+          261: u'paracoccidioides\_sp\_lutzii\_pb01',
+          262: u'paraphaeosphaeria\_sporulosa',
+          263: u'parasitella\_parasitica',
+          264: u'paxillus\_rubicundulus\_ve08\_2h10',
+          265: u'penicilliopsis\_zonata\_cbs\_506\_65',
+          266: u'penicillium\_antarcticum',
+          267: u'penicillium\_arizonense',
+          268: u'penicillium\_brasilianum',
+          269: u'penicillium\_camemberti\_fm\_013',
+          270: u'penicillium\_chrysogenum',
+          271: u'penicillium\_coprophilum',
+          272: u'penicillium\_decumbens',
+          273: u'penicillium\_digitatum\_phi26',
+          274: u'penicillium\_expansum',
+          275: u'penicillium\_flavigenum',
+          276: u'penicillium\_freii',
+          277: u'penicillium\_griseofulvum',
+          278: u'penicillium\_italicum',
+          279: u'penicillium\_nalgiovense',
+          280: u'penicillium\_nordicum',
+          281: u'penicillium\_oxalicum\_114\_2',
+          282: u'penicillium\_polonicum',
+          283: u'penicillium\_roqueforti\_fm164',
+          284: u'penicillium\_rubens\_wisconsin\_54\_1255',
+          285: u'penicillium\_solitum',
+          286: u'penicillium\_steckii',
+          287: u'penicillium\_subrubescens',
+          288: u'penicillium\_vulpinum',
+          289: u'peniophora\_sp\_cont',
+          290: u'pestalotiopsis\_fici\_w106\_1',
+          291: u'phaeoacremonium\_minimum\_ucrpa7',
+          292: u'phaeosphaeria\_nodorum',
+          293: u'phanerochaete\_carnosa\_hhb\_10118\_sp',
+          294: u'phialocephala\_scopiformis',
+          295: u'phialocephala\_subalpina',
+          296: u'phialophora\_americana',
+          297: u'phialophora\_attae',
+          298: u'phlebia\_centrifuga',
+          299: u'phlebiopsis\_gigantea\_11061\_1\_cr5\_6',
+          300: u'phycomyces\_blakesleeanus\_nrrl\_1555\_',
+          301: u'pichia\_membranifaciens\_nrrl\_y\_2026',
+          302: u'piloderma\_croceum\_f\_1598',
+          303: u'pisolithus\_microcarpus\_441',
+          304: u'pisolithus\_tinctorius\_marx\_270',
+          305: u'pleurotus\_ostreatus\_pc15',
+          306: u'pneumocystis\_carinii\_b80',
+          307: u'pneumocystis\_jirovecii\_ru7',
+          308: u'pneumocystis\_murina\_b123',
+          309: u'pochonia\_chlamydosporia\_170',
+          310: u'podospora\_anserina\_s\_mat\_',
+          311: u'pseudocercospora\_fijiensis\_cirad86',
+          312: u'pseudocercospora\_musae',
+          313: u'pseudogymnoascus\_destructans\_20631\_21',
+          314: u'pseudogymnoascus\_sp\_03vt05',
+          315: u'pseudogymnoascus\_sp\_05ny08',
+          316: u'pseudogymnoascus\_sp\_23342\_1\_i1',
+          317: u'pseudogymnoascus\_sp\_24mn13',
+          318: u'pseudogymnoascus\_sp\_vkm\_f\_103',
+          319: u'pseudogymnoascus\_sp\_vkm\_f\_3557',
+          320: u'pseudogymnoascus\_sp\_vkm\_f\_3775',
+          321: u'pseudogymnoascus\_sp\_vkm\_f\_3808',
+          322: u'pseudogymnoascus\_sp\_vkm\_f\_4246',
+          323: u'pseudogymnoascus\_sp\_vkm\_f\_4281\_fw\_2241\_',
+          324: u'pseudogymnoascus\_sp\_vkm\_f\_4513\_fw\_928\_',
+          325: u'pseudogymnoascus\_sp\_vkm\_f\_4514\_fw\_929\_',
+          326: u'pseudogymnoascus\_sp\_vkm\_f\_4515\_fw\_2607\_',
+          327: u'pseudogymnoascus\_sp\_vkm\_f\_4516\_fw\_969\_',
+          328: u'pseudogymnoascus\_sp\_vkm\_f\_4517\_fw\_2822\_',
+          329: u'pseudogymnoascus\_sp\_vkm\_f\_4518\_fw\_2643\_',
+          330: u'pseudogymnoascus\_sp\_vkm\_f\_4519\_fw\_2642\_',
+          331: u'pseudogymnoascus\_sp\_vkm\_f\_4520\_fw\_2644\_',
+          332: u'pseudogymnoascus\_sp\_wsf\_3629',
+          333: u'pseudogymnoascus\_verrucosus',
+          334: u'pseudozyma\_hubeiensis\_sy62',
+          335: u'puccinia\_graminis',
+          336: u'puccinia\_sorghi',
+          337: u'puccinia\_striiformis',
+          338: u'puccinia\_triticina',
+          339: u'purpureocillium\_lilacinum',
+          340: u'pyrenochaeta\_sp\_ds3say3a',
+          341: u'pyrenophora\_teres',
+          342: u'pyrenophora\_triticirepentis',
+          343: u'pyronema\_omphalodes\_cbs\_100304',
+          344: u'rachicladosporium\_antarcticum',
+          345: u'rasamsonia\_emersonii\_cbs\_393\_64',
+          346: u'rhinocladiella\_mackenziei\_cbs\_650\_93',
+          347: u'rhizoctonia\_solani\_ag\_1\_ib',
+          348: u'rhizophagus\_irregularis\_daom\_181602\_gca\_000439145',
+          349: u'rhizopogon\_vesiculosus',
+          350: u'rhizopogon\_vinicolor\_am\_or11\_026',
+          351: u'rhizopus\_delemar\_ra\_99\_880',
+          352: u'rhizopus\_microsporus',
+          353: u'rhodotorula\_graminis\_wp1',
+          354: u'rhodotorula\_sp\_jg\_1b',
+          355: u'rhodotorula\_toruloides\_np11',
+          356: u'rhynchosporium\_agropyri',
+          357: u'rhynchosporium\_commune',
+          358: u'rhynchosporium\_secalis',
+          359: u'rozella\_allomycis\_csf55',
+          360: u'saccharomyces\_arboricola\_h\_6',
+          361: u'saccharomyces\_cerevisiae\_x\_saccharomyces\_kudriavzevii\_vin7',
+          362: u'saccharomyces\_eubayanus',
+          363: u'saccharomyces\_kudriavzevii\_ifo\_1802',
+          364: u'saccharomyces\_sp\_boulardii\_',
+          365: u'saccharomycetaceae\_sp\_ashbya\_aceri\_',
+          366: u'scedosporium\_apiospermum',
+          367: u'scheffersomyces\_stipitis\_cbs\_6054',
+          368: u'schizophyllum\_commune\_h4\_8',
+          369: u'schizopora\_paradoxa',
+          370: u'schizosaccharomyces\_cryophilus',
+          371: u'schizosaccharomyces\_japonicus',
+          372: u'schizosaccharomyces\_octosporus',
+          373: u'schizosaccharomyces\_pombe',
+          374: u'scleroderma\_citrinum\_foug\_a',
+          375: u'sclerotinia\_borealis\_f\_4128',
+          376: u'serendipita\_indica\_dsm\_11827',
+          377: u'serendipita\_vermifera\_maff\_305830',
+          378: u'serpula\_lacrymans\_var\_lacrymans\_s7\_3',
+          379: u'setosphaeria\_turcica\_et28a',
+          380: u'sistotremastrum\_niveocremeum\_hhb9708',
+          381: u'sistotremastrum\_suecicum\_hhb10207\_ss\_3',
+          382: u'sordaria\_macrospora',
+          383: u'spathaspora\_passalidarum\_nrrl\_y\_27907',
+          384: u'sphaerobolus\_stellatus\_ss14',
+          385: u'sphaerulina\_musiva\_so2202',
+          386: u'spizellomyces\_punctatus\_daom\_br117',
+          387: u'sporidiobolus\_salmonicolor',
+          388: u'sporisorium\_reilianum',
+          389: u'sporisorium\_scitamineum',
+          390: u'sporothrix\_brasiliensis\_5110',
+          391: u'sporothrix\_insectorum\_rcef\_264',
+          392: u'sporothrix\_schenckii\_atcc\_58251',
+          393: u'stachybotrys\_chartarum\_ibt\_40288',
+          394: u'stachybotrys\_chlorohalonata\_ibt\_40285',
+          395: u'stagonospora\_sp\_src1lsm3a',
+          396: u'stemphylium\_lycopersici',
+          397: u'suillus\_luteus\_uh\_slu\_lm8\_n1',
+          398: u'talaromyces\_islandicus',
+          399: u'talaromyces\_marneffei\_atcc\_18224',
+          400: u'talaromyces\_stipitatus\_atcc\_10500',
+          401: u'termitomyces\_sp\_j132',
+          402: u'tetrapisispora\_blattae\_cbs\_6284',
+          403: u'tetrapisispora\_phaffii\_cbs\_4417',
+          404: u'thermothelomyces\_thermophila\_atcc\_42464',
+          405: u'thielavia\_terrestris\_nrrl\_8126',
+          406: u'thielaviopsis\_punctulata',
+          407: u'tilletia\_caries',
+          408: u'tilletia\_controversa',
+          409: u'tilletia\_indica',
+          410: u'tilletia\_walkeri',
+          411: u'tilletiaria\_anomala\_ubc\_951',
+          412: u'tolypocladium\_ophioglossoides\_cbs\_100239',
+          413: u'torrubiella\_hemipterigena',
+          414: u'tortispora\_caseinolytica\_nrrl\_y\_17796',
+          415: u'torulaspora\_delbrueckii',
+          416: u'trametes\_pubescens',
+          417: u'tremella\_mesenterica\_dsm\_1558',
+          418: u'trichoderma\_atroviride\_imi\_206040',
+          419: u'trichoderma\_gamsii',
+          420: u'trichoderma\_guizhouense',
+          421: u'trichoderma\_harzianum',
+          422: u'trichoderma\_reesei',
+          423: u'trichoderma\_virens',
+          424: u'trichophyton\_benhamiae\_cbs\_112371',
+          425: u'trichophyton\_equinum\_cbs\_127\_97',
+          426: u'trichophyton\_interdigitale\_mr816',
+          427: u'trichophyton\_rubrum\_cbs\_118892',
+          428: u'trichophyton\_soudanense\_cbs\_452\_61',
+          429: u'trichophyton\_tonsurans\_cbs\_112818',
+          430: u'trichophyton\_verrucosum\_hki\_0517',
+          431: u'trichophyton\_violaceum',
+          432: u'trichosporon\_asahii\_var\_asahii\_cbs\_8904',
+          433: u'tsuchiyaea\_wingfieldii\_cbs\_7118',
+          434: u'tuber\_melanosporum',
+          435: u'tulasnella\_calospora\_mut\_4182',
+          436: u'umbilicaria\_pustulata',
+          437: u'uncinocarpus\_reesii\_1704',
+          438: u'ustilaginoidea\_virens',
+          439: u'ustilago\_bromivora',
+          440: u'ustilago\_hordei',
+          441: u'ustilago\_maydis',
+          442: u'valsa\_mali\_var\_pyri',
+          443: u'vanderwaltozyma\_polyspora\_dsm\_70294',
+          444: u'verruconis\_gallopava',
+          445: u'verticillium\_alfalfae\_vams\_102',
+          446: u'verticillium\_dahliae',
+          447: u'verticillium\_longisporum',
+          448: u'wallemia\_ichthyophaga\_exf\_994',
+          449: u'wallemia\_mellicola\_cbs\_633\_66',
+          450: u'wickerhamomyces\_anomalus\_nrrl\_y\_366\_8',
+          451: u'xanthophyllomyces\_dendrorhous',
+          452: u'xylona\_heveae\_tc161',
+          453: u'yarrowia\_lipolytica',
+          454: u'zygosaccharomyces\_bailii\_isa1307',
+          455: u'zygosaccharomyces\_parabailii',
+          456: u'zymoseptoria\_brevis',
+          457: u'zymoseptoria\_tritici',
+          458: u'\_candida\_auris',
+          459: u'aspergillus\_nidulans',
+          460: u'candida\_tropicalis\_mya\_3404',
+          461: u'clavispora\_lusitaniae\_atcc\_42720',
+          462: u'colletotrichum\_chlorophyti',
+          463: u'colletotrichum\_higginsianum',
+          464: u'dichomitus\_squalens\_lyad\_421\_ss1',
+          465: u'fonsecaea\_monophora',
+          466: u'glarea\_lozoyensis\_74030',
+          467: u'hanseniaspora\_uvarum\_dsm\_2768',
+          468: u'hydnomerulius\_pinastri\_md\_312',
+          469: u'lentinula\_edodes',
+          470: u'lichtheimia\_corymbifera\_jmrc\_fsu\_9682',
+          471: u'paxillus\_involutus\_atcc\_200175',
+          472: u'phaeomoniella\_chlamydospora',
+          473: u'pichia\_kudriavzevii',
+          474: u'saitoella\_complicata\_nrrl\_y\_17804',
+          475: u'stereum\_hirsutum\_fp\_91666\_ss1',
+          476: u'wickerhamomyces\_ciferrii',
+          477: u'zygosaccharomyces\_rouxii',
+          478: u'anncaliia\_algerae\_pra339',
+          479: u'edhazardia\_aedis\_usnm\_41457',
+          480: u'encephalitozoon\_cuniculi\_gb\_m1',
+          481: u'encephalitozoon\_hellem\_atcc\_50504',
+          482: u'encephalitozoon\_intestinalis\_atcc\_50506',
+          483: u'encephalitozoon\_romaleae\_sj\_2008',
+          484: u'grifola\_frondosa',
+          485: u'isaria\_fumosorosea\_arsef\_2679',
+          486: u'komagataella\_phaffii\_gs115',
+          487: u'mitosporidium\_daphniae',
+          488: u'moesziomyces\_aphidis\_dsm\_70725',
+          489: u'nematocida\_displodere',
+          490: u'nematocida\_parisii\_ertm3',
+          491: u'nematocida\_sp\_1\_ertm2',
+          492: u'nematocida\_sp\_ertm5',
+          493: u'nosema\_apis\_brl\_01',
+          494: u'nosema\_bombycis\_cq1',
+          495: u'nosema\_ceranae\_brl01',
+          496: u'ordospora\_colligata\_oc4',
+          497: u'pseudoloma\_neurophilia',
+          498: u'sclerotinia\_sclerotiorum',
+          499: u'spraguea\_lophii\_42\_110',
+          500: u'sugiyamaella\_lignohabitans',
+          501: u'trachipleistophora\_hominis',
+          502: u'trametes\_cinnabarina',
+          503: u'vavraia\_culicis\_subsp\_floridensis',
+          504: u'vittaforma\_corneae\_atcc\_50505',
+          505: u'gymnopus\_luxurians\_fd\_317\_m1',
+          506: u'plicaturopsis\_crispa\_fd\_325\_ss\_3',
+          507: u'postia\_placenta\_mad\_698\_r',
+          508: u'mortierella\_verticillata\_nrrl\_6337',
+          509: u'punctularia\_strigosozonata\_hhb\_11173\_ss5',
+          510: u'aspergillus\_ustus',
+          511: u'coniophora\_puteana\_rwd\_64\_598\_ss2',
+          512: u'batrachochytrium\_dendrobatidis\_jel423',
+          513: u'trametes\_versicolor\_fp\_101664\_ss1',
+          514: u'enterocytozoon\_bieneusi\_h348',
+          515: u'enterocytozoon\_hepatopenaei',
+          516: u'enterospora\_canceri',
+          517: u'hepatospora\_eriocheir',
+          518: u'talaromyces\_cellulolyticus',
+          519: u'fomitiporia\_mediterranea\_mf3\_22',
+          520: u'leucoagaricus\_sp\_symc\_cos',
+          521: u'pachysolen\_tannophilus\_nrrl\_y\_2460'\}
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}16}]:} \PY{n}{cub}\PY{o}{.}\PY{n}{savespeciestable}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+it worked !
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{cub} \PY{o}{=} \PY{n}{pyCUB}\PY{o}{.}\PY{n}{PyCUB}\PY{p}{(}\PY{n}{session} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ensembl2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{cub}\PY{o}{.}\PY{n}{load}\PY{p}{(}\PY{n}{session} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ensembl2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{filename} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{full\PYZus{}freq3sept}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}18}]:} \PY{n}{cub}\PY{o}{.}\PY{n}{species}\PY{p}{[}\PY{n}{cub}\PY{o}{.}\PY{n}{species}\PY{o}{.}\PY{n}{keys}\PY{p}{(}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{8}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{copynumbers}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}18}]:} \{'ALA': \{'CGA': 24, 'CGC': 4, 'CGG': 2, 'CGU': 8\},
+          'ARG': \{'GCA': 28, 'GCC': 4, 'GCG': 2, 'GCU': 6, 'UCC': 4, 'UCU': 8\},
+          'ASN': \{'UUA': 2, 'UUG': 20\},
+          'ASP': \{'CUA': 2, 'CUG': 18\},
+          'CYS': \{'ACA': 2, 'ACG': 11\},
+          'GLN': \{'GUC': 6, 'GUU': 18\},
+          'GLU': \{'CUC': 12, 'CUU': 18\},
+          'GLY': \{'CCA': 2, 'CCC': 4, 'CCG': 36, 'CCU': 17\},
+          'HIS': \{'GUA': 2, 'GUG': 16\},
+          'ILE': \{'UAA': 16, 'UAG': 2, 'UAU': 5\},
+          'LEU': \{'AAC': 10, 'AAU': 8, 'GAA': 13, 'GAC': 4, 'GAG': 2, 'GAU': 4\},
+          'LYS': \{'UUC': 28, 'UUU': 12\},
+          'PHE': \{'AAA': 2, 'AAG': 16\},
+          'PRO': \{'GGA': 29, 'GGC': 4, 'GGG': 2, 'GGU': 6\},
+          'SER': \{'AGA': 24, 'AGC': 6, 'AGG': 2, 'AGU': 6, 'UCA': 2, 'UCG': 12\},
+          'THR': \{'UGA': 22, 'UGC': 4, 'UGG': 2, 'UGU': 6\},
+          'TYR': \{'AUA': 2, 'AUG': 18\},
+          'VAL': \{'CAA': 20, 'CAC': 6, 'CAG': 2, 'CAU': 6\},
+          'datapoints': 742,
+          'num': 461\}
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}19}]:} \PY{n}{cub}\PY{o}{.}\PY{n}{all\PYZus{}homoset}\PY{o}{.}\PY{n}{datatype}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}19}]:} 'frequency'
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}20}]:} \PY{n}{cub}\PY{o}{.}\PY{n}{all\PYZus{}homoset}\PY{o}{.}\PY{n}{size}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}20}]:} 1730558
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n+nb}{len}\PY{p}{(}\PY{n}{cub}\PY{o}{.}\PY{n}{all\PYZus{}homoset}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}21}]:} \PY{k}{print} \PY{n}{cub}\PY{o}{.}\PY{n}{all\PYZus{}homoset}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+homology: YDR395W
+size: 505
+fullmax: 1.0
+var: None
+mean: None
+metrics: \{\}
+nans mean: 0.0039603960396
+lengths mean/var: 957.540594059, 221.402547312
+doublon sum: 36
+GCcount mean/var: 0.496401271989, 0.0769939701017
+KaKs\_Scores: None
+isrecent: None
+ishighpreserved: None
+ref: [ 0.34615385  0.21153846  0.05769231  0.38461538  0.03703704  0.          0.
+  0.18518519  0.22222222  0.55555556  0.40740741  0.59259259  0.71428571
+  0.28571429  0.81818182  0.18181818  0.73809524  0.26190476  0.2804878
+  0.7195122   0.4         0.28        0.2         0.12        0.64285714
+  0.35714286  0.31034483  0.1954023   0.49425287  0.32773109  0.2605042
+  0.01680672  0.09243697  0.17647059  0.12605042  0.57692308  0.42307692
+  0.55932203  0.44067797  0.34210526  0.02631579  0.55263158  0.07894737
+  0.28169014  0.12676056  0.15492958  0.21126761  0.08450704  0.14084507
+  0.33333333  0.17948718  0.1025641   0.38461538  0.56666667  0.43333333
+  0.14814815  0.24074074  0.18518519  0.42592593]
+refprot: YDR395W
+refgene: YDR395W
+ecai mean/var: 0.551034837568, 0.0891817546203
+cai mean/var: 0.613529707425, 0.0839255657509
+protein\_abundance: 0.0
+weight: 0
+conservation: 5.18347457627
+mRNA\_abundance: 0.0
+cys\_elements: 0
+is\_secreted: False
+decay\_rate: 0.0
+tot\_volume: 132507.1
+mean\_hydrophobicity: 0.0110169491525
+glucose\_cost: 966.41
+synthesis\_steps: 5052
+isoelectricpoint: 6.205
+othercods: 38.4198019802
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{k}{print} \PY{n}{cub}\PY{o}{.}\PY{n}{all\PYZus{}homoset}\PY{p}{[}\PY{l+m+mi}{3000}\PY{p}{]}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+        \PY{n}{cub}\PY{o}{.}\PY{n}{all\PYZus{}homoset}\PY{o}{.}\PY{n}{plot\PYZus{}hashomo}\PY{p}{(}\PY{n}{size}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{,} \PY{n}{interactive}\PY{o}{=} \PY{n+nb+bp}{False}\PY{p}{,}\PY{n}{invert}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{cub} \PY{o}{=} \PY{n}{pyCUB}\PY{o}{.}\PY{n}{PyCUB}\PY{p}{(}\PY{n}{session} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ensembl2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{cub}\PY{o}{.}\PY{n}{load}\PY{p}{(}\PY{n}{session} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ensembl2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{filename} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{full\PYZus{}16august}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{cub}\PY{o}{.}\PY{n}{all\PYZus{}homoset}\PY{o}{.}\PY{n}{plot\PYZus{}speciesperhomo}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    Silhouette: The best value is 1 and the worst value is -1. Values near 0
+indicate overlapping clusters. Negative values generally indicate that a
+sample has been assigned to the wrong cluster, as a different cluster is
+more similar.
+
+Harabaz: The score is defined as ratio between the within-cluster
+dispersion and the between-cluster dispersion
+
+the square plot is a similarity cluster of the homologies according to
+the amount of species in common
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}22}]:} \PY{n}{cub}\PY{o}{.}\PY{n}{all\PYZus{}homoset}\PY{o}{.}\PY{n}{cluster\PYZus{}homologies}\PY{p}{(}\PY{n}{clustering}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{kmodes}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{homogroupnb}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{,} 
+                 \PY{n}{plot\PYZus{}ordering}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{,} \PY{n}{findnb}\PY{o}{=}\PY{n+nb+bp}{False}\PY{p}{,} \PY{n}{byspecie}\PY{o}{=}\PY{n+nb+bp}{False}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Init: initializing centroids
+Init: initializing clusters
+Starting iterations{\ldots}
+Run 1, iteration: 1/100, moves: 817, cost: 252816.0
+Run 1, iteration: 2/100, moves: 135, cost: 252713.0
+Run 1, iteration: 3/100, moves: 34, cost: 252713.0
+Init: initializing centroids
+Init: initializing clusters
+Starting iterations{\ldots}
+Run 2, iteration: 1/100, moves: 1890, cost: 252691.0
+Run 2, iteration: 2/100, moves: 18, cost: 252691.0
+Best run was number 2
+the quality of the clustering is: [silhouette\_score,calinski\_harabaz\_score]
+0.234360429417
+4290.13449726
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_23_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_23_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_23_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    
+    \begin{verbatim}
+<matplotlib.figure.Figure at 0x7fb23ade9a10>
+    \end{verbatim}
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_23_5.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}23}]:} \PY{n}{cub}\PY{o}{.}\PY{n}{all\PYZus{}homoset}\PY{o}{.}\PY{n}{cluster\PYZus{}homologies}\PY{p}{(}\PY{n}{clustering}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{kmodes}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{homogroupnb}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{,} 
+                 \PY{n}{plot\PYZus{}ordering}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{,} \PY{n}{findnb}\PY{o}{=}\PY{n+nb+bp}{False}\PY{p}{,} \PY{n}{byspecie}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Init: initializing centroids
+Init: initializing clusters
+Starting iterations{\ldots}
+Run 1, iteration: 1/100, moves: 208, cost: 256609.0
+Run 1, iteration: 2/100, moves: 19, cost: 256466.0
+Run 1, iteration: 3/100, moves: 5, cost: 256450.0
+Run 1, iteration: 4/100, moves: 0, cost: 256450.0
+Init: initializing centroids
+Init: initializing clusters
+Starting iterations{\ldots}
+Run 2, iteration: 1/100, moves: 236, cost: 312555.0
+Run 2, iteration: 2/100, moves: 9, cost: 312471.0
+Run 2, iteration: 3/100, moves: 1, cost: 312471.0
+Best run was number 1
+the quality of the clustering is: [silhouette\_score,calinski\_harabaz\_score]
+0.109055544454
+110.695623193
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_24_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_24_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_24_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    
+    \begin{verbatim}
+<matplotlib.figure.Figure at 0x7fb26bccbb10>
+    \end{verbatim}
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_24_5.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}24}]:} \PY{n}{cub}\PY{o}{.}\PY{n}{all\PYZus{}homoset}\PY{o}{.}\PY{n}{cluster\PYZus{}homologies}\PY{p}{(}\PY{n}{clustering}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{kmodes}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{homogroupnb}\PY{o}{=}\PY{l+m+mi}{3}\PY{p}{,} 
+                 \PY{n}{plot\PYZus{}ordering}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{,} \PY{n}{findnb}\PY{o}{=}\PY{n+nb+bp}{False}\PY{p}{,} \PY{n}{byspecie}\PY{o}{=}\PY{n+nb+bp}{False}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Init: initializing centroids
+Init: initializing clusters
+Starting iterations{\ldots}
+Run 1, iteration: 1/100, moves: 1074, cost: 302957.0
+Run 1, iteration: 2/100, moves: 87, cost: 302890.0
+Run 1, iteration: 3/100, moves: 306, cost: 256840.0
+Run 1, iteration: 4/100, moves: 438, cost: 254994.0
+Run 1, iteration: 5/100, moves: 5, cost: 254994.0
+Init: initializing centroids
+Init: initializing clusters
+Starting iterations{\ldots}
+Run 2, iteration: 1/100, moves: 725, cost: 254994.0
+Run 2, iteration: 2/100, moves: 16, cost: 254994.0
+Best run was number 1
+the quality of the clustering is: [silhouette\_score,calinski\_harabaz\_score]
+0.43517804001
+6394.4154872
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_25_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_25_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_25_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    
+    \begin{verbatim}
+<matplotlib.figure.Figure at 0x7fb250bf4210>
+    \end{verbatim}
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_25_5.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    it is a bit puzzling to see that there is no homology that is shared by
+all species, thought this should be the case for the set of genes
+essential to life.
+
+We postulate that this might show the alignment errors which only looks
+at similarity between DNA sequences and not at the final function of
+protein coding genes.
+
+It might be interesting to have a look at what factors influence the
+accuracy of such algorithm, to be able to account for it
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4267518/ More data (for
+example a mix of DNA sequence alignment, protein alignment, RNA seq and
+taxonomical information) might help greatly improve the accuracy of such
+software.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}25}]:} \PY{n}{cub}\PY{o}{.}\PY{n}{all\PYZus{}homoset}\PY{o}{.}\PY{n}{hashomo\PYZus{}matrix}\PY{o}{.}\PY{n}{all}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{.}\PY{n}{any}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}25}]:} False
+\end{Verbatim}
+            
+    so you can navigate around with the rangeto and explore deeper the
+homology presence and the different groups, the plot is interactive here
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{cub}\PY{o}{.}\PY{n}{all\PYZus{}homoset}\PY{o}{.}\PY{n}{plot\PYZus{}hashomo}\PY{p}{(}\PY{n}{interactive}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{,} \PY{n}{size}\PY{o}{=}\PY{l+m+mi}{200}\PY{p}{,} \PY{n}{rangeto}\PY{o}{=}\PY{n+nb}{xrange}\PY{p}{(}\PY{l+m+mi}{500}\PY{p}{,}\PY{l+m+mi}{800}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+
+    Values seem to be placed as one would think with a high density cluster
+of really low entropy and then a spreading of high entropy from many
+different direction(amino acids) is there amino acids with less spread
+in their CUB? the high values seems to be randomly distributed but we
+can notice 2 things: - there is a limit to which one amino acid entropy
+is decorelated to another (this triangle shape) - there seems to be
+specific entropy direction than other but it could be noise.
+
+    This plot seems pretty magical, expecially compared to what PCA outputs,
+However knowing the flaws and advantages of tSNE:
+https://distill.pub/2016/misread-tsne/, here what might come to mind.
+Here is really highlighted any relationship in the datapoint accross the
+18 dimensions. we can see that this plot creates very distinctive
+shapes: circle. Taken as is, this would mean that among the genes there
+is groups where the entropy values are not the same but the amount of
+entropy the totality of the genome has is mostly the same. this means,
+the entropy over the 18 amino acid is distributed such that genes are
+pushed to have a total entropy of each distribution of their synonimous
+codon around the same point. althought being an interesting point, this
+clustering around a particular radius could be tSNE amplifying a noise
+in the distribution, especially when an important number of points
+center on such circular distribution, which is effectivelly the case
+with an important number of low entropy genes.
+
+What is more intriguing however is that it is not one but 4 distinct
+circle that appear, as if there would be 4 distinct pairs of amino acids
+for where entropy tends to be correlated when the entropy is high. This
+might make more sense given the fact that in amino acids with 4+ codons,
+the entropy is easily higher than elsewhere especially for ARG, LEU, SER
+where there is 6 such codons. trying to have some form of coloring of
+the plot might help understanding what may drive such correlation
+
+overhall the why of such circular shapes remains an open question which
+would need to be further explored.
+
+    Here once again it is very interesting that we find a 4 cluster group
+using tSNE on frequency which really mean a cluster that is independant
+of any type of measure. However, it would mean that
+
+we can see when we look at PCA we have some other information about the
+shape. there should be a shape here since
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}37}]:} \PY{n}{cub}\PY{o}{.}\PY{n}{all\PYZus{}homoset}\PY{o}{.}\PY{n}{plot\PYZus{}all}\PY{p}{(} \PY{n}{With}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{PCA}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{perplexity}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{,} \PY{n}{interactive}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{,}
+                                  \PY{n}{bins}\PY{o}{=}\PY{l+m+mi}{500}\PY{p}{,}\PY{n}{offset}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{,}\PY{n}{redo}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{,} \PY{n}{bypasstsne}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}
+\end{Verbatim}
+
+
+    
+    
+    
+    \begin{verbatim}
+<IPython.core.display.HTML object>
+    \end{verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+please write \%output size=200" before calling this function
+
+    \end{Verbatim}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}37}]:} :Layout
+            .Image.I                           :Image   [x,y]   (z)
+            .DynamicMap.All\_1943040\_homologies :DynamicMap   []
+               :RGB   [x,y]   (R,G,B,A)
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{cub}\PY{o}{.}\PY{n}{save}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{before\PYZus{}workinghomo\PYZus{}aug\PYZus{}freq}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+writing in before\_workinghomo\_aug
+
+    \end{Verbatim}
+
+    Here we are loading the full homology and has homology again on the
+working homoset the working homoset only contains references to
+homologies in the all\_homoset and not copy thought this can be done
+with the PyCUB.getsubset() function
+
+we really want to get p, pur working homoset, homologies that are shared
+accross many species to be able to compare things that are equal
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}26}]:} \PY{n}{cub}\PY{o}{.}\PY{n}{get\PYZus{}working\PYZus{}homoset}\PY{p}{(}\PY{n}{clusternb}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,}\PY{n}{cleanhomo} \PY{o}{=} \PY{l+m+mf}{0.5}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+loaded
+loaded
+
+    \end{Verbatim}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}26}]:} <PyCUB.homoset.HomoSet at 0x7fb22be2bc10>
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n+nb}{len}\PY{p}{(}\PY{n}{cub}\PY{o}{.}\PY{n}{working\PYZus{}homoset}\PY{p}{)}
+\end{Verbatim}
+
+
+    we removed almost half the homologies but 1/4 of the total genes
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{cub}\PY{o}{.}\PY{n}{working\PYZus{}homoset}\PY{o}{.}\PY{n}{size}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}
