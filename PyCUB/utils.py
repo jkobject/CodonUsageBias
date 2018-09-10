@@ -1092,10 +1092,10 @@ def compute_meta(data):
             synthcost += synthsteps
             conservation += conservat
             i += 1
-    iso = np.array(iso)
-    mean = iso.mean()
+    mean = np.array(iso).mean()
     tempsup = 10000
     tempmin = -10000
+    print "you have to finish that stuff " # http://isoelectric.org/www_old/files/practise-isoelectric-point.html
     for a in isoelectricpoint:
         if a < tempsup and a > mean:
             tempsup = a
@@ -1261,7 +1261,7 @@ def computeyun(data, setnans=False, normalized=False, by='entropy'):
                 Eg = multinomial.pmf(x=X, n=lengsubseq, p=mn)
                 # end here
                 if Eg == 0:
-                    valH[k] = 20
+                    valH[k] = 0
                 valH[k] = -np.log(Yg / Eg) / lengsubseq if normalized else -np.log(Yg / Eg)
     if by == 'frequency':
         valH = CuF
