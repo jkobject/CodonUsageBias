@@ -73,7 +73,7 @@ parallelizing to a high extent (up to 16 processes when doing parallel loading o
 
 - I have found a search method that is very pythonic and related to what I was looking for.
 
-#assumptions
+# assumptions
 - the codons are supposed to be geometrically randomly distributed,
 
 - CAI can work accross species
@@ -90,7 +90,7 @@ parallelizing to a high extent (up to 16 processes when doing parallel loading o
 
 - I am assuming that the amount of tRNA genomic position even if uninformative about the actual tRNA is accurate in itself. 
 
-#statistics about the code
+# statistics about the code
 
 - the code is about 6500 lines of pure code 
 - it is 90% python, 5% javascript, 3% bash, 2% R and it contains 13 additional python packages and 2 additional R packages
@@ -117,12 +117,12 @@ math, holoviews, kmodes, MulticoreTSNE, collections, mpl_toolkits
 # Diament plots 
 2.5million contacts retrieved on dist3D
 500Mb matrices
-
+(synCUF entropy, CUF, synCUF)
 endresdistance
 DIAMENT2 (0.038297713917720327,
- 0.086844486492188941, CUB ENT
+ 0.086844486492188941, 
  0.71438053837945337,
- 4.0047867171581658e-312, CUF
+ 4.0047867171581658e-312,
  0.84295299789908806,
  0.0) SYNCUF
 
@@ -134,16 +134,20 @@ DiAMENT2(-0.13840943669212902,
  1.386413533191727e-195,
  0.75864680930450634,
  0.0)
-
+ 
+entropy cost over HOMOLOGIES
 0.44650853756252862,
- 1.3470576382137763e-98, Avalue HOMOLOGY
+ 1.3470576382137763e-98, 
 
- (-0.2685301534522273, CUB HOMOLOGY
+synCUF over HOMOLOGIES
+ (-0.2685301534522273, 
  2.236504987814927e-34,
+ 
+CuF over HOMOLOGIES d_ES
+ 0.71027907382808775 p < 10^-360
 
- 0.71027907382808775 CuF HOMOLOGY ES
-
- 0.76389719648089693 CuF HOMOLOGY Euclidean
+ CuF over HOMOLOGIES Euclidean
+ 0.76389719648089693 p < 10^-360
 
  correlatio between endres and euclidean (correlation=0.96924282826462216, pvalue=0.0) better with 98%=cub > cuf > entropy = 94%
 
