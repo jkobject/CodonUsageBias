@@ -1,0 +1,12 @@
+MAIN (homologyGeneValue2)
+	file reading package
+	getHomoInfor()
+		webparsing 
+	getCodonSequence()
+	<AminoName>AminoAcidH() *18
+		CodonFrequency()
+			codoncount
+	getHomologyList()
+	entropy4Location()
+		histcounts
+		csvreading
