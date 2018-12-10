@@ -1,0 +1,321 @@
+#"E" "H" "Q" "F" "Y" "C" "N" "K" "D" "I" "P" "T" "A" "V" "G" "L" "S" "R"
+
+library(ggplot2)
+source("analysisFunctions.Rscript")
+#slopes<-sapply(fnamTb,function(x) {tmp1<-globalPlotOnlyDta(x,c(1:9),c(5:10));tmp2<-fitMe(tmp1,"V1","V2")$coef;tmp2[2]})
+
+
+#rt<-read.csv(fnamTb[377],header=T)
+
+specN<-150
+#globalPlot(fnamTb[specN],c(1:18),c(5:10))
+tmp1<-globalPlotOnlyDta(fnamTab[specN],c(1:18),c(5:10))
+tmp1<-tmp1[which(tmp1[[2]]<7),]
+fitMe(tmp1,"V1","V2")$coef
+#colnames(tmp1)<-c("aa","Entropy","log Probability")
+ggplot(tmp1,aes(x=V1,y=V2)) + geom_point(size=1,aes(colour=aa))  +
+scale_colour_discrete()+ geom_smooth(method=lm)+
+#geom_abline(intercept=-0,slope=-1)+
+labs(x="Entropy", y="log Probability", colour="Amino Acid")
+#cub(slopes
+ 
+ 
+
+fnamT<-dir("/home/dfc/seqs",full.names=T)
+fnamTb<-dir("/home/dfc/seqsTb",full.names=T)
+fnamTa<-dir("/home/dfc/seqsTa",full.names=T)
+fnamTab<-dir("/home/dfc/seqsTab",full.names=T)
+
+##PLotting the the slope of 4 different species
+specN1<-150
+specN2<-61
+specN3<-32
+specN4<-320
+tmp1<-globalPlotOnlyDta(fnamTb[specN1],c(1:18),c(5:10))
+tmp1<-tmp1[which(tmp1[[2]]<3),]
+#fitMe(tmp1,"V1","V2")$coef
+tmp2<-globalPlotOnlyDta(fnamTb[specN2],c(1:18),c(5:10))
+tmp2<-tmp2[which(tmp2[[2]]<3),]
+tmp3<-globalPlotOnlyDta(fnamTb[specN3],c(1:18),c(5:10))
+tmp3<-tmp3[which(tmp3[[2]]<3),]
+tmp4<-globalPlotOnlyDta(fnamTb[specN4],c(1:18),c(5:10))
+tmp4<-tmp4[which(tmp4[[2]]<3),]
+
+#tmp2<-tmp2[which(tmp2[[2]]<3),]
+#fitMe(tmp2,"V1","V2")$coef
+tmp<- rep("Species1",length(tmp1[[1]]))
+tmp1<-cbind(tmp1,tmp)
+
+tmp<- rep("Species2",length(tmp2[[1]]))
+tmp2<-cbind(tmp2,tmp)
+
+tmp<- rep("Species3",length(tmp3[[1]]))
+tmp3<-cbind(tmp3,tmp)
+
+tmp<- rep("Species4",length(tmp4[[1]]))
+tmp4<-cbind(tmp4,tmp)
+
+tmp5<-rbind(tmp1,tmp2,tmp3,tmp4);
+colnames(tmp5) <-c("aa", "V1", "V2","species")
+
+ tmp <- sub("/home/dfc/seqsTb/","",fnamTb[specN1]); sp1 <- sub("ForTb.txt","",tmp)  
+ tmp <- sub("/home/dfc/seqsTb/","",fnamTb[specN2]); sp2 <- sub("ForTb.txt","",tmp)  
+ tmp <- sub("/home/dfc/seqsTb/","",fnamTb[specN3]); sp3 <- sub("ForTb.txt","",tmp)  
+ tmp <- sub("/home/dfc/seqsTb/","",fnamTb[specN4]); sp4 <- sub("ForTb.txt","",tmp)  
+
+abels<-c(Species1=sp1, Species2=sp2, Species3=sp3, Species4=sp4)
+ggplot(tmp5,aes(x=V1,y=V2)) + geom_point(size=1,aes(colour=aa))  + theme_classic()+
+scale_colour_discrete()+ geom_smooth(method=lm)+ facet_wrap(~species,ncol=2,labeller=labeller(species=abels),scales="free_y")+
+labs(x="Entropy", y="log Probability", colour="Amino Acid")
+#+geom_abline(intercept=-0.221,slope=-0.898)
+ggsave("~/Dropbox/cubpaper/fourspecies.eps")
+
+
+##
+##  Plotting the slope versus the cub
+##
+#comparison with maple model. Find the relavant code in 
+#file: energymodel2.mw
+#section: Plot Slope vs CUB
+
+
+slpCub<-as.data.frame(cbind(as.numeric(cubStat[["meancub"]]),as.numeric(slopes$slope)))
+tmp<-rep("Data",length(slpCub[[1]]))
+slpCub<-cbind(slpCub,tmp)
+colnames(slpCub)<-c("CUB","Slope","tmp")
+
+mapledta<-read.table("mapleSlopeVsCUB.txt",header=F,sep=",")
+mapledta[[1]] <- mapledta[[1]]
+colnames(mapledta)<-c("CUB","Slope")
+tmp<-rep("Model",length(mapledta[[1]]))
+mapledta<-cbind(mapledta,tmp)
+
+mapledta2<-read.table("mapleSlopeVsCUB2.txt",header=F,sep=",")
+mapledta2[[1]] <- mapledta2[[1]]
+colnames(mapledta2)<-c("CUB","Slope")
+tmp<-rep("Model2",length(mapledta2[[1]]))
+mapledta2<-cbind(mapledta2,tmp)
+
+tmp<- rbind(slpCub,mapledta,mapledta2)
+colnames(tmp) <- c("CUB","Slope","dec")
+colnames(mapledta) <- c("CUB","Slope","dec")
+colnames(mapledta2) <- c("CUB","Slope","dec")
+
+
+ggplot(tmp,aes(y=Slope,x=CUB,color=dec))+ geom_point() + theme_classic() + geom_line(data=mapledta,aes(y=Slope,x=CUB))+ geom_line(data=mapledta2,aes(y=Slope,x=CUB))
+
+ggsave("~/Dropbox/cubpaper/slopevscub.eps")
+
+
+
+#################
+#################
+#Cluster plot for fits
+#################
+#################
+
+a10<-as.data.frame(read.csv("nonlinfit10.txt",header=F,colClasses=c("integer","character","double","double","double","double")))
+ b10<-a10[which(a10[[4]]<2 & a10[[3]]<2 ),]
+a15<-as.data.frame(read.csv("nonlinfit15.txt",header=F,colClasses=c("integer","character","double","double","double","double")));
+b15<-a15[which(a15[[4]]<2 & a15[[3]]<2 ),]
+ 
+   colnames(b10) <-c("species","AA","a","b","c","residual")
+   colnames(b15) <-c("species","AA","a","b","c","residual")
+   b10[["AA"]] <-10;
+   b15[["AA"]] <-15;
+   b<-rbind(b10,b15)
+ #  b<-b15
+#   b<-b[which(b[["a"]]>-1.5 & b[["a"]]<0 & b[["b"]]> -1.5 & b[["b"]]<0 ),]
+   colnames(b) <-c("species","AA","a","b","c","residual")
+ b<-transform(b,species=ifelse(species==150 | species ==320 | species ==32 | species == 61,species,0))
+   c<-b[which(b[["species"]]>0), ]
+   d<-fnamTb[as.numeric(as.character(c[[1]]))]
+   d<-unlist(lapply(d,function(x) {tmp<-sub("/home/dfc/seqsTb/","",x); sp1 <- sub("ForTb.txt","",tmp);sp1})  )
+   c[[1]] <-d
+   write.csv(c,file="nonlinfitLabelled.txt",quote=F,row.names=F)
+   b[[1]]<-as.factor(b[[1]]) 
+   c[[1]]<-as.factor(c[[1]]) 
+  ggplot(b,aes(x=a,y=b)) + geom_point(size=1,alpha=0.1)+ geom_point(data=c,aes(x=a,y=b,color=species),size=2)+
+  scale_colour_manual(values=c("orange","red","blue","green")) + 
+  theme(panel.background=element_rect(colour="black", fill="white"),   legend.position=c(0.9,0.9)) + labs(x="",y="b")
+  ggsave("~/Dropbox/cubpaper/fitResults.pdf")
+  
+ 
+ 
+ 
+ 
+ 
+##
+##  Plotting the slope versus the cub for fungi, protists and bacteria and compare this
+##
+ 
+
+slpCub<-as.data.frame(cbind(as.numeric(cubStat[["meancub"]]),as.numeric(slopes$slope)))
+tmp<-rep("Fungi",length(slpCub[[1]]))
+slpCub<-cbind(slpCub,tmp)
+colnames(slpCub)<-c("CUB","Slope","type")
+ 
+
+slpCubP<-as.data.frame(cbind(as.numeric(cubStatP[["meancub"]]),as.numeric(slopesP$slope)))
+tmp<-rep("Protists",length(slpCubP[[1]]))
+slpCubP<-cbind(slpCubP,tmp)
+colnames(slpCubP)<-c("CUB","Slope","type")
+
+
+slpCubB<-as.data.frame(cbind(as.numeric(cubStatB[["meancub"]]),as.numeric(slopesB$slope)))
+tmp<-rep("Bacteria",length(slpCubB[[1]]))
+slpCubB<-cbind(slpCubB,tmp)
+colnames(slpCubB)<-c("CUB","Slope","type")
+
+plslp <-rbind(slpCub,slpCubB,slpCubP)
+
+ 
+ggplot(plslp,aes(y=Slope,x=CUB,color=type))+ geom_point() + theme_classic() 
+#+ geom_line(data=mapledta,aes(y=Slope,x=CUB))+ geom_line(data=mapledta2,aes(y=Slope,x=CUB))
+
+ggsave("~/Dropbox/cubpaper/tmp.eps")
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+##UNUSED
+##UNUSED   PLOTTING CUB vs slope for all length and species separately.
+##UNUSED
+##UNUSED
+
+library(reshape2)
+tmp<-sanovDTb;
+cubMelt<-melt(as.data.frame(cub,stringsAsFactors=F),id.vars="species",stringsAsFactors=FALSE)
+tmp3<--1
+for (i in 1:length(cubMelt[[1]])){
+sp<-cubMelt[i,1]
+ami<-as.character(cubMelt[i,2])
+tmp2<-sanovDTb[which(sanovDTb$species==sp & sanovDTb$aa==ami),]
+tmplen<-length(tmp2[[1]])
+tmpval<-rep(cubMelt[i,3],tmplen)
+tmp2<-cbind(tmp2,tmpval)
+
+if(tmp3==-1){tmp3<-tmp2}else{tmp3<-rbind(tmp3,tmp2)}
+
+}
+colnames(tmp3)[7]<-"cub"
+tmp3<-tmp3[which(tmp3$slope<0 & tmp3$slope>-1),]
+slpcubList<-tmp3
+ggplot(slpcubList,aes(x=cub,y=slope))+  stat_binhex(bins=200)
+sanovDTb[which(sanovDTb$species==cubMelt[1,1]& sanovDTb$aa=="E"),]
+
+  
+ 
+ 
+ 
+ 
+ 
+
+#################
+#################
+#Cluster plot for fits UNUSED
+#################
+#################
+
+#get data for fungi
+nonlf<-dir("/home/dfc/Dropbox/CUBproject/artificial/parameterFitsFungi",pattern="nonlinfit[0-9]*.txt",full.names=T)
+#
+#Read in all nonlinfit files
+#
+af<-lapply(nonlf,
+function(x) {
+tmp<-read.table(x,header=F,sep=",");
+tmp2<-sub("/home/dfc/Dropbox/CUBproject/artificial/parameterFitsFungi/nonlinfit","",x);
+tmp3<-sub(".txt","",tmp2);
+print(tmp3)
+len<-length(tmp[[1]]) 
+tmp4<-rep(tmp3,len)
+tmp5<-rep("Fungi",len)
+
+#print(tmp4)
+tmp<-as.data.frame(cbind(tmp,tmp4,tmp5))
+colnames(tmp) <-c("species","AA","a","b","c","residual","L","type") 
+tmp
+})
+
+
+
+
+#get data for bacteria
+nonlb<-dir("/home/dfc/Dropbox/CUBproject/artificial/parameterFitsBacteria",pattern="nonlinfit[0-9]*.txt",full.names=T)
+
+#
+#Read in all nonlinfit files
+#
+ab<-lapply(nonlb,
+function(x) {
+tmp<-read.table(x,header=F,sep=",");
+tmp2<-sub("/home/dfc/Dropbox/CUBproject/artificial/parameterFitsBacteria/nonlinfit","",x);
+tmp3<-sub(".txt","",tmp2);
+print(tmp3)
+len<-length(tmp[[1]]) 
+tmp4<-rep(tmp3,len)
+tmp5<-rep("Bacteria",len)
+#print(tmp4)
+tmp<-as.data.frame(cbind(tmp,tmp4,tmp5))
+colnames(tmp) <-c("species","AA","a","b","c","residual","L","type") 
+tmp
+})
+
+#get data for bacteria
+nonlp<-dir("/home/dfc/Dropbox/CUBproject/artificial/parameterFitsProtists",pattern="nonlinfit[0-9]*.txt",full.names=T)
+
+ap<-lapply(nonlp,
+function(x) {
+tmp<-read.table(x,header=F,sep=",");
+tmp2<-sub("/home/dfc/Dropbox/CUBproject/artificial/parameterFitsProtists/nonlinfit","",x);
+tmp3<-sub(".txt","",tmp2);
+print(tmp3)
+len<-length(tmp[[1]]) 
+tmp4<-rep(tmp3,len)
+tmp5<-rep("Protists",len)
+#print(tmp4)
+tmp<-as.data.frame(cbind(tmp,tmp4,tmp5))
+colnames(tmp) <-c("species","AA","a","b","c","residual","L","type") 
+tmp
+})
+
+
+#now we have read in the data, and need to process
+a<-c(af,ab,ap)
+a<-c(af,ap);
+#get rid of those that have "wrong" values 
+red<- lapply(a, function(x) {x[which(x[[4]]<0 & x[[3]]<0 & x[[4]]>-2 & x[[3]]>-2 ),]})
+#red<- lapply(a, function(x) {x[which( x[[4]]<10 & x[[3]]<10 ),]})
+
+red2<-do.call(rbind,red)
+red3<-transform(red2,L=ifelse(L!=5,0,"x"))
+ggplot(red3,aes(x=a,y=b,color=type)) + geom_point(size=1,alpha=1) + geom_abline(slope=1,intercept=0,colour="green")# + scale_color_gradientn(colors=5)
+#+ scale_colour_manual(values=c("white","blue")) 
+
+ 
+  red4<-transform(red2,species=ifelse(species==150 | species ==320 | species ==32 | species == 61,species,0))
+   c<-red4[which(red4[["species"]]>0), ]
+   d<-fnamTb[as.numeric(as.character(c[[1]]))]
+   d<-unlist(lapply(d,function(x) {tmp<-sub("/home/dfc/seqsTb/","",x); sp1 <- sub("ForTb.txt","",tmp);sp1})  )
+   c[[1]] <-d
+#   write.csv(c,file="nonlinfitLabelled.txt",quote=F,row.names=F)
+   red4[[1]]<-as.factor(red4[[1]]) 
+   c[[1]]<-as.factor(c[[1]]) 
+  ggplot(red4,aes(x=a,y=b)) + geom_point(size=1,alpha=0.1)+ geom_point(data=c,aes(x=a,y=b,color=species),size=2)+
+  scale_colour_manual(values=c("orange","red","blue","green")) + 
+  theme(panel.background=element_rect(colour="black", fill="white"),   legend.position=c(0.1,0.9)) + labs(x="",y="b") + geom_abline(slope=1,intercept=0,colour="green")
+  
+ 

@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 from scipy.spatial.distance import euclidean
 
 import pdb
-
+ 
 
 class homology(object):
     """in homology we store an homology with all its related data,

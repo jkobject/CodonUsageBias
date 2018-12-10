@@ -1,0 +1,94 @@
+
+library(stats)
+################
+#### Function to generate random samples
+################
+mkSample<-function(len,numCods=2,trials=100000)
+#first argument: length of genome
+#second argument: number of codons
+#third argument: How many genomes do we want to analyse
+{
+
+
+
+frq<-rep(1/numCods,numCods)
+
+#now generate the highest probability sequence
+
+maxSeq<-rep(len%/%numCods,numCods)
+
+tmp<-len%%numCods
+
+if(tmp >0){maxSeq[c(1:tmp)]<-maxSeq[c(1:tmp)] + 1}
+
+tmp3<-maxSeq
+#calculate now the maximal probability
+maxProb <-dmultinom(tmp3,prob=frq,log=F)
+
+#now produce a sample
+tmp<-rmultinom(trials, size = len, prob = frq)
+tmp2<-apply(tmp,2,function(x) dmultinom(x,prob=frq,log=F))
+
+tmp3<-(log(maxProb/tmp2));
+
+# tmp3<-(tmp2);
+ 
+}
+
+
+
+
+################
+#### Function to generate a mixture of plots
+#### Adds randomness to the length of sequences
+################
+
+
+
+mkRdSample<-function(len,numCods=2,trials=100000)
+{
+
+#len2<-20
+#if(runif(1)<0.5) {len2<-100}
+
+len2<-sample(c(1:7000),1)
+
+
+mkSample(len2,numCods,trials)
+
+}
+
+##############################
+
+
+#b<-lapply(c(2,3,5,6),function(x) mkRdSample(100,x))
+
+#a<-rbind(b[[1]],b[[2]],b[[3]],b[[4]])
+
+a<-mkSample(100,5,1000000)
+
+fg<-ecdf(a)
+
+
+
+
+plot(fg)
+
+
+pts<- seq(0.01,15,0.1)
+tmp<-as.data.frame(cbind(pts,fg(pts)))
+colnames(tmp)<-c("V1","V2")
+fit<-nls(V2~1-exp(1)^(a*V1),data=as.list(tmp),start=list(a=-1))
+#points(pts,predict(fit))
+
+coef(fit)
+
+ #hist(a,br=1000)
+
+
+#usefule, but but not now
+#X <- t(as.matrix(expand.grid(0:6, 0:6))); 
+
+
+
+#a<-round(apply(X, 2, function(x) dmultinom(x, prob = c(1,2,5))), 3)

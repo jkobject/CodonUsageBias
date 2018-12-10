@@ -1,0 +1,254 @@
+#"E" "H" "Q" "F" "Y" "C" "N" "K" "D" "I" "P" "T" "A" "V" "G" "L" "S" "R"
+
+library(ggplot2)
+source("analysisFunctions.Rscript")
+#slopes<-sapply(fnamTb,function(x) {tmp1<-globalPlotOnlyDta(x,c(1:9),c(5:10));tmp2<-fitMe(tmp1,"V1","V2")$coef;tmp2[2]})
+
+bac<-read.csv(bacnamTb[17],header=T)
+
+rt<-read.csv(fnamTb[377],header=T)
+
+specN<-116
+#globalPlot(fnamTb[specN],c(1:18),c(5:10))
+tmp1<-globalPlotOnlyDta(bacnamTb[specN],c(1:9),c(5:10))
+#tmp1<-tmp1[which(tmp1[[2]]<3),]
+fitMe(tmp1,"V1","V2")$coef
+#colnames(tmp1)<-c("aa","Entropy","log Probability")
+ggplot(tmp1,aes(x=V1,y=V2)) + geom_point(size=1,aes(colour=aa))  +
+scale_colour_discrete()+ geom_smooth(method=lm)+
+#geom_abline(intercept=-0,slope=-1)+
+labs(x="Entropy", y="log normalised Frequency", colour="Amino Acid")
+#cub(slopes
+##Compare species with artificial Tab data
+tmp1<-globalPlotOnlyDta(bacnamTb[specN],c(1:9),c(5:10))
+#tmp1<-tmp1[which(tmp1[[2]]<3),]
+fitMe(tmp1,"V1","V2")$coef
+tmp2<-globalPlotOnlyDta(bacnamTab[specN],c(1:9),c(5:10))
+
+#tmp2<-tmp2[which(tmp2[[2]]<3),]
+#fitMe(tmp2,"V1","V2")$coef
+tmp2[[1]]<- rep("RANDOM",length(tmp2[[1]]))
+tmp1[[1]]<- rep("OBSERV",length(tmp1[[1]]))
+tmp3<-rbind(tmp2,tmp1)
+ggplot(tmp3,aes(x=V1,y=V2,colour=aa)) + geom_point(size=1)  +
+scale_colour_discrete()+ geom_smooth(method=lm)
+#+geom_abline(intercept=-0.221,slope=-0.898)
+
+#Compare selected entries with artificial data produced with julia.
+tmpR<-globalPlotOnlyDta(fnamTb[19],c(1:9),c(5:10))
+tmpR[,1] <-rep("REAL",length(tmpR[[1]]))
+tmpS<-read.table("/tmp/dta.txt",sep=",",header=F) 
+tmpS<-cbind(rep("SIM",length(tmpS[,1])),tmpS)
+colnames(tmpS) <-colnames(tmpR)
+tmp<-rbind(as.data.frame(tmpR),as.data.frame(tmpS))
+
+ggplot(tmp,aes(x=V1,y=V2)) + geom_point(size=1,aes(colour=aa))  +
+scale_colour_discrete()+geom_abline(intercept=-0.221,slope=-0.898)
+
+#+ geom_smooth(method=lm)
+
+
+###############
+##Process the T files first
+######################
+########### Careful takes long time to process.
+#Here we produce the temperatures for each species 
+#This is a list of lists. 
+#Entry 1: Species name
+# Entry 2: plot of Pi vs frequency
+#Entry 3: Slope
+#Entry 4 fit error
+plts<-lapply(bacnamT,function(x) globalPlot(x))
+##############
+rt<-read.csv(fnamTb[377],header=T)
+
+#Processing of the result
+#Put everything into a dataframe "temps" containsing: species name, temperatire, error
+tmp<-lapply(plts, function(x) c(x[[1]],as.numeric(x[[3]]),as.numeric(x[[4]])  )  )
+tmp2<-do.call(rbind, tmp)
+temps<-as.data.frame(tmp2,stringsAsFactors=F)
+colnames(temps)<- c("species","temperature","error")
+temps[["temperature"]] <-as.numeric(temps[["temperature"]])
+temps[["error"]] <-as.numeric(temps[["error"]])
+tmp<-temps[[1]]
+for (i in 1:length(tmp)) { tmp[i] <- sub("/home/dfc/seqs/","",tmp[i]); tmp[i] <- sub("ForT.txt","",tmp[i])     }
+temps[[1]] <-tmp
+# Finished processing
+
+#Now find those that have a reasonable error
+#Exclude everything with positive slope
+tmp<-temps[which((temps[[3]]/temps[[2]])< 0 ) ,]
+#tmp<-tmp[which(abs(tmp[[3]]/tmp[[2]])> exp(-4)  ) ,]
+tmp<-tmp[which(abs(tmp[[3]]/tmp[[2]])< exp(-3)  ) ,]
+tmp<-tmp[which(tmp[[2]]< -0.75  ) ,]
+length(tmp[[1]])
+z<-5
+plts[[which(temps[[1]]==tmp[z,1])]]
+
+
+#Now find those that have an unreasonable error
+#Exclude everything with positive slope
+tmp<-temps[which(abs(temps[[3]]/temps[[2]])> exp(-2) ) ,]
+length(tmp[[1]])
+z<-11
+plts[[which(temps[[1]]==tmp[z,1])]]
+
+
+
+##****************************************************************************************************
+##****************************************************************************************************
+###############
+##Process now the Tb files 
+######################
+########### Careful takes long time to process.
+#Here we produce the temperatures for each species 
+#This is a list of lists. 
+#Entry 1: Species name
+# Entry 2: plot of Pi vs frequency
+#Entry 3: Slope
+#Entry 4 fit error
+pltsb<-lapply(bacnamTb,function(x) globalPlot(x))
+##############
+
+#Processing of the result
+#Put everything into a dataframe "temps" containsing: species name, temperatire, error
+tmp<-lapply(pltsb, function(x) c(x[[1]],as.numeric(x[[3]]),as.numeric(x[[4]])  )  )
+tmp2<-do.call(rbind, tmp)
+tempsb<-as.data.frame(tmp2,stringsAsFactors=F)
+colnames(tempsb)<- c("species","temperature","error")
+tempsb[["temperature"]] <-as.numeric(tempsb[["temperature"]])
+tempsb[["error"]] <-as.numeric(tempsb[["error"]])
+tmp<-tempsb[[1]]
+for (i in 1:length(tmp)) { tmp[i] <- sub("/home/dfc/seqsTb/","",tmp[i]); tmp[i] <- sub("ForTb.txt","",tmp[i])     }
+tempsb[[1]] <-tmp
+#finally remove an extra entry here
+tempsb<-tempsb[(tempsb$species %in% temps$species),]
+# Finished processing
+
+#Now find those that have a reasonable error
+#Exclude everything with positive slope
+tmp<-tempsb[which((tempsb[[3]]/tempsb[[2]])< 0 ) ,]
+#tmp<-tmp[which(abs(tmp[[3]]/tmp[[2]])> exp(-4)  ) ,]
+tmp<-tmp[which(abs(tmp[[3]]/tmp[[2]])< exp(-3)  ) ,]
+tmp<-tmp[which(tmp[[2]]< -0.75  ) ,]
+length(tmp[[1]])
+z<-5
+plts[[which(tempsb[[1]]==tmp[z,1])]]
+
+
+#Now find those that have an unreasonable error
+#Exclude everything with positive slope
+tmp<-tempsab[which(abs(tempsb[[3]]/tempsb[[2]])> exp(-2) ) ,]
+length(tmp[[1]])
+z<-11
+plts[[which(tempsab[[1]]==tmp[z,1])]]
+
+
+
+
+
+##****************************************************************************************************
+##****************************************************************************************************
+###############
+
+##Process now the Ta files 
+######################
+########### Careful takes long time to process.
+#Here we produce the temperatures for each species 
+#This is a list of lists. 
+#Entry 1: Species name
+# Entry 2: plot of Pi vs frequency
+#Entry 3: Slope
+#Entry 4 fit error
+pltsa<-lapply(fnamTa,function(x) globalPlot(x))
+##############
+
+#Processing of the result
+#Put everything into a dataframe "temps" containsing: species name, temperatire, error
+tmp<-lapply(pltsa, function(x) c(x[[1]],as.numeric(x[[3]]),as.numeric(x[[4]])  )  )
+tmp2<-do.call(rbind, tmp)
+tempsa<-as.data.frame(tmp2,stringsAsFactors=F)
+colnames(tempsa)<- c("species","temperature","error")
+tempsa[["temperature"]] <-as.numeric(tempsa[["temperature"]])
+tempsa[["error"]] <-as.numeric(tempsa[["error"]])
+tmp<-tempsa[[1]]
+for (i in 1:length(tmp)) { tmp[i] <- sub("/home/dfc/seqsTab/","",tmp[i]); tmp[i] <- sub("ForTab.txt","",tmp[i])     }
+tempsa[[1]] <-tmp
+#finally remove an extra entry here
+tempsa<-tempsa[(tempsa$species %in% temps$species),]
+# Finished processing
+
+#Now find those that have a reasonable error
+#Exclude everything with positive slope
+tmp<-tempsa[which((tempsa[[3]]/tempsa[[2]])< 0 ) ,]
+#tmp<-tmp[which(abs(tmp[[3]]/tmp[[2]])> exp(-4)  ) ,]
+tmp<-tmp[which(abs(tmp[[3]]/tmp[[2]])< exp(-3)  ) ,]
+tmp<-tmp[which(tmp[[2]]< -0.75  ) ,]
+length(tmp[[1]])
+z<-5
+plts[[which(tempsab[[1]]==tmp[z,1])]]
+
+
+#Now find those that have an unreasonable error
+#Exclude everything with positive slope
+tmp<-tempsa[which(abs(tempsa[[3]]/tempsa[[2]])> exp(-2) ) ,]
+length(tmp[[1]])
+z<-11
+plts[[which(tempsa[[1]]==tmp[z,1])]]
+
+
+
+
+
+
+
+##****************************************************************************************************
+##****************************************************************************************************
+###############
+##Process now the Tab files 
+######################
+########### Careful takes long time to process.
+#Here we produce the temperatures for each species 
+#This is a list of lists. 
+#Entry 1: Species name
+# Entry 2: plot of Pi vs frequency
+#Entry 3: Slope
+#Entry 4 fit error
+pltsab<-lapply(fnamTab,function(x) globalPlot(x))
+##############
+
+#Processing of the result
+#Put everything into a dataframe "temps" containsing: species name, temperatire, error
+tmp<-lapply(pltsab, function(x) c(x[[1]],as.numeric(x[[3]]),as.numeric(x[[4]])  )  )
+tmp2<-do.call(rbind, tmp)
+tempsab<-as.data.frame(tmp2,stringsAsFactors=F)
+colnames(tempsab)<- c("species","temperature","error")
+tempsab[["temperature"]] <-as.numeric(tempsab[["temperature"]])
+tempsab[["error"]] <-as.numeric(tempsab[["error"]])
+tmp<-tempsab[[1]]
+for (i in 1:length(tmp)) { tmp[i] <- sub("/home/dfc/seqsTab/","",tmp[i]); tmp[i] <- sub("ForTab.txt","",tmp[i])     }
+tempsab[[1]] <-tmp
+#finally remove an extra entry here
+tempsab<-tempsab[(tempsab$species %in% temps$species),]
+# Finished processing
+
+#Now find those that have a reasonable error
+#Exclude everything with positive slope
+tmp<-tempsab[which((tempsab[[3]]/tempsab[[2]])< 0 ) ,]
+#tmp<-tmp[which(abs(tmp[[3]]/tmp[[2]])> exp(-4)  ) ,]
+tmp<-tmp[which(abs(tmp[[3]]/tmp[[2]])< exp(-3)  ) ,]
+tmp<-tmp[which(tmp[[2]]< -0.75  ) ,]
+length(tmp[[1]])
+z<-5
+plts[[which(tempsab[[1]]==tmp[z,1])]]
+
+
+#Now find those that have an unreasonable error
+#Exclude everything with positive slope
+tmp<-tempsab[which(abs(tempsab[[3]]/tempsab[[2]])> exp(-2) ) ,]
+length(tmp[[1]])
+z<-11
+plts[[which(tempsab[[1]]==tmp[z,1])]]
+
+
+ 

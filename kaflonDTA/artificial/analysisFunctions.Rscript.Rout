@@ -1,0 +1,501 @@
+
+R version 3.0.2 (2013-09-25) -- "Frisbee Sailing"
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> 
+> ##########################
+> #reads in the data with name nam
+> ##########################
+> 
+> gtDta<-function(nam)
++ {
++ dta <-read.table(nam,stringsAsFactors=F,header=T,sep=",")
++ dta
++ }
+> 
+> 
+> 
+> ############################
+> #Removes all but one value with unique Pi
+> ###########################
+> reduceDta<-function(sset,val){
++ #un<-unique(sset[["Pi"]])
++ tmp3<-sset[which(sset[["Pi"]]==val),]
++ l3<-length(tmp3[[1]])
++ #print(sset)
++ 
++ if(l3>1)
++ {
++ tmp4<-rownames(tmp3)[2:l3]
++ sset<- sset[!row.names(sset) %in% tmp4,] 
++ }
++ sset
++ }
+> 
+> ###########################
+> #Normalises the frequencies
+> #Retruns a normalised subset ready for fitting
+> #######################
+> procDta<-function(dta,bust, leng){
++ tmp2<-getSubSet(dta,bust,leng);
++ #Remove the repeated Pi values
++ 
++ 
++ #tmp2[["Pi"]] <-round(tmp2[["Pi"]],digits=7)
++ #print(unique(tmp2[["Pi"]]))
++ 
++ #print(sum(unique(tmp2[["Pi"]])))
++ un<-unique(tmp2[["Pi"]])
++ for (i in un){tmp2<-reduceDta(tmp2,i)}
++ #Now every Pi value should be unique
++ ##
++ tmpSum<- sum(tmp2[,"Freq"])
++ tmp9<- as.data.frame(tmp2[,"Freq"])
++ colnames(tmp9)<-c("N")
++ tmp2<-cbind(tmp2,tmp9)
++ tmp2[,"Freq"]<- tmp2[,"Freq"]/tmpSum
++ #tmp2[,"Freq"]<- tmp2[,"Freq"]
++ #dta[which(dta[["aa"]]==bust & dta[["L"]]==leng),]
++ tmp2
++ }
+> ############################
+>  
+> 
+> 
+> ###########################
+> #produce a subset of data
+> #######################
+> getSubSet<-function(dta,bust, leng){
++ tmp2<-dta[which(dta[["aa"]]==bust & dta[["L"]]==leng),]
++ }
+> ############################
+> 
+> 
+> 
+> ##############################
+> #Does the actual fitting
+> ###########################
+> fitD<- function(dta,bus,L)
++ {
++ en<-procDta(dta,bus,L)
++ rg<-assembleDta(en);
++ attach(en)
++ gh<-cbind(aa,rg)
++ detach()
++ ft<-lm(V2~V1,gh)
++ ft
++ }
+> 
+> ##############################
+> #Fits without modifying
+> ###########################
+> fitMe<- function(dta,xi=1,yi=2)
++ {
++ rg<-as.data.frame(cbind(dta[[xi]],dta[[yi]]));
++ colnames(rg)<-cbind("V1","V2")
++ ft<-lm(V2~V1,rg)
++ ft
++ }
+> 
+> ##############################
+> #retruns data for plotting in ggplot
+> #if rawD is TRUE then the function returns the raw probabilities and frequencies
+> ###########################
+> mkPlot<- function(specNam,bus,L,rawD=FALSE, daten)
++ {
++ #read in the data if it is no supplied
++ if(missing(daten)){
++ dta <-read.table(specNam,stringsAsFactors=F,header=T,sep=",")
++ } else{dta <- daten}
++ 
++ en<-procDta(dta,bus,L)
++ if(!rawD){
++ rg<-assembleDta(en);
++ 	}else{ rg<-as.data.frame(cbind(en$Pi*en$DegPi, en$Freq,en$N)); colnames(rg)<-c("Pi","Freq","N")}
++ attach(en)
++ gh<-cbind(aa,rg)
++ detach()
++ gh
++ }
+> 
+> 
+> ##############################
+> #transforms raw data into data thatw e can plot to check temperatur
+> ###########################
+> mkData<- function(dta)
++ {
++ 
++ rg<-assembleDta(dta);
++ attach(dta)
++ gh<-cbind(aa,rg)
++ detach()
++ gh
++ }
+> 
+> ##Now the same but for the C files that
+> #also report the number of codons
+> 
+> 
+> ##############################
+> #retruns data for plotting in ggplot
+> #if rawD is TRUE then the function returns the raw probabilities and frequencies
+> ###########################
+> mkPlotC<- function(specNam,bus,L,rawD=FALSE, daten)
++ {
++ #read in the data if it is no supplied
++ if(missing(daten)){
++ dta <-read.table(specNam,stringsAsFactors=F,header=T,sep=",")
++ } else{dta <- daten}
++ 
++ en<-procDta(dta,bus,L)
++ if(!rawD){
++ rg<-assembleDta(en);
++ 	}else{ rg<-as.data.frame(cbind(en$L,en$maxSynoLen,en$Codon1, en$Pi,en$Freq,en$N));   colnames(rg)<-c("L","k","Pi","Freq","N")}
++ attach(en)
++ gh<-cbind(aa,rg)
++ detach()
++ gh
++ }
+> 
+> 
+> 
+> 
+> ##############################
+> #retruns slopes for species
+> ###########################
+> getSlopesForSpecies<-function(specNam)
++ {
++ rt <-read.table(specNam,stringsAsFactors=F,header=T,sep=",")
++ lets<-unique(rt[["aa"]]);
++ lets<-lets[1:9]#take only the many codons
++  inp<-expand.grid(lets,4:9)
++ #tmp2<-apply(inp,1,function(x) {print(x); summary(fitD(rt,x[1],as.numeric(x[2])))$coefficients[2,1]})
++ tmp2<-apply(inp,1,function(x) { summary(fitD(rt,x[1],as.numeric(x[2])))$coefficients[2,1]})
++ 
++ tmp3<-cbind(inp,tmp2)
++ colnames(tmp3)<-cbind("aa","L","slope")
++ tmp3
++ }
+> 
+> 
+> #############################
+> #Procedure to plot many different lengths and codons in one graph
+> #Plot an entire genome and determine sklope
+> #Like globalPlot but returns data only
+> #if limit is specified then only the x SN values smaller than limit are returned
+> #limit = 0 is simply iognored
+> ############################
+> 
+> globalPlotOnlyDta<-function(nam,buchst=c(1:9),laengen=c(5:10),limit=0){
++ rt <-read.table(nam,stringsAsFactors=F,header=T,sep=",")
++ lets<-unique(rt[["aa"]])
++ lets<-lets[buchst]#take only the many codons
++ inp<-expand.grid(lets,laengen)
++ 
++ for (x in c(1:length(inp[[1]]))){ 
++ tmp4<-procDta(rt,inp[x,1],as.numeric(inp[x,2]));  
++ if(exists("tmp5")) {tmp5<-rbind(tmp5,tmp4)} 
++ else {tmp5<-tmp4}
++ 				}
++ print(nam)
++ print(lets)
++ tmp6<-mkData(tmp5)
++ if(limit !=0){tmp6<-tmp6[which(tmp6[["V1"]]<limit),]}
++ 
++ tmp6
++ }
+> ###########
+> 
+> #############################
+> #Procedure to plot many different lengths and codons in one graph
+> #Plot an entire genome and determine sklope
+> #Returns a graph and fit to graph
+> #This function just calculates the graphs for each length/leter combination and puts them together
+> #if limit is specified then only the x SN values smaller than limit are returned
+> #limit = 0 is simply iognored
+> ############################
+> 
+> globalPlot<-function(nam,lets=c(1:9),laengen=c(5:10),limit=0){
++ tmp6<- globalPlotOnlyDta(nam,lets,laengen,limit)
++ pl<-ggplot(tmp6,aes(x=V1,y=V2)) + geom_point(size=2,aes(colour=aa)) + 
++ geom_smooth(method='lm',se=F) + scale_colour_discrete( ) 
++ #+geom_abline(intercept=-1.5,slope=-0.6596)
++ ft<-fitMe(tmp6,2,3)
++ slp<-(summary(ft)$coefficients)[2]
++ err<-(summary(ft)$coefficients)[4]
++ list(nam,pl,slp,err)
++ }
+> ###########
+> 
+> 
+> #############################
+> #Procedure to caluculateSanove probability for many different lengths and codons
+> #comb=T means that it will give a single Sanov value for all amino acidsi
+> #otherwise it splits up for each amino acid
+> #this function returns a list containing Sanov, KL distance and raw data  when called with argument comb=T, 
+> #otherwise a a vector with results including KL, Sanov and slope
+> ############################
+> 
+> calcSanov<-function(nam,buchst=c(1:9),laengen=c(5:10),comb=T){
++ #Produce all combinations of lengths and amino acidsi
++ dta <-read.table(nam,stringsAsFactors=F,header=T,sep=",",as.is=T)
++ lets<-unique(dta[["aa"]])
++ lets<-lets[buchst]#take only the many codons
++ inp<-expand.grid(lets,laengen)
++ 
++ #calculate now the Sanov probability for each combination of AA and lengths
++ tmp<-apply(inp,1,function(x) {num<-as.numeric(x[2]);mkPlot(nam,x[1],num,T,dta) })
++ 
++ #print(tmp) 
++  if(comb){
++ #firs calculate the combined
++ tmp5<-do.call(rbind.data.frame,tmp)
++ totNum<- sum(tmp5[["N"]])
++ tmp5[["Freq"]]<-tmp5[["Freq"]]/length(tmp)
++ tmp5[["Pi"]]<-tmp5[["Pi"]]/length(tmp)
++ # print(head(tmp5))
++  tmp<-as.data.frame(tmp5,stringsAsFactors=F, as.is=T)
++ # print(sum(tmp[["Freq"]]))
++ # print(sum(tmp[["Pi"]]))
++  x<-tmp
++ tmp2<-  exp(-sum(x$N)*sum(-x$Pi*log(x$Freq/x$Pi))) #Sanove probability 
++ kl<-  sum(x$Freq*log(x$Freq/x$Pi))#KL distance
++ tmp3<-list(aa=nam,Sanov =tmp2,KL=kl,data=tmp)
++ print(nam)
++ }
++ else# if comb= F
++     { 
++ #here calculate for each amino acid searately
++ tmpSan<- lapply(tmp,function(x){yu<- exp(-sum(x$N)*sum(x$Freq*log(x$Freq/x$Pi))) ;yu}     )
++ tmpKL<- lapply(tmp,function(x){yu<- sum(x$Freq*log(x$Freq/x$Pi));yu}     )
++ tmpSL<- lapply(tmp,function(x){
++     yu<-0
++     if(length(x[[1]])>0){  x[[2]]<--log(x[[2]]) ; x[[3]]<-log(x[[3]]);yu<-(fitMe(x,2,3)$coef)[2] } 
++     yu				
++ 			          } )
++ tmpnam<- sub("ForTb.txt","",strsplit(nam,"/")[[1]][5])
++ tmp3<-cbind(inp,unlist(tmpSan),unlist(tmpKL),unlist(tmpSL),unlist(tmpnam))
++ #print(head(tmp3))
++ colnames(tmp3) <-c("aa","L","Sanov","KL","slope","species")
++ print(nam)
++ }
++ 
++ tmp3
++ }
+> ###########
+> 
+> ###########
+> #Compare the Sanov probability of random and the actual sequence.
+> #Returns the fraction between the means
+> ###########
+> compareSanov<-function(specNumber,buchst=c(1:9),laengen=c(5:10)){
++ 
++ #First calculate Sanov probability of Tb
++ rtD<-lapply(specNumber,function(x){
++ tmp<-calcSanov(fnamTb[x],buchst,laengen)
++ tmp["data"]<-NULL
++ tmp <-as.data.frame(tmp,stringsAsFactors=F,as.is=T)
++                                    }
++               )
++ 
++ #print(rtD)
++ rtD<-do.call(rbind.data.frame,rtD)
++ 
++ #Now calculate Sanov probability of Tab
++ rtR<-lapply(specNumber,function(x){
++ tmp<-calcSanov(fnamTab[x],buchst,laengen)
++ tmp["data"]<-NULL
++ tmp <-as.data.frame(tmp,stringsAsFactors=F,as.is=T)
++ }
++ )
++ #print(rtD)
++ rtR<-do.call(rbind.data.frame,rtR)
++ 
++ tmp<-cbind(rtD,rtR[["Sanov"]],rtR[["KL"]],rtR[["KL"]]/rtD[["KL"]])
++ colnames(tmp) <- c(colnames(rtD),"SanovRand","KLRand", "Ratio")
++ #colnames(tmp)<-c("speciesNumber","ratio","sanov","randSanov")
++ tmp
++ }
+> 
+> 
+> ###########
+> #A wrapper function to calculate the KL distance for each species and each aa
+> #Returns a convenient format
+> ###########
+> getKLValues<-function(specNumber,buchst=c(1:9),laengen=c(5:10)){
++ 
++ tmp<-lapply(specNumber, 
++ function(x){ 
++ ut<-calcSanov(fnamTb[x],buchst,laengen,F);
++ le<-length(ut[[1]]);
++ tmp2<-rep(x,le);
++ ut[["Sanov"]]<-NULL
++ ut[["slope"]]<-NULL
++ tmp3<-cbind(tmp2,ut);
++ tmp3<-cbind(tmp2,ut[["aa"]],ut[["L"]],ut[["KL"]],ut[["KL"]]/ut[["L"]]);
++ colnames(tmp3)<-c("species","aa","L","KL","KLNorm");
++ tmp3
++ }
++ )
++ outp<- do.call(rbind,tmp)
++ as.data.frame(outp)#
++ hl<-outp[,"KL"]/outp[,"L"]
++ outp2<-cbind(outp,hl)
++ colnames(outp2) <- cbind("species","aa","L","KL","name","KLNorm")
++ outp2
++ 
++ #Here It becomes clear that I am a dilletant. It is clearly 
++ #unnecessary to write to file and read again, but it shows
++ #That I cannot deal with dataframes and factors....
++ write.csv(outp2,file="KLValues.txt", row.names=F,  quote=F)
++ outp<-read.csv("KLValues.txt",header=T,as.is=T)
++ }
+> 
+> 
+> 
+> ###########################
+> #This is a little helper function to assemble the data
+> #*All* it does is to calculate the entropy. Nothing else
+> #It returns a dataframe with two cols.
+> #Col1: Entropy
+> #Col2: How often is the entropy observed
+> #######################
+> assembleDta<-function(dta){
++ attach(dta)
++ #rg<- as.data.frame(cbind(-log(Pi*DegPi/(Pmax)),log(Freq)));
++ rg<- as.data.frame(cbind(-log(Pi*DegPi),log(Freq)));
++ detach();
++ colnames(rg) <- c("V1","V2")
++ #print(head(rg))
++ rg  
++ }
+> #######b#######
+> 
+> 
+> ##****************************************************************************************************
+> ##****************************************************************************************************
+> ##****************************************************************************************************
+> ##****************************************************************************************************
+> ############################
+> 
+> 
+> fnamT<-dir("/home/dfc/seqs",full.names=T)
+> fnamTb<-dir("/home/dfc/seqsTb",full.names=T)
+> fnamTa<-dir("/home/dfc/seqsTa",full.names=T)
+> fnamTab<-dir("/home/dfc/seqsTab",full.names=T)
+> fnamC<-dir("/home/dfc/Cseqs",full.names=T)
+> 
+> bacnamT<-dir("/home/dfc/seqsBCT",full.names=T)
+> bacnamTa<-dir("/home/dfc/seqsBCTa",full.names=T)
+> bacnamTb<-dir("/home/dfc/seqsBCTb",full.names=T)
+> bacnamTab<-dir("/home/dfc/seqsBCTab",full.names=T)
+> 
+> protnamT<-dir("/home/dfc/seqsPT",full.names=T)
+> protnamTa<-dir("/home/dfc/seqsPTa",full.names=T)
+> protnamTb<-dir("/home/dfc/seqsPTb",full.names=T)
+> protnamTab<-dir("/home/dfc/seqsPTab",full.names=T)
+> 
+> 
+> #load the codon usage table
+> cub <- read.csv("cubTableRed.txt",header=T,stringsAsFactors=F)
+> tmp<-order(cub[[1]])
+> cub<-cub[tmp,]
+> tmp<- rowMeans(cub[,2:10])
+> tmp2<-apply(cub,1,function(x) sd(x[2:10]))
+> cubStat <- as.data.frame(cbind(cub[[1]],tmp,tmp2),stringsAsFactors=F)
+> colnames(cubStat)<- c("name","meancub","sd")
+> rownames(cubStat) <-c(1:length(cubStat[[1]]))
+> #Find the names that have low CUB
+> cublow<-cubStat[which(cubStat[[2]]<0.35),]
+> 
+> #mow same for bacteria
+> cub <- read.csv("cubTableRedB.txt",header=T,stringsAsFactors=F)
+> tmp<-order(cub[[1]])
+> cub<-cub[tmp,]
+> tmp<- rowMeans(cub[,2:10])
+> tmp2<-apply(cub,1,function(x) sd(x[2:10]))
+> cubStatB <- as.data.frame(cbind(cub[[1]],tmp,tmp2),stringsAsFactors=F)
+> colnames(cubStatB)<- c("name","meancub","sd")
+> rownames(cubStatB) <-c(1:length(cubStatB[[1]]))
+> #Find the names that have low CUB
+> 
+> 
+> 
+> #mow same for protosts
+> cub <- read.csv("cubTableRedP.txt",header=T,stringsAsFactors=F)
+> tmp<-order(cub[[1]])
+> cub<-cub[tmp,]
+> tmp<- rowMeans(cub[,2:10])
+> tmp2<-apply(cub,1,function(x) sd(x[2:10]))
+> cubStatP <- as.data.frame(cbind(cub[[1]],tmp,tmp2),stringsAsFactors=F)
+> colnames(cubStatP)<- c("name","meancub","sd")
+> rownames(cubStatP) <-c(1:length(cubStatP[[1]]))
+> #Find the names that have low CUB
+> 
+> 
+> 
+> 
+> 
+> #load the sanov detail data
+> #produced by execute3.R
+> 
+> sanovDTb<-read.csv("sanovDetailForTb.txt",header=T,comment.char="#")
+> sanovDT<-read.csv("sanovDetailForT.txt",header=T,comment.char="#")
+> 
+> #load the non-detailed sanov
+> 
+> sanov<-read.csv("sanovRatios.txt",header=T)
+> 
+> #load the slopes now
+> #produced by execute4.R
+> slopes<-read.csv("slopes5To10.txt",header=T)
+> slopesP<-read.csv("slopes5To10P.txt",header=T)
+> slopesB<-read.csv("slopes5To10BC.txt",header=T)
+> 
+> #load the slopes now
+> #produced by execute3.R
+> slopesS3<-read.csv("slopes5To10Smaller3.txt",header=T) #old style, where we restrict the calculated values, not the observed frequencies
+> slopesS5<-read.csv("slopes5To15S5.txt",header=T) # slope where we removed datapoints where observed
+> #order species based on KL value
+> tmp<-fnamTb[order(sanov[["KL"]])]
+> for (i in 1:length(tmp)) { tmp[i] <- sub("/home/dfc/seqsTb/","",tmp[i]); tmp[i] <- sub("ForTb.txt","",tmp[i])     }
+> tmp2<-sanov[order(sanov[["KL"]]),]
+> ordSpec<-cbind(tmp2,tmp)
+> 
+> 
+> 
+> ######Now determine the KLValues
+> ##klSorted contains a list of sorted KL values
+> 
+> tmpnam<- lapply(fnamTb,function(x) sub("ForTb.txt","",strsplit(x,"/")[[1]][5]))
+> tmpnam<-unlist(tmpnam)
+> 
+> #tmp<-getKLValues(c(1:length(fnamTb)),c(1:18),c(5:15))
+> kl<-read.csv("KLValues.txt.gz",header=T)
+> klmeans<-aggregate(kl$KLNorm,list(kl$species),mean)
+> klsd<-aggregate(kl$KLNorm,list(kl$species),sd)
+> klstats<- cbind(tmpnam,klmeans,klsd[[2]])
+> colnames(klstats)<- c("name","species","KLmean","Klsd")
+> tmp<-order(klstats$KLmean)
+> klSorted<- klstats[tmp,]
+> 
+> proc.time()
+   user  system elapsed 
+  3.844   0.412   3.775 

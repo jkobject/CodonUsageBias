@@ -1,0 +1,8 @@
+#This takes the synotabl and makes the cubTReduced file
+
+
+a<-read.csv("tmp.txt", header=T)
+
+tmp<-apply(a,2, function(x)  sapply(x,function(y) {if (y>0.5) {y<-1-y};y}  )  )      
+
+write.csv(file="cubTableRed.txt",tmp,quote=F)

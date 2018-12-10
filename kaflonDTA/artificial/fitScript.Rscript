@@ -1,0 +1,6 @@
+
+
+a<-read.csv("saccharomyces_cerevisiaeForTbC2.txt",header=T) 
+b<-a[which(a$L <16 & a$L>4),]
+
+head(b)

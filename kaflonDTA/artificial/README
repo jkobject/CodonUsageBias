@@ -1,0 +1,18 @@
+A description of the files found in this folder:
+
+mkRedtable.sh  This file takes a synotable, as Yun produces it and prodices a file (tmp) which contains usable cub data for AAs with two codons only. Usable means that for each AA it shows the proportion of the codon that is less frequent
+
+mkDistrib.R  it takes statistics for each AA and length for all AAs with 2 codons and fits them to a model. This model is defined in fitModel.xxx (which is a maple script). It then fits to the model an returns the fitted parameters. The important ones are a and b and the residual. The output of this is nonlinfit??.txt (where the ?? indicates the lengths).
+
+
+interactiveMkDistrib.R   similar to mkDistrib, but interactive. Makes it possible to fit and view 1 particular amino acid/species
+
+analysisFunctions.Rscript   ... contains all the functions necessary to analyse the cub
+
+
+figures.Rscript  .... produces all the figures for the paper (and a few more)
+
+temperatureanalysis/protistanalysis/bacterianalysis   ... scripts to interactively analyse and explore the fungi/protist/bacteria genomes
+
+parameterFitsFungi, parameterFitsBacteria,etc..   contains the fits of the distributions of codons to the simple energy model described n the paper. Each file considers a paricular sublength only but for all species and all AAs with 2 codons.
+

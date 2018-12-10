@@ -1,0 +1,3295 @@
+
+R version 3.0.2 (2013-09-25) -- "Frisbee Sailing"
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> #This Produces slope data
+> source("analysisFunctions.Rscript")
+> 
+> 
+> fnamT<-dir("/home/dfc/seqs",full.names=T)
+> fnamTb<-dir("/home/dfc/seqsTb",full.names=T)
+> fnamTa<-dir("/home/dfc/seqsTa",full.names=T)
+> fnamTab<-dir("/home/dfc/seqsTab",full.names=T)
+> 
+> 
+> res<- lapply(c(1:length(fnamTb)),function(x){ 
++ tmp1<-globalPlotOnlyDta(fnamTb[x],c(1:9),c(5:15),0)
++ ## filter out rare data
++ tmp1<-tmp1[which(tmp1[[2]]<  (5)), ]
++ ##
++ tmp<-summary(fitMe(tmp1,"V1","V2"))$coef
++ obssl<-as.numeric(tmp[2])
++ obserr<-as.numeric(tmp[4])
++ tmp1<-globalPlotOnlyDta(fnamTab[x],c(1:9),c(5:15),0)
++ tmp1<-tmp1[which(tmp1[[2]]<  (5)), ]
++ tmp<-summary(fitMe(tmp1,"V1","V2"))$coef
++ ransl<-as.numeric(tmp[2])
++ ranerr<-as.numeric(tmp[4])
++ c(obssl,obserr,ransl,ranerr)
++ })
+[1] "/home/dfc/seqsTb/absidia_glaucaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/absidia_glaucaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/acidomyces_richmondensis_bfwForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/acidomyces_richmondensis_bfwForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/acremonium_chrysogenum_atcc_11550ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/acremonium_chrysogenum_atcc_11550ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/agaricus_bisporus_var_burnettii_jb137_s8ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/agaricus_bisporus_var_burnettii_jb137_s8ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/allomyces_macrogynus_atcc_38327ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/allomyces_macrogynus_atcc_38327ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/alternaria_alternataForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/alternaria_alternataForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/amanita_muscaria_koide_bx008ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/amanita_muscaria_koide_bx008ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/anncaliia_algerae_pra339ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/anncaliia_algerae_pra339ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/anthracocystis_flocculosa_pf_1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/anthracocystis_flocculosa_pf_1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/arthrobotrys_oligospora_atcc_24927ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/arthrobotrys_oligospora_atcc_24927ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/arthroderma_benhamiae_cbs_112371ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/arthroderma_benhamiae_cbs_112371ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/arthroderma_otae_cbs_113480ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/arthroderma_otae_cbs_113480ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aschersonia_aleyrodis_rcef_2490ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aschersonia_aleyrodis_rcef_2490ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/ascochyta_rabieiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/ascochyta_rabieiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/ascoidea_rubescens_dsm_1968ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/ascoidea_rubescens_dsm_1968ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/ascosphaera_apis_arsef_7405ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/ascosphaera_apis_arsef_7405ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/ashbya_gossypiiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/ashbya_gossypiiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aspergillus_calidoustusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aspergillus_calidoustusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aspergillus_clavatusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aspergillus_clavatusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aspergillus_cristatusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aspergillus_cristatusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aspergillus_flavusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aspergillus_flavusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aspergillus_fumigatusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aspergillus_fumigatusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aspergillus_lentulusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aspergillus_lentulusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aspergillus_luchuensisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aspergillus_luchuensisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aspergillus_nidulansForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aspergillus_nidulansForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aspergillus_nigerForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aspergillus_nigerForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aspergillus_nomius_nrrl_13137ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aspergillus_nomius_nrrl_13137ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aspergillus_ochraceoroseusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aspergillus_ochraceoroseusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aspergillus_oryzaeForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aspergillus_oryzaeForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aspergillus_parasiticus_su_1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aspergillus_parasiticus_su_1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aspergillus_rambelliiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aspergillus_rambelliiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aspergillus_ruber_cbs_135680ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aspergillus_ruber_cbs_135680ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aspergillus_terreusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aspergillus_terreusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aspergillus_udagawaeForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aspergillus_udagawaeForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aspergillus_ustusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aspergillus_ustusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aureobasidium_melanogenum_cbs_110374ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aureobasidium_melanogenum_cbs_110374ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aureobasidium_namibiae_cbs_147_97ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aureobasidium_namibiae_cbs_147_97ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/aureobasidium_subglaciale_exf_2481ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/aureobasidium_subglaciale_exf_2481ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/babjeviella_inositovora_nrrl_y_12698ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/babjeviella_inositovora_nrrl_y_12698ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/batrachochytrium_dendrobatidis_jam81ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/batrachochytrium_dendrobatidis_jam81ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/baudoinia_panamericana_uamh_10762ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/baudoinia_panamericana_uamh_10762ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/beauveria_bassiana_arsef_2860ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/beauveria_bassiana_arsef_2860ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/bipolaris_maydis_c5ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/bipolaris_maydis_c5ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/bipolaris_oryzae_atcc_44560ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/bipolaris_oryzae_atcc_44560ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/bipolaris_sorokiniana_nd90prForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/bipolaris_sorokiniana_nd90prForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/bipolaris_victoriae_fi3ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/bipolaris_victoriae_fi3ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/bipolaris_zeicola_26_r_13ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/bipolaris_zeicola_26_r_13ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/blastomyces_dermatitidis_er_3ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/blastomyces_dermatitidis_er_3ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/blastomyces_gilchristii_slh14081ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/blastomyces_gilchristii_slh14081ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/blumeria_graminisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/blumeria_graminisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/botryobasidium_botryosum_fd_172_ss1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/botryobasidium_botryosum_fd_172_ss1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/botrytis_cinereaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/botrytis_cinereaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/brettanomyces_bruxellensis_awri1499ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/brettanomyces_bruxellensis_awri1499ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/byssochlamys_spectabilis_no_5ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/byssochlamys_spectabilis_no_5ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/calocera_cornea_hhb12733ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/calocera_cornea_hhb12733ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/calocera_viscosa_tufc12733ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/calocera_viscosa_tufc12733ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/candida_albicans_wo_1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/candida_albicans_wo_1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/candida_arabinofermentans_nrrl_yb_2248ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/candida_arabinofermentans_nrrl_yb_2248ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/_candida_aurisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/_candida_aurisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/candida_dubliniensis_cd36ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/candida_dubliniensis_cd36ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/_candida_glabrataForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/_candida_glabrataForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/candida_maltosa_xu316ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/candida_maltosa_xu316ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/candida_orthopsilosis_co_90_125ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/candida_orthopsilosis_co_90_125ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/candida_parapsilosis_cdc317ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/candida_parapsilosis_cdc317ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/candida_tanzawaensis_nrrl_y_17324ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/candida_tanzawaensis_nrrl_y_17324ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/_candida_tenuis_atcc_10573ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/_candida_tenuis_atcc_10573ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/candida_tropicalis_mya_3404ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/candida_tropicalis_mya_3404ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/capronia_coronata_cbs_617_96ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/capronia_coronata_cbs_617_96ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/capronia_epimyces_cbs_606_96ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/capronia_epimyces_cbs_606_96ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/capronia_semi_immersaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/capronia_semi_immersaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/ceraceosorus_bombacisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/ceraceosorus_bombacisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/ceratocystis_plataniForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/ceratocystis_plataniForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cercospora_fijiensis_cirad86ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cercospora_fijiensis_cirad86ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/chaetomium_globosum_cbs_148_51ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/chaetomium_globosum_cbs_148_51ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/chaetomium_thermophilum_var_thermophilum_dsm_1495ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/chaetomium_thermophilum_var_thermophilum_dsm_1495ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/choanephora_cucurbitarumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/choanephora_cucurbitarumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cladophialophora_bantiana_cbs_173_52ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cladophialophora_bantiana_cbs_173_52ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cladophialophora_carrionii_cbs_160_54ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cladophialophora_carrionii_cbs_160_54ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cladophialophora_immundaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cladophialophora_immundaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cladophialophora_psammophila_cbs_110553ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cladophialophora_psammophila_cbs_110553ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cladophialophora_yegresii_cbs_114405ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cladophialophora_yegresii_cbs_114405ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/claviceps_purpurea_20_1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/claviceps_purpurea_20_1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/clavispora_lusitaniae_atcc_42720ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/clavispora_lusitaniae_atcc_42720ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/coccidioides_immitis_rsForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/coccidioides_immitis_rsForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/coccidioides_posadasii_str_silveiraForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/coccidioides_posadasii_str_silveiraForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/colletotrichum_fioriniae_pj7ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/colletotrichum_fioriniae_pj7ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/colletotrichum_gloeosporioidesForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/colletotrichum_gloeosporioidesForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/colletotrichum_graminicolaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/colletotrichum_graminicolaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/colletotrichum_higginsianumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/colletotrichum_higginsianumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/colletotrichum_incanumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/colletotrichum_incanumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/colletotrichum_nymphaeae_sa_01ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/colletotrichum_nymphaeae_sa_01ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/colletotrichum_orbiculareForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/colletotrichum_orbiculareForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/colletotrichum_salicisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/colletotrichum_salicisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/colletotrichum_simmondsiiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/colletotrichum_simmondsiiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/colletotrichum_sublineolaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/colletotrichum_sublineolaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/colletotrichum_tofieldiaeForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/colletotrichum_tofieldiaeForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/conidiobolus_coronatus_nrrl_28638ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/conidiobolus_coronatus_nrrl_28638ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/coniophora_puteana_rwd_64_598_ss2ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/coniophora_puteana_rwd_64_598_ss2ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/coniosporium_apollinis_cbs_100218ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/coniosporium_apollinis_cbs_100218ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/coprinopsis_cinerea_okayama7_130ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/coprinopsis_cinerea_okayama7_130ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cordyceps_brongniartii_rcef_3172ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cordyceps_brongniartii_rcef_3172ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cordyceps_confragosa_rcef_1005ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cordyceps_confragosa_rcef_1005ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cordyceps_militaris_cm01ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cordyceps_militaris_cm01ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cryptococcus_amylolentus_cbs_6039ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cryptococcus_amylolentus_cbs_6039ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cryptococcus_depauperatus_cbs_7855ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cryptococcus_depauperatus_cbs_7855ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cryptococcus_gattii_ca1873ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cryptococcus_gattii_ca1873ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cryptococcus_gattii_vgii_mmrl2647ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cryptococcus_gattii_vgii_mmrl2647ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cryptococcus_gattii_vgiv_ind107ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cryptococcus_gattii_vgiv_ind107ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cryptococcus_gattii_wm276ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cryptococcus_gattii_wm276ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cryptococcus_neoformansForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cryptococcus_neoformansForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cutaneotrichosporon_oleaginosusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cutaneotrichosporon_oleaginosusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cyberlindnera_jadiniiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cyberlindnera_jadiniiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cylindrobasidium_torrendii_fp15055_ss_10ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cylindrobasidium_torrendii_fp15055_ss_10ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/cyphellophora_europaea_cbs_101466ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/cyphellophora_europaea_cbs_101466ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/dactylellina_haptotyla_cbs_200_50ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/dactylellina_haptotyla_cbs_200_50ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/daedalea_quercina_l_15889ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/daedalea_quercina_l_15889ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/debaryomyces_fabryiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/debaryomyces_fabryiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/debaryomyces_hansenii_cbs767ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/debaryomyces_hansenii_cbs767ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/diaporthe_ampelinaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/diaporthe_ampelinaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/diaporthe_helianthiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/diaporthe_helianthiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/dichomitus_squalens_lyad_421_ss1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/dichomitus_squalens_lyad_421_ss1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/diplodia_seriataForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/diplodia_seriataForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/dothistroma_septosporumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/dothistroma_septosporumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/drechmeria_coniosporaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/drechmeria_coniosporaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/drechslerella_stenobrocha_248ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/drechslerella_stenobrocha_248ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/edhazardia_aedis_usnm_41457ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/edhazardia_aedis_usnm_41457ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/emmonsia_crescens_uamh_3008ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/emmonsia_crescens_uamh_3008ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/emmonsia_parva_uamh_139ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/emmonsia_parva_uamh_139ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/emmonsia_sp_cac_2015aForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/emmonsia_sp_cac_2015aForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/encephalitozoon_cuniculi_gb_m1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/encephalitozoon_cuniculi_gb_m1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/encephalitozoon_hellem_atcc_50504ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/encephalitozoon_hellem_atcc_50504ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/encephalitozoon_intestinalis_atcc_50506ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/encephalitozoon_intestinalis_atcc_50506ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/encephalitozoon_romaleae_sj_2008ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/encephalitozoon_romaleae_sj_2008ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/endocarpon_pusillum_z07020ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/endocarpon_pusillum_z07020ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/enterocytozoon_bieneusi_h348ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/enterocytozoon_bieneusi_h348ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/eremothecium_cymbalariae_dbvpg_7215ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/eremothecium_cymbalariae_dbvpg_7215ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/eremothecium_sinecaudumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/eremothecium_sinecaudumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/erysiphe_necatorForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/erysiphe_necatorForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/escovopsis_weberiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/escovopsis_weberiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/eutypa_lata_ucrel1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/eutypa_lata_ucrel1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/exidia_glandulosa_hhb12029ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/exidia_glandulosa_hhb12029ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/exophiala_aquamarina_cbs_119918ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/exophiala_aquamarina_cbs_119918ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/exophiala_dermatitidis_nih_ut8656ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/exophiala_dermatitidis_nih_ut8656ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/exophiala_mesophilaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/exophiala_mesophilaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/exophiala_oligospermaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/exophiala_oligospermaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/exophiala_siderisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/exophiala_siderisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/exophiala_spiniferaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/exophiala_spiniferaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/exophiala_xenobioticaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/exophiala_xenobioticaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fibroporia_radiculosaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fibroporia_radiculosaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fibulorhizoctonia_sp_cbs_109695ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fibulorhizoctonia_sp_cbs_109695ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fistulina_hepatica_atcc_64428ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fistulina_hepatica_atcc_64428ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fomitiporia_mediterranea_mf3_22ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fomitiporia_mediterranea_mf3_22ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fomitopsis_pinicola_fp_58527_ss1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fomitopsis_pinicola_fp_58527_ss1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fonsecaea_erectaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fonsecaea_erectaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fonsecaea_monophoraForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fonsecaea_monophoraForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fonsecaea_multimorphosa_cbs_102226ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fonsecaea_multimorphosa_cbs_102226ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fonsecaea_nubicaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fonsecaea_nubicaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fonsecaea_pedrosoi_cbs_271_37ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fonsecaea_pedrosoi_cbs_271_37ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fusarium_culmorumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fusarium_culmorumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fusarium_fujikuroiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fusarium_fujikuroiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fusarium_graminearumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fusarium_graminearumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fusarium_langsethiaeForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fusarium_langsethiaeForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fusarium_oxysporumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fusarium_oxysporumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fusarium_poaeForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fusarium_poaeForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fusarium_pseudograminearumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fusarium_pseudograminearumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fusarium_solaniForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fusarium_solaniForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/fusarium_verticillioidesForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/fusarium_verticillioidesForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/gaeumannomyces_graminisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/gaeumannomyces_graminisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/galerina_marginata_cbs_339_88ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/galerina_marginata_cbs_339_88ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/gelatoporia_subvermispora_bForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/gelatoporia_subvermispora_bForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/geotrichum_candidumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/geotrichum_candidumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/glarea_lozoyensis_74030ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/glarea_lozoyensis_74030ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/gloeophyllum_trabeum_atcc_11539ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/gloeophyllum_trabeum_atcc_11539ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/gonapodya_prolifera_jel478ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/gonapodya_prolifera_jel478ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/grifola_frondosaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/grifola_frondosaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/grosmannia_clavigera_kw1407ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/grosmannia_clavigera_kw1407ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/gymnopus_luxurians_fd_317_m1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/gymnopus_luxurians_fd_317_m1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/hanseniaspora_opuntiaeForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/hanseniaspora_opuntiaeForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/hanseniaspora_osmophilaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/hanseniaspora_osmophilaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/hanseniaspora_uvarum_dsm_2768ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/hanseniaspora_uvarum_dsm_2768ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/hanseniaspora_valbyensis_nrrl_y_1626ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/hanseniaspora_valbyensis_nrrl_y_1626ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/hebeloma_cylindrosporum_h7ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/hebeloma_cylindrosporum_h7ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/heterobasidion_irregulare_tc_32_1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/heterobasidion_irregulare_tc_32_1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/hirsutella_minnesotensis_3608ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/hirsutella_minnesotensis_3608ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/histoplasma_capsulatum_nam1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/histoplasma_capsulatum_nam1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/hydnomerulius_pinastri_md_312ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/hydnomerulius_pinastri_md_312ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/hypholoma_sublateritium_fd_334_ss_4ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/hypholoma_sublateritium_fd_334_ss_4ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/hyphopichia_burtonii_nrrl_y_1933ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/hyphopichia_burtonii_nrrl_y_1933ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/hypsizygus_marmoreusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/hypsizygus_marmoreusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/isaria_fumosorosea_arsef_2679ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/isaria_fumosorosea_arsef_2679ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/jaapia_argillacea_mucl_33604ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/jaapia_argillacea_mucl_33604ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/kalmanozyma_brasiliensis_ghg001ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/kalmanozyma_brasiliensis_ghg001ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/kazachstania_africana_cbs_2517ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/kazachstania_africana_cbs_2517ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/kazachstania_naganishii_cbs_8797ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/kazachstania_naganishii_cbs_8797ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/kluyveromyces_lactisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/kluyveromyces_lactisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/kluyveromyces_marxianus_dmku3_1042ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/kluyveromyces_marxianus_dmku3_1042ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/komagataella_pastorisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/komagataella_pastorisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/komagataella_phaffii_cbs_7435ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/komagataella_phaffii_cbs_7435ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/kuraishia_capsulata_cbs_1993ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/kuraishia_capsulata_cbs_1993ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/kwoniella_bestiolae_cbs_10118ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/kwoniella_bestiolae_cbs_10118ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/kwoniella_dejecticola_cbs_10117ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/kwoniella_dejecticola_cbs_10117ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/kwoniella_heveanensis_cbs_569ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/kwoniella_heveanensis_cbs_569ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/kwoniella_mangroviensis_cbs_8886ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/kwoniella_mangroviensis_cbs_8886ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/kwoniella_pini_cbs_10737ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/kwoniella_pini_cbs_10737ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/laccaria_amethystina_laam_08_1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/laccaria_amethystina_laam_08_1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/laccaria_bicolor_s238n_h82ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/laccaria_bicolor_s238n_h82ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/lachancea_lanzarotensisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/lachancea_lanzarotensisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/lachancea_thermotolerans_cbs_6340ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/lachancea_thermotolerans_cbs_6340ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/laetiporus_sulphureus_93_53ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/laetiporus_sulphureus_93_53ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/leptosphaeria_maculansForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/leptosphaeria_maculansForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/leucoagaricus_sp_symc_cosForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/leucoagaricus_sp_symc_cosForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/lichtheimia_corymbifera_jmrc_fsu_9682ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/lichtheimia_corymbifera_jmrc_fsu_9682ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/lichtheimia_ramosaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/lichtheimia_ramosaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/lipomyces_starkeyi_nrrl_y_11557ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/lipomyces_starkeyi_nrrl_y_11557ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/lodderomyces_elongisporus_nrrl_yb_4239ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/lodderomyces_elongisporus_nrrl_yb_4239ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/macrophomina_phaseolina_ms6ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/macrophomina_phaseolina_ms6ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/madurella_mycetomatisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/madurella_mycetomatisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/magnaporthe_oryzaeForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/magnaporthe_oryzaeForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/magnaporthe_poaeForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/magnaporthe_poaeForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/malassezia_pachydermatisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/malassezia_pachydermatisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/malassezia_sympodialis_atcc_42132ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/malassezia_sympodialis_atcc_42132ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/marssonina_brunnea_f_sp_multigermtubi_mb_m1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/marssonina_brunnea_f_sp_multigermtubi_mb_m1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/melampsora_laricipopulinaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/melampsora_laricipopulinaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/metarhizium_acridum_cqma_102ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/metarhizium_acridum_cqma_102ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/metarhizium_album_arsef_1941ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/metarhizium_album_arsef_1941ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/metarhizium_anisopliae_arsef_23ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/metarhizium_anisopliae_arsef_23ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/metarhizium_anisopliaeForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/metarhizium_anisopliaeForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/metarhizium_brunneum_arsef_3297ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/metarhizium_brunneum_arsef_3297ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/metarhizium_guizhouense_arsef_977ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/metarhizium_guizhouense_arsef_977ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/metarhizium_majus_arsef_297ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/metarhizium_majus_arsef_297ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/metarhizium_rileyi_rcef_4871ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/metarhizium_rileyi_rcef_4871ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/metschnikowia_bicuspidata_var_bicuspidata_nrrl_yb_4993ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/metschnikowia_bicuspidata_var_bicuspidata_nrrl_yb_4993ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/meyerozyma_guilliermondii_atcc_6260ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/meyerozyma_guilliermondii_atcc_6260ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/microbotryum_violaceumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/microbotryum_violaceumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/microdochium_bolleyiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/microdochium_bolleyiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/microsporum_gypseum_cbs_118893ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/microsporum_gypseum_cbs_118893ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/millerozyma_farinosa_cbs_7064ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/millerozyma_farinosa_cbs_7064ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/mitosporidium_daphniaeForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/mitosporidium_daphniaeForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/mixia_osmundae_iam_14324ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/mixia_osmundae_iam_14324ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/moesziomyces_antarcticusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/moesziomyces_antarcticusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/moesziomyces_aphidis_dsm_70725ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/moesziomyces_aphidis_dsm_70725ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/moniliophthora_perniciosa_fa553ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/moniliophthora_perniciosa_fa553ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/moniliophthora_roreri_mca_2997ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/moniliophthora_roreri_mca_2997ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/mortierella_elongata_ag_77ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/mortierella_elongata_ag_77ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/mortierella_verticillata_nrrl_6337ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/mortierella_verticillata_nrrl_6337ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/mucor_ambiguusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/mucor_ambiguusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/mucor_circinelloides_f_circinelloides_1006phlForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/mucor_circinelloides_f_circinelloides_1006phlForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/myceliophthora_thermophila_atcc_42464ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/myceliophthora_thermophila_atcc_42464ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/mycosphaerella_eumusaeForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/mycosphaerella_eumusaeForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/nadsonia_fulvescens_var_elongata_dsm_6958ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/nadsonia_fulvescens_var_elongata_dsm_6958ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/naumovozyma_castellii_cbs_4309ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/naumovozyma_castellii_cbs_4309ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/naumovozyma_dairenensis_cbs_421ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/naumovozyma_dairenensis_cbs_421ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/nematocida_parisii_ertm3ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/nematocida_parisii_ertm3ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/nematocida_sp_1_ertm2ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/nematocida_sp_1_ertm2ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/neofusicoccum_parvum_ucrnp2ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/neofusicoccum_parvum_ucrnp2ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/neolentinus_lepideus_hhb14362_ss_1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/neolentinus_lepideus_hhb14362_ss_1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/neonectria_ditissimaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/neonectria_ditissimaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/neosartorya_fischeriForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/neosartorya_fischeriForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/neurospora_crassaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/neurospora_crassaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/neurospora_tetrasperma_fgsc_2509ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/neurospora_tetrasperma_fgsc_2509ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/nosema_apis_brl_01ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/nosema_apis_brl_01ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/nosema_bombycis_cq1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/nosema_bombycis_cq1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/nosema_ceranae_brl01ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/nosema_ceranae_brl01ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/ogataea_parapolymorpha_dl_1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/ogataea_parapolymorpha_dl_1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/ogataea_polymorphaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/ogataea_polymorphaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/oidiodendron_maius_znForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/oidiodendron_maius_znForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/ophiocordyceps_sinensis_co18ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/ophiocordyceps_sinensis_co18ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/ophiocordyceps_unilateralisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/ophiocordyceps_unilateralisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/ophiostoma_piceae_uamh_11346ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/ophiostoma_piceae_uamh_11346ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/ordospora_colligata_oc4ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/ordospora_colligata_oc4ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pachysolen_tannophilus_nrrl_y_2460ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pachysolen_tannophilus_nrrl_y_2460ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/paracoccidioides_brasiliensis_pb18ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/paracoccidioides_brasiliensis_pb18ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/paracoccidioides_sp_lutzii_pb01ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/paracoccidioides_sp_lutzii_pb01ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/paraphaeosphaeria_sporulosaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/paraphaeosphaeria_sporulosaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/parasitella_parasiticaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/parasitella_parasiticaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/paxillus_involutus_atcc_200175ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/paxillus_involutus_atcc_200175ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/paxillus_rubicundulus_ve08_2h10ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/paxillus_rubicundulus_ve08_2h10ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/penicillium_brasilianumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/penicillium_brasilianumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/penicillium_camemberti_fm_013ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/penicillium_camemberti_fm_013ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/penicillium_chrysogenumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/penicillium_chrysogenumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/penicillium_digitatum_phi26ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/penicillium_digitatum_phi26ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/penicillium_expansumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/penicillium_expansumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/penicillium_freiiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/penicillium_freiiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/penicillium_griseofulvumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/penicillium_griseofulvumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/penicillium_italicumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/penicillium_italicumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/penicillium_nordicumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/penicillium_nordicumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/penicillium_oxalicum_114_2ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/penicillium_oxalicum_114_2ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/penicillium_roqueforti_fm164ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/penicillium_roqueforti_fm164ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/penicillium_rubens_wisconsin_54_1255ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/penicillium_rubens_wisconsin_54_1255ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/peniophora_sp_contForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/peniophora_sp_contForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pestalotiopsis_fici_w106_1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pestalotiopsis_fici_w106_1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/phaeoacremonium_minimum_ucrpa7ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/phaeoacremonium_minimum_ucrpa7ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/phaeomoniella_chlamydosporaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/phaeomoniella_chlamydosporaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/phaeosphaeria_nodorumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/phaeosphaeria_nodorumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/phanerochaete_carnosa_hhb_10118_spForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/phanerochaete_carnosa_hhb_10118_spForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/phialocephala_scopiformisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/phialocephala_scopiformisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/phialophora_attaeForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/phialophora_attaeForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/phlebiopsis_gigantea_11061_1_cr5_6ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/phlebiopsis_gigantea_11061_1_cr5_6ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/phycomyces_blakesleeanus_nrrl_1555_ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/phycomyces_blakesleeanus_nrrl_1555_ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pichia_kudriavzeviiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pichia_kudriavzeviiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pichia_membranifaciens_nrrl_y_2026ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pichia_membranifaciens_nrrl_y_2026ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/piloderma_croceum_f_1598ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/piloderma_croceum_f_1598ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pisolithus_microcarpus_441ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pisolithus_microcarpus_441ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pisolithus_tinctorius_marx_270ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pisolithus_tinctorius_marx_270ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pleurotus_ostreatus_pc15ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pleurotus_ostreatus_pc15ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/plicaturopsis_crispa_fd_325_ss_3ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/plicaturopsis_crispa_fd_325_ss_3ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pneumocystis_carinii_b80ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pneumocystis_carinii_b80ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pneumocystis_jirovecii_ru7ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pneumocystis_jirovecii_ru7ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pneumocystis_murina_b123ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pneumocystis_murina_b123ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pochonia_chlamydosporia_170ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pochonia_chlamydosporia_170ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/podospora_anserina_s_mat_ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/podospora_anserina_s_mat_ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/postia_placenta_mad_698_rForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/postia_placenta_mad_698_rForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudocercospora_musaeForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudocercospora_musaeForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_destructans_20631_21ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_destructans_20631_21ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_03vt05ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_03vt05ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_05ny08ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_05ny08ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_23342_1_i1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_23342_1_i1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_24mn13ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_24mn13ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_vkm_f_103ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_vkm_f_103ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_vkm_f_3557ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_vkm_f_3557ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_vkm_f_3775ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_vkm_f_3775ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_vkm_f_3808ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_vkm_f_3808ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_vkm_f_4246ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_vkm_f_4246ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_vkm_f_4281_fw_2241_ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_vkm_f_4281_fw_2241_ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_vkm_f_4513_fw_928_ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_vkm_f_4513_fw_928_ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_vkm_f_4514_fw_929_ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_vkm_f_4514_fw_929_ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_vkm_f_4515_fw_2607_ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_vkm_f_4515_fw_2607_ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_vkm_f_4516_fw_969_ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_vkm_f_4516_fw_969_ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_vkm_f_4517_fw_2822_ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_vkm_f_4517_fw_2822_ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_vkm_f_4518_fw_2643_ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_vkm_f_4518_fw_2643_ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_vkm_f_4519_fw_2642_ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_vkm_f_4519_fw_2642_ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_vkm_f_4520_fw_2644_ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_vkm_f_4520_fw_2644_ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_sp_wsf_3629ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_sp_wsf_3629ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudogymnoascus_verrucosusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudogymnoascus_verrucosusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudoloma_neurophiliaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudoloma_neurophiliaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pseudozyma_hubeiensis_sy62ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pseudozyma_hubeiensis_sy62ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/puccinia_graminisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/puccinia_graminisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/puccinia_sorghiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/puccinia_sorghiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/puccinia_striiformisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/puccinia_striiformisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/puccinia_triticinaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/puccinia_triticinaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/punctularia_strigosozonata_hhb_11173_ss5ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/punctularia_strigosozonata_hhb_11173_ss5ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/purpureocillium_lilacinumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/purpureocillium_lilacinumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pyrenochaeta_sp_ds3say3aForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pyrenochaeta_sp_ds3say3aForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pyrenophora_teresForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pyrenophora_teresForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pyrenophora_triticirepentisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pyrenophora_triticirepentisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/pyronema_omphalodes_cbs_100304ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/pyronema_omphalodes_cbs_100304ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/rasamsonia_emersonii_cbs_393_64ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/rasamsonia_emersonii_cbs_393_64ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/rhinocladiella_mackenziei_cbs_650_93ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/rhinocladiella_mackenziei_cbs_650_93ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/rhizoctonia_solani_ag_1_iaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/rhizoctonia_solani_ag_1_iaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/rhizophagus_irregularis_daom_181602ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/rhizophagus_irregularis_daom_181602ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/rhizopogon_vinicolor_am_or11_026ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/rhizopogon_vinicolor_am_or11_026ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/rhizopus_delemar_ra_99_880ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/rhizopus_delemar_ra_99_880ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/rhodotorula_graminis_wp1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/rhodotorula_graminis_wp1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/rhodotorula_sp_jg_1bForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/rhodotorula_sp_jg_1bForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/rhodotorula_toruloides_np11ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/rhodotorula_toruloides_np11ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/rosellinia_necatrixForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/rosellinia_necatrixForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/rozella_allomycis_csf55ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/rozella_allomycis_csf55ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/saccharomyces_arboricola_h_6ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/saccharomyces_arboricola_h_6ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/saccharomyces_cerevisiaeForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/saccharomyces_cerevisiaeForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/saccharomyces_cerevisiae_x_saccharomyces_kudriavzevii_vin7ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/saccharomyces_cerevisiae_x_saccharomyces_kudriavzevii_vin7ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/saccharomyces_eubayanusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/saccharomyces_eubayanusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/saccharomyces_kudriavzevii_ifo_1802ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/saccharomyces_kudriavzevii_ifo_1802ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/saccharomyces_sp_boulardii_ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/saccharomyces_sp_boulardii_ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/saccharomycetaceae_sp_ashbya_aceri_ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/saccharomycetaceae_sp_ashbya_aceri_ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/saitoella_complicata_nrrl_y_17804ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/saitoella_complicata_nrrl_y_17804ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/scedosporium_apiospermumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/scedosporium_apiospermumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/scheffersomyces_stipitis_cbs_6054ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/scheffersomyces_stipitis_cbs_6054ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/schizophyllum_commune_h4_8ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/schizophyllum_commune_h4_8ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/schizopora_paradoxaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/schizopora_paradoxaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/schizosaccharomyces_cryophilusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/schizosaccharomyces_cryophilusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/schizosaccharomyces_japonicusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/schizosaccharomyces_japonicusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/schizosaccharomyces_octosporusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/schizosaccharomyces_octosporusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/schizosaccharomyces_pombeForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/schizosaccharomyces_pombeForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/scleroderma_citrinum_foug_aForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/scleroderma_citrinum_foug_aForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/sclerotinia_borealis_f_4157ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/sclerotinia_borealis_f_4157ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/sclerotinia_sclerotiorumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/sclerotinia_sclerotiorumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/serendipita_indica_dsm_11827ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/serendipita_indica_dsm_11827ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/serendipita_vermifera_maff_305830ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/serendipita_vermifera_maff_305830ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/serpula_lacrymans_var_lacrymans_s7_3ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/serpula_lacrymans_var_lacrymans_s7_3ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/setosphaeria_turcica_et28aForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/setosphaeria_turcica_et28aForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/sistotremastrum_niveocremeum_hhb9708ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/sistotremastrum_niveocremeum_hhb9708ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/sistotremastrum_suecicum_hhb10207_ss_3ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/sistotremastrum_suecicum_hhb10207_ss_3ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/sordaria_macrosporaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/sordaria_macrosporaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/spathaspora_passalidarum_nrrl_y_27907ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/spathaspora_passalidarum_nrrl_y_27907ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/sphaerobolus_stellatus_ss14ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/sphaerobolus_stellatus_ss14ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/sphaerulina_musiva_so2202ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/sphaerulina_musiva_so2202ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/spizellomyces_punctatus_daom_br117ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/spizellomyces_punctatus_daom_br117ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/sporidiobolus_salmonicolorForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/sporidiobolus_salmonicolorForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/sporisorium_reilianumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/sporisorium_reilianumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/sporisorium_scitamineumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/sporisorium_scitamineumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/sporothrix_brasiliensis_5110ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/sporothrix_brasiliensis_5110ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/sporothrix_insectorum_rcef_264ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/sporothrix_insectorum_rcef_264ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/sporothrix_schenckii_atcc_58251ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/sporothrix_schenckii_atcc_58251ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/spraguea_lophii_42_110ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/spraguea_lophii_42_110ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/stachybotrys_chartarum_ibt_40293ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/stachybotrys_chartarum_ibt_40293ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/stachybotrys_chlorohalonata_ibt_40285ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/stachybotrys_chlorohalonata_ibt_40285ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/stagonospora_sp_src1lsm3aForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/stagonospora_sp_src1lsm3aForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/stemphylium_lycopersiciForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/stemphylium_lycopersiciForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/stereum_hirsutum_fp_91666_ss1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/stereum_hirsutum_fp_91666_ss1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/sugiyamaella_lignohabitansForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/sugiyamaella_lignohabitansForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/suillus_luteus_uh_slu_lm8_n1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/suillus_luteus_uh_slu_lm8_n1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/talaromyces_cellulolyticusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/talaromyces_cellulolyticusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/talaromyces_islandicusForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/talaromyces_islandicusForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/talaromyces_marneffei_atcc_18224ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/talaromyces_marneffei_atcc_18224ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/talaromyces_stipitatus_atcc_10500ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/talaromyces_stipitatus_atcc_10500ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/termitomyces_sp_j132ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/termitomyces_sp_j132ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/tetrapisispora_blattae_cbs_6284ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/tetrapisispora_blattae_cbs_6284ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/tetrapisispora_phaffii_cbs_4417ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/tetrapisispora_phaffii_cbs_4417ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/thielavia_terrestris_nrrl_8126ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/thielavia_terrestris_nrrl_8126ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/thielaviopsis_punctulataForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/thielaviopsis_punctulataForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/tilletia_cariesForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/tilletia_cariesForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/tilletia_controversaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/tilletia_controversaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/tilletia_indicaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/tilletia_indicaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/tilletiaria_anomala_ubc_951ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/tilletiaria_anomala_ubc_951ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/tilletia_walkeriForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/tilletia_walkeriForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/tolypocladium_ophioglossoides_cbs_100239ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/tolypocladium_ophioglossoides_cbs_100239ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/torrubiella_hemipterigenaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/torrubiella_hemipterigenaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/tortispora_caseinolytica_nrrl_y_17796ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/tortispora_caseinolytica_nrrl_y_17796ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/torulaspora_delbrueckiiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/torulaspora_delbrueckiiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/trachipleistophora_hominisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/trachipleistophora_hominisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/trametes_cinnabarinaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/trametes_cinnabarinaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/trametes_versicolor_fp_101664_ss1ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/trametes_versicolor_fp_101664_ss1ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/tremella_mesenterica_dsm_1558ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/tremella_mesenterica_dsm_1558ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/trichoderma_atroviride_imi_206040ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/trichoderma_atroviride_imi_206040ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/trichoderma_gamsiiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/trichoderma_gamsiiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/trichoderma_harzianumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/trichoderma_harzianumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/trichoderma_reeseiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/trichoderma_reeseiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/trichoderma_virensForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/trichoderma_virensForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/trichophyton_equinum_cbs_127_97ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/trichophyton_equinum_cbs_127_97ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/trichophyton_interdigitale_mr816ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/trichophyton_interdigitale_mr816ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/trichophyton_rubrum_cbs_118892ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/trichophyton_rubrum_cbs_118892ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/trichophyton_soudanense_cbs_452_61ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/trichophyton_soudanense_cbs_452_61ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/trichophyton_tonsurans_cbs_112818ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/trichophyton_tonsurans_cbs_112818ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/trichophyton_verrucosum_hki_0517ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/trichophyton_verrucosum_hki_0517ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/trichophyton_violaceumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/trichophyton_violaceumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/trichosporon_asahii_var_asahii_cbs_8904ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/trichosporon_asahii_var_asahii_cbs_8904ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/tsuchiyaea_wingfieldii_cbs_7118ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/tsuchiyaea_wingfieldii_cbs_7118ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/tuber_melanosporumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/tuber_melanosporumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/tulasnella_calospora_mut_4182ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/tulasnella_calospora_mut_4182ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/uncinocarpus_reesii_1704ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/uncinocarpus_reesii_1704ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/ustilaginoidea_virensForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/ustilaginoidea_virensForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/ustilago_hordeiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/ustilago_hordeiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/ustilago_maydisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/ustilago_maydisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/valsa_mali_var_pyriForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/valsa_mali_var_pyriForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/vanderwaltozyma_polyspora_dsm_70294ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/vanderwaltozyma_polyspora_dsm_70294ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/vavraia_culicis_subsp_floridensisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/vavraia_culicis_subsp_floridensisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/verruconis_gallopavaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/verruconis_gallopavaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/verticillium_alfalfae_vams_102ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/verticillium_alfalfae_vams_102ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/verticillium_dahliaeForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/verticillium_dahliaeForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/verticillium_longisporumForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/verticillium_longisporumForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/vittaforma_corneae_atcc_50505ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/vittaforma_corneae_atcc_50505ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/wallemia_ichthyophaga_exf_994ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/wallemia_ichthyophaga_exf_994ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/wallemia_mellicola_cbs_633_66ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/wallemia_mellicola_cbs_633_66ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/wickerhamomyces_anomalus_nrrl_y_366_8ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/wickerhamomyces_anomalus_nrrl_y_366_8ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/wickerhamomyces_ciferriiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/wickerhamomyces_ciferriiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/xanthophyllomyces_dendrorhousForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/xanthophyllomyces_dendrorhousForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/xylona_heveae_tc161ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/xylona_heveae_tc161ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/yarrowia_lipolyticaForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/yarrowia_lipolyticaForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/zygosaccharomyces_bailii_isa1307ForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/zygosaccharomyces_bailii_isa1307ForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/zygosaccharomyces_rouxiiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/zygosaccharomyces_rouxiiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/zymoseptoria_brevisForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/zymoseptoria_brevisForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTb/zymoseptoria_triticiForTb.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+[1] "/home/dfc/seqsTab/zymoseptoria_triticiForTab.txt"
+[1] "E" "H" "Q" "F" "Y" "C" "N" "K" "D"
+> 
+> print(res)
+[[1]]
+[1] -0.767258108  0.009375845 -1.040927845  0.007790943
+
+[[2]]
+[1] -0.807114118  0.008698699 -1.024341224  0.008475757
+
+[[3]]
+[1] -0.773258273  0.012604965 -1.031866270  0.009892664
+
+[[4]]
+[1] -0.785564275  0.008882862 -1.028406060  0.008453369
+
+[[5]]
+[1] -0.733766207  0.007780469 -1.027519371  0.006388409
+
+[[6]]
+[1] -0.658096994  0.008163584 -1.020373112  0.006921605
+
+[[7]]
+[1] -0.852146718  0.006783307 -1.016947930  0.007324244
+
+[[8]]
+[1] -0.85713429  0.01388093 -0.96671394  0.01269697
+
+[[9]]
+[1] -0.73452653  0.01429244 -0.96612993  0.01221467
+
+[[10]]
+[1] -0.773846314  0.008161401 -1.030324921  0.008415246
+
+[[11]]
+[1] -0.694717786  0.010640812 -1.009678803  0.009852217
+
+[[12]]
+[1] -0.712938506  0.009755700 -1.026380325  0.009265965
+
+[[13]]
+[1] -0.709152768  0.012511317 -1.025372884  0.009131642
+
+[[14]]
+[1] -0.603327806  0.010091385 -1.040006372  0.008954197
+
+[[15]]
+[1] -0.51777284  0.01215568 -1.01512003  0.01152074
+
+[[16]]
+[1] -0.71960635  0.01294970 -1.02499625  0.01159751
+
+[[17]]
+[1] -0.52409433  0.02430677 -0.98874885  0.01202793
+
+[[18]]
+[1] -0.742705699  0.008374521 -1.011215694  0.007103941
+
+[[19]]
+[1] -0.673630097  0.011462505 -1.024337062  0.008957992
+
+[[20]]
+[1] -0.635134014  0.009515633 -1.033882865  0.009183640
+
+[[21]]
+[1] -0.766856116  0.008093476 -1.032906752  0.007770630
+
+[[22]]
+[1] -0.741145348  0.009992559 -1.016406215  0.009428033
+
+[[23]]
+[1] -0.728429412  0.010421917 -1.009757658  0.008659096
+
+[[24]]
+[1] -0.636905907  0.008701622 -1.018669436  0.007628500
+
+[[25]]
+[1] -0.767260696  0.009257905 -0.999582423  0.008088139
+
+[[26]]
+[1] -0.660131549  0.008818814 -1.009032327  0.006908829
+
+[[27]]
+[1] -0.759080056  0.009894980 -0.993456746  0.007511964
+
+[[28]]
+[1] -0.735389350  0.011412364 -1.038188814  0.009342257
+
+[[29]]
+[1] -0.746492191  0.007402656 -1.028395438  0.008027619
+
+[[30]]
+[1] -0.738792532  0.009810687 -1.044806632  0.009738988
+
+[[31]]
+[1] -0.74060195  0.01097391 -1.02822849  0.01016741
+
+[[32]]
+[1] -0.652120677  0.008903891 -1.020656973  0.009165574
+
+[[33]]
+[1] -0.65107496  0.01050420 -1.02349910  0.00885448
+
+[[34]]
+[1] -0.741838891  0.009397400 -1.029685934  0.008467084
+
+[[35]]
+[1] -0.55040131  0.02149045 -0.74182828  0.02396392
+
+[[36]]
+[1] -0.612804723  0.009757503 -1.025574501  0.009469739
+
+[[37]]
+[1] -0.613768776  0.009781326 -1.044154931  0.009246466
+
+[[38]]
+[1] -0.618961523  0.009230275 -1.030755291  0.008719673
+
+[[39]]
+[1] -0.62622655  0.01173934 -1.03540338  0.01065278
+
+[[40]]
+[1] -0.816117153  0.010177399 -1.026346275  0.009348687
+
+[[41]]
+[1] -0.842304671  0.008684800 -1.003507299  0.008411884
+
+[[42]]
+[1] -0.63125495  0.01245987 -1.02937909  0.00873208
+
+[[43]]
+[1] -0.648292241  0.008553194 -1.046113827  0.008548852
+
+[[44]]
+[1] -0.659627440  0.008667638 -1.034211114  0.008960106
+
+[[45]]
+[1] -0.668684714  0.007889727 -1.041920856  0.008526074
+
+[[46]]
+[1] -0.643414163  0.007982278 -1.027711534  0.008191800
+
+[[47]]
+[1] -0.644964013  0.008747612 -1.034204016  0.008805455
+
+[[48]]
+[1] -0.761342903  0.010113646 -0.996835678  0.008408974
+
+[[49]]
+[1] -0.774383566  0.010178230 -1.011005959  0.009341953
+
+[[50]]
+[1] -0.83908175  0.01198037 -1.00685701  0.01032491
+
+[[51]]
+[1] -0.764660894  0.006410523 -1.022334678  0.006870998
+
+[[52]]
+[1] -0.729589797  0.008245898 -1.022444148  0.008833052
+
+[[53]]
+[1] -0.57778582  0.01184558 -1.00639225  0.01251973
+
+[[54]]
+[1] -0.701796176  0.011452448 -1.016152836  0.009610561
+
+[[55]]
+[1] -0.536877103  0.009331778 -1.039141103  0.007434792
+
+[[56]]
+[1] -0.637715117  0.008396181 -1.021433029  0.007947409
+
+[[57]]
+[1] -0.54252684  0.01527209 -0.99056728  0.01140378
+
+[[58]]
+[1] -0.50403904  0.01596328 -1.00870156  0.01235764
+
+[[59]]
+[1] -0.61169058  0.01310774 -1.01213120  0.01145558
+
+[[60]]
+[1] -0.52838661  0.01629293 -1.00147462  0.01238322
+
+[[61]]
+[1] -0.45100699  0.01433856 -0.97356778  0.01174636
+
+[[62]]
+[1] -0.65317062  0.01274815 -1.01018069  0.01154752
+
+[[63]]
+[1] -0.75891637  0.01368697 -1.01373074  0.01242509
+
+[[64]]
+[1] -0.80506107  0.01347515 -1.00851540  0.01141207
+
+[[65]]
+[1] -0.44395076  0.01722255 -0.99403582  0.01147411
+
+[[66]]
+[1] -0.68638887  0.01289079 -0.99409461  0.01119487
+
+[[67]]
+[1] -0.63932335  0.01795479 -1.02098091  0.01179617
+
+[[68]]
+[1] -0.837346630  0.009714273 -1.010846581  0.009487188
+
+[[69]]
+[1] -0.833365305  0.010207261 -1.031295944  0.008724331
+
+[[70]]
+[1] -0.827758333  0.009635469 -1.013252001  0.008461875
+
+[[71]]
+[1] -0.7872611  0.0112614 -1.0257413  0.0110419
+
+[[72]]
+[1] -0.7025694  0.0126230 -1.0198239  0.0118406
+
+[[73]]
+[1] -0.728075449  0.007766244 -1.026939651  0.008058371
+
+[[74]]
+[1] -0.677585687  0.009694488 -0.997433275  0.008449039
+
+[[75]]
+[1] -0.691535711  0.010345813 -1.015636778  0.009814734
+
+[[76]]
+[1] -0.690651418  0.010104175 -1.037754737  0.008348325
+
+[[77]]
+[1] -0.828989461  0.009159806 -1.032031916  0.008176709
+
+[[78]]
+[1] -0.812174616  0.009242767 -1.038956152  0.008912939
+
+[[79]]
+[1] -0.746000643  0.010376320 -1.007890511  0.008358834
+
+[[80]]
+[1] -0.838423411  0.008933509 -1.034449472  0.007857547
+
+[[81]]
+[1] -0.828474217  0.009378602 -1.013167903  0.008830592
+
+[[82]]
+[1] -0.778153692  0.009704574 -1.039910103  0.009703408
+
+[[83]]
+[1] -0.60091886  0.01115891 -0.99137870  0.01047611
+
+[[84]]
+[1] -0.788553763  0.009412584 -1.021620988  0.009163082
+
+[[85]]
+[1] -0.806623899  0.009112649 -1.027699223  0.008677335
+
+[[86]]
+[1] -0.593668616  0.009699283 -1.013884030  0.007572693
+
+[[87]]
+[1] -0.583295209  0.011510310 -1.013108317  0.007753804
+
+[[88]]
+[1] -0.607226135  0.011193463 -1.000944109  0.008009667
+
+[[89]]
+[1] -0.569796599  0.010355097 -1.017803979  0.007194735
+
+[[90]]
+[1] -0.560015350  0.009346033 -1.033917703  0.008657807
+
+[[91]]
+[1] -0.590374899  0.009889103 -1.026777212  0.008059867
+
+[[92]]
+[1] -0.633832658  0.011077751 -1.003420726  0.006931499
+
+[[93]]
+[1] -0.597916033  0.009050533 -1.025363547  0.007856861
+
+[[94]]
+[1] -0.586505217  0.009752533 -1.018529021  0.007629079
+
+[[95]]
+[1] -0.586285370  0.010352245 -1.031111781  0.007796453
+
+[[96]]
+[1] -0.552427022  0.010372740 -1.039625745  0.007973263
+
+[[97]]
+[1] -0.681582949  0.009300240 -1.025153835  0.008666311
+
+[[98]]
+[1] -0.50691483  0.01913365 -0.76609712  0.02015176
+
+[[99]]
+[1] -0.822437340  0.009666252 -1.016966907  0.009439750
+
+[[100]]
+[1] -0.755173110  0.007452091 -1.018119186  0.008300795
+
+[[101]]
+[1] -0.64674246  0.01362138 -1.02308621  0.00918899
+
+[[102]]
+[1] -0.60907580  0.01395380 -1.02357318  0.00807072
+
+[[103]]
+[1] -0.607349591  0.014764738 -1.022471888  0.009404645
+
+[[104]]
+[1] -0.701548118  0.010713080 -1.055446185  0.009508291
+
+[[105]]
+[1] -0.82125914  0.01249884 -1.01659085  0.01071146
+
+[[106]]
+[1] -0.71463929  0.01224814 -1.02945440  0.01009318
+
+[[107]]
+[1] -0.68875639  0.01090309 -1.01543927  0.01028031
+
+[[108]]
+[1] -0.714864823  0.011017768 -0.994840588  0.009914618
+
+[[109]]
+[1] -0.71324490  0.01218497 -1.02145223  0.01034464
+
+[[110]]
+[1] -0.67853866  0.01189552 -1.03115816  0.01085256
+
+[[111]]
+[1] -0.68625760  0.01261102 -1.01824892  0.01094275
+
+[[112]]
+[1] -0.63338950  0.01548906 -0.97855886  0.01156125
+
+[[113]]
+[1] -0.788476774  0.007678107 -1.017784655  0.007710917
+
+[[114]]
+[1] -0.793882435  0.009430982 -1.014800073  0.008012929
+
+[[115]]
+[1] -0.696392196  0.009617103 -1.019982816  0.008284436
+
+[[116]]
+[1] -0.686121808  0.007986266 -1.013147141  0.008247612
+
+[[117]]
+[1] -0.67918489  0.01322611 -0.97795495  0.01135049
+
+[[118]]
+[1] -0.63199633  0.01271835 -0.99267018  0.01208884
+
+[[119]]
+[1] -0.763227222  0.013143598 -1.040702131  0.008313357
+
+[[120]]
+[1] -0.692586612  0.010558796 -1.029027392  0.008002626
+
+[[121]]
+[1] -0.68503726  0.00926093 -1.03322476  0.01036212
+
+[[122]]
+[1] -0.741755937  0.012492678 -1.024379864  0.009338539
+
+[[123]]
+[1] -0.788731351  0.008383324 -1.009269334  0.008002405
+
+[[124]]
+[1] -0.60936151  0.01060764 -1.04967794  0.01019413
+
+[[125]]
+[1] -0.76386365  0.01359877 -1.00856959  0.01049769
+
+[[126]]
+[1] -0.76217885  0.01342509 -0.99445694  0.01197767
+
+[[127]]
+[1] -0.798659241  0.009981141 -1.029885959  0.008879398
+
+[[128]]
+[1] -0.760432118  0.011266702 -1.032502698  0.009308685
+
+[[129]]
+[1] -0.83791550  0.01021952 -0.98563291  0.01014339
+
+[[130]]
+[1] -0.68035215  0.01545311 -0.91598354  0.01511080
+
+[[131]]
+[1] -0.73141983  0.01554793 -0.89252520  0.01661903
+
+[[132]]
+[1] -0.76016174  0.01453565 -0.85411743  0.01671042
+
+[[133]]
+[1] -0.79251758  0.01599219 -0.88102166  0.01657951
+
+[[134]]
+[1] -0.82406928  0.00962432 -1.03270283  0.01028652
+
+[[135]]
+[1] -0.34634358  0.01616595 -0.98899991  0.01349418
+
+[[136]]
+[1] -0.67648867  0.01233026 -0.98838675  0.01213502
+
+[[137]]
+[1] -0.71217204  0.01244991 -1.00135593  0.01335147
+
+[[138]]
+[1] -0.91452751  0.01174917 -1.00504947  0.01072535
+
+[[139]]
+[1] -0.73071955  0.01354145 -1.01346816  0.01005678
+
+[[140]]
+[1] -0.623517211  0.012529188 -1.018546162  0.008039716
+
+[[141]]
+[1] -0.711257278  0.006309753 -0.992100624  0.005148973
+
+[[142]]
+[1] -0.821861881  0.009515780 -1.031679629  0.008184627
+
+[[143]]
+[1] -0.819611137  0.009508329 -1.041973842  0.008747940
+
+[[144]]
+[1] -0.856355897  0.009195675 -1.042906113  0.009447910
+
+[[145]]
+[1] -0.751217780  0.009949785 -1.020325998  0.008594022
+
+[[146]]
+[1] -0.847863892  0.010647702 -1.015892450  0.007902641
+
+[[147]]
+[1] -0.75579604  0.01049015 -1.02245502  0.00904083
+
+[[148]]
+[1] -0.830040127  0.008350613 -1.028456970  0.007664486
+
+[[149]]
+[1] -0.745715092  0.010299291 -1.028217581  0.008809714
+
+[[150]]
+[1] -0.650689400  0.005958002 -1.018074568  0.004654399
+
+[[151]]
+[1] -0.816049530  0.007971092 -1.030861326  0.008617559
+
+[[152]]
+[1] -0.44828325  0.02481052 -0.60305212  0.02537081
+
+[[153]]
+[1] -0.719082778  0.007287286 -1.024479962  0.008352949
+
+[[154]]
+[1] -0.736165820  0.011944230 -1.018841217  0.007610803
+
+[[155]]
+[1] -0.783060980  0.011143583 -1.015988598  0.008506277
+
+[[156]]
+[1] -0.806354683  0.009839392 -1.024021455  0.008028079
+
+[[157]]
+[1] -0.785205787  0.011220515 -1.031996197  0.008253183
+
+[[158]]
+[1] -0.776144123  0.011026573 -1.017878736  0.008151485
+
+[[159]]
+[1] -0.64659164  0.01034379 -1.02904580  0.00925853
+
+[[160]]
+[1] -0.731435180  0.009838611 -1.006884547  0.006513411
+
+[[161]]
+[1] -0.658239845  0.009578113 -1.013288851  0.007883342
+
+[[162]]
+[1] -0.673376414  0.010776671 -0.999007534  0.007680161
+
+[[163]]
+[1] -0.722274625  0.007572749 -1.007266224  0.006361093
+
+[[164]]
+[1] -0.681401852  0.009733830 -1.016716133  0.007334918
+
+[[165]]
+[1] -0.669964345  0.011198250 -1.014192946  0.007741992
+
+[[166]]
+[1] -0.682266145  0.009948487 -1.015016153  0.007134457
+
+[[167]]
+[1] -0.706222620  0.008814149 -1.032296613  0.008019564
+
+[[168]]
+[1] -0.60812447  0.01342608 -1.04882819  0.00788628
+
+[[169]]
+[1] -0.761043580  0.006421228 -1.007208451  0.005900852
+
+[[170]]
+[1] -0.648015818  0.008140785 -1.001816433  0.007526165
+
+[[171]]
+[1] -0.61124553  0.01575890 -1.01378102  0.01042074
+
+[[172]]
+[1] -0.729712993  0.009633804 -1.017464126  0.010446607
+
+[[173]]
+[1] -0.667715596  0.008681864 -1.034797917  0.008826291
+
+[[174]]
+[1] -0.680577185  0.008024908 -1.024001499  0.008474557
+
+[[175]]
+[1] -0.720876443  0.007247275 -0.999867766  0.007246968
+
+[[176]]
+[1] -0.668322455  0.010327237 -1.018377289  0.009781385
+
+[[177]]
+[1] -0.809546231  0.007333886 -1.029438788  0.007870532
+
+[[178]]
+[1] -0.51533981  0.01644051 -0.93486080  0.01370590
+
+[[179]]
+[1] -0.64548916  0.01580814 -0.97971870  0.01301950
+
+[[180]]
+[1] -0.65706005  0.01678436 -0.91467820  0.01557320
+
+[[181]]
+[1] -0.70471952  0.01460224 -1.01229416  0.01266068
+
+[[182]]
+[1] -0.815870459  0.007096604 -1.005265076  0.008100990
+
+[[183]]
+[1] -0.589761859  0.008195165 -1.014434395  0.007598310
+
+[[184]]
+[1] -0.655897413  0.011324230 -1.017642051  0.008404221
+
+[[185]]
+[1] -0.778168781  0.009276208 -1.057187872  0.009174885
+
+[[186]]
+[1] -0.816854080  0.008245117 -1.031264484  0.009269672
+
+[[187]]
+[1] -0.603918724  0.007646135 -1.018431880  0.006775489
+
+[[188]]
+[1] -0.57752373  0.01286776 -1.00377416  0.01126182
+
+[[189]]
+[1] -0.821702084  0.006732560 -1.029809279  0.007713718
+
+[[190]]
+[1] -0.616091710  0.017024050 -1.026607291  0.008577632
+
+[[191]]
+[1] -0.794785881  0.006365447 -1.025824757  0.007031999
+
+[[192]]
+[1] -0.73159246  0.01202016 -1.01027327  0.01100281
+
+[[193]]
+[1] -0.67536038  0.01391980 -0.97713041  0.01126848
+
+[[194]]
+[1] -0.48314009  0.01704234 -1.00734837  0.01155068
+
+[[195]]
+[1] -0.73307044  0.01432905 -1.01501682  0.01198959
+
+[[196]]
+[1] -0.48768851  0.01333967 -0.99115305  0.01171181
+
+[[197]]
+[1] -0.77300203  0.01270698 -0.98049074  0.01246802
+
+[[198]]
+[1] -0.76885948  0.01236958 -0.99630609  0.01045158
+
+[[199]]
+[1] -0.75462257  0.01112928 -1.02967052  0.01070575
+
+[[200]]
+[1] -0.77508135  0.01057472 -1.01800691  0.00896006
+
+[[201]]
+[1] -0.776864886  0.009788521 -1.018862864  0.009895696
+
+[[202]]
+[1] -0.729562085  0.012434495 -1.002354961  0.009767948
+
+[[203]]
+[1] -0.766263754  0.010356646 -0.996461164  0.009333721
+
+[[204]]
+[1] -0.50234576  0.01495367 -1.01125733  0.01004542
+
+[[205]]
+[1] -0.767298976  0.006741400 -1.019918504  0.007804899
+
+[[206]]
+[1] -0.788105996  0.006357533 -1.048527197  0.007078784
+
+[[207]]
+[1] -0.81593859  0.01437711 -0.98930628  0.01149699
+
+[[208]]
+[1] -0.58573116  0.01714626 -0.98063190  0.01258225
+
+[[209]]
+[1] -0.734420572  0.007424764 -1.041945349  0.007866528
+
+[[210]]
+[1] -0.726668176  0.008410100 -1.001010191  0.008844948
+
+[[211]]
+[1] -0.51335178  0.02200208 -0.66791514  0.02477115
+
+[[212]]
+[1] -0.784966038  0.009342010 -1.034444039  0.008710519
+
+[[213]]
+[1] -0.786247174  0.009346393 -1.018765568  0.008551535
+
+[[214]]
+[1] -0.737288064  0.009005001 -1.025872446  0.009774777
+
+[[215]]
+[1] -0.70724179  0.01272662 -1.01866734  0.01211461
+
+[[216]]
+[1] -0.589396138  0.009732382 -1.015863899  0.007692362
+
+[[217]]
+[1] -0.783060203  0.010352739 -1.033981795  0.008889406
+
+[[218]]
+[1] -0.558965510  0.011892602 -1.038987336  0.008261208
+
+[[219]]
+[1] -0.641033361  0.011099509 -1.025196957  0.008128651
+
+[[220]]
+[1] -0.57547317  0.01287025 -0.96390863  0.01150439
+
+[[221]]
+[1] -0.53769095  0.01410842 -0.96469741  0.01312752
+
+[[222]]
+[1] -0.649125625  0.009565031 -1.042367879  0.009194438
+
+[[223]]
+[1] -0.553556480  0.008581991 -1.018846409  0.006977215
+
+[[224]]
+[1] -0.668224744  0.011768691 -1.022842861  0.008368061
+
+[[225]]
+[1] -0.640746801  0.015868811 -1.016812784  0.008864349
+
+[[226]]
+[1] -0.633843025  0.011570876 -1.018344408  0.007725186
+
+[[227]]
+[1] -0.64294128  0.01184755 -1.03662422  0.00885908
+
+[[228]]
+[1] -0.648259516  0.013277962 -0.985412542  0.008374805
+
+[[229]]
+[1] -0.635242647  0.011572983 -1.023847853  0.008727875
+
+[[230]]
+[1] -0.644868328  0.011983071 -1.025888651  0.008359542
+
+[[231]]
+[1] -0.702456930  0.012629620 -1.036429294  0.009944844
+
+[[232]]
+[1] -0.36034665  0.01309654 -1.01556355  0.01093496
+
+[[233]]
+[1] -0.72933012  0.01014771 -0.98301718  0.01128121
+
+[[234]]
+[1] -0.707156476  0.010046665 -1.022603298  0.009876859
+
+[[235]]
+[1] -0.648003049  0.012680370 -1.011330657  0.007347091
+
+[[236]]
+[1] -0.659129388  0.010038072 -1.046180152  0.009945308
+
+[[237]]
+[1] -0.627361421  0.015224518 -1.034657100  0.009195398
+
+[[238]]
+[1] -0.86217958  0.01211703 -0.96006426  0.01240752
+
+[[239]]
+[1] -0.928386620  0.010862902 -1.017161358  0.009861006
+
+[[240]]
+[1] -0.64082882  0.01328883 -0.94987311  0.01201052
+
+[[241]]
+[1] -0.65825720  0.01261551 -0.99337833  0.01151077
+
+[[242]]
+[1] -0.822100383  0.008949336 -1.012603302  0.010248882
+
+[[243]]
+[1] -0.857585999  0.006530095 -1.024963647  0.006747476
+
+[[244]]
+[1] -0.594729434  0.009296886 -1.017905420  0.007249857
+
+[[245]]
+[1] -0.52821463  0.01647657 -0.82758146  0.01857175
+
+[[246]]
+[1] -0.771260533  0.013128420 -1.015910357  0.009086185
+
+[[247]]
+[1] -0.765498923  0.011089783 -1.015786574  0.007669042
+
+[[248]]
+[1] -0.661131701  0.012583547 -1.030228337  0.009568244
+
+[[249]]
+[1] -0.753865796  0.007999060 -1.020438997  0.008501673
+
+[[250]]
+[1] -0.65443001  0.01177519 -0.99728529  0.01145593
+
+[[251]]
+[1] -0.62858487  0.01441893 -0.94733133  0.01190947
+
+[[252]]
+[1] -0.72629755  0.01338346 -0.98956334  0.01100877
+
+[[253]]
+[1] -0.63826519  0.01478998 -0.94567865  0.01470729
+
+[[254]]
+[1] -0.62884289  0.01344560 -0.96845707  0.01396907
+
+[[255]]
+[1] -0.74690716  0.01258385 -1.02438624  0.00824857
+
+[[256]]
+[1] -0.715430131  0.007752125 -1.020346898  0.007535022
+
+[[257]]
+[1] -0.64270489  0.01276219 -1.02764465  0.00796785
+
+[[258]]
+[1] -0.726417631  0.009634942 -1.020971424  0.008316212
+
+[[259]]
+[1] -0.644502110  0.010620921 -1.028967512  0.008585156
+
+[[260]]
+[1] -0.597195528  0.009940754 -1.009681623  0.008938703
+
+[[261]]
+[1] -0.72395201  0.01725343 -0.98082147  0.01440414
+
+[[262]]
+[1] -0.75611937  0.01386960 -0.96695255  0.01385837
+
+[[263]]
+[1] -0.79016893  0.01812481 -0.93775460  0.01696578
+
+[[264]]
+[1] -0.62010266  0.01212932 -1.00209753  0.01128155
+
+[[265]]
+[1] -0.60772808  0.01155211 -1.00617000  0.01165816
+
+[[266]]
+[1] -0.762371252  0.007892893 -1.029640856  0.006915531
+
+[[267]]
+[1] -0.77315299  0.01224198 -0.99943177  0.01009693
+
+[[268]]
+[1] -0.710642159  0.009786576 -0.995999674  0.009696727
+
+[[269]]
+[1] -0.67433007  0.01389370 -1.01654409  0.00985997
+
+[[270]]
+[1] -0.60755013  0.01612870 -0.91740172  0.01580463
+
+[[271]]
+[1] -0.77863174  0.01520683 -1.02061401  0.01249360
+
+[[272]]
+[1] -0.83706178  0.01055945 -1.05455402  0.01078626
+
+[[273]]
+[1] -0.807424837  0.009766627 -1.012849743  0.009167108
+
+[[274]]
+[1] -0.643805405  0.007539126 -1.013257269  0.007197433
+
+[[275]]
+[1] -0.812130357  0.012262233 -1.020609260  0.007799699
+
+[[276]]
+[1] -0.823373239  0.008272423 -1.032788212  0.008493091
+
+[[277]]
+[1] -0.812442496  0.006679985 -1.015441199  0.006529415
+
+[[278]]
+[1] -0.645916511  0.009982614 -1.036563731  0.008551281
+
+[[279]]
+[1] -0.654865901  0.009001778 -1.022573344  0.007751558
+
+[[280]]
+[1] -0.694063934  0.010072496 -1.029350576  0.008590597
+
+[[281]]
+[1] -0.667325098  0.010032052 -1.012752472  0.009118468
+
+[[282]]
+[1] -0.646755269  0.009832429 -1.016284259  0.008901319
+
+[[283]]
+[1] -0.645365835  0.009284369 -1.015682292  0.007966255
+
+[[284]]
+[1] -0.668375202  0.010142605 -1.031846350  0.008939996
+
+[[285]]
+[1] -0.655643992  0.010417959 -1.028163723  0.008872124
+
+[[286]]
+[1] -0.645718537  0.008512210 -1.050521089  0.009489485
+
+[[287]]
+[1] -0.696435078  0.010203884 -1.051612952  0.009565557
+
+[[288]]
+[1] -0.658408096  0.009013012 -1.016735878  0.008038774
+
+[[289]]
+[1] -0.669238319  0.008945298 -1.020558830  0.008019943
+
+[[290]]
+[1] -0.710931807  0.006613795 -1.028327758  0.006573388
+
+[[291]]
+[1] -0.68514057  0.01187609 -1.02124511  0.00839992
+
+[[292]]
+[1] -0.707992888  0.012009864 -1.011719869  0.009405931
+
+[[293]]
+[1] -0.76560546  0.01001925 -1.00614248  0.01094699
+
+[[294]]
+[1] -0.664829903  0.008296361 -1.025870385  0.008279373
+
+[[295]]
+[1] -0.751594362  0.007312526 -1.030510979  0.008462918
+
+[[296]]
+[1] -0.759142620  0.006440259 -1.021209140  0.007317558
+
+[[297]]
+[1] -0.849592708  0.008549098 -1.028476953  0.008957462
+
+[[298]]
+[1] -0.619717605  0.008003206 -1.018171900  0.007991114
+
+[[299]]
+[1] -0.712765163  0.007761288 -1.009172920  0.006691146
+
+[[300]]
+[1] -0.65832363  0.01341197 -0.99184414  0.01111397
+
+[[301]]
+[1] -0.29047750  0.01805611 -0.99570965  0.01191643
+
+[[302]]
+[1] -0.844811620  0.006201929 -1.005417959  0.007007740
+
+[[303]]
+[1] -0.854066427  0.006767995 -1.034945444  0.007108704
+
+[[304]]
+[1] -0.798580960  0.006571823 -1.008000992  0.006270993
+
+[[305]]
+[1] -0.821411552  0.007840227 -1.015341203  0.007855497
+
+[[306]]
+[1] -0.66214924  0.01333853 -0.94888312  0.01433464
+
+[[307]]
+[1] -0.89113213  0.01468568 -0.98855145  0.01407987
+
+[[308]]
+[1] -0.68939066  0.01410259 -0.96816454  0.01389658
+
+[[309]]
+[1] -0.90184001  0.01277177 -0.97452308  0.01252352
+
+[[310]]
+[1] -0.752773861  0.008846137 -1.030100168  0.007411994
+
+[[311]]
+[1] -0.625432495  0.009402236 -0.998663535  0.008664113
+
+[[312]]
+[1] -0.750725122  0.009563639 -1.023561206  0.009114817
+
+[[313]]
+[1] -0.753467967  0.008180744 -1.013270190  0.007752538
+
+[[314]]
+[1] -0.601922180  0.010075228 -1.036807173  0.009832005
+
+[[315]]
+[1] -0.619916840  0.009294477 -0.998696097  0.008088838
+
+[[316]]
+[1] -0.642616009  0.010246609 -1.042793258  0.009204358
+
+[[317]]
+[1] -0.628700138  0.010476673 -1.008431975  0.008427641
+
+[[318]]
+[1] -0.643881773  0.011004814 -1.020330907  0.009340169
+
+[[319]]
+[1] -0.633392441  0.010833037 -1.027725424  0.009744669
+
+[[320]]
+[1] -0.60401957  0.01013991 -1.01746315  0.01001202
+
+[[321]]
+[1] -0.65603155  0.01221511 -1.02973571  0.01020169
+
+[[322]]
+[1] -0.598695113  0.010192868 -1.037667410  0.009380841
+
+[[323]]
+[1] -0.61035028  0.01166880 -1.02224143  0.01006865
+
+[[324]]
+[1] -0.651470940  0.011352172 -1.031139344  0.009831724
+
+[[325]]
+[1] -0.606147618  0.011455200 -0.999179981  0.009424805
+
+[[326]]
+[1] -0.629303973  0.011295404 -1.018439663  0.009159405
+
+[[327]]
+[1] -0.607253209  0.009928045 -1.021025650  0.009154962
+
+[[328]]
+[1] -0.627609341  0.010768402 -1.037805113  0.009585879
+
+[[329]]
+[1] -0.601972576  0.009402437 -1.035694330  0.008574497
+
+[[330]]
+[1] -0.622015563  0.009007813 -1.023973563  0.008446498
+
+[[331]]
+[1] -0.615346809  0.009835773 -1.046573709  0.009095483
+
+[[332]]
+[1] -0.633814236  0.009204769 -1.034219839  0.008750126
+
+[[333]]
+[1] -0.615808080  0.009030936 -1.044099870  0.009662752
+
+[[334]]
+[1] -0.616863173  0.009933918 -1.036514718  0.009749689
+
+[[335]]
+[1] -0.73002770  0.01460603 -0.96050949  0.01470238
+
+[[336]]
+[1] -0.65686963  0.01196142 -1.03570720  0.01018791
+
+[[337]]
+[1] -0.736472608  0.007231040 -1.026285084  0.007283106
+
+[[338]]
+[1] -0.731517301  0.007341268 -1.016978773  0.006619812
+
+[[339]]
+[1] -0.690909282  0.006720046 -1.024778987  0.007444850
+
+[[340]]
+[1] -0.629743426  0.008613644 -1.012242118  0.008399846
+
+[[341]]
+[1] -0.63229568  0.01402852 -0.89849528  0.01530165
+
+[[342]]
+[1] -0.590168855  0.011681969 -1.025394864  0.008872767
+
+[[343]]
+[1] -0.685134696  0.007772907 -1.008851239  0.007429536
+
+[[344]]
+[1] -0.692721328  0.008169669 -1.014622598  0.008032731
+
+[[345]]
+[1] -0.673730182  0.008134834 -1.033042729  0.008320360
+
+[[346]]
+[1] -0.535932649  0.008886473 -1.016875637  0.008595004
+
+[[347]]
+[1] -0.619543185  0.009635366 -1.014603658  0.008624963
+
+[[348]]
+[1] -0.842239374  0.008447003 -1.014603275  0.008489214
+
+[[349]]
+[1] -0.84631741  0.00875824 -1.01240918  0.00863189
+
+[[350]]
+[1] -0.699037414  0.008378892 -1.004104294  0.004984722
+
+[[351]]
+[1] -0.861500923  0.007644885 -1.051388519  0.008103124
+
+[[352]]
+[1] -0.708988733  0.008260433 -1.041906354  0.007384267
+
+[[353]]
+[1] -0.79755748  0.01198209 -1.01778809  0.01026242
+
+[[354]]
+[1] -0.71419406  0.01175250 -1.01929186  0.00975365
+
+[[355]]
+[1] -0.739009458  0.010230470 -1.018259174  0.009326068
+
+[[356]]
+[1] -0.551919510  0.018968310 -1.025423996  0.009262352
+
+[[357]]
+[1] -0.83111655  0.01233790 -1.04590623  0.01124199
+
+[[358]]
+[1] -0.61064154  0.01584484 -0.96632587  0.01361815
+
+[[359]]
+[1] -0.68484739  0.01258578 -1.01541601  0.01040779
+
+[[360]]
+[1] -0.681659430  0.010628461 -1.019806490  0.008635089
+
+[[361]]
+[1] -0.53694174  0.01496845 -1.00275812  0.01250289
+
+[[362]]
+[1] -0.65104862  0.01314361 -0.97164319  0.01236140
+
+[[363]]
+[1] -0.67565428  0.01494642 -0.97470759  0.01262383
+
+[[364]]
+[1] -0.54183087  0.02339146 -0.99981051  0.01345917
+
+[[365]]
+[1] -0.637385464  0.011654468 -1.007587599  0.009877625
+
+[[366]]
+[1] -0.755078977  0.010715378 -1.004328455  0.009524287
+
+[[367]]
+[1] -0.62997791  0.01276193 -1.00964687  0.01135650
+
+[[368]]
+[1] -0.679170590  0.007945612 -1.038061166  0.007868822
+
+[[369]]
+[1] -0.771629128  0.006777672 -1.018833688  0.007291910
+
+[[370]]
+[1] -0.83039733  0.01307443 -0.98889746  0.01137667
+
+[[371]]
+[1] -0.66723960  0.01418143 -1.02483166  0.01169215
+
+[[372]]
+[1] -0.80424368  0.01316664 -1.03089768  0.01182656
+
+[[373]]
+[1] -0.83921534  0.01216759 -0.97072277  0.01164229
+
+[[374]]
+[1] -0.807440890  0.006293928 -1.020294948  0.006619280
+
+[[375]]
+[1] -0.725781740  0.008289854 -1.016685546  0.009685145
+
+[[376]]
+[1] -0.725798078  0.008845636 -1.031211109  0.009826257
+
+[[377]]
+[1] -0.868705866  0.008376168 -1.013334321  0.008255324
+
+[[378]]
+[1] -0.844274760  0.007781963 -1.030431486  0.007578530
+
+[[379]]
+[1] -0.805508453  0.007856382 -1.015029200  0.007683348
+
+[[380]]
+[1] -0.613035531  0.008905300 -1.025013468  0.008380705
+
+[[381]]
+[1] -0.823078695  0.007236257 -1.031524340  0.007227139
+
+[[382]]
+[1] -0.808221444  0.006580207 -1.018752602  0.008134793
+
+[[383]]
+[1] -0.631275214  0.011475993 -1.012291787  0.009543464
+
+[[384]]
+[1] -0.65808169  0.01309183 -0.99236308  0.01153773
+
+[[385]]
+[1] -0.711126258  0.006088710 -1.027280244  0.005608128
+
+[[386]]
+[1] -0.683212762  0.009175142 -1.022852609  0.009172920
+
+[[387]]
+[1] -0.816230718  0.009268010 -1.022932191  0.009810147
+
+[[388]]
+[1] -0.79385674  0.01193256 -0.99826335  0.01183565
+
+[[389]]
+[1] -0.70363759  0.01358738 -1.03096263  0.01094431
+
+[[390]]
+[1] -0.65712365  0.01112086 -0.98619975  0.01011801
+
+[[391]]
+[1] -0.65638628  0.01286468 -1.04610409  0.00916820
+
+[[392]]
+[1] -0.679669912  0.012872012 -1.029882655  0.009379132
+
+[[393]]
+[1] -0.724429097  0.013579557 -1.055417942  0.009241213
+
+[[394]]
+[1] -0.79040914  0.01505875 -0.93658249  0.01559585
+
+[[395]]
+[1] -0.606465705  0.011285473 -1.043699995  0.009311838
+
+[[396]]
+[1] -0.614451745  0.011137156 -1.015992365  0.009816667
+
+[[397]]
+[1] -0.711294001  0.008047976 -1.007859657  0.007382033
+
+[[398]]
+[1] -0.679265178  0.010632232 -1.045651180  0.009525811
+
+[[399]]
+[1] -0.69133623  0.01654432 -0.86219837  0.01750497
+
+[[400]]
+[1] -0.58163284  0.01252290 -0.97714556  0.01222543
+
+[[401]]
+[1] -0.863213507  0.007061091 -1.025929785  0.007571204
+
+[[402]]
+[1] -0.70779128  0.01584409 -0.83795506  0.01850568
+
+[[403]]
+[1] -0.741224153  0.010597608 -1.032911584  0.009182023
+
+[[404]]
+[1] -0.755353926  0.009818910 -1.014487360  0.008225661
+
+[[405]]
+[1] -0.785469405  0.007861899 -1.027271676  0.007915332
+
+[[406]]
+[1] -0.751857458  0.007814396 -1.022831864  0.008038101
+
+[[407]]
+[1] -0.64152847  0.01528630 -1.01213569  0.01285127
+
+[[408]]
+[1] -0.56927150  0.01520888 -0.97657367  0.01256698
+
+[[409]]
+[1] -0.697853255  0.012000987 -1.026936729  0.009150756
+
+[[410]]
+[1] -0.64984898  0.01427771 -1.03010764  0.01063872
+
+[[411]]
+[1] -0.694074151  0.010196958 -0.997540763  0.008361684
+
+[[412]]
+[1] -0.703002464  0.011143898 -1.031715003  0.009145702
+
+[[413]]
+[1] -0.674234478  0.011835993 -1.023627371  0.009545754
+
+[[414]]
+[1] -0.66959976  0.01043134 -1.00588179  0.01116570
+
+[[415]]
+[1] -0.67752125  0.01307021 -1.04051782  0.01090231
+
+[[416]]
+[1] -0.588903070  0.012504706 -1.015822407  0.008435597
+
+[[417]]
+[1] -0.572219377  0.012122268 -1.025655460  0.008918266
+
+[[418]]
+[1] -0.72965199  0.01260831 -0.98545987  0.01179504
+
+[[419]]
+[1] -0.74946472  0.01216578 -0.99089513  0.01205394
+
+[[420]]
+[1] -0.57734110  0.01501991 -0.94318779  0.01319088
+
+[[421]]
+[1] -0.748707384  0.010057525 -1.024679515  0.008600705
+
+[[422]]
+[1] -0.58283602  0.02095274 -0.76496114  0.02185070
+
+[[423]]
+[1] -0.56704009  0.01655872 -0.83304491  0.01803198
+
+[[424]]
+[1] -0.574358189  0.010401355 -1.021818316  0.008631737
+
+[[425]]
+[1] -0.615888492  0.011517094 -1.015677629  0.008593054
+
+[[426]]
+[1] -0.594618053  0.010375151 -1.019577908  0.008248503
+
+[[427]]
+[1] -0.583520518  0.011314867 -1.039614198  0.009144474
+
+[[428]]
+[1] -0.568158201  0.009048005 -1.028060571  0.007733608
+
+[[429]]
+[1] -0.673792347  0.010775815 -1.025505248  0.009131173
+
+[[430]]
+[1] -0.645815222  0.011006743 -1.024842092  0.009973886
+
+[[431]]
+[1] -0.665941481  0.010606052 -1.016870509  0.008795873
+
+[[432]]
+[1] -0.648293427  0.010257869 -1.028896973  0.008371116
+
+[[433]]
+[1] -0.67030688  0.01085388 -1.03726340  0.01080198
+
+[[434]]
+[1] -0.67008550  0.01053194 -1.02185834  0.00974434
+
+[[435]]
+[1] -0.68859029  0.01214988 -1.00815694  0.01053491
+
+[[436]]
+[1] -0.649526649  0.011951373 -1.031183335  0.009952124
+
+[[437]]
+[1] -0.71525296  0.01018119 -1.02332593  0.01008603
+
+[[438]]
+[1] -0.736982817  0.010341365 -1.016527343  0.009536574
+
+[[439]]
+[1] -0.769639095  0.006484505 -1.017357061  0.006632999
+
+[[440]]
+[1] -0.80675476  0.01189021 -1.03901866  0.01038978
+
+[[441]]
+[1] -0.57255161  0.01263243 -1.00497049  0.01001990
+
+[[442]]
+[1] -0.59659350  0.01107242 -1.02061268  0.01159091
+
+[[443]]
+[1] -0.69309243  0.01174208 -1.03492366  0.01069082
+
+[[444]]
+[1] -0.665498409  0.012617940 -1.016653943  0.009044526
+
+[[445]]
+[1] -0.70205981  0.01563927 -0.97035753  0.01278504
+
+[[446]]
+[1] -0.63074350  0.01350580 -0.92314873  0.01377967
+
+[[447]]
+[1] -0.67273019  0.01050723 -1.01446517  0.00805984
+
+[[448]]
+[1] -0.649495181  0.011950386 -1.027883343  0.008632861
+
+[[449]]
+[1] -0.592937076  0.012134731 -1.031765122  0.008668807
+
+[[450]]
+[1] -0.588311062  0.013131972 -1.007395476  0.006413655
+
+[[451]]
+[1] -0.72962844  0.01446601 -0.94660348  0.01599979
+
+[[452]]
+[1] -0.68992579  0.01176988 -1.00034507  0.01167890
+
+[[453]]
+[1] -0.65052243  0.01218503 -1.01465115  0.01162671
+
+[[454]]
+[1] -0.68063596  0.01315483 -0.98515686  0.01095076
+
+[[455]]
+[1] -0.70179115  0.01384232 -1.01036479  0.01169628
+
+[[456]]
+[1] -0.66949136  0.01227153 -1.03446139  0.01076508
+
+[[457]]
+[1] -0.68850759  0.01103971 -1.02119927  0.01056408
+
+[[458]]
+[1] -0.63341220  0.01422796 -1.03088226  0.01159107
+
+[[459]]
+[1] -0.715963068  0.011713760 -1.048285637  0.009950003
+
+[[460]]
+[1] -0.72211434  0.01209681 -0.98937641  0.01128491
+
+[[461]]
+[1] -0.745117257  0.008639504 -1.027982798  0.008471845
+
+[[462]]
+[1] -0.731474721  0.008290750 -1.034787154  0.008587336
+
+> tmp<-do.call(rbind,res)
+> tmp<-as.data.frame(tmp)
+> 
+> 
+> nams<-lapply(fnamTb, function(x) { tmp <- sub("/home/dfc/seqsTb/","",x); tmp <- sub("ForTb.txt","",tmp);tmp     })
+> nams<-unlist(nams)
+> tmp<-cbind(nams,tmp)
+> colnames(tmp) <-c("species","slope","error","slopeRan","errorRan")
+> write.table(file="slopes5To15S5.txt",tmp,sep=",",row.names=F,quote=F)
+> 
+> proc.time()
+    user   system  elapsed 
+1878.784    3.016 1881.519 

@@ -1,0 +1,47 @@
+##NOTE: You must  adjust each time for different filenames
+
+#This script is meant for command line usage
+#It first prepares a the occurence of codons as a function of codons 
+# i..e Pi versus k
+#using the mkPlotC function
+#this is then fitted to an energy model by the maple script fitModel.mpl
+#the maple script writes the file nonlinfit.txt as output
+
+
+
+#"E" "H" "Q" "F" "Y" "C" "N" "K" "D" 
+
+system("mv nonlinfit.txt /tmp")
+source("analysisFunctions.Rscript")
+#Finally write the first line of the file
+#com4<-'echo "species,aa,a,b,c,residual" > nonlinfit.txt '
+#system(com4)
+
+for (len in c(5:15)){
+
+
+#now produce the correct maple file by setting in the correct length
+com3<-paste('sed "s/xxx/N:=',len,';/g" fitModel.xxx > fitModel.mpl',sep="")
+system(com3) 
+
+for (spec in c(1:length(protnamTb))){
+for (bst in c("E","H", "Q", "F", "Y", "C", "N", "K","D")){
+print(spec)
+a<-mkPlotC(protnamTb[spec],bst,len,T)
+dta<-cbind(a[["k"]],a[["Freq"]])
+write.table(dta,file="/tmp/dta.csv",quote=F,row.names=F,sep=",",col.names=F)
+sink("nonlinfit.txt", append=TRUE)
+cat(spec,",",bst,",")
+sink()
+system("maple fitModel.mpl")
+}
+}
+filnam<- paste("nonlinfit",len,".txt",sep="")
+com2 <- paste("mv nonlinfit.txt",filnam,sep=" ")
+system(com2)
+
+
+}
+
+#cleaning up errors in the files
+system("bash cleannonlinfiles.sh");

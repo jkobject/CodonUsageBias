@@ -1,0 +1,52 @@
+
+L<-11
+X <- t(as.matrix(expand.grid(0:L, 0:L,0:L,0:L)));
+
+comb<-X[,colSums(X)==L]
+
+probs<- apply(comb,2,function(x) dmultinom(x,L,c(1/4,1/4,1/4,1/4)))
+tbl<-table(probs)
+tblFr<-as.data.frame(tbl,stringsAsFactors=F )
+
+###now create artificial data
+##produce the multinomial probabilitie and then the table
+
+
+artGen<-rmultinom(2000000,L,c(1/4,1/4,1/4,1/4))
+artprobs<- apply(artGen,2,function(x) dmultinom(x,L,c(1/4,1/4,1/4,1/4)))
+freqs<-as.data.frame(table(artprobs) ,stringsAsFactors=F )
+
+#This is now the indices of freqs in Tbl
+corr<- sapply(freqs[,1],function(x) which(tblFr==x))
+
+#now we multiply the indices to get the correct "energies"
+
+tmp<-log(as.numeric(freqs[,1])*tblFr[corr,2])
+
+
+#here is now the corrected data
+rt<-cbind(tmp,log(freqs[,2]))
+
+
+
+########## Now try with real data #######
+
+#realDta <- read.table("ProPratio.txt",sep=",",header=T)
+#sta <-realDta[rowSums(realDta)==11, ]
+#dtaprobs<- apply(sta,1,function(x) dmultinom(x,L,c(1/4,1/4,1/4,1/4)))
+#freqs<-as.data.frame(table(dtaprobs) ,stringsAsFactors=F )
+
+#This is now the indices of freqs in Tbl
+#corr<- sapply(freqs[,1],function(x) which(tblFr==x))
+
+#now we multiply the indices to get the correct "energies"
+
+##tmp<-as.numeric(freqs[,1])*tblFr[corr,2]
+#tmp<-log(as.numeric(freqs[,1]))
+
+
+#here is now the corrected data
+##rt<-cbind(tmp,freqs[,2])
+
+
+

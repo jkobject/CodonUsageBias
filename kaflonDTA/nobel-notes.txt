@@ -1,0 +1,15 @@
+so you use diff methods of boltzmann distribution/ to derive a notion of energy behind each sequences. You give a random walk framework of this process to explain how it should be conceptualize. understanding the deviation from a fair/without pressure SCUF and how likely it is to arrive in a certain state given possible mutation (thus adding some known mutational/molecular biases into the model)
+
+
+from this you understand that the codon usage bias cannot solely be explained by the SCUF over the genome but that there exists at least in fungi, pressure over sequences and even particular distributions    
+
+
+-----
+After reading with good care and attention this first version of the paper. I would like first to thank you for giving me the chance to be represented in this work. The document is clear precise and well organised. I am also impressed by the writing quality. 
+
+I have however a remark: 
+- should one explain the random walk model(2.1) in the results? 
+
+- I would like also to know if there is any chance to maybe refer in this document the project that I have built in regard to the analysis of the codon usage bias. 
+
+It contains many of the computations regarding the entropy values, trying to understand the selective pressure at the gene sequence level, assuming binomial/multinomial distributions and using the measure found to try to infer further statistical relationships on the fungi kingdoms, it also provide the necessary to reproduce the examples.

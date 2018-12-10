@@ -1,0 +1,733 @@
+\documentclass[a4paper,10pt]{paper}%%%%where rsproca is the template name
+
+%%%% *** Do not adjust lengths that control margins, column widths, etc. ***
+
+%%%%%%%%%%% Defining Enunciations  %%%%%%%%%%%
+\newtheorem{theorem}{\bf Theorem}[section]
+\newtheorem{condition}{\bf Condition}[section]
+\newtheorem{corollary}{\bf Corollary}[section]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[version=4]{mhchem}
+\usepackage{mathalfa}
+\usepackage{psfrag}
+\usepackage{subfig}
+
+\usepackage{multirow}
+
+\newtheorem{defi}{Definition}
+
+\usepackage[margin=1in]{geometry}
+\newcommand*{\bc}{k_{\textup{B}}}
+
+\newcommand{\ecoli}{{\em E.coli}}
+\newcommand{\yeast}{{\em S. cerevisiae}}
+\newcommand{\leftP}{({left})}
+\newcommand{\rightP}{({right})}
+\newcommand{\siac}{{\em N}-acetyl\-neura\-minic acid}
+\newcommand{\PPS}{{pentose phosphate cycle}}
+
+\newcommand{\one}{($i$) }
+\newcommand{\two}{($ii$) }
+\newcommand{\three}{($iii$) }
+\newcommand{\four}{($iv$) }
+
+
+\begin{document}
+
+%%%% Article title to be placed here
+\title{Hidden patterns of selection on codon usage across kingdoms}
+
+\author{%%%% Author details
+Deng Yun$^{1,2}$, Jeremie Kalfon$^1$,  Dominique Chu$^1$, Tobias von der Haar$^2$}
+
+%%%%%%%%% Insert author address here
+\institution{$^1$School of Computing, University of Kent, CT2 7NF, Canterbury, UK\\
+$^2$School of Bioscience, University of Kent, CT2 7NF, Canterbury, UK\\
+{\tt \{dfc,tv\}@kent.ac.uk}
+}
+
+%%%% Subject entries to be placed here %%%%
+%\subject{statistical mechanics, theory of computing, theoretical biology}
+
+%%%% Keyword entries to be placed here %%%%
+
+
+\maketitle
+
+%%%% Abstract text to be placed here %%%%%%%%%%%%
+\begin{abstract}
+With 19 amino acids being encoded by 64 different triplets of nucleotides   the genetic code is necessarily degenerate. It is now well known that synonymous codons are not biologically equivalent and the codon choice is biased, favouring one encoding over a different one, hinting at selective  pressures. Despite many existing hypotheses, there is no current consensus on what the evolutionary drivers are.  Using ideas from stochastic thermodynamics we derive from first principles a mathematical model describing the statistics of codon usage bias and apply it to extensive genomic data. Our main conclusions include the following findings: (1)  In fungi, bacteria and protists codon usage cannot be explained by selection pressures  that merely act on the genome-wide frequency of codons, but also includes pressure that act at the level of the gene. (2) We found that codon usage is not only biased in  the usage frequency of nucleotide triplets but also in how they  distributed across mRNAs. (3) We propose a new model-based  measure of codon usage bias that takes into account both codon frequency and codon distribution, thus extending existing measures.  
+\end{abstract}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{verbatim}
+\significancestatement{
+Codon usage bias is a well-known and central biological phenomenon, but its origins are still under intense debate. Understanding codon usage and its origins is  of fundamental importance because it shapes gene expression patterns in health and disease and underpins the behaviour of  industrial bioprocesses. Here we propose a new way of thinking about the evolutionary origin of codon usage bias inspired by statistical thermodynamics. Our approach uncovers  hitherto undescribed aspects of codon usage bias   that have not been identifed  in previous  studies that mostly  relied on frequency-based measures of codon usage bias.
+
+The measure we propose will be useful in order to quantify the codons usage bias in a more comprehensive way than has been possible hitherto.  This opens up new quantitative research on codon usage. 
+}
+ \end{verbatim}
+
+
+\keywords{translation, entropy, codon usage bias,fungi}
+
+\section{Introduction }
+
+
+
+
+Codon usage bias (CUB), the preferred usage of particular codons over others encoding the same amino acid, is an established phenomenon. The principal forces that shape CUB are thought to be mutation, selection, and random drift (reviewed in \cite{fantomas7}). While this view appears generally accepted, there is little consensus about the precise evolutionary drivers  of CUB. A number of individual mechanisms have been proposed either by way of correlation or through experimental evidence, but it is currently unclear whether selection has multiple causes \cite{fantomas7,29018283} or a single dominant cause, and if so, what the dominant cause may be. 
+\par
+The proposed selective forces can be categorised into two groups. The first group comprises forces that act at the level of codons only, i.e. they are independent of the subsequence in which the codon is located and lead to uniform bias across the entire genome. We will henceforth refer to this as  {\em beanbag selection}.  Examples include tRNA-based selection models where codon usage is matched to the supply of tRNAs \cite{iki}, and GC content based models where codon usage is matched to constraints imposed by some preferred proportion of G and C bases in the DNA sequence \cite{fantomas8,fantomas1,fantomas2}. 
+\par
+Alternatively, the second group of mechanisms  that  acts at the level of coding sequences and results in {\em sequence level selection (SLS)}.  In the context of  CUB sequence-level effects  have gained increasing appreciation in recent years through the demonstration that specific codon usage patterns enable the functioning of biological mechanisms as diverse as the mammalian cell cycle \cite{fantomas10}, the mechanism by which sub-physiological temperatures engender neuroprotection \cite{fantomas11} and fungal circadian clocks \cite{23417067}.  It has also been observed that codon usage may change along a coding sequence  \cite{fantomas4,ramppaper}. Codon usage can also influence both mRNA \cite{fantomas5} and protein structures \cite{fantomas6,relcodon}, exert control over  protein levels \cite{myembopaper}  and  protein quality  \cite{fantomas9,pff}  and as such impact on biological function. Moreover, experimental effects of altered codon usage have been observed for which no underlying mechanisms is known \cite{tobiasandlynnepaper}. 
+\par
+While there is now  evidence for a large number of possible evolutionary drivers for CUB, it remains unclear how the various mechanisms interact and how much they contribute to the overall CUB relative to one another.  There have been some recent attempts to use statistical methods to  disentangle the various influences on CUB \cite{2110097,7713409,8893856,11729162,12140252}. However,  this was mostly done in order to quantify how much one specific mechanism contributes relative to others. Quantifying the relative importance of various drivers remains difficult because of the sheer number of mechanisms many of which are perhaps yet to be discovered. 
+\par
+Even if it is feasible to map out all the evolutionary  forces in detail, it may not be particularly insightful. Instead, a macroscopic  description of the system may provide more insight. There are many precedents in science, notably in statistical physics, where simple, useful  and  universal laws emerge from intractable microscopic interactions. Examples, include  the ideal gas law that relates 4 macroscopic quantities  to one another while ignoring individual positions and momenta of molecules,   scaling laws in biology \cite{gwest}, word frequencies in texts \cite{zipf}, spatial structures of genomes \cite{fantomas21} and evolution \cite{baksneppen,baksneoppen2} all of which abstract away from microscopic detail in order to arrive at robust macroscopic laws.
+\par%contributions
+In this paper, we will take inspiration from this approach. As the main result, we  derive from first principles  a novel, parsimonious  and general model of codon evolution as a random walk based   on ideas of stochastic thermodynamics\cite{stochtherm}  and information thermodynamics \cite{infothermreview}. This model has only two free parameters and  does not postulate any specific evolutionary forces, but instead  describes the aggregate effect of many unknown but simultaneously acting  evolutionary forces  on the genome.  As a  second main contribution of this  study  we  fit  this model to a  comprehensive genomic dataset consisting of 462 fungal genomes from the ENSEMBL database \cite{together}. Such datasets are only now becoming available in sufficient numbers to probe thermodynamic features of CUB in any depth.   As a third contribution,  we find  unambiguous evidence that  SLS left  a  pervasive signature on  the distribution of codons over genes in fungal, bacterial and protist genomes. This provides evidence from an evolutionary perspective for recent observations that connect codon usage to translational control in a number of different setting including human development and diseases including cancer \cite{fantomas22}.   Finally, as a fourth contribution, we propose a new quantitative description of codon usage bias, that, while summarised as a single number,  does not only take into account the relative proportion of codons but crucially also how they are distributed across the genome. We argue that this captures more accurately the selection pressure on codon usage than  measures that merely quantify the relative abundance of codons, such as CAI \cite{cai} or tAI \cite{tai}. 
+
+
+
+
+
+\section{Results}
+
+
+\subsection{Deriving the full model}
+
+In order to derive our model we conceptualise  codon evolution as a  discrete space, continuous time random walk in the space of synonymous codons. In this picture, each gene  represents up to 18 independent random walkers, one for each amino acid with  more than 1 codon.    Each random walker is thus a {\em subsequence} of synonymous codons for some amino acid $\mathcal A \in \{\texttt{E,H,Q,F,Y,C,N,K,D,I,P,T,A,V,G,L,S,R}\}$  appearing in  a gene $g$.  Each such subsequence has a length $L^{\mathcal A,g}$ which is  the number of  amino acids of type $\mathcal A$ appearing in the gene. Each subsequence consists of $k_1$ codons of type 1, $k_2$ codons of type 2, \ldots, $k_{|C^\mathcal A|}$ codons of type $|C^\mathcal A|$, where $|C^\mathcal A|\in \{2,3,4,6\}$ is the total number of codons for amino acid $\mathcal A$. For each amino acid we decided arbitrarily (but fixed) which  one of its codons is codon  1, codon  2 and so on.  % For example, the number of codons for tryptophan is  $|C^E|=2$. See table \ref{symbols} for a summary of the symbols used.  
+
+%
+%
+\begin{table}
+\centering
+\begin{tabular}{|l|l|}
+{\bf Symbol}& {\bf Meaning} \\\hline
+$|\mathcal A^g|$ 		& 	 Number of occurrences of  amino acid $\mathcal A$ in gene $g$\\\hline
+$C^\mathcal A$ 		& 		A type of codon of amino acid $\mathcal A$\\\hline
+$|C^\mathcal A|$ 		& number of  different codons for  amino acid $\mathcal A$\\\hline
+$C_i^\mathcal A$ 		& 		$i$-th  codon type of amino acid $\mathcal A$\\\hline
+$|C^\mathcal A|\in \{1,2,3,4,6\}$ 		& 		The number of codons codon for  amino acid $\mathcal A$\\\hline
+$k^{\mathcal A,g}_i,k^\mathcal A_i, k_i$ 		& The number of codons of type $i$ of amino acid $\mathcal A$ occurring in gene $g$.\\\hline
+$L^{\mathcal A,g} := \sum_i k^{\mathcal A,g}_i$ 		& 		The number of occurrences of $\mathcal A$  in gene $g$.\\\hline
+\end{tabular}
+\caption{Explanation of the symbols used.}
+\label{symbols}
+\end{table}
+%
+%
+\par
+We can now consider each possible configuration of a subsequence  $\{k_1,\ldots, k_{|C^\mathcal A|}\}$ as a  state. From any such state, the random walker can access all states that are 1 synonymous mutation away.  
+ % EDIT: state changes happens 1 synonymous mutation at a time.
+For example, codon 1 may be mutated to codon two, which would correspond to the transition from $\{k_1, k_2, \ldots, k_{|C^\mathcal A|}\}$  to $\{k_1-1,k_2+1, \ldots, k_{|C^\mathcal A|}\}$. In the case of only two codons, where  $|C^\mathcal A|=2$ this random walk reduces to a 1-dimensional discrete state random walk in continuous time with $L^{\mathcal A,g} +1$ states, corresponding to $L^{\mathcal A,g}$ codons being of type 1, $L^{\mathcal A,g}-1$ codons being of type 1,\ldots, $0$ codons being of type 1;     see supplementary information for more detail on the model. 
+\par%simplifying assumptions we make
+Throughout this contribution, we make a number of simplifying assumptions about the nature of  the random walk. Firstly, we assume that non-synonymous mutations are negligible, i.e. the rate of mutation from a codon to a non-synonymous codon is zero. Secondly, we  assume that the mutation rates between synonymous codons are {\em a priori} the same, i.e. the random walk is unbiased. Any deviations from this assumption are due to evolutionary selection pressures (including effects of random drift).   Thirdly, the random walker is  in  a steady state. Continuing evolutionary pressure could therefore change individual subsequences, but will not, on the whole, change the statistics of the codon distribution. Fourthly, throughout this article we are not concerned with the spatial arrangements of codons across a gene or genome, but we only record how many codons of a particular kind are to be found in a particular subsequence.    
+\par
+In order to derive  predictions for the distribution of codons across subsequences in response to specific selective pressures, we devised a theoretical model of the dynamics of codon evolution based on stochastic thermodynamics \cite{seifertreview}.  We  conceptualize each subsequence configuration $i$ as having an energy $E_i$, where $E_i$ depends on the codon composition of the subsequence and the selection pressure. In  steady state  the probability of  observing a subsequence with energy $E_i$, i.e. the probability to find the random walker in state $i$,  is then  given by the Boltzmann distribution $P(E_i) = \exp(-E_i/T)/\sum_i \exp(-E_i/T)$, where we have assumed that the Boltzmann constant  $\bc=1$.  In this model  $T$ is a constant that in a physical system would correspond to the temperature, but we will interpret this here as an abstract temperature that is not in a clear relationship with the ambient temperature experienced by the organism. Having established this conceptual framework, we are now able to determine the energy that is implied by various selection scenarios, which in turn  leads to a prediction for  steady state Boltzmann distributions of random walkers/sequences, which can be compared to data.
+\par
+The  simplest energy function can be derived for the beanbag model and   no  selection forces acting on codon usage. In this case, the assignment of codons would be like throwing a die $L^{\mathcal A,g}$ times and recording how often a particular result was obtained. In this contribution, we will   mainly  consider the case of amino acids with 2 codons, in which case the  unbiased case would be like tossing a fair coin $L^{\mathcal A,g}$ times and counting how often tail and heads were obtained.  In this  case we find that  that the energy becomes  $E_i=-\ln {L\choose k_1}$, where $k_1$ is the frequency of the first codon; see SI for the calculation. The corresponding Boltzmann distribution coincides with the unbiased binomial distribution with $p=1/2$, as expected. This simplest model can be readily expanded to include  a beanbag model with  a global codon usage bias $q$ for codon 1, yielding an energy  $\hat E_i = E_i  + \ln\left( (1-q)^i / q^i \right)$. Again, the resulting Boltzmann distribution  coincides with the  binomial distribution with bias $p=q$.    
+\par
+In the beanbag models the rate of mutation from codon 1 to codon 2 is proportional to $k_1$, the number of codons of type 1.  We now posit instead that this rate is   proportional to $k_1^\xi$ and $\xi\in\mathbb R$, and  the rate from codon 2 to codon 1 becomes  proportional to $(L-k_1)^\gamma$ and $\gamma\in\mathbb R$. This breaks the assumptions of  beanbag selection.  The resulting statistics can no longer be reproduced by throwing dice or tossing coins, not even unfair ones. Instead, this  model  entails SLS.  In the supplementary information we show that  under this model the  energy  for a subsequence with $i$ codons of type 1  is given by the {\em full model}  (see SI for derivation): 
+%
+% 
+\begin{equation}
+\bar E_i= \xi E_i +  T (\gamma - \xi) \ln(i!).
+\label{fullmodel}
+\end{equation}
+%
+%
+Given this model, a Boltzmann distribution with parameters $\gamma$ and $\xi$ can be obtained, as above. Biologically, this Boltzmann distribution  would then  formulate the probability to observe a gene that has exactly $k_1=i$ codons of type 1 and $L^{\mathcal A, g} -k_1$ codons of type 2. 
+\par
+Before proceeding, we discuss some special choices for the ad-hoc parameters $\xi,\gamma$ so as to clarify their biological meaning. When   $\xi=\gamma\neq 1$, then  the  second term on the right hand side disappears and the   energy is the same as in the biased beanbag model  with a modified inverse temperature $\xi$. In this case there will be no selection pressure on the  global usage of codons, but  there will be a SLS  affecting how codons are distributed across subsequences. For $\xi=\gamma = 1$ the full model  \ref{fullmodel}  reduces to  the binomial distribution  with $q=0.5$ exactly.  In the   most general case of   $\xi\neq\gamma$  selection is affected by  the second term, which can be interpreted as a selection   ``potential.''  In this case, a global codon usage bias $q$ will emerge as a result of sequence level selection.  We  now define an inverse temperature $T^{-1} :=(\xi + \gamma)/2$ for the  model as  the simplest function that is  symmetric in the two parameter  and reduces to the inverse temperature in the case of $\xi = \gamma$.  This temperature is unrelated to the physical temperature of the organism, but has  an interpretation in terms of the width of the steady state distribution. The ``colder'' the distribution, the more  the probability mass is concentrated around the maximum of the standard case of $T=1$.  The extreme  case  is  $T=0$, when   the only observed subsequence would be the  most probable subsequence configuration.  In contrast, as $T\to\infty$  all subsequence configurations become equally likely. We will find here that actual genomes tend to be moderately hot with $1<T<2$ for most subsequences, resulting in a flatter distribution than one would expect from a temperature of $T=1$.  
+\par
+Finally, we note that the  full model \ref{fullmodel} does not reduce exactly to  the binomial distribution for $q\neq 1/2$ for any choice of parameters, but we found that it can approximate it to  high degrees of accuracy.  Given the relatively high statistical error of determining codon distributions  it will therefore   not be possible to reject SLS  (i.e. the beanbag model) empirically even if the underlying data was binomial.
+
+\subsection{Genomic data bears the signature of SLS}
+%
+%
+\begin{figure}
+\centering
+\subfloat[][]{\includegraphics[angle=-0,width=0.8\textwidth]{histogram.eps}\label{histogram}}\\
+\subfloat[][]{\includegraphics[angle=0,width=0.45\textwidth]{fullagainstbinomControl.eps}\label{fullagainstbinomcontrol}}
+\subfloat[][]{\includegraphics[angle=0,width=0.45\textwidth]{fullagainstbinom.eps} \label{fullagainstbinom}}
+\caption{ \protect\subref{histogram}  Histogram for the mean-residuals  obtained from fitting the  binomial distribution and the full model for both the real data and the control. The $x$-axis  is shown on a logarithmic scale.  In the  control codons have been replaced by random synonymous codons with a bias corresponding to the global codon usage bias.  The distribution of the mean-residuals of the real binomial fitted to real data  is clearly shifted to the right of the fit to the full model, suggesting that the latter is a better fit on the whole. On the other hand, the  mean-residuals of the full model overlap  with the distribution of the mean-residuals resulting from the fit  of both the binomial and the full model to the control data.  \protect\subref{fullagainstbinomcontrol} Comparing the mean-residuals from the full model to those of the binomial model. The plot shows the the density of points for the control data. The area above  the diagonal indicates subsequences where the full model is a better fit than the binomial model. Points on the diagonal indicate that both models fit the subsequence equally well. \protect\subref{fullagainstbinom} Same comparison, but for real data. The contour lines indicate the density of the  control data in \protect\subref{fullagainstbinomcontrol} }
+\label{histogram}
+\end{figure}
+%
+%  
+%%describe the fitting below
+In order to understand  whether or not there is evidence for SLS or the beanbag-model in actual genomic data, we first fitted  each subsequence  with $5\leq L^{\mathcal A,g}\leq 15$ of our fungal dataset  to a binomial distribution.  The lower limit was chosen so as to obtain a sufficient number of data-points to fit. The upper limit was chosen so as to avoid overly large statistical errors which arise because the number of subsequences reduces quickly  with increasing subsequence length.  We thus  obtained   $45702$ individual fits from the fungal dataset. The discussion to follow will focus on those fits. Similar results were obtained from fits to bacterial and protists datasets as described in the supplementary information.  
+
+\subsubsection{Distribution of codons can be fitted to  binomial distributions}
+
+The distribution of codons across genes can be fitted  to  a binomial distribution. Doing this for all subsequences results in a distribution of   mean-residuals between $\exp(-4)$ and $\exp(-9)$ peaking at about $\exp(-7)$. Visual inspection of a number of examples suggests that these mean-residuals indicate  a reasonably good fit to the data. The only fitting parameter in the model is the  bias $p$, which  is  the {\em global  codon usage bias} $q$.  Since we fitted each subsequence length separately we obtained, for each species and each amino acid 10 different estimates for   $q$.  Pairwise comparison of the estimates  of $q$ between length 15 and the other length yielded  high correlations, with Pearson coefficient $> 0.95$. This means that the global codon usage bias varies little as the length of the subsequence is varied; see supplementary plots.  Taken on their own, these results seem to point to codons being distributed binomially consistent with the beanbag model.
+
+
+\subsubsection{The full model fits the fungal data better}
+
+As a comparison we  also  fitted the full model eq. \ref{fullmodel} to the data  thus obtaining   estimated values for  the parameters $\xi$ and $\gamma$ of the full model. We also obtained  for each fit a   mean-residual indicating how well the full model can be fitted to the data.
+%Here is the code to perform the calculation below
+%source("readResiduals.R")
+%#determine the number of points that are outside  0,2
+%tmp<-nolF[which(nolF$a<2 & nolF$b<2 & nolF$a>0 & nolF$b>0),]
+%length(tmp[[1]])/length(nolF[[1]])
+%length(nolF[[1]])
+%To generate this data, jump to tag SUMMARYDATA in figures.Rscript
+%
+%Fungi (full)
+%    Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+%0.0000000 0.0001480 0.0002830 0.0005512 0.0005630 0.0182800
+%
+%Fungi binomial
+%   Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+%0.000006 0.000448 0.000836 0.001208 0.001532 0.018010
+%
+%FULL data below:
+%summary(nolB$residual)
+%    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+%0.000006 0.000450 0.000845 0.001613 0.001560 0.206000 
+% summary(nolF$residual)
+%     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+%0.0000000 0.0001490 0.0002850 0.0009934 0.0005720 0.3515000 
+\par
+For all our datasets, the typical values of the parameters $\gamma$ and $\xi$ are small and  positive  with  $96.39$\% of the fits resulting  in  $0<\gamma,\xi<2$.  The quality of the fits can be quantified by comparing the mean-residuals obtained from  fitting the  full model with those obtained from fitting the binomial model. This   indicates that the former is a better description of the data {\em on the whole} in the sense that the distribution of mean-residuals is  shifted to the left towards smaller values; see fig. \ref{histogram} for a comparison of the distributions.  The median for the  residuals of the full model is  $0.0002850$, and as such about 3 times smaller than the corresponding value for the binomial fits, which is $0.000845$. 
+\par
+The   better fit of the full model could be  merely a reflection of the fact that it has  more  parameters than the  binomial model. We therefore   prepared a control set of  distributions. This control set consists of the same subsequences that the real dataset contains, but with each codon replaced by a random synonymous codon according to the global codon usage bias $q$; see supplementary information for a description and for the control dataset. By construction this control set implements the beanbag model exactly, meaning  that the  sequence composition of subsequences is distributed according to the binomial distribution  with a global  codon usage bias $q$ corresponding to empirically measured values.   Fitting both the full model and the binomial model to this control data results in mean-residuals that are  visually indistinguishable from one another reflecting the above cited fact that the full model can approximate binomial data; see  fig. \ref{histogram}.  
+\par
+The quality of the   fit of the binomial model to the  binomial  data of the control-set can be viewed as a benchmark for the best mean-residuals that can be obtained given the statistical error  inherent in the dataset. An inspection of the histogram in fig. \ref{histogram} reveals  that the  distribution of mean-residuals obtained from fitting  the  full model to the real data is only minimally shifted to the right of this optimal benchmark. This leads to  the conclusion that the full model captures almost all of the variation of the underlying real data. The beanbag model (which implies a binomial distribution) is not sufficient to explain  how codons are distributed across the genome in fungi. Instead, it  is necessary to postulate sequence-level selection in order to account for the distribution of codons over subsequences. In contrast, the full model, as formulated in eq. \ref{fullmodel} accounts for the distribution.
+
+\subsubsection{Comparing individual subsequences}
+
+So far, we have concluded that  the full model is a better fit to the distribution of codons on the whole, but we do not know whether this applies to all  individual subsequences, or  whether  there is only a subset of subsequences that is better described by the full model, whereas the rest is equally well described by the binomial model. To decide this, we plot the mean-residuals for each subsequence against the  mean-residual obtained from fitting  the full model to the same subsequence. We did this for both the control dataset described above and for the real data.  It is instructive to first consider  the former; see fig \ref{fullagainstbinomcontrol}. 
+This  analysis confirms that most subsequences of the control data are approximately equally well fitted by the binomial and the control data %EDIT: is it the control data or full model?
+, although the density of points appears to be higher below the diagonal indicating that the binomial model fits the control data somewhat better. This is because, as mentioned above, the full model can only approximate the binomial distribution. 
+\par
+Turning now to the real data  the same analysis leads to a high density of points in the upper left corner of the figure. This is the area where   the  mean-residuals of the  full model are low, but those of the binomial model are high; see  fig. \ref{fullagainstbinom}.  The corresponding subsequences are  consistent with sequence-level selection, but not with the beanbag model. In contrast, the subsequences along the diagonal  where the mean-residuals of the full model and the binomial model are similar  the subsequences along the diagonal,  can be equally well explained by the beanbag model and SLS.  Note that  from fig. \ref{fullagainstbinom} it is only possible to make statistical inferences, comparing densities of a large number of points. For any individual subsequence, it is not possible to exclude conclusively the beanbag model.
+\par
+%
+%
+\begin{figure}
+\psfrag{a}{$\xi$}
+\psfrag{b}{$\gamma$}
+\centering
+\subfloat[][]{\includegraphics[width=0.35\textwidth]{fitResultsFungi.eps}\label{fitresultsfungi}}
+\subfloat[][]{\includegraphics[width=0.35\textwidth]{fitResultsRandom.eps}\label{fitresultsrandom}}\\
+\subfloat[][]{\includegraphics[width=0.35\textwidth]{globalTemperatureHist.eps}\label{globaltemperaturehist}}
+\subfloat[][]{\includegraphics[width=0.35\textwidth]{detailTemperatureHist.eps}\label{detailtemperaturehist}}\\
+\subfloat[][]{\includegraphics[width=0.35\textwidth]{globalEuclideanHist.eps}\label{globaleuclideanhist}}
+\subfloat[][]{\includegraphics[width=0.35\textwidth]{detailEuclideanHist.eps}\label{detaileuclideanhist}}
+\caption{\protect\subref{fitresultsfungi} The density of fitted parameters $\protect\xi$ and $\protect\gamma$  for each of the 2-codon amino acids for all 462 fungal species in our dataset. We are  limiting ourselves to fits with mean-residuals $<0.0009999$. The fitted values largely concentrate into the interval of $[0,1.5]$.  \protect\subref{fitresultsrandom} Comparing the fitted parameters obtained from the full model (red) to the fitted parameters obtained from the control (blue). The plot shows actual points rather than density.  \protect\subref{globaltemperaturehist}  Distribution of inverse temperature in the fungal dataset showing all sub-length and all species. The control data peaks around an inverse temperature of 1, whereas the real data is distributed around a lower inverse temperature. \protect\subref{detailtemperaturehist} Distribution of inverse temperature for two different species. This shows  the temperature for two species including all amino acids and is a subset of \protect\subref{globaltemperaturehist}.\protect\ref{globaleuclideanhist} The distribution of distances $\mathcal D$. The  control data clearly has a smaller distance on the whole than the non-selection model, indicating that considering only the global codon usage bias underestimates the selection pressure.    \protect\subref{detaileuclideanhist} Same data, but for two species only. }
+\label{fourspecies}
+\label{fitresults}
+\end{figure}
+%
+%
+%
+\subsubsection{Defining distance}
+A  different perspective on the difference between the models can be obtained from the distribution of subsequences  in $\xi, \gamma$ space; see fig. \ref{fitresultsrandom}.  It  reveals  that  the fits remain concentrated into a smaller part of parameter space than the fits to the real data.  This is further evidence  that SLS has shaped the codon usage in fungi.  Statistically, it means that the goibal codon usage bias $q$ is not the only manifestation of selection pressures on codons, but  SLS has also altered how codons are distributed across subsequence.  
+%
+%
+\begin{figure}
+\centering
+\includegraphics[width=0.6\textwidth]{nocubTemperatureHist.eps}
+\caption{Distribution of distances $\mathcal D$  in genomes that have no global CUB. We selected all subsequences where the global codon usage bias  towards codon 1 is  between $0.495$ and $0.5$. The beanbag model of selection would predict that these subsequences have a distance of 0. It is apparent that there are many examples of subsequences that have no global bias, but at the same time subject to a SLS pressure, as evidenced by a distance that is different from 0.}
+\label{nocubtemperaturehist}
+\end{figure}
+%
+%
+\par
+Established measures, such as the CAI \cite{cai} or tAI \cite{tai} that are based on the global codon usage biases miss this aspect and are therefore incomplete quantifications of the real codon usage bias.  Based on the full model we  now propose a new measure that quantifies in a more complete way the selection pressure on codon usage, irrespective of whether it arises from beanbag or SLS forces. As such a measure we propose  the Euclidean distance  of the subsequence from the no-selection case in  $\xi, \gamma$ space.  This no-selection case corresponds to  $\xi=\gamma=1$ exactly and  any deviation from that indicates a selection pressure.
+%
+% 
+\begin{equation}
+\mathcal D:= \sqrt{(1-\xi)^2 + (1-\gamma)^2} \tag{\textrm{Selection pressure}}
+\end{equation}
+%
+%  
+In the case  of no global codon usage bias, the selection pressure  is in a simple relationship to the inverse temperature $\mathcal D = | 1- T^{-1}|= | 1- \xi|$.
+\par
+ Fig. \ref{globaltemperaturehist} aplied this measure to  the entire fungal dataset and the corresponding control data.  The latter  deviation from the no-selection case in the latter is only due to the global CUB $q$. The actual data-set contains the same global CUB, but additionally it is also subsject to SLS forces and therefore, on the whole, has a greater distance $\mathcal D$, indicating a stronger selection acting on it than would be expected from an analysis of $q$ only.  Similarly, in fig. \ref{nocubtemperaturehist} we show  the distribution of $\mathcal D$ for sequences that have a negligible global CUB only. If the beanbag model was true, then these would have distances close to $0$, but in reality the values are much higher than that, indicating that even the subsequences with  $q\approx 1/2$ are under selective pressure. 
+\par
+We focussed the discussion above on the fungal dataset. A repetition of the same analyses   for  560 species of bacteria and to 126 species of protists  yielded qualitatively and quantitatively similar results; see supplementary information.    Notably, the parameters of the model $\xi$ and $\gamma$ distributed into the same range and differed only in minor ways in their temperature, such that those subsequences as well bear the signatures of SLS.
+
+\section{Discussion}
+
+At present there is no consensus on  the evolutionary drivers of  codon usage bias. Many  different  drivers of codon selection have been described; perhaps many remain to be discovered.  Here, we refrained from committing to a partcular selection mechanism, but we found that  the aggregate effect of all selection forces can be summarised by a parsimonious mathematical model (eq. \ref{fullmodel}) with only  2 parameters. This model is derived from first principles and  it is  the  simplest  model  that is consistent with SLS.  Its two parameters can be  directly interpreted in terms of selection forces namely as the  exponents modifying the rate of synonymous mutations from one codon to another one. 
+\par
+The full model eq. \ref{fullmodel} has two parts that lend themselves to direct interpretation. The first term on the left hand side is the ``entropic'' part  equivalent to a no-selection system at an altered temperature. The second term is an effective ``selection potential'' that modifies the probability distributions of the random walkers relative to the purely entropic case of no selection. We do not claim  that this potential  has a concrete single counterpart  in biology. Instead,  we interpret it as the emergent result of many evolutionary forces  acting simultaneously on the genome. Listing these forces and disentangling how they act and interact is likely an  intractable task, but collectively these forces seem to behave in a simple way, leading to a macroscopic description of codon usage bias.   
+\par
+Using this model, we could establish that  fungal genomes  bear the signature of subsequence level codon selection.  The same applies to protists and bacteria.  While we cannot exclude that that beanbag selection forces act as well on the genomes, either simultaneously or for a subset of the genomes, mathematically this assumption is not necessary. SLS is sufficient to explain all the empirical data and necessary for a subset.  
+\par
+A consequence of SLS is that selection forces on codon usage bias do not only manifest themselves in global codon usage bias, but  also, less visibly, in the way codons are distributed. This means that traditional codon usage indices, such a cAI or tAI tend to underestimate the real codon usage bias. From the full model we derived a measure of the distance from the no-selection case, which takes into account both the global codon usage bias but also deviations from the binomial distribution, i.e. SLS effects. In the special case of no global codon usage bias, traditional metrics would conclude that there is no global codon usage bias. However, we showed that  in fact even those subsequences do show signatures of selection (see fig. \ref{nocubtemperaturehist}). 
+%Higher level selection important
+%utionut
+%Even though there is no global codon usage bias, does not mean that there is no selection.
+\par
+%Comment on AA with more than 2 codons
+We  limited our analysis above to amino acids the 9 amino acids that  are encoded by  2 codons only. In principle, there is no theoretical difficulty to extend the model to  the remaining 9 amino acids that are encoded by 2 codons only. The binomial distribution needs  to be replaced according to  a multinomial distribution and the full model needs to be adapted to  include an  extra parameter for each additional codon. In practice, the analysis  becomes problematic for two reasons. Firstly, with more codons the number of possible subsequence compositions grows quickly, but the number of subsequences does not. As a consequence, there are fewer examples per configuration which increases the statistical error.  Secondly, and connected to this is that  fitting  4 or more parameter-model to noisy data becomes unreliable.  Notwithstanding these objections, it is possible to gain some limited insight  by comparing entire species rather than  only particular subsequences of a given length.  This analysis indicates that amino acids with more than 2 codons are much less impacted by SLS and more consistent with beanbag selection; see supplementary information for details.. Based on general considerations this is not entirely surprising. The same statistical error that makes the analysis of amino acids with more than 2 codons difficult also affects the cells itself, in the sense that  the effects of even a moderate selection  pressures at the level of the sequence will remain inefficient against the high levels of mutational noise. 
+
+
+
+
+
+\section{Methods}
+
+
+
+\subsection{The dataset}
+\label{dataset}
+
+All datasets  were obtained from  ENSEMBL {\tt https://www.ensembl.org}.  To obtain the results we first   downloaded the  coding sequences of interest (CDS files); 462 species from the  Fungi kingdom (release 36 in AUG 2017), 442 species in Bacteria kingdom (release 40 in JUL 2018), 143 species in Protist kingdom (release 40 in JUL 2018). All the species names and corresponding download weblinks are in the supplementary file ``species.xlsx''. From these files  we  produced  all  subsequences.  To do this  we converted  each gene sequence into a valid codon sequence, removed all genes of which the number of nucleotides was not a multiple of 3, which indicates an error in the ORF. There are 35748 error genes excluded from 4554328 total genes of Fungi kingdom, 6384 excluded from 1286467 of Bacteria kingdom, and 25142 excluded from 1439975 of Protist kingdom. 
+\par
+We then  prepared the data by  splitting each gene into  (up to) 18  subsequences  as follows: For each gene $g$ and amino acid $\mathcal A$  in the dataset we found all  codons that code for  $\mathcal A$  and discarded all others. Thus, we  reduced the gene $g$ to a subsequence of codons of length $L^{\mathcal A,g}$. 
+\par
+For each species, a control  coding subsequence was produced by replacing each codon with a random synonymous codon (which could be the same as the one in the original subsequence). The probability of choosing a random synonymous codon was biased according to the observed global codon usage bias of the respective species and amino acid, such that in the control data the codons were distributed according to the multinomial distribution by construction. 
+\par
+Fitting was done using Maple 2018 ``NonlinearFit'' function. The initial estimates for $\gamma$ and $\xi$ were set to 1. If an initial fit resulted in a mean-residual $>0.0009999$ then the fit was repeated with  randomly chosen initial estimates. This was repeated up to 1000 times until a fit was found with a mean-residual $<0.00099999$. 
+
+
+\bibliographystyle{unsrt}
+\bibliography{../bibl}
+
+\appendix
+
+
+\section{Theory}
+
+
+
+\subsection{Beanbag model}
+
+Beanbag models assume that selection acts at the level of codons. Assigning codons to a particular site can be thought of as selecting beans from a bag. Each time a codon is picked, the choice   between the codons / bags is made   with a fixed probability that does not depend on the previous choices made.  For each codon assignment there will be a probability $p_i$ that the $i$-th codon is chosen among all possible $|C_{\mathcal A}|$ codons $C_1^\mathcal A,\ldots,C_{|C_{\mathcal A}|}^\mathcal A$ for amino acid $A$.  
+This type of selection procedure is generally known to lead  to a  multinomial distribution of codon subsequences. Specifically,  the probability to observe  a particular gene that   has $L=L^{\mathcal A,g}$ occurrences of a particular amino acid $\mathcal A$ with $m:=|C_{\mathcal A}|$, and $k_i$ occurrences of  the $i$-th codon is  given by
+%
+% 
+\begin{equation}
+P = {L!\over k_1!\cdots k_{m}!} p_1^{k_1}\cdots p_m^{k_m}
+\end{equation}
+%
+% 
+In the special case when  there are only two codons in the amino acid, i.e. $m=2$ then this probability reduces to the binomial distribution. We set $k:=k_1$,  $k_2=L-k$, $p:=q$ and $p_2=1-q$.
+%
+% 
+\begin{equation}
+P = \binom{L}{k} q^{k} (1-q)^{L-k}
+\label{binomial}
+\end{equation}
+%
+%  
+
+
+
+\subsubsection{Mixture models}
+
+A variant of the codon model is  the multinomial mixture model, whereby  selection still happens at  the level of the individual subsequences, but the probability to select a codon depends on the particular subsequence. If we assume that there are $M$ different groups of genes that each share the same selection pressure and the fraction of genes belonging to group $i$ is $F_i$ then we can calculate the  expected frequencies of genes as follows (for the case of only 2 codons):
+%
+% 
+\begin{align*}
+\mathcal L(k) &:=  F_1 \binom{L}{k} \left(q_1^k(1-q_1^{L-k}) \right) +
+F_2 \binom{L}{k} \left(q_2^k(1-q_2^{L-k}) \right)+\ldots
+F_M \binom{L}{k} \left(q_M^k(1-q_M^{L-k}) \right)\nonumber\\
+&= \binom{L}{k} \langle q_i^k(1-q_i)^{L-k}\rangle_F .
+\end{align*}
+%
+%   
+Here the brackets indicate an ensemble average over the $M$ classes. The empirical probability to observe a subsequence with $k$ codons of type one is then given by 
+%
+% 
+\begin{equation}
+P_k = {\mathcal L(k)\over \sum_{i=1}^L \mathcal L(i)}.
+\end{equation}
+%
+% 
+As the number of classes  $M$ grows, the probability $P_k$ approaches the uniform probability distribution, since 
+%
+% 
+\begin{displaymath}
+\int_0^1 q_1^k(1-q_1)^{L-k} dq= {1\over N+1} \binom{N}{k}.
+\end{displaymath}
+%
+% . 
+
+
+\subsection{Codon usage bias as a random walk}
+
+An alternative to the  beanbag model is a model where not individual codons are selected, but specific subsequences. As an extreme example, consider the  scenario where there is no underlying global codon usage bias at all and all codons occur equally often, but within a particular gene all codons  for an amino acid $\mathcal A$ are strictly always the same. In this case  the probability $p_i^{\mathcal A}= 1/|C^\mathcal A|$, but the probability to observe a particular subsequence would not follow the binomial distribution. In fact, there  would be only  $C^\mathcal A$ different subsequences of codons for  each  amino acid of a particular gene. Even though each gene in this example has an extremely strong bias, across the entire genome all codons occur with equal probability.  
+ \par
+For the derivation of the full model, it is convenient to consider codon evolution as a random walk. We consider here a model whereby the position of the codons does not matter, and we only care about the number of codons in a particular subsequence.  This analysis remains thus insensitive to correlations of codon usage within genes. 
+\par
+For simplicity, we focus here exclusively  on amino acids with 2 codons, yet extensions  to more codons are straightforward. In the case  of 2 codons,  codon evolution can be represented as a 1D random walk in discrete space and continuous time. The number of sites is $L^{\mathcal A,g}$.  Each site corresponds to a particular subsequence composition, i.e. a pair $(k_1^{\mathcal A,g},L^{\mathcal A,g}- k_2^{\mathcal A,g})$, which defines a state. In the case of 2 codons  the state is entirely characterised by $k_1$.  States are connected (i.e.  accessible to the random walker) when a single synonymous codon change is sufficient to get from one state to the other. In the case of 2 codons this means that  there are two states with one connected state $(0,L^{\mathcal A,g})$ and  $(L^{\mathcal A,g},0)$). All other states are connected to two other states states, such that $k_1$ is connected to $k_1-1$ and $k_1+1$. When there are more than 2 codons, then each state is connected to more than two states. 
+\par
+A transition from one state to another always involves that a codon of a particular type is changed to a codon of a different type. The rate of such an event is proportional to the number of codons of the type that is lost. For example, the rate of transitions where codon 2 is converted to a codon of type 1 is proportional to $k_2$.
+%
+% 
+\begin{equation}
+r(k_1, k_2, \ldots \to k_1+1, k_2-1, \ldots) \sim k_2  
+\end{equation}
+%
+%  
+\par
+In order to derive a model, we now  take a conceptual leap and   \one  model each subsequence as a site of the random walk that has a given energy $E_i$, where the index $i$ counts the numbers of codons of type 1 (which we choose arbitrarily). This energy is, at least for the time being, an entropic energy in that it is the (conceptual) consequence of  the number of subsequences that  have $k_1$ codons of type 1. This number is lowest when all codons are  of the same type and highest when all codons are used exactly equally often. \two We posit that the random walker  that moves between the sites  is in contact with a large heat-bath that remains at a fixed temperature $T$. This temperature bath exchanges energy with the walker, thus enables it  to transition to sites with higher energy, as well as lower energy while extracting/adding energy to the heat bath.   We stress here that this idea of energy and temperature are merely conceptual devices  and  should not be confused with the actual physical temperature that is experience by organisms.
+\par
+Having made this conceptualisation, we can now apply well established concepts from stochastic thermodynamics \cite{seifertreview} to this problem  in order  calculate the long-term equilibrium probabilities $\pi(k_1,k_2,\ldots)$ for various configurations. To do this we impose that the system obeys  the detailed balance condition, which  means that in equilibrium there are no net-flows of probability between any two states that are connected. 
+%
+% 
+\begin{equation}
+\pi (k_1, k_2, \ldots)  r(k_1, k_2, \ldots \to k_1+1, k_2-1, \ldots) =\pi(k_1+1, k_2-1, \ldots) r(k_1+1, k_2-1, \ldots \to  k_1, k_2, \ldots) 
+\end{equation}
+%
+%
+Here $r(k_1, k_2, \ldots \to k_1+1, k_2-1, \ldots)$ is the rate of a mutation from any of the $k_1$ codons of type 1 to codon 2. 
+This implies that 
+%
+% 
+\begin{equation}
+{\pi (k_1, k_2, \ldots)\over \pi(k_1+1, k_2-1, \ldots)} 
+=
+{ k_1+1 \over k_2}
+\end{equation}
+%
+% 
+We also know that  the occupation probabilities of a  random walker of the type described here obeys  the  Boltzmann distribution in equilibrium. This means that  the probability to find  the walker  in a given configuration depends on the energy of the configuration $E(k_1, k_2, \ldots)$ in the following way: 
+%
+% 
+\begin{equation}
+\label{boltzmann}
+\pi (k_1, k_2, \ldots)={1\over Z}\exp\left(-{E(k_1, k_2, \ldots)\over k_BT}\right). 
+\end{equation}
+%
+% 
+Since we are not interested here in specific units, we will henceforth set the Boltzmann constant $k_B=1$.
+\par
+The energy is {\em a priori} unknown, but we postulate that the local detail balance condition is fulfilled \cite{localdetailedbalance}:
+%
+% 
+\begin{equation}
+T\ln\left({r_+\over r_-}\right) = \Delta E,
+\label{localdetailedbalance}
+\end{equation}
+%
+% 
+where  $r_+$ and $r_-$ are the forwards and backwards transition rates respectively.
+This relationship then implies a dependence between the two rates, namely:
+%
+% 
+\begin{equation}
+r_+=r_- \exp\left({\Delta E\over T}\right)
+\end{equation}
+%
+% 
+%In effect this means that, as the temperature increases the relative strength of the transitions that take the subsequence back to the more likely subsequence decreases.  
+
+\subsubsection{Calculation of the energy of a specific codon in the completely unbiased beanbag model.}
+%see energymodel2.mw for an implementation of this model
+We first calculate the energies associated with  a model where  there is no selection pressure at all and codons perform a random walk only. This is the beanbag model where all codons have the same probability of being chosen. To calculate the energies of each subsequence, we   start from a subsequence  where all  $L$ codons are  of type  1. We define this state as having  energy $E_0=0$. A mutation can reach the next state (1)  by changing one of the $L$ codons of type 1 to a codon of type 2. When there are no selection forces then this  happens with a rate proportional to $L$.  From this state (1), the system can then move  further to state (2). This happens now with a rate proportional to $L-1$. Alternatively, with a rate  proportional to 1 it can move back to state (0). Altogether, the following transitions are thus possible:
+%
+% 
+\begin{eqnarray}
+\label{binomialunbiasedwalk}
+(L,0) \overset{L}{\underset{1}{\rightleftharpoons}} (L-1,1) \overset{L-1}{\underset{2}{\rightleftharpoons}} \cdots \overset{L-k+1}{\underset{k}{\rightleftharpoons}} (L-k,k) \overset{L-k}{\underset{k+1}{\rightleftharpoons}}  (L-k-2,k+2)\cdots  \overset{1}{\underset{L}{\rightleftharpoons}}  (0,L) 
+\end{eqnarray}
+%
+% 
+Using the    local detailed balance condition (eq. \ref{localdetailedbalance})  and because the   energy associated with state (0) is  by construction $E_0:=0$,  the energy difference between state (0) and state (1) is $\Delta E_1=\ln(L/1)$. Generally, the energy difference $\Delta E_i$ between state ($i$) and state ($i-1$) is given by $\Delta E_i=\ln\left( (L-i+1)/i\right)$. Consequently, the energy of state ($k$) is then:
+%
+% 
+\begin{eqnarray}
+\label{binomialn}
+E_k &=& \sum_{i=1}^k \Delta E_i= -T\ln\left( \prod_{i=1}^k {L-i+1 \over i}  \right)=\nonumber\\
+&=& -T\ln\left(  L!\over (L-k)! k!   \right)= -T\ln\binom{L}{k}.
+\end{eqnarray}
+%
+%   
+This entails that the (Boltzmann-)probability
+%
+% 
+\begin{displaymath}
+P(E_k) = {\exp\left(- {E_k\over T}\right)\over \sum_i \exp\left(- {E_i\over T}\right)}
+\end{displaymath}
+%
+% 
+ to observe a specific configuration $k$ is proportional to the binomial coefficient, which indicates that this system is distributed according to the binomial distribution eq. \ref{binomial} with $p=1/2$. As such it  represents a model with no selection pressure at the level of sequences.  
+
+
+\subsubsection{The binomial distribution with $q\neq 1/2$.}
+%see energyModel2.mw section: "binomial distribution with q \neq 1/2
+We now establish an energy model of the binomial distribution when there is an underlying bias to the mutations. In this case then the model is (c.f. eq. \ref{binomialunbiasedwalk}:
+%
+% 
+\begin{eqnarray}
+(L,0) \overset{L q}{\underset{1\cdot(1-q)}{\rightleftharpoons}} (L-1,1) \overset{(L-1)q}{\underset{2 (1-q)}{\rightleftharpoons}} \cdots   \overset{(L-k+1)q}{\underset{k(1-q)}{\rightleftharpoons}} (L-k,k) \overset{(L-k)q}{\underset{(k+1)(1-q)}{\rightleftharpoons}}  (L-k-2,k+2)\cdots  \overset{1\cdot q}{\underset{L(1-q)}{\rightleftharpoons}}  (0,L)
+\end{eqnarray}
+%
+%
+Following the same reasoning as above, we can establish the energy differences:
+%
+% 
+\begin{eqnarray}
+ \hat E_0&=& 0 \nonumber \\
+ \Delta \hat E_1&=& - T\ln\left({Lq\over 1\cdot (1-q)}\right)\nonumber \\
+ \Delta \hat E_2&=& - T\ln\left({(L-1)q\over 2 (1-q)}\right)\nonumber \\
+ \Delta \hat E_k&=& - T\ln\left({(L-k+1)q\over k (1-q)}\right)
+\end{eqnarray}
+%
+% 
+Hence, it follows that the energy  $\hat E_k$ is given by:
+%
+% 
+\begin{eqnarray}
+\hat E_k &=& -\ln\left({(L-k+1)! \over (L-k)! k!} \cdot{q^k\over (1-q)^k} \right) \nonumber \\
+ &=& -\ln\left(\binom{L}{k}  \right) + \ln\left(  {(1-q)^k\over q^k} \right)\nonumber \\
+ &=&  E_k+ \ln\left(  {(1-q)^k\over q^k} \right)
+\end{eqnarray}
+%
+% 
+The corresponding Boltzmann distribution can be shown to be the binomial distribution eq. \ref{binomial} with $p=q$.  
+
+\subsubsection{Asymmetric bias}
+For completeness we also consider the case where the transition rates are biased in one direction only.  To this end we  modify the rates such that there is a constant bias $C$ into one direction. The random walk is then modified as follows:
+%
+% 
+\begin{equation}
+(L,0) \overset{L}{\underset{C}{\rightleftharpoons}} (L-1,1) \overset{(L-1)}{\underset{2 C}{\rightleftharpoons}} \cdots 
+  \overset{(L-k+1)}{\underset{kC}{\rightleftharpoons}} (L-k,k) \overset{(L-k)}{\underset{(k+1)C}{\rightleftharpoons}}  (L-k-2,k+2)\cdots  \overset{1}{\underset{LC}{\rightleftharpoons}}  (0,L)
+\end{equation}
+%
+%
+Following the same steps as above, we can calculate energies for this model.  
+%
+%
+\begin{eqnarray}
+ E'_k &=& \sum_{i=1}^k \Delta  E'_i= -T\ln\left( \prod_{i=1}^k {(L-i+1)^\gamma \over i^\gamma C}  \right)=\nonumber\\
+&=& - T\ln\left(  L!\over (L-k)! k!\right) + k\ln(C)
+=  E_k + ln(C^k)
+\end{eqnarray}
+%
+%
+The partition function for this case can be calculated as follows:
+%
+% 
+\begin{equation}
+Z=1+\sum_{k=1}^L \exp\left(-{E'_k\over T}\right) =  1+\sum_{k=1}^L \binom{L}{k} C^{-k} = ({C+1\over C})^L 
+\end{equation}
+%
+% 
+By the same token we can calculate 
+%
+% 
+\begin{equation}
+A:= \sum_{k=0}^L k\binom{L}{k} C^k = L{(C+1)^{L-1}\over C}
+\end{equation}
+%
+% 
+The average codon usage $\epsilon$ is then given by
+%
+% 
+\begin{equation}
+\epsilon = {A\over LZ} = {1\over C +1}
+\end{equation}
+%
+%
+
+
+
+
+\subsection{Sequence selection models}
+
+We now  further modify the rates of the model and  assume that there is a selection pressure on the genome such that the rate with which codon 2 mutates to codon 1  and {\em vice versa} is now no longer proportional to the number $N-k+1$ and $k$ of codon 2, but proportional to a power of this  number. This then changes the above   model, as follows:
+%
+% 
+\begin{eqnarray}
+(L,0) \overset{L^\gamma}{\underset{1^\gamma}{\rightleftharpoons}} (L-1,1) \overset{(L-1)^\gamma}{\underset{2^\gamma}{\rightleftharpoons}} \cdots 
+  \overset{(L-k+1)^\gamma}{\underset{k^\gamma}{\rightleftharpoons}} (L-k,k) \overset{(L-k)^\gamma}{\underset{(k+1)^\gamma}{\rightleftharpoons}}  (L-k-2,k+2)\cdots  \overset{1^\gamma}{\underset{L^\gamma}{\rightleftharpoons}}  (0,L)
+\end{eqnarray}
+%
+%
+The energies then become:
+%
+%
+\begin{eqnarray}
+\tilde E_k &=& \sum_{i=1}^k \Delta \tilde E_i= -T\ln\left( \prod_{i=1}^k {(L-i+1)^\gamma \over i^\gamma}  \right)=\nonumber\\
+&=& - T\gamma\ln\left(  L!\over (L-k)! k!\right) = \gamma E_k
+\end{eqnarray}
+%
+%   
+We conclude that, if  the transition rates are as in the unbiased case, but modified by the exponent, then the energies of the model remain unaffected, but the temperature of the system changes according to $\gamma$. Note that in this model, on average, the number of codons of type 1 will always be the same as the number of codons of type 2. Thus no global codon usage bias would occur. Selection manifests itself in the way that codons are distributed across subsequences, which is quantified by the inverse temperature $\gamma$.  
+\par
+Finally, we now  consider the most general model with different exponents to the left and to the right to arrive at the full model.
+%
+% 
+\begin{eqnarray}
+(L,0) \overset{L^\xi}{\underset{1^\gamma}{\rightleftharpoons}} (L-1,1) \overset{(L-1)^\xi}{\underset{2^\gamma}{\rightleftharpoons}} \cdots  \overset{(L-k+1)^\xi}{\underset{k^\gamma}{\rightleftharpoons}} (L-k,k) \overset{(L-k)^\xi}{\underset{(k+1)^\gamma}{\rightleftharpoons}}  (L-k-2,k+2)\cdots  \overset{1^\xi}{\underset{L^\gamma}{\rightleftharpoons}}  (0,L)
+\end{eqnarray}
+%
+%
+This changes the energies of the model in the following way:
+%
+%%check section "Check final result" in energyModel2.mw to verify that
+\begin{eqnarray}
+\label{thmodel}
+\bar E_k &=& \sum_{i=1}^k \Delta\bar  E_i= -T\ln\left( \prod_{i=1}^k {(L-i+1)^\zeta \over i^\gamma}  \right) \nonumber \\
+&=& -T\xi\ln \binom{L}{k} + T(\gamma - \xi)\ln(k!) \nonumber \\
+&=& \xi E_k + T(\gamma -\xi)\ln(k!) 
+\end{eqnarray}
+%
+%   
+It is apparent  that this case changes both the inverse temperature of the system and the expected number of codons of type 1 relative to the case of no selection.  The corresponding Boltzmann distribution,
+%
+% 
+\begin{equation}
+P(\bar E_k) = { \xi E_k + T(\gamma -\xi)\ln(k!)\over \sum_i  \left(\xi E_i + T(\gamma -\xi)\ln(i!)\right)}
+\end{equation}
+%
+% 
+ is a mono-modal distribution. The mean of the distribution depends on the parameters $\xi$ and $\gamma$. For certain choices of  these parameters, $P(\bar E_k)$ can approximate a binomial distribution with some bias $p\neq 1/2$. 
+
+
+\section{Global temperatures}
+
+For each set of subsequences corresponding to a particular length and amino acid, we next define an empirical energy $\mathcal E$ as
+%
+% 
+\begin{equation}
+\mathcal E_{k_1,\ldots, k_{|C^\mathcal A|}} := -\ln\left( {n_{k_1,\ldots, k_{|C^\mathcal A|}}\over N}  \right),
+\end{equation}
+%
+% 
+where $n_{k_1,\ldots, k_{|C^\mathcal A|}}$ is the number of occurrences of subsequences with configuration $n_{k_1,\ldots, k_{|C^\mathcal A|}}$ in the species and $N$ is the number of subsequences of amino acid $\mathcal A$  with length $L=\sum_{i=1}^{|C^\mathcal A|} k_i$ in the species. In order to assign a global temperature to a species as a whole we plot the  empirical energy $\mathcal E_{k_1,\ldots, k_{|C^\mathcal A|}}$ against the energy $\hat E_{k_1,\ldots, k_{|C^\mathcal A|}}$. 
+%The empirical energy  was determined as follows:
+% 
+%
+%\begin{enumerate}
+% \item 
+%Count the total number of ocurrences $N$ of subsequences  of length $L^\mathcal A$ belonging to amino acid $\mathcal A$ and some species.
+%\item
+%Count the  number of occurences $n$ of subsequences  with configuration $k_1,k_2,\ldots,k_{|C^\mathcal A|}$, where $\sum k_i=L$.
+%\item
+%The empircal energy $\mathcal E_k = -\ln(n/N)$.
+% \end{enumerate} 
+%
+% 
+%
+%
+\begin{figure}
+\subfloat[][]{
+\psfrag{hE}{\Huge $\hat E$}
+\psfrag{LP}{\Huge $\mathcal E$}
+\includegraphics[angle=-0,width=0.45\textwidth]{fourspecies.eps} \label{fourspecies} \label{fitresults} }
+\subfloat[][]{\includegraphics[angle=0,width=0.45\textwidth]{slopes.eps} \label{slopes}}
+\caption{
+\protect\subref{fourspecies} Empirical energies  $\mathcal E$ as a function of the energies  $\hat E$  derived from the multinomial model  assuming the global codon usage bias for each amino acid. Each plot combines data for 9 amino acids and 10 different lengths. Each point shows the theoretical $\hat E_k$ along the horizontal axis, denoting the logarithm of the binomial probability to observe a exactly $k$ codons of type one in a subsequence of length $L^\mathcal A$, given the global codon usage bias for amino acid $\mathcal A$ in this species.  The corresponding $\mathcal E$ is the logarithm of the observed fraction of occurrences of subsequences with $k$ codons of type 1 amongst all subsequences of length $L^\mathcal A$.  \protect\subref{slopes} The slopes obtained for all 462 fungal species  plotted against  slopes obtained from randomised genes where all codons were replaced by a random synonymous codons draw according to the global codon usage bias. If codons were distributed randomly across genes, then the points would cluster along the diagonal.   }
+\label{example1}
+\end{figure}
+%
+%The theoretical energy $\hat E_{k_1,\ldots, k_{k_1,\ldots, k_{|C^\mathcal A|}}}$ was calculated using the logarithm of the binomial distribution with $p=q$ and $q$ set equal to the global codon usaghe bias of the species. 
+\par
+If the codons were distributed according to the multinomial distribution, then  up to statistical errors 
+%
+% 
+\begin{displaymath}
+\mathcal E^L_{k_1,\ldots,k_{k_1,\ldots, k_{|C^\mathcal A|}}}= \hat E^L_{k_1,\ldots, k_{k_1,\ldots, k_{|C^\mathcal A|}}}
+\end{displaymath}
+%
+% 
+, i.e. plotting the empirical energies against  $\hat E$ would result in a straight line with slope 1.  In contrast,  if  the distribution of subsequences was distributed by a multinomial distribution with a higher temperature, then this plot would still result in a straight line, but with a slope corresponding to $1/T$. 
+\par
+We plotted the empirical energies $\mathcal E$ against $\hat E$ and found that  the two energies are in good approximation, related via a straight line. Fig. \ref{fourspecies} shows 4 examples of fungal species for the 9 amino acid with exactly 2 codons.  In order to check the temperature of species, we fitted     $\mathcal E$ versus $\hat E$  to a straight line. The slope of this straight line can then be taken as an estimate for the inverse temperature  for each of the 462 fungal species in our dataset, see fig. \ref{fourspecies}.
+\par
+We  found that the slopes are significantly and systematically different from $1$ and significantly and systematically higher than slopes obtained from random controls; see  fig. \ref{slopes}. Seen globally, the model is thus consistent with the full model and thus consistent with the hypothesis of sequence-level selection. At the same time, the significantly altered slopes are not consistent with the assumption of a purely codon-based selection, which would lead to a binomial distribution of data, and hence slopes close to 1.  
+\par
+While this global data on the slope can be used qualitatively to demonstrate the signature of sequence-level selection acting on codon usage, it  cannot be reliably used to quantify this selection pressure. While the result that slopes systematically deviate from the random model is robust with respect to changes of the fitting protocol, the precise numerical values are not robust to such changes. In fig. \ref{slopes} we reported slopes obtained by fitting the lines to the entire dataset. If instead  fits are restricted to energies $\hat E< 5$, which would exclude  the low probability points, then somewhat different numerical results would appear. Moreover, the global slopes obtained thus are in no clear relationship with the summary statistics of the detailed fits of the full model to subsequences, even though they consist of exactly the same data.
+ 
+%
+%
+\begin{figure}
+\subfloat[][]{
+\psfrag{hE}{\Huge $\hat E$}
+\psfrag{LP}{\Huge $\mathcal E$}
+\includegraphics[angle=0,width=0.45\textwidth]{fourspeciesadults.eps} \label{fourspeciesadults}}
+\subfloat[][]{
+\psfrag{hE}{\Huge $\hat E$}
+\psfrag{LP}{\Huge $\mathcal E$}
+\includegraphics[angle=0,width=0.45\textwidth]{fourspeciesadultsALL.eps} \label{fourspeciesadultsALL}}
+\caption{\protect\subref{fourspeciesadults} Empirical energies  $\mathcal E$ as a function of the energies  $\hat E$  derived from the multinomial model  assuming the global codon usage bias for each amino acid. Each plot combines data  for the amino acids with more than 2 codons  for length 5-15. Each point shows the theoretical $\hat E_k$ along the horizontal axis, denoting the logarithm of the multinomial probability to observe a exactly $k_1$ codons of type 1, $k_2$ codons of type 2, etc..,  in a subsequence of length $L^\mathcal A$, given the global codon usage bias for amino acid $\mathcal A$ in this species.  The corresponding $\mathcal E$ is the logarithm of the observed fraction of occurrences of subsequences with $k$ codons of type 1 amongst all subsequences of length $L^\mathcal A$. The data (and the fit) is restricted to the subsequences where the theoretical distribution is greater than exp(-5). The blue line represent a fit to the data. \protect\subref{fourspeciesadultsALL} Same as \ref{fourspeciesadults} but the probabilities  the data is not restricted to the high probability subsequences. The plot is dominated by noise.}
+\label{example2}
+\end{figure}
+%
+%
+We then repeated the same  plot for the same species, but this time for the amino acids that have more than 2 codons. Fig. \ref{example2} demonstrates that these also lead to approximately straight lines, but only for the subset of high probability subsequences. For those we obtained slopes that were close to 1. When all subsequences are included then noise dominates and no meaningful fitting is possible; see fig. \ref{fourspeciesadultsALL}.
+
+
+\section{Information to Supplementary files.}
+
+All datasets necessary to reproduce the results of this article are available via {\tt ftp}. This includes the links to the ENSEMBLE genomes, codon usage tables and processed data on subsequences.
+
+
+%
+\begin{table}[h]
+\caption{Datasets}
+\label{File Type}
+\centering
+\begin{tabular}{r | r | r}
+\hline
+\hline
+Genome & Underlying Probability & Dataset Tag\\
+\hline
+Observed & Equal & T\\
+Equal replaced artificial & Equal & Ta\\
+Observed & codon usage table & Tb \\
+Bias replaced artificial & codon usage table  & Tab\\
+\hline
+\end{tabular}
+\end{table}
+%
+%
+
+\pagebreak
+\section{Supplementary plots}
+Correlation for the parameter $\xi$ for the fungal dataset. We include only those fits where the mean-residual was smaller than $0.0009999$. The horizontal axis indicates the fitted value for the subsequence length of $15$ and the vertical axis for the subsequences values $5-14$. The title indicates the Pearson correlation.\\
+\includegraphics[width=\textwidth]{corr.eps}
+\\
+Same as above but for parameter $\gamma$.
+\\
+\includegraphics[width=\textwidth]{corrb.eps}
+\\
+\pagebreak
+
+Same as above, but for the fits to the binomial distribution. 
+\\
+\includegraphics[width=\textwidth]{corrBINOMIAL.eps}
+\\
+
+%
+%
+\begin{figure}
+\psfrag{a}{$\xi$}
+\psfrag{b}{$\gamma$}
+\centering
+\subfloat[][Fungi]{\includegraphics[width=0.45\textwidth]{fitResultsFungi.eps}\label{fitresultsfungi}}
+\subfloat[][Bacteria]{\includegraphics[width=0.45\textwidth]{fitResultsBacteria.eps}\label{fitresultsbacteria}}\\
+\subfloat[][Protists]{\includegraphics[width=0.45\textwidth]{fitResultsProtists.eps}\label{fitresultsprotists}}
+\subfloat[][Temperature: Protists and Fungi]{\includegraphics[width=0.45\textwidth]{globalTemperatureComparison.eps}\label{globaltemperaturecomparison}}\\
+\caption{ \protect\subref{fitresultsfungi}-\protect\subref{fitresultsprotists} The fitted values of  parameters $\protect\xi$ and $\protect\gamma$  for each of the 2-codon amino acids for bacteria, fungi and protists. The graphs show heatplots that summarise the density of points in the area. Red indicates a high  density of points. We are  limiting ourselves to those amino acid subsequences that have a sub-length of 15. \protect\subref{globaltemperaturecomparison} The distribution of  inverse temperatures of protists and fungi. There is considerable overlap between the two groups. Density estimates for each group are overlayed on the graph to aid the eye. It appears that fungi are somewhat cooler than protists. Bacteria would lie in-between protists and fungi, but are omitted to aid graph readability.}
+\label{fourspecies}
+\label{fitresults}
+\end{figure}
+%
+%
+%
+
+
+
+
+%\bibliography{../bibl}
+%\bibliographystyle{rspublicnat}
+
+\end{document}
