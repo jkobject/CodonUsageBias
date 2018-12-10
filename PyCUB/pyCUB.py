@@ -1,4 +1,4 @@
-r"""
+"""
 @package PyCUB
 Created by Jeremie KALFON
 Date : 21 FEV 2018

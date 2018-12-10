@@ -26,7 +26,6 @@ utils/save/*
 utils/templot/*
 utils/meta/ensemblmeta/plants.json
 utils/meta/ensemblmeta/fungi.json
-other/*
 !utils/meta/templot/*.md
 !utils/templot/*.md
 
